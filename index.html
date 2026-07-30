@@ -259,12 +259,11 @@
   </div>
 
   <!-- Modal Zoom -->
-  <div class="zoom-modal" id="zoomModal">
-    <button class="zoom-close-btn" onclick="closeZoomModal()">&times;</button>
-    <button class="zoom-nav-btn zoom-nav-left" onclick="navigateZoom(-1)">&lsaquo;</button>
-    <img id="zoomImage" src="" alt="Imagem ampliada">
-    <button class="zoom-nav-btn zoom-nav-right" onclick="navigateZoom(1)">&rsaquo;</button>
-  </div>
+<!-- Modal Zoom limpo (Navegação apenas por Teclado/Mouse) -->
+<div class="zoom-modal" id="zoomModal">
+  <button class="zoom-close-btn" onclick="closeZoomModal()">&times;</button>
+  <img id="zoomImage" src="" alt="Imagem ampliada">
+</div>
 
 <script>
   const API_URL = "https://script.google.com/macros/s/AKfycbwFIsSgEF2grkBpliyO_hSD0Lh2ULq6xHoJC6mDLYvjemTLYe67jF38MDNWP2ixITzE/exec";
@@ -458,17 +457,32 @@
     if(lastFocusedElement) lastFocusedElement.focus();
   }
 
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" || e.key === "Back" || e.keyCode === 10009 || e.keyCode === 27) {
-      if (document.getElementById("sidebarMenu").classList.contains("active")) {
-        closeSidebar();
-      } else if (document.getElementById("zoomModal").classList.contains("active")) {
-        closeZoomModal();
-      } else if (document.getElementById("detailModal").classList.contains("active")) {
-        closeModal();
-      }
+document.addEventListener("keydown", (e) => {
+  const zoomModal = document.getElementById("zoomModal");
+  const isZoomActive = zoomModal && zoomModal.classList.contains("active");
+
+  // Se o Modal de Zoom estiver aberto, navega pelas fotos com as setas Esquerda e Direita
+  if (isZoomActive) {
+    if (e.key === "ArrowLeft") {
+      e.preventDefault();
+      navigateZoom(-1); // Volta a foto
+    } else if (e.key === "ArrowRight") {
+      e.preventDefault();
+      navigateZoom(1);  // Avança a foto
     }
-  });
+  }
+
+  // Tecla ESC ou Voltar no Controle para fechar os modais
+  if (e.key === "Escape" || e.key === "Back" || e.keyCode === 10009 || e.keyCode === 27) {
+    if (isZoomActive) {
+      closeZoomModal();
+    } else if (document.getElementById("detailModal") && document.getElementById("detailModal").classList.contains("active")) {
+      closeModal();
+    } else if (document.getElementById("sidebarMenu") && document.getElementById("sidebarMenu").classList.contains("active")) {
+      closeSidebar();
+    }
+  }
+});
 
   window.onload = fetchCatalogFromSheet;
 </script>
