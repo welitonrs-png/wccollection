@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OCOC - One Can One Country</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; outline: none; }
+    body { background-color: #000000; color: #ffffff; padding: 8px; max-width: 1800px; margin: 0 auto; user-select: none; overflow-x: hidden; }
+
+    .mouse-hover-trigger { position: fixed; top: 0; left: 0; width: 20px; height: 100vh; z-index: 450; }
+
+    .sidebar-menu {
+      position: fixed; top: 0; left: -290px; width: 280px; height: 100vh;
+      background: #0d0d0d; border-right: 1px solid #222; z-index: 500;
+      padding: 20px 12px; display: flex; flex-direction: column; gap: 8px;
+      transition: left 0.25s ease-in-out; box-shadow: 10px 0 25px rgba(0,0,0,0.8); overflow-y: auto;
+    }
+    .sidebar-menu.active { left: 0; }
+    .sidebar-title { font-size: 1.1rem; color: #f39c12; font-weight: 900; margin-bottom: 6px; border-bottom: 1px solid #222; padding-bottom: 6px; }
+    
+    .menu-item {
+      display: flex; align-items: center; gap: 10px; color: #ccc; text-decoration: none;
+      padding: 8px 10px; border-radius: 6px; font-size: 0.85rem; font-weight: 600;
+      background: transparent; border: 2px solid transparent; cursor: pointer; width: 100%; text-align: left;
+    }
+    .menu-item:focus, .menu-item:hover { background: #18181b; color: #f39c12; border-color: #f39c12; }
+    .menu-badge { margin-left: auto; background: #222; color: #f39c12; padding: 2px 8px; border-radius: 12px; font-size: 0.75rem; }
+
+    .menu-search-box { width: 100%; padding: 8px; background: #000; border: 1px solid #333; border-radius: 6px; color: #f39c12; font-size: 0.9rem; font-weight: bold; text-align: center; }
+
+    .vk-container { display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; background: #111; padding: 6px; border-radius: 6px; border: 1px solid #222; margin-bottom: 6px; }
+    .vk-key { background: #18181b; border: 1px solid #27272a; color: #fff; padding: 6px 0; border-radius: 4px; font-size: 0.75rem; font-weight: bold; cursor: pointer; text-align: center; }
+    .vk-key:focus, .vk-key:hover { background: #f39c12; color: #000; border-color: #f39c12; }
+    .vk-key-wide { grid-column: span 2; }
+
+    .main-content { transition: margin-left 0.25s ease-in-out, width 0.25s ease-in-out; width: 100%; }
+    body.menu-open .main-content { margin-left: 280px; width: calc(100% - 280px); }
+
+    .card-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+    @media (min-width: 600px), (orientation: landscape) { .card-grid { grid-template-columns: repeat(5, 1fr); gap: 8px; } }
+    
+    .card { background-color: #fff; border-radius: 6px; aspect-ratio: 1 / 1; overflow: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 4px; cursor: pointer; border: 3px solid transparent; position: relative; }
+    .card img { width: 100%; height: 80%; object-fit: contain; }
+    .card-country-label { background: rgba(0,0,0,0.85); color: #f39c12; width: 100%; text-align: center; font-size: 0.75rem; font-weight: bold; padding: 2px 0; text-transform: uppercase; }
+    .card:focus, .card:hover { border-color: #f39c12 !important; box-shadow: 0 0 15px rgba(243, 156, 18, 0.8); }
+  </style>
+</head>
+<body>
+
+  <div class="mouse-hover-trigger" onmouseenter="openSidebar()"></div>
+
+  <nav class="sidebar-menu" id="sidebarMenu" onmouseleave="closeSidebar()">
+    <div class="sidebar-title">🌍 OCOC (Um por País)</div>
+    <button class="menu-item" onclick="location.href='index.html'" tabindex="0">🏠 Home</button>
+    <div class="menu-item" style="cursor: default;">🔍 Pesquisar País</div>
+    <input type="text" id="menuSearchInput" class="menu-search-box" readonly placeholder="Clique nas teclas..." tabindex="-1">
+    <div class="vk-container" id="vkContainer"></div>
+    <button class="menu-item" onclick="location.href='ococ.html'" tabindex="0">🌍 OCOC</button>
+    <button class="menu-item" onclick="location.href='sets.html'" tabindex="0">📦 Sets de Latas</button>
+    <button class="menu-item" onclick="location.href='admin.html'" tabindex="0">⚙️ Cadastro (Admin)</button>
+    <div class="menu-item" style="margin-top: auto; cursor: default;">
+      📊 Países Encontrados <span class="menu-badge" id="totalCountBadge">0</span>
+    </div>
+  </nav>
+
+  <div class="main-content" id="mainContent">
+    <div class="card-grid" id="ococGrid"></div>
+  </div>
+
+
+<script>
+  const API_URL = "https://script.google.com/macros/s/AKfycbwFIsSgEF2grkBpliyO_hSD0Lh2ULq6xHoJC6mDLYvjemTLYe67jF38MDNWP2ixITzE/exec";
+  let canCatalog = [];
+  let currentFiltered = [];
+  let lastFocusedElement = null;
+  let currentGalleryViews = [];
+  let currentZoomIndex = 0;
+
+  const vkKeys = [
+    'A','B','C','D','E','F',
+    'G','H','I','J','K','L',
+    'M','N','O','P','Q','R',
+    'S','T','U','V','W','X',
+    'Y','Z','1','2','3','4',
+    '5','6','7','8','9','0',
+    'ESPAÇO','DEL','LIMPAR'
+  ];
+
+  async function fetchCatalogFromSheet() {
+    if(!API_URL || API_URL.includes("COLE_AQUI")) return;
+    try {
+      const response = await fetch(API_URL);
+      canCatalog = await response.json();
+      currentFiltered = canCatalog.filter(can => !can.isSet); // Ignora latas de SET no index
+      document.getElementById("totalCountBadge").innerText = currentFiltered.length;
+      renderApp();
+      buildVirtualKeyboard();
+    } catch (err) {
+      console.error("Erro ao carregar catálogo:", err);
+    }
+  }
+
+  function buildVirtualKeyboard() {
+    const container = document.getElementById("vkContainer");
+    container.innerHTML = "";
+    
+    vkKeys.forEach((k, idx) => {
+      const btn = document.createElement("button");
+      let extraClass = "";
+      if (k === 'ESPAÇO' || k === 'DEL' || k === 'LIMPAR') extraClass = "vk-key-wide";
+      
+      btn.className = `vk-key ${extraClass}`;
+      btn.tabIndex = 0;
+      btn.innerText = k;
+      btn.onclick = () => handleVkPress(k);
+      
+      // Mover para a direita no controle sai do menu e volta pros cards
+      btn.onkeydown = (e) => {
+        if (e.key === "ArrowRight") {
+          const isRightEdge = (idx + 1) % 6 === 0 || k === 'LIMPAR';
+          if (isRightEdge) {
+            e.preventDefault();
+            closeSidebarAndFocusGrid();
+          }
+        }
+      };
+      
+      container.appendChild(btn);
+    });
+
+    // 🚀 Habilita digitação via Teclado Físico
+    const input = document.getElementById("menuSearchInput");
+    input.removeAttribute("readonly"); // Permite digitar com teclado físico
+    input.placeholder = "Digite ou use as teclas abaixo...";
+    input.oninput = (e) => filterCatalog(e.target.value);
+  }
+
+  // Ação ao clicar nos botões do Teclado Virtual
+  function handleVkPress(key) {
+    const input = document.getElementById("menuSearchInput");
+    if (key === 'ESPAÇO') input.value += ' ';
+    else if (key === 'DEL') input.value = input.value.slice(0, -1);
+    else if (key === 'LIMPAR') input.value = '';
+    else input.value += key;
+
+    filterCatalog(input.value);
+  }
+
+  function filterCatalog(query) {
+    const val = query.toLowerCase().trim();
+    currentFiltered = canCatalog.filter(can => {
+      if (can.isSet) return false; // Bloqueia latas de SET
+      if (!val) return true;
+      return [can.name, can.brewery, can.country, can.volume, can.year, can.barcode]
+        .map(v => String(v || "").toLowerCase())
+        .join(" ")
+        .includes(val);
+    });
+    document.getElementById("totalCountBadge").innerText = currentFiltered.length;
+    renderApp();
+  }
+
+  function renderApp() {
+    const grid = document.getElementById("cardGrid");
+    grid.innerHTML = "";
+
+    currentFiltered.forEach((can, index) => {
+      const coverImg = can.images ? (can.images.cover || can.images.front || can.images.left) : "";
+      const card = document.createElement("div");
+      card.className = "card";
+      card.tabIndex = 0;
+      card.dataset.index = index;
+      card.onclick = () => openDetailModal(can.id);
+      
+      card.onkeydown = (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          openDetailModal(can.id);
+        } else if (e.key === "ArrowRight") {
+          const cols = window.innerWidth >= 600 || window.matchMedia("(orientation: landscape)").matches ? 5 : 3;
+          if ((index + 1) % cols === 0) {
+            const nextCard = grid.children[index + 1];
+            if (nextCard) { e.preventDefault(); nextCard.focus(); }
+          }
+        } else if (e.key === "ArrowLeft") {
+          const cols = window.innerWidth >= 600 || window.matchMedia("(orientation: landscape)").matches ? 5 : 3;
+          if (index % cols === 0) {
+            e.preventDefault();
+            openSidebar();
+          }
+        }
+      };
+      
+      card.innerHTML = `<img src="${coverImg}" alt="${can.name}" loading="lazy" decoding="async">`;
+      grid.appendChild(card);
+    });
+  }
+
+  function openSidebar() {
+    document.getElementById("sidebarMenu").classList.add("active");
+    document.body.classList.add("menu-open");
+  }
+
+  function closeSidebar() {
+    document.getElementById("sidebarMenu").classList.remove("active");
+    document.body.classList.remove("menu-open");
+  }
+
+  function closeSidebarAndFocusGrid() {
+    closeSidebar();
+    const firstCard = document.querySelector(".card");
+    if (firstCard) firstCard.focus();
+  }
+
+  function openDetailModal(id) {
+    const can = canCatalog.find(c => String(c.id) === String(id));
+    if (!can) return;
+
+    lastFocusedElement = document.activeElement;
+
+    document.getElementById("lbTitle").innerText = (can.name || "").toUpperCase();
+    document.getElementById("lbCountry").innerText = (can.country || "-").toUpperCase();
+    document.getElementById("lbVolume").innerText = (can.volume || "-").toUpperCase();
+    document.getElementById("lbYear").innerText = can.year || "-";
+    document.getElementById("lbBarcode").innerText = can.barcode || "-";
+
+    const leftGrid = document.getElementById("lightboxLeftGrid");
+    leftGrid.innerHTML = "";
+
+    currentGalleryViews = [can.images?.front, can.images?.left, can.images?.back, can.images?.right].filter(Boolean);
+
+    currentGalleryViews.forEach((url, index) => {
+      const item = document.createElement("div");
+      item.className = "view-card-item";
+      item.tabIndex = 0;
+      item.onclick = () => openZoomModal(index);
+      item.onkeydown = (e) => { if(e.key === "Enter" || e.key === " ") openZoomModal(index); };
+      item.innerHTML = `<img src="${url}">`;
+      leftGrid.appendChild(item);
+    });
+
+    document.getElementById("detailModal").classList.add("active");
+  }
+
+  function openZoomModal(index) {
+    if (currentGalleryViews.length === 0) return;
+    currentZoomIndex = index;
+    document.getElementById("zoomImage").src = currentGalleryViews[currentZoomIndex];
+    document.getElementById("zoomModal").classList.add("active");
+  }
+
+  function navigateZoom(direction) {
+    if (currentGalleryViews.length <= 1) return;
+    currentZoomIndex = (currentZoomIndex + direction + currentGalleryViews.length) % currentGalleryViews.length;
+    document.getElementById("zoomImage").src = currentGalleryViews[currentZoomIndex];
+  }
+
+  function closeZoomModal() { document.getElementById("zoomModal").classList.remove("active"); }
+  function closeModal() {
+    document.getElementById("detailModal").classList.remove("active");
+    if(lastFocusedElement) lastFocusedElement.focus();
+  }
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" || e.key === "Back" || e.keyCode === 10009 || e.keyCode === 27) {
+      if (document.getElementById("sidebarMenu").classList.contains("active")) {
+        closeSidebar();
+      } else if (document.getElementById("zoomModal").classList.contains("active")) {
+        closeZoomModal();
+      } else if (document.getElementById("detailModal").classList.contains("active")) {
+        closeModal();
+      }
+    }
+  });
+
+  window.onload = fetchCatalogFromSheet;
+</script>
+</body>
+</html>

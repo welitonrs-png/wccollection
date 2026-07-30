@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BeerCan Catalog - Coleção de Latas</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; outline: none; }
+    body { background-color: #000000; color: #ffffff; padding: 8px; max-width: 1800px; margin: 0 auto; user-select: none; overflow-x: hidden; }
+
+    /* Área de detecção invisível no canto esquerdo para abrir o menu ao passar o mouse */
+    .mouse-hover-trigger {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 20px;
+      height: 100vh;
+      z-index: 450;
+    }
+
+    /* Menu Lateral Deslizante */
+    .sidebar-menu {
+      position: fixed;
+      top: 0;
+      left: -290px;
+      width: 280px;
+      height: 100vh;
+      background: #0d0d0d;
+      border-right: 1px solid #222;
+      z-index: 500;
+      padding: 20px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      transition: left 0.25s ease-in-out;
+      box-shadow: 10px 0 25px rgba(0,0,0,0.8);
+      overflow-y: auto;
+    }
+    .sidebar-menu.active { left: 0; }
+/* Estilo da Logo WCCollection */
+.sidebar-logo-container {
+  width: 100%;
+  padding-bottom: 10px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid #222;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.sidebar-logo-img {
+  width: 100%;
+  max-width: 220px;
+  height: auto;
+  object-fit: contain;
+  display: block;
+}
+    
+    .sidebar-title { font-size: 1.1rem; color: #f39c12; font-weight: 900; margin-bottom: 6px; border-bottom: 1px solid #222; padding-bottom: 6px; }
+    
+    .menu-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #ccc;
+      text-decoration: none;
+      padding: 8px 10px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      background: transparent;
+      border: 2px solid transparent;
+      cursor: pointer;
+      width: 100%;
+      text-align: left;
+    }
+    .menu-item:focus, .menu-item:hover {
+      background: #18181b;
+      color: #f39c12;
+      border-color: #f39c12;
+    }
+    .menu-badge { margin-left: auto; background: #222; color: #f39c12; padding: 2px 8px; border-radius: 12px; font-size: 0.75rem; }
+
+    /* Campo de Pesquisa no Menu */
+    .menu-search-box {
+      width: 100%;
+      padding: 8px;
+      background: #000;
+      border: 1px solid #333;
+      border-radius: 6px;
+      color: #f39c12;
+      font-size: 0.9rem;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    /* Teclado Virtual Compacto */
+    .vk-container {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 4px;
+      background: #111;
+      padding: 6px;
+      border-radius: 6px;
+      border: 1px solid #222;
+      margin-bottom: 6px;
+    }
+    .vk-key {
+      background: #18181b;
+      border: 1px solid #27272a;
+      color: #fff;
+      padding: 6px 0;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: bold;
+      cursor: pointer;
+      text-align: center;
+    }
+    .vk-key:focus, .vk-key:hover {
+      background: #f39c12;
+      color: #000;
+      border-color: #f39c12;
+    }
+    .vk-key-wide { grid-column: span 2; }
+
+    /* Conteúdo Principal Responsivo ao Menu */
+    .main-content {
+      transition: margin-left 0.25s ease-in-out, width 0.25s ease-in-out;
+      width: 100%;
+    }
+    body.menu-open .main-content {
+      margin-left: 280px;
+      width: calc(100% - 280px);
+    }
+
+    /* Grid do Catálogo (5 colunas) */
+    .card-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+    @media (min-width: 600px), (orientation: landscape) { 
+      .card-grid { grid-template-columns: repeat(5, 1fr); gap: 8px; } 
+    }
+    
+    .card { 
+      background-color: #fff; 
+      border-radius: 6px; 
+      aspect-ratio: 1 / 1; 
+      overflow: hidden; 
+      display: flex; 
+      justify-content: center; 
+      align-items: center; 
+      padding: 4px; 
+      cursor: pointer; 
+      border: 3px solid transparent; 
+      box-sizing: border-box;
+      transform: none !important;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+    .card img { width: 100%; height: 100%; object-fit: contain; transform: none !important; }
+    .card:focus, .card:hover { border-color: #f39c12 !important; box-shadow: 0 0 15px rgba(243, 156, 18, 0.8); transform: none !important; z-index: 10; }
+
+    /* Lightbox Modal Fixo */
+    .lightbox-modal-overlay { 
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; 
+      background: rgba(0,0,0,0.95); z-index: 600; 
+      display: flex; justify-content: center; align-items: center; 
+      padding: 12px; opacity: 0; pointer-events: none; transition: opacity 0.25s; overflow: hidden;
+    }
+    .lightbox-modal-overlay.active { opacity: 1; pointer-events: auto; }
+
+    .lightbox-content-wrapper { 
+      width: 100%; max-width: 1200px; max-height: 95vh; 
+      display: flex; flex-direction: column; gap: 16px; 
+      position: relative; align-items: center; justify-content: center; overflow: hidden;
+    }
+
+    @media (min-width: 768px), (orientation: landscape) { 
+      .lightbox-content-wrapper { flex-direction: row; align-items: center; gap: 24px; } 
+    }
+    
+    .lightbox-left-grid { 
+      flex: 1; display: grid; grid-template-columns: repeat(2, 1fr); 
+      gap: 8px; width: 100%; max-width: 420px; aspect-ratio: 1 / 1; margin: 0 auto; 
+    }
+
+    .view-card-item { 
+      background: #fff; border-radius: 6px; padding: 4px; 
+      display: flex; justify-content: center; align-items: center; 
+      cursor: pointer; border: 3px solid transparent; box-sizing: border-box;
+      transform: none !important; transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+    .view-card-item img { width: 100%; height: 100%; object-fit: contain; transform: none !important; }
+    .view-card-item:focus, .view-card-item:hover { border-color: #f39c12 !important; box-shadow: 0 0 15px rgba(243, 156, 18, 0.8); transform: none !important; }
+
+    .lightbox-right-info { flex: 1; color: #f39c12; text-transform: uppercase; font-style: italic; width: 100%; text-align: left; }
+    .can-main-title { font-size: clamp(1.1rem, 3.5vw, 1.8rem); font-weight: 900; margin-bottom: 16px; color: #f39c12 !important; line-height: 1.1; }
+    .info-field-label { font-size: clamp(0.65rem, 1.2vw, 0.85rem); font-weight: 900; color: #8e8e93; margin-bottom: 1px; display: block; }
+    .info-field-value { font-size: clamp(0.95rem, 2.2vw, 1.3rem); font-weight: 900; margin-bottom: 10px; color: #f39c12; line-height: 1.1; }
+    
+    .lightbox-close-btn { 
+      position: absolute; top: -10px; right: 0; background: transparent !important; border: none !important; color: #ffffff; 
+      width: 40px; height: 40px; font-size: 2.2rem; font-weight: 300; cursor: pointer; display: flex; justify-content: center; align-items: center; z-index: 10;
+    }
+    .lightbox-close-btn:focus, .lightbox-close-btn:hover { color: #f39c12 !important; }
+
+    /* Modal Zoom Ampliado */
+    .zoom-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.98); z-index: 700; display: none; justify-content: center; align-items: center; padding: 16px; }
+    .zoom-modal.active { display: flex; }
+    .zoom-modal img { max-width: 85vw; max-height: 85vh; object-fit: contain; border-radius: 6px; }
+    .zoom-nav-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #ffffff; font-size: 2rem; width: 50px; height: 50px; border-radius: 50%; cursor: pointer; display: flex; justify-content: center; align-items: center; z-index: 710; }
+    .zoom-nav-btn:hover, .zoom-nav-btn:focus { background: #f39c12; color: #000; border-color: #f39c12; }
+    .zoom-nav-left { left: 15px; } .zoom-nav-right { right: 15px; }
+    .zoom-close-btn { position: absolute; top: 15px; right: 20px; background: transparent; border: none; color: #fff; font-size: 2.5rem; cursor: pointer; z-index: 710; }
+  </style>
+</head>
+<body>
+
+  <!-- Zone de hover invisível no canto esquerdo -->
+  <div class="mouse-hover-trigger" onmouseenter="openSidebar()"></div>
+
+  <!-- Menu Lateral Deslizante -->
+  <nav class="sidebar-menu" id="sidebarMenu" onmouseleave="closeSidebar()">
+ <div class="sidebar-logo-container">
+  <img src="logo.png" alt="WCCollection Logo" class="sidebar-logo-img">
+</div>
+    <button class="menu-item" onclick="location.href='index.html'" tabindex="0">🏠 Home</button>
+    
+    <!-- Item de Pesquisa + Campo + Teclado Embutido -->
+    <div class="menu-item" style="cursor: default;">🔍 Pesquisar</div>
+    <input type="text" id="menuSearchInput" class="menu-search-box" readonly placeholder="Clique nas teclas abaixo..." tabindex="-1">
+    
+    <!-- Teclado Virtual Compacto -->
+    <div class="vk-container" id="vkContainer"></div>
+
+    <button class="menu-item" onclick="location.href='ococ.html'" tabindex="0">🌍 OCOC (Um por País)</button>
+    <button class="menu-item" onclick="location.href='sets.html'" tabindex="0">📦 Sets de Latas</button>
+    <button class="menu-item" onclick="location.href='admin.html'" tabindex="0">⚙️ Cadastro (Admin)</button>
+
+    <div class="menu-item" style="margin-top: auto; cursor: default;">
+      📊 Encontrados <span class="menu-badge" id="totalCountBadge">0</span>
+    </div>
+  </nav>
+
+  <!-- Container Principal Responsivo aos Cards -->
+  <div class="main-content" id="mainContent">
+    <div class="card-grid" id="cardGrid"></div>
+  </div>
+
+  <!-- Lightbox Modal -->
+  <div class="lightbox-modal-overlay" id="detailModal">
+    <div class="lightbox-content-wrapper">
+      <button class="lightbox-close-btn" id="btnCloseModal" onclick="closeModal()" tabindex="0">&times;</button>
+      <div class="lightbox-left-grid" id="lightboxLeftGrid"></div>
+      <div class="lightbox-right-info">
+        <div class="can-main-title" id="lbTitle"></div>
+        <div><span class="info-field-label">ORIGEM:</span><div class="info-field-value" id="lbCountry"></div></div>
+        <div><span class="info-field-label">VOLUME:</span><div class="info-field-value" id="lbVolume"></div></div>
+        <div id="fieldYear"><span class="info-field-label">ANO:</span><div class="info-field-value" id="lbYear"></div></div>
+        <div id="fieldBarcode"><span class="info-field-label">CÓD. BARRAS:</span><div class="info-field-value" id="lbBarcode"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Zoom -->
+  <div class="zoom-modal" id="zoomModal">
+    <button class="zoom-close-btn" onclick="closeZoomModal()">&times;</button>
+    <button class="zoom-nav-btn zoom-nav-left" onclick="navigateZoom(-1)">&lsaquo;</button>
+    <img id="zoomImage" src="" alt="Imagem ampliada">
+    <button class="zoom-nav-btn zoom-nav-right" onclick="navigateZoom(1)">&rsaquo;</button>
+  </div>
+
+<script>
+  const API_URL = "https://script.google.com/macros/s/AKfycbwFIsSgEF2grkBpliyO_hSD0Lh2ULq6xHoJC6mDLYvjemTLYe67jF38MDNWP2ixITzE/exec";
+  let canCatalog = [];
+  let currentFiltered = [];
+  let lastFocusedElement = null;
+  let currentGalleryViews = [];
+  let currentZoomIndex = 0;
+
+  const vkKeys = [
+    'A','B','C','D','E','F',
+    'G','H','I','J','K','L',
+    'M','N','O','P','Q','R',
+    'S','T','U','V','W','X',
+    'Y','Z','1','2','3','4',
+    '5','6','7','8','9','0',
+    'ESPAÇO','DEL','LIMPAR'
+  ];
+
+  async function fetchCatalogFromSheet() {
+    if(!API_URL || API_URL.includes("COLE_AQUI")) return;
+    try {
+      const response = await fetch(API_URL);
+      canCatalog = await response.json();
+      currentFiltered = canCatalog.filter(can => !can.isSet); // Ignora latas de SET no index
+      document.getElementById("totalCountBadge").innerText = currentFiltered.length;
+      renderApp();
+      buildVirtualKeyboard();
+    } catch (err) {
+      console.error("Erro ao carregar catálogo:", err);
+    }
+  }
+
+  function buildVirtualKeyboard() {
+    const container = document.getElementById("vkContainer");
+    container.innerHTML = "";
+    
+    vkKeys.forEach((k, idx) => {
+      const btn = document.createElement("button");
+      let extraClass = "";
+      if (k === 'ESPAÇO' || k === 'DEL' || k === 'LIMPAR') extraClass = "vk-key-wide";
+      
+      btn.className = `vk-key ${extraClass}`;
+      btn.tabIndex = 0;
+      btn.innerText = k;
+      btn.onclick = () => handleVkPress(k);
+      
+      // Mover para a direita no controle sai do menu e volta pros cards
+      btn.onkeydown = (e) => {
+        if (e.key === "ArrowRight") {
+          const isRightEdge = (idx + 1) % 6 === 0 || k === 'LIMPAR';
+          if (isRightEdge) {
+            e.preventDefault();
+            closeSidebarAndFocusGrid();
+          }
+        }
+      };
+      
+      container.appendChild(btn);
+    });
+
+    // 🚀 Habilita digitação via Teclado Físico
+    const input = document.getElementById("menuSearchInput");
+    input.removeAttribute("readonly"); // Permite digitar com teclado físico
+    input.placeholder = "Digite ou use as teclas abaixo...";
+    input.oninput = (e) => filterCatalog(e.target.value);
+  }
+
+  // Ação ao clicar nos botões do Teclado Virtual
+  function handleVkPress(key) {
+    const input = document.getElementById("menuSearchInput");
+    if (key === 'ESPAÇO') input.value += ' ';
+    else if (key === 'DEL') input.value = input.value.slice(0, -1);
+    else if (key === 'LIMPAR') input.value = '';
+    else input.value += key;
+
+    filterCatalog(input.value);
+  }
+
+  function filterCatalog(query) {
+    const val = query.toLowerCase().trim();
+    currentFiltered = canCatalog.filter(can => {
+      if (can.isSet) return false; // Bloqueia latas de SET
+      if (!val) return true;
+      return [can.name, can.brewery, can.country, can.volume, can.year, can.barcode]
+        .map(v => String(v || "").toLowerCase())
+        .join(" ")
+        .includes(val);
+    });
+    document.getElementById("totalCountBadge").innerText = currentFiltered.length;
+    renderApp();
+  }
+
+  function renderApp() {
+    const grid = document.getElementById("cardGrid");
+    grid.innerHTML = "";
+
+    currentFiltered.forEach((can, index) => {
+      const coverImg = can.images ? (can.images.cover || can.images.front || can.images.left) : "";
+      const card = document.createElement("div");
+      card.className = "card";
+      card.tabIndex = 0;
+      card.dataset.index = index;
+      card.onclick = () => openDetailModal(can.id);
+      
+      card.onkeydown = (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          openDetailModal(can.id);
+        } else if (e.key === "ArrowRight") {
+          const cols = window.innerWidth >= 600 || window.matchMedia("(orientation: landscape)").matches ? 5 : 3;
+          if ((index + 1) % cols === 0) {
+            const nextCard = grid.children[index + 1];
+            if (nextCard) { e.preventDefault(); nextCard.focus(); }
+          }
+        } else if (e.key === "ArrowLeft") {
+          const cols = window.innerWidth >= 600 || window.matchMedia("(orientation: landscape)").matches ? 5 : 3;
+          if (index % cols === 0) {
+            e.preventDefault();
+            openSidebar();
+          }
+        }
+      };
+      
+      card.innerHTML = `<img src="${coverImg}" alt="${can.name}" loading="lazy" decoding="async">`;
+      grid.appendChild(card);
+    });
+  }
+
+  function openSidebar() {
+    document.getElementById("sidebarMenu").classList.add("active");
+    document.body.classList.add("menu-open");
+  }
+
+  function closeSidebar() {
+    document.getElementById("sidebarMenu").classList.remove("active");
+    document.body.classList.remove("menu-open");
+  }
+
+  function closeSidebarAndFocusGrid() {
+    closeSidebar();
+    const firstCard = document.querySelector(".card");
+    if (firstCard) firstCard.focus();
+  }
+
+  function openDetailModal(id) {
+    const can = canCatalog.find(c => String(c.id) === String(id));
+    if (!can) return;
+
+    lastFocusedElement = document.activeElement;
+
+    document.getElementById("lbTitle").innerText = (can.name || "").toUpperCase();
+    document.getElementById("lbCountry").innerText = (can.country || "-").toUpperCase();
+    document.getElementById("lbVolume").innerText = (can.volume || "-").toUpperCase();
+    document.getElementById("lbYear").innerText = can.year || "-";
+    document.getElementById("lbBarcode").innerText = can.barcode || "-";
+
+    const leftGrid = document.getElementById("lightboxLeftGrid");
+    leftGrid.innerHTML = "";
+
+    currentGalleryViews = [can.images?.front, can.images?.left, can.images?.back, can.images?.right].filter(Boolean);
+
+    currentGalleryViews.forEach((url, index) => {
+      const item = document.createElement("div");
+      item.className = "view-card-item";
+      item.tabIndex = 0;
+      item.onclick = () => openZoomModal(index);
+      item.onkeydown = (e) => { if(e.key === "Enter" || e.key === " ") openZoomModal(index); };
+      item.innerHTML = `<img src="${url}">`;
+      leftGrid.appendChild(item);
+    });
+
+    document.getElementById("detailModal").classList.add("active");
+  }
+
+  function openZoomModal(index) {
+    if (currentGalleryViews.length === 0) return;
+    currentZoomIndex = index;
+    document.getElementById("zoomImage").src = currentGalleryViews[currentZoomIndex];
+    document.getElementById("zoomModal").classList.add("active");
+  }
+
+  function navigateZoom(direction) {
+    if (currentGalleryViews.length <= 1) return;
+    currentZoomIndex = (currentZoomIndex + direction + currentGalleryViews.length) % currentGalleryViews.length;
+    document.getElementById("zoomImage").src = currentGalleryViews[currentZoomIndex];
+  }
+
+  function closeZoomModal() { document.getElementById("zoomModal").classList.remove("active"); }
+  function closeModal() {
+    document.getElementById("detailModal").classList.remove("active");
+    if(lastFocusedElement) lastFocusedElement.focus();
+  }
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" || e.key === "Back" || e.keyCode === 10009 || e.keyCode === 27) {
+      if (document.getElementById("sidebarMenu").classList.contains("active")) {
+        closeSidebar();
+      } else if (document.getElementById("zoomModal").classList.contains("active")) {
+        closeZoomModal();
+      } else if (document.getElementById("detailModal").classList.contains("active")) {
+        closeModal();
+      }
+    }
+  });
+
+  window.onload = fetchCatalogFromSheet;
+</script>
+</body>
+</html>
