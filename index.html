@@ -21,6 +21,7 @@
 
     .app-container { display: flex; width: 100vw; height: 100vh; overflow: hidden; position: relative; background-color: #9B9B9B; }
 
+    /* MENU LATERAL SLIDE-OVER */
     .sidebar {
       width: 60px; min-width: 60px; background: #9B9B9B; border-right: none;
       display: flex; flex-direction: column; padding: 12px 6px; gap: 10px; height: 100%;
@@ -74,7 +75,7 @@
 
     .main-area { flex: 1; display: flex; flex-direction: column; height: 100vh; padding: 12px 16px; gap: 12px; overflow: hidden; background: #9B9B9B; }
 
-    /* PAINEL PRINCIPAL FIXO NA TELA */
+    /* PAINEL FIXO DA TELA */
     .hero-panel {
       flex: 1; min-height: 0; background: #9B9B9B; border: none; border-radius: 12px;
       display: flex; padding: 12px 16px; gap: 24px; align-items: center; position: relative;
@@ -86,14 +87,14 @@
     }
     .hero-brand-logo-container img { max-width: 100%; max-height: 100%; object-fit: contain; }
 
+    /* 🎯 4 FOTOS ESTÁTICAS (NÃO NAVEGÁVEIS VIA CONTROLE) */
     .hero-left-photos { height: 100%; aspect-ratio: 1 / 1; display: grid; grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(2, 1fr); gap: 8px; }
     
     .hero-photo-card {
       background: #fff; border-radius: 6px; padding: 4px; display: flex; justify-content: center; align-items: center;
-      cursor: pointer; border: 4px solid transparent; box-sizing: border-box; width: 100%; height: 100%; overflow: hidden; transition: border-color 0.15s ease;
+      width: 100%; height: 100%; overflow: hidden; pointer-events: none; /* Desativa interação individual */
     }
     .hero-photo-card img { width: 100%; height: 100%; object-fit: contain; }
-    .hero-photo-card:focus, .hero-photo-card:hover { border-color: #f39c12 !important; box-shadow: 0 0 15px rgba(243, 156, 18, 0.8) !important; }
 
     .hero-right-info { 
       flex: 1; height: 100%; display: flex; flex-direction: column; 
@@ -121,7 +122,7 @@
     .card img { width: 100%; height: 100%; object-fit: contain; }
     .card:focus, .card:hover { border-color: #f39c12 !important; box-shadow: 0 0 15px rgba(243, 156, 18, 0.8) !important; z-index: 10; }
 
-    /* LIGHTBOX APENAS AO CLICAR NA IMAGEM DE DETALHE */
+    /* LIGHTBOX APENAS AO ENTER/CLIQUE NO CARD */
     .zoom-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.95); z-index: 700; display: none; justify-content: center; align-items: center; padding: 16px; }
     .zoom-modal.active { display: flex; }
     .zoom-modal img { max-width: 85vw; max-height: 85vh; object-fit: contain; border-radius: 6px; cursor: pointer; }
@@ -154,7 +155,6 @@
     </div>
 
     <main class="main-area">
-      <!-- PAINEL FIXO NO PRÓPRIO HTML -->
       <section class="hero-panel" id="heroPanel">
         <div class="hero-brand-logo-container" id="heroBrandLogo"></div>
 
@@ -182,7 +182,6 @@
     </main>
   </div>
 
-  <!-- LIGHTBOX PARA AMPLIAR QUANDO CLICAR -->
   <div class="zoom-modal" id="zoomModal">
     <button class="zoom-close-btn" onclick="closeZoomModal()" tabindex="0">&times;</button>
     <img id="zoomImage" src="" alt="Imagem ampliada" onclick="navigateZoom(1)">
@@ -192,7 +191,6 @@
   const API_URL = "https://script.google.com/macros/s/AKfycbwFIsSgEF2grkBpliyO_hSD0Lh2ULq6xHoJC6mDLYvjemTLYe67jF38MDNWP2ixITzE/exec";
   let canCatalog = [];
   let currentFiltered = [];
-  let lastFocusedCard = null;
   let zoomGallery = [];
   let currentZoomIndex = 0;
 
@@ -287,11 +285,18 @@
       const card = document.createElement("div");
       card.className = "card"; card.tabIndex = 0;
       
-      // AO NAVEGAR COM O CONTROLE REMOTE/MOUSE, APENAS ATUALIZA O PAINEL FIXO
-      card.onfocus = () => { updateHeroPanel(can, index); lastFocusedCard = card; card.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' }); };
+      // AO PASSAR O FOCO: Apenas atualiza o painel da tela
+      card.onfocus = () => { updateHeroPanel(can, index); card.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' }); };
       card.onmouseenter = () => updateHeroPanel(can, index);
-      card.onclick = () => updateHeroPanel(can, index);
-      card.onkeydown = (e) => { if (e.key === "ArrowUp") { e.preventDefault(); const firstPhoto = document.querySelector(".hero-photo-card"); if (firstPhoto) firstPhoto.focus(); } };
+      
+      // AO CLICAR OU APERTAR ENTER NO CARD: ABRE O LIGHTBOX EM TELA CHEIA
+      card.onclick = () => openZoomModal(0);
+      card.onkeydown = (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          openZoomModal(0);
+        }
+      };
 
       card.innerHTML = `<img src="${coverImg}" alt="${can.name}" loading="lazy">`;
       row.appendChild(card);
@@ -317,6 +322,7 @@
     const currentNum = total > 0 ? (index + 1) : 0;
     document.getElementById("cardCounter").innerText = `${currentNum}/${total}`;
 
+    // Atualiza as 4 fotos estáticas do painel
     const photosContainer = document.getElementById("heroPhotos");
     photosContainer.innerHTML = "";
 
@@ -324,13 +330,7 @@
 
     zoomGallery.forEach((url, idx) => {
       const photoCard = document.createElement("div");
-      photoCard.className = "hero-photo-card"; photoCard.tabIndex = 0;
-      // CLICAR NA IMAGEM DE DETALHE ABRE O ZOOOM
-      photoCard.onclick = () => openZoomModal(idx);
-      photoCard.onkeydown = (e) => { 
-        if(e.key === "Enter" || e.key === " ") openZoomModal(idx);
-        else if (e.key === "ArrowDown") { e.preventDefault(); if (lastFocusedCard) lastFocusedCard.focus(); }
-      };
+      photoCard.className = "hero-photo-card";
       photoCard.innerHTML = `<img src="${url}" alt="Foto ${idx+1}">`;
       photosContainer.appendChild(photoCard);
     });
