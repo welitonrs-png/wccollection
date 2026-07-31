@@ -74,10 +74,19 @@
 
     .main-area { flex: 1; display: flex; flex-direction: column; height: 100vh; padding: 12px 16px; gap: 12px; overflow: hidden; background: #9B9B9B; }
 
+    /* 🎯 HERO PANEL COM CONTAINER FIXO NO CANTO SUPERIOR DIREITO */
     .hero-panel {
       flex: 1; min-height: 0; background: #9B9B9B; border: none; border-radius: 12px;
       display: flex; padding: 12px 16px; gap: 24px; align-items: center; position: relative;
     }
+    
+    /* 🔴 ÁREA DO LOGO DA MARCA (CÍRCULO VERMELHO) */
+    .hero-brand-logo-container {
+      position: absolute; top: 12px; right: 24px; width: 220px; height: 100px;
+      display: flex; justify-content: flex-end; align-items: flex-start; z-index: 20; pointer-events: none;
+    }
+    .hero-brand-logo-container img { max-width: 100%; max-height: 100%; object-fit: contain; }
+
     .hero-left-photos { height: 100%; aspect-ratio: 1 / 1; display: grid; grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(2, 1fr); gap: 8px; }
     
     .hero-photo-card {
@@ -87,20 +96,13 @@
     .hero-photo-card img { width: 100%; height: 100%; object-fit: contain; }
     .hero-photo-card:focus, .hero-photo-card:hover { border-color: #f39c12 !important; box-shadow: 0 0 15px rgba(243, 156, 18, 0.8) !important; }
 
-    /* 🏷️ LOGO DA MARCA NO CANTO SUPERIOR DIREITO */
-    .hero-brand-logo-container {
-      position: absolute; top: 12px; right: 16px; max-width: 120px; max-height: 60px;
-      display: flex; justify-content: flex-end; align-items: center; z-index: 10;
-    }
-    .hero-brand-logo-container img { max-width: 100%; max-height: 60px; object-fit: contain; }
-
     .hero-right-info { 
       flex: 1; height: 100%; display: flex; flex-direction: column; 
-      justify-content: flex-start; gap: 12px; color: #f39c12; text-transform: uppercase; font-style: italic; overflow-y: auto; padding-right: 8px;
+      justify-content: flex-start; gap: 12px; color: #f39c12; text-transform: uppercase; font-style: italic; overflow-y: auto; padding-right: 240px;
     }
     .hero-title { 
       font-size: clamp(1.3rem, 2.3vw, 1.9rem); font-weight: 900; line-height: 1.15; 
-      color: #f39c12; margin-bottom: 4px; letter-spacing: 0.5px; max-width: calc(100% - 130px);
+      color: #f39c12; margin-bottom: 4px; letter-spacing: 0.5px;
     }
     .info-block { display: flex; flex-direction: column; margin-bottom: 2px; }
     .info-label { font-size: clamp(0.75rem, 1.1vw, 0.95rem); font-weight: 900; color: #f39c12; line-height: 1.1; letter-spacing: 0.5px; }
@@ -153,7 +155,7 @@
 
     <main class="main-area">
       <section class="hero-panel" id="heroPanel">
-        <!-- LOGO DA MARCA NO CANTO SUPERIOR DO LIGHTBOX -->
+        <!-- 🔴 EXIBIÇÃO DA MARCA NO CANTO SUPERIOR DIREITO -->
         <div class="hero-brand-logo-container" id="heroBrandLogo"></div>
 
         <div class="hero-left-photos" id="heroPhotos">
@@ -280,7 +282,8 @@
     row.innerHTML = "";
 
     currentFiltered.forEach((can, index) => {
-      const coverImg = can.images ? (can.images.cover || can.images.front || can.images.left) : "";
+      // 🚀 CAPA GARANTIDA: NUNCA USA O LOGO DA MARCA COMO CAPA
+      const coverImg = can.images ? (can.images.front || can.images.left || can.images.back || can.images.right || can.images.cover) : "";
       const card = document.createElement("div");
       card.className = "card"; card.tabIndex = 0;
       
@@ -301,11 +304,11 @@
     document.getElementById("heroYear").innerText = can.year || "-";
     document.getElementById("heroBarcode").innerText = can.barcode || "-";
 
-    // 🏷️ ATUALIZA LOGO DA MARCA NO LIGHTBOX
+    // 🔴 CARREGA O LOGO DA MARCA NO CANTO SUPERIOR DIREITO
     const logoContainer = document.getElementById("heroBrandLogo");
     const logoUrl = can.brandLogo || can.images?.brandLogo;
     if (logoUrl) {
-      logoContainer.innerHTML = `<img src="${logoUrl}" alt="Logo Marca">`;
+      logoContainer.innerHTML = `<img src="${logoUrl}" alt="Logo da Cervejaria">`;
     } else {
       logoContainer.innerHTML = "";
     }
@@ -317,6 +320,7 @@
     const photosContainer = document.getElementById("heroPhotos");
     photosContainer.innerHTML = "";
 
+    // 🚀 APENAS FOTOS DA LATA NO CARROSEL DE ZOOM (SEM O LOGO DA MARCA)
     zoomGallery = [can.images?.front, can.images?.left, can.images?.back, can.images?.right].filter(Boolean);
 
     zoomGallery.forEach((url, idx) => {
