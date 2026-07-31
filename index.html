@@ -21,7 +21,6 @@
 
     .app-container { display: flex; width: 100vw; height: 100vh; overflow: hidden; position: relative; background-color: #9B9B9B; }
 
-    /* MENU LATERAL RETRÁTIL */
     .sidebar {
       width: 60px; min-width: 60px; background: #9B9B9B; border-right: none;
       display: flex; flex-direction: column; padding: 12px 6px; gap: 10px; height: 100%;
@@ -48,7 +47,6 @@
     .menu-item:focus, .menu-item:hover { color: #f39c12 !important; background: transparent; }
     .menu-item:focus i, .menu-item:hover i { filter: none !important; color: #f39c12 !important; }
 
-    /* SUBMENUS SLIDE-OVER */
     .subpanel-overlay {
       position: absolute; top: 0; left: 60px; width: 280px; height: 100%;
       background: #9B9B9B; border-right: none; z-index: 600;
@@ -74,12 +72,11 @@
     .vk-key:focus, .vk-key:hover { color: #f39c12; border-color: #f39c12 !important; }
     .vk-key-wide { grid-column: span 2; }
 
-    /* ÁREA PRINCIPAL */
     .main-area { flex: 1; display: flex; flex-direction: column; height: 100vh; padding: 12px 16px; gap: 12px; overflow: hidden; background: #9B9B9B; }
 
     .hero-panel {
       flex: 1; min-height: 0; background: #9B9B9B; border: none; border-radius: 12px;
-      display: flex; padding: 12px 16px; gap: 24px; align-items: center;
+      display: flex; padding: 12px 16px; gap: 24px; align-items: center; position: relative;
     }
     .hero-left-photos { height: 100%; aspect-ratio: 1 / 1; display: grid; grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(2, 1fr); gap: 8px; }
     
@@ -90,14 +87,20 @@
     .hero-photo-card img { width: 100%; height: 100%; object-fit: contain; }
     .hero-photo-card:focus, .hero-photo-card:hover { border-color: #f39c12 !important; box-shadow: 0 0 15px rgba(243, 156, 18, 0.8) !important; }
 
-    /* 🎯 TIPOGRAFIA E PROPORÇÕES AJUSTADAS DE ACORDO COM A IMAGEM DE REFERÊNCIA */
+    /* 🏷️ LOGO DA MARCA NO CANTO SUPERIOR DIREITO */
+    .hero-brand-logo-container {
+      position: absolute; top: 12px; right: 16px; max-width: 120px; max-height: 60px;
+      display: flex; justify-content: flex-end; align-items: center; z-index: 10;
+    }
+    .hero-brand-logo-container img { max-width: 100%; max-height: 60px; object-fit: contain; }
+
     .hero-right-info { 
       flex: 1; height: 100%; display: flex; flex-direction: column; 
       justify-content: flex-start; gap: 12px; color: #f39c12; text-transform: uppercase; font-style: italic; overflow-y: auto; padding-right: 8px;
     }
     .hero-title { 
       font-size: clamp(1.3rem, 2.3vw, 1.9rem); font-weight: 900; line-height: 1.15; 
-      color: #f39c12; margin-bottom: 4px; letter-spacing: 0.5px;
+      color: #f39c12; margin-bottom: 4px; letter-spacing: 0.5px; max-width: calc(100% - 130px);
     }
     .info-block { display: flex; flex-direction: column; margin-bottom: 2px; }
     .info-label { font-size: clamp(0.75rem, 1.1vw, 0.95rem); font-weight: 900; color: #f39c12; line-height: 1.1; letter-spacing: 0.5px; }
@@ -117,7 +120,6 @@
     .card img { width: 100%; height: 100%; object-fit: contain; }
     .card:focus, .card:hover { border-color: #f39c12 !important; box-shadow: 0 0 15px rgba(243, 156, 18, 0.8) !important; z-index: 10; }
 
-    /* ZOOM LIMPO */
     .zoom-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.95); z-index: 700; display: none; justify-content: center; align-items: center; padding: 16px; }
     .zoom-modal.active { display: flex; }
     .zoom-modal img { max-width: 85vw; max-height: 85vh; object-fit: contain; border-radius: 6px; cursor: pointer; }
@@ -151,6 +153,9 @@
 
     <main class="main-area">
       <section class="hero-panel" id="heroPanel">
+        <!-- LOGO DA MARCA NO CANTO SUPERIOR DO LIGHTBOX -->
+        <div class="hero-brand-logo-container" id="heroBrandLogo"></div>
+
         <div class="hero-left-photos" id="heroPhotos">
           <div class="hero-photo-card"><img src="" alt=""></div>
           <div class="hero-photo-card"><img src="" alt=""></div>
@@ -295,6 +300,15 @@
     document.getElementById("heroVolume").innerText = (can.volume || "-").toUpperCase();
     document.getElementById("heroYear").innerText = can.year || "-";
     document.getElementById("heroBarcode").innerText = can.barcode || "-";
+
+    // 🏷️ ATUALIZA LOGO DA MARCA NO LIGHTBOX
+    const logoContainer = document.getElementById("heroBrandLogo");
+    const logoUrl = can.brandLogo || can.images?.brandLogo;
+    if (logoUrl) {
+      logoContainer.innerHTML = `<img src="${logoUrl}" alt="Logo Marca">`;
+    } else {
+      logoContainer.innerHTML = "";
+    }
 
     const total = currentFiltered.length;
     const currentNum = total > 0 ? (index + 1) : 0;
