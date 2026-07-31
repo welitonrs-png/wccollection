@@ -4,12 +4,21 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>WCCollection - OCOC (Um por País)</title>
-  <style>
+<style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; outline: none; }
     body { background-color: #000000; color: #ffffff; padding: 8px; max-width: 1800px; margin: 0 auto; user-select: none; overflow-x: hidden; }
 
+    /* 🚀 ESTILO DE FOCO GERAL UNIFICADO PARA TV E MOUSE (SEM BORDA DUPLICADA) */
+    :focus {
+      outline: none !important; /* Desativa a borda externa duplicada do navegador */
+      border-color: #f39c12 !important;
+      box-shadow: 0 0 15px rgba(243, 156, 18, 0.9) !important;
+      z-index: 100;
+    }
+
     .mouse-hover-trigger { position: fixed; top: 0; left: 0; width: 20px; height: 100vh; z-index: 450; }
 
+    /* Menu Lateral Deslizante */
     .sidebar-menu {
       position: fixed; top: 0; left: -290px; width: 280px; height: 100vh;
       background: #0d0d0d; border-right: 1px solid #222; z-index: 500;
@@ -28,15 +37,39 @@
       display: flex; align-items: center; gap: 10px; color: #ccc; text-decoration: none;
       padding: 8px 10px; border-radius: 6px; font-size: 0.85rem; font-weight: 600;
       background: transparent; border: 2px solid transparent; cursor: pointer; width: 100%; text-align: left;
+      transition: border-color 0.15s ease;
     }
-    .menu-item:focus, .menu-item:hover { background: #18181b; color: #f39c12; border-color: #f39c12; }
+    .menu-item:focus, .menu-item:hover { 
+      background: #18181b; 
+      color: #f39c12; 
+      border-color: #f39c12 !important; 
+      outline: none !important;
+    }
     .menu-badge { margin-left: auto; background: #222; color: #f39c12; padding: 2px 8px; border-radius: 12px; font-size: 0.75rem; }
 
-    .menu-search-box { width: 100%; padding: 8px; background: #000; border: 1px solid #333; border-radius: 6px; color: #f39c12; font-size: 0.9rem; font-weight: bold; text-align: center; }
+    .menu-search-box { 
+      width: 100%; padding: 8px; background: #000; 
+      border: 2px solid #333; border-radius: 6px; color: #f39c12; 
+      font-size: 0.9rem; font-weight: bold; text-align: center; 
+      transition: border-color 0.15s ease;
+    }
+    .menu-search-box:focus {
+      border-color: #f39c12 !important;
+      outline: none !important;
+    }
 
+    /* Teclado Virtual */
     .vk-container { display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; background: #111; padding: 6px; border-radius: 6px; border: 1px solid #222; margin-bottom: 6px; }
-    .vk-key { background: #18181b; border: 1px solid #27272a; color: #fff; padding: 6px 0; border-radius: 4px; font-size: 0.75rem; font-weight: bold; cursor: pointer; text-align: center; }
-    .vk-key:focus, .vk-key:hover { background: #f39c12; color: #000; border-color: #f39c12; }
+    .vk-key { 
+      background: #18181b; border: 2px solid #27272a; color: #fff; 
+      padding: 6px 0; border-radius: 4px; font-size: 0.75rem; font-weight: bold; 
+      cursor: pointer; text-align: center; transition: border-color 0.15s ease;
+    }
+    .vk-key:focus, .vk-key:hover { 
+      background: #f39c12; color: #000; 
+      border-color: #f39c12 !important; 
+      outline: none !important;
+    }
     .vk-key-wide { grid-column: span 2; }
 
     .main-content { transition: margin-left 0.25s ease-in-out, width 0.25s ease-in-out; width: 100%; }
@@ -45,10 +78,28 @@
     .card-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
     @media (min-width: 600px), (orientation: landscape) { .card-grid { grid-template-columns: repeat(5, 1fr); gap: 8px; } }
     
-    .card { background-color: #fff; border-radius: 6px; aspect-ratio: 1 / 1; overflow: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 4px; cursor: pointer; border: 3px solid transparent; position: relative; }
+    /* CARDS DA GRADE OCOC (COM RÓTULO DE PAÍS) */
+    .card { 
+      background-color: #fff; border-radius: 6px; aspect-ratio: 1 / 1; 
+      overflow: hidden; display: flex; flex-direction: column; justify-content: center; 
+      align-items: center; padding: 4px; cursor: pointer; 
+      border: 4px solid transparent; /* Reserva a borda única */
+      position: relative; box-sizing: border-box;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
     .card img { width: 100%; height: 80%; object-fit: contain; }
-    .card-country-label { background: rgba(0,0,0,0.85); color: #f39c12; width: 100%; text-align: center; font-size: 0.75rem; font-weight: bold; padding: 2px 0; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .card:focus, .card:hover { border-color: #f39c12 !important; box-shadow: 0 0 15px rgba(243, 156, 18, 0.8); }
+    .card-country-label { 
+      background: rgba(0,0,0,0.85); color: #f39c12; width: 100%; 
+      text-align: center; font-size: 0.75rem; font-weight: bold; 
+      padding: 2px 0; text-transform: uppercase; white-space: nowrap; 
+      overflow: hidden; text-overflow: ellipsis; 
+    }
+    .card:focus, .card:hover { 
+      border-color: #f39c12 !important; 
+      box-shadow: 0 0 15px rgba(243, 156, 18, 0.8) !important; 
+      outline: none !important; /* Elimina a borda duplicada */
+      z-index: 10;
+    }
 
     /* Lightbox Modal */
     .lightbox-modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.95); z-index: 600; display: flex; justify-content: center; align-items: center; padding: 12px; opacity: 0; pointer-events: none; transition: opacity 0.25s; overflow: hidden; }
@@ -56,24 +107,67 @@
     .lightbox-content-wrapper { width: 100%; max-width: 1200px; max-height: 95vh; display: flex; flex-direction: column; gap: 16px; position: relative; align-items: center; justify-content: center; overflow: hidden; }
     @media (min-width: 768px), (orientation: landscape) { .lightbox-content-wrapper { flex-direction: row; align-items: center; gap: 24px; } }
     .lightbox-left-grid { flex: 1; display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; width: 100%; max-width: 420px; aspect-ratio: 1 / 1; margin: 0 auto; }
-    .view-card-item { background: #fff; border-radius: 6px; padding: 4px; display: flex; justify-content: center; align-items: center; cursor: pointer; border: 3px solid transparent; box-sizing: border-box; }
+    
+    /* FOTOS DENTRO DO LIGHTBOX */
+    .view-card-item { 
+      background: #fff; border-radius: 6px; padding: 4px; 
+      display: flex; justify-content: center; align-items: center; 
+      cursor: pointer; border: 4px solid transparent; box-sizing: border-box; 
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
     .view-card-item img { width: 100%; height: 100%; object-fit: contain; }
-    .view-card-item:focus, .view-card-item:hover { border-color: #f39c12 !important; box-shadow: 0 0 15px rgba(243, 156, 18, 0.8); }
+    .view-card-item:focus, .view-card-item:hover { 
+      border-color: #f39c12 !important; 
+      box-shadow: 0 0 15px rgba(243, 156, 18, 0.8) !important; 
+      outline: none !important; /* Elimina a borda duplicada */
+    }
+
     .lightbox-right-info { flex: 1; color: #f39c12; text-transform: uppercase; font-style: italic; width: 100%; text-align: left; }
     .can-main-title { font-size: clamp(1.1rem, 3.5vw, 1.8rem); font-weight: 900; margin-bottom: 16px; color: #f39c12 !important; line-height: 1.1; }
     .info-field-label { font-size: clamp(0.65rem, 1.2vw, 0.85rem); font-weight: 900; color: #8e8e93; margin-bottom: 1px; display: block; }
     .info-field-value { font-size: clamp(0.95rem, 2.2vw, 1.3rem); font-weight: 900; margin-bottom: 10px; color: #f39c12; line-height: 1.1; }
-    .lightbox-close-btn { position: absolute; top: -10px; right: 0; background: transparent !important; border: none !important; color: #ffffff; width: 40px; height: 40px; font-size: 2.2rem; font-weight: 300; cursor: pointer; display: flex; justify-content: center; align-items: center; z-index: 10; }
-    .lightbox-close-btn:focus, .lightbox-close-btn:hover { color: #f39c12 !important; }
+    
+    .lightbox-close-btn { 
+      position: absolute; top: -10px; right: 0; background: transparent !important; 
+      border: none !important; color: #ffffff; width: 40px; height: 40px; 
+      font-size: 2.2rem; font-weight: 300; cursor: pointer; display: flex; 
+      justify-content: center; align-items: center; z-index: 10; 
+      transition: color 0.15s ease;
+    }
+    .lightbox-close-btn:focus, .lightbox-close-btn:hover { 
+      color: #f39c12 !important; 
+      outline: none !important; 
+    }
 
     /* Modal Zoom */
     .zoom-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.98); z-index: 700; display: none; justify-content: center; align-items: center; padding: 16px; }
     .zoom-modal.active { display: flex; }
     .zoom-modal img { max-width: 85vw; max-height: 85vh; object-fit: contain; border-radius: 6px; }
-    .zoom-nav-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #ffffff; font-size: 2rem; width: 50px; height: 50px; border-radius: 50%; cursor: pointer; display: flex; justify-content: center; align-items: center; z-index: 710; }
+    .zoom-nav-btn { 
+      position: absolute; top: 50%; transform: translateY(-50%); 
+      background: rgba(255, 255, 255, 0.1); border: 2px solid rgba(255, 255, 255, 0.2); 
+      color: #ffffff; font-size: 2rem; width: 50px; height: 50px; 
+      border-radius: 50%; cursor: pointer; display: flex; 
+      justify-content: center; align-items: center; z-index: 710; 
+      transition: border-color 0.15s ease, background 0.15s ease;
+    }
+    .zoom-nav-btn:focus, .zoom-nav-btn:hover {
+      background: #f39c12; color: #000;
+      border-color: #f39c12 !important;
+      outline: none !important;
+    }
     .zoom-nav-left { left: 15px; } .zoom-nav-right { right: 15px; }
-    .zoom-close-btn { position: absolute; top: 15px; right: 20px; background: transparent; border: none; color: #fff; font-size: 2.5rem; cursor: pointer; z-index: 710; }
-  </style>
+    
+    .zoom-close-btn { 
+      position: absolute; top: 15px; right: 20px; background: transparent; 
+      border: none; color: #fff; font-size: 2.5rem; cursor: pointer; z-index: 710; 
+      transition: color 0.15s ease;
+    }
+    .zoom-close-btn:focus, .zoom-close-btn:hover {
+      color: #f39c12 !important;
+      outline: none !important;
+    }
+</style>
 </head>
 <body>
 
