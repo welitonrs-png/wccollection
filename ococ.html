@@ -129,7 +129,7 @@
 <body>
 
   <div class="app-container">
-    <aside class="sidebar">
+    <aside class="sidebar" id="sidebar">
       <div class="sidebar-logo-container"><img src="logo.png" alt="WCCollection Logo" class="sidebar-logo-img"></div>
       <button class="menu-item" onclick="location.href='index.html'" tabindex="0"><i>🏠</i><span>Home</span></button>
       <button class="menu-item" onclick="toggleSubpanel('searchPanel')" tabindex="0"><i>🔍</i><span>Pesquisar</span></button>
@@ -209,9 +209,17 @@
       buildVirtualKeyboard();
       buildBrandList();
       if(currentFiltered.length > 0) updateHeroPanel(currentFiltered[0], 0);
+
+      // 🎯 INICIA COM O FOCO NO PRIMEIRO CARD ASSIM QUE O APP ABRE
+      setTimeout(() => focusFirstCard(), 100);
     } catch (err) {
       console.error("Erro ao carregar catálogo:", err);
     }
+  }
+
+  function focusFirstCard() {
+    const firstCard = document.querySelector(".card");
+    if (firstCard) firstCard.focus();
   }
 
   function toggleSubpanel(panelId) {
@@ -274,8 +282,12 @@
       return [can.name, can.brewery, can.country, can.volume, can.year, can.barcode].map(v => String(v || "").toLowerCase()).join(" ").includes(val);
     });
     renderApp();
-    if(currentFiltered.length > 0) updateHeroPanel(currentFiltered[0], 0);
-    else document.getElementById("cardCounter").innerText = "0/0";
+    if(currentFiltered.length > 0) {
+      updateHeroPanel(currentFiltered[0], 0);
+      setTimeout(() => focusFirstCard(), 50);
+    } else {
+      document.getElementById("cardCounter").innerText = "0/0";
+    }
   }
 
   function renderApp() {
@@ -286,6 +298,7 @@
       const coverImg = can.images ? (can.images.front || can.images.left || can.images.back || can.images.right || can.images.cover) : "";
       const card = document.createElement("div");
       card.className = "card"; card.tabIndex = 0;
+      card.dataset.index = index;
       
       card.onfocus = () => { updateHeroPanel(can, index); card.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' }); };
       card.onmouseenter = () => updateHeroPanel(can, index);
@@ -295,6 +308,10 @@
         if (e.key === "Enter" || e.key === " ") {
           e.preventDefault();
           openZoomModal(0);
+        } else if (e.key === "ArrowLeft" && index === 0) {
+          e.preventDefault();
+          const firstMenuItem = document.querySelector(".menu-item");
+          if (firstMenuItem) firstMenuItem.focus();
         }
       };
 
@@ -354,13 +371,21 @@
 
   document.addEventListener("keydown", (e) => {
     const isZoomActive = document.getElementById("zoomModal").classList.contains("active");
-    
+    const activeElem = document.activeElement;
+
     if (isZoomActive) {
       if (e.key === "ArrowLeft") { e.preventDefault(); navigateZoom(-1); }
       else if (e.key === "ArrowRight") { e.preventDefault(); navigateZoom(1); }
       else if (e.key === "Escape" || e.key === "Back" || e.keyCode === 10009 || e.keyCode === 27) { closeZoomModal(); }
-    } else if (e.key === "Escape" || e.key === "Back" || e.keyCode === 10009 || e.keyCode === 27) {
-      closeSubpanels();
+    } else {
+      if (e.key === "Escape" || e.key === "Back" || e.keyCode === 10009 || e.keyCode === 27) {
+        closeSubpanels();
+      }
+
+      if (activeElem && activeElem.classList.contains("menu-item") && e.key === "ArrowRight") {
+        e.preventDefault();
+        focusFirstCard();
+      }
     }
   });
 
