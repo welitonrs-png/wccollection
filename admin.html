@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BeerCan Catalog - Painel Admin</title>
-<style>
+  <title>BeerCan Catalog - Painel de Administração</title>
+  <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; outline: none; }
     
     body { background-color: #9B9B9B; color: #666666; padding: 20px; max-width: 1400px; margin: 0 auto; overflow-x: hidden; }
@@ -19,7 +19,7 @@
 
     .mouse-hover-trigger { position: fixed; top: 0; left: 0; width: 20px; height: 100vh; z-index: 450; }
 
-    /* Menu Lateral Deslizante */
+    /* MENU LATERAL SLIDE-OVER */
     .sidebar-menu {
       position: fixed; top: 0; left: -290px; width: 280px; height: 100vh;
       background: #9B9B9B; border-right: none; z-index: 500;
@@ -27,13 +27,18 @@
       transition: left 0.25s ease-in-out; box-shadow: 10px 0 25px rgba(0,0,0,0.15); overflow-y: auto;
     }
     .sidebar-menu.active { left: 0; }
-    .sidebar-title { font-size: 1.1rem; color: #f39c12; font-weight: 900; margin-bottom: 6px; border-bottom: 2px solid #666666; padding-bottom: 6px; }
+    .sidebar-title { font-size: 1.2rem; color: #f39c12; font-weight: 900; margin-bottom: 8px; border-bottom: 2px solid #666666; padding-bottom: 6px; }
     
+    /* 🚀 ITENS E ÍCONES DO MENU EM CINZA #666666 */
     .menu-item {
-      display: flex; align-items: center; gap: 10px; color: #666666; text-decoration: none;
-      padding: 8px 10px; border-radius: 6px; font-size: 0.85rem; font-weight: 800;
+      display: flex; align-items: center; gap: 12px; color: #666666; text-decoration: none;
+      padding: 10px 12px; border-radius: 8px; font-size: 0.95rem; font-weight: 800;
       background: transparent; border: 2px solid transparent; cursor: pointer; width: 100%; text-align: left;
       transition: color 0.15s ease, border-color 0.15s ease;
+    }
+    .menu-item i { 
+      font-size: 1.2rem; min-width: 24px; text-align: center; font-style: normal; 
+      color: #666666; filter: grayscale(100%) opacity(0.75); transition: filter 0.15s ease, color 0.15s ease; 
     }
     .menu-item:focus, .menu-item:hover { 
       background: transparent; 
@@ -41,40 +46,45 @@
       border-color: #f39c12 !important; 
       outline: none !important;
     }
+    .menu-item:focus i, .menu-item:hover i { filter: none !important; color: #f39c12 !important; }
 
     .main-content { transition: margin-left 0.25s ease-in-out, width 0.25s ease-in-out; width: 100%; }
     body.menu-open .main-content { margin-left: 280px; width: calc(100% - 280px); }
 
     .admin-grid { display: grid; grid-template-columns: 1fr; gap: 24px; }
-    @media (min-width: 900px) { .admin-grid { grid-template-columns: 460px 1fr; } }
+    @media (min-width: 900px) { .admin-grid { grid-template-columns: 480px 1fr; } }
     
-    .panel-box { background: #888888; border: none; border-radius: 16px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-    .panel-title { font-size: 1.1rem; font-weight: bold; color: #f39c12; margin-bottom: 16px; }
+    /* PAINÉIS LISOS */
+    .panel-box { background: #888888; border: none; border-radius: 16px; padding: 22px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
     
-    .form-group { margin-bottom: 14px; }
-    .form-group label { display: block; font-size: 0.75rem; color: #333333; margin-bottom: 6px; text-transform: uppercase; font-weight: 800; }
+    /* 🚀 TÍTULOS E RÓTULOS EM DOURADO E COM FONTES MAIORES */
+    .panel-title { font-size: 1.3rem; font-weight: 900; color: #f39c12; margin-bottom: 18px; text-transform: uppercase; letter-spacing: 0.5px; }
+    
+    .form-group { margin-bottom: 16px; }
+    .form-group label { display: block; font-size: 0.85rem; color: #f39c12; margin-bottom: 6px; text-transform: uppercase; font-weight: 900; }
     
     .form-control { 
-      width: 100%; padding: 10px 12px; background: #9B9B9B; 
-      border: 2px solid #666666; border-radius: 8px; color: #ffffff; font-size: 0.9rem; font-weight: bold;
+      width: 100%; padding: 12px 14px; background: #9B9B9B; 
+      border: 2px solid #666666; border-radius: 8px; color: #ffffff; font-size: 0.95rem; font-weight: bold;
       transition: border-color 0.15s ease;
     }
+    .form-control::placeholder { color: #dddddd; }
     .form-control:focus { 
       border-color: #f39c12 !important; 
       outline: none !important;
     }
     
-    .form-row { display: flex; gap: 10px; }
+    .form-row { display: flex; gap: 12px; }
     .form-row .form-group { flex: 1; }
     
-    .dest-selector-box { background: rgba(243, 156, 18, 0.1); border: 2px solid #f39c12; padding: 12px; border-radius: 10px; margin-bottom: 16px; }
-    .checkbox-inline { display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 0.85rem; color: #000; font-weight: bold; margin-top: 6px; }
-    .checkbox-inline input { width: 18px; height: 18px; accent-color: #f39c12; }
+    .dest-selector-box { background: rgba(243, 156, 18, 0.12); border: 2px solid #f39c12; padding: 14px; border-radius: 10px; margin-bottom: 18px; }
+    .checkbox-inline { display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 0.9rem; color: #f39c12; font-weight: 900; margin-top: 6px; }
+    .checkbox-inline input { width: 20px; height: 20px; accent-color: #f39c12; }
 
     .image-input-wrapper { display: flex; gap: 8px; align-items: center; }
     .btn-file-custom { 
       background: #666666; color: #ffffff; border: 2px solid transparent; 
-      padding: 9px 12px; border-radius: 8px; font-size: 0.8rem; font-weight: bold; 
+      padding: 10px 14px; border-radius: 8px; font-size: 0.85rem; font-weight: bold; 
       cursor: pointer; white-space: nowrap; transition: border-color 0.15s ease, color 0.15s ease;
     }
     .btn-file-custom:focus, .btn-file-custom:hover {
@@ -86,9 +96,10 @@
     .file-input-hidden { display: none; }
     
     .btn-save { 
-      width: 100%; padding: 12px; background: #f39c12; color: #000; 
-      border: 2px solid #f39c12; border-radius: 10px; font-weight: bold; 
-      font-size: 1rem; cursor: pointer; margin-top: 10px; transition: border-color 0.15s ease, box-shadow 0.15s ease;
+      width: 100%; padding: 14px; background: #f39c12; color: #000; 
+      border: 2px solid #f39c12; border-radius: 10px; font-weight: 900; 
+      font-size: 1.1rem; cursor: pointer; margin-top: 12px; transition: border-color 0.15s ease, box-shadow 0.15s ease;
+      text-transform: uppercase;
     }
     .btn-save:focus, .btn-save:hover {
       border-color: #ffffff !important;
@@ -97,24 +108,24 @@
     }
 
     .btn-cancel { 
-      width: 100%; padding: 10px; background: #666666; color: #ffffff; 
+      width: 100%; padding: 12px; background: #666666; color: #ffffff; 
       border: 2px solid transparent; border-radius: 8px; font-weight: bold; 
-      margin-top: 8px; display: none; cursor: pointer; 
+      margin-top: 8px; display: none; cursor: pointer; font-size: 0.95rem;
     }
     .btn-cancel:focus, .btn-cancel:hover {
       border-color: #f39c12 !important;
       outline: none !important;
     }
     
-    table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.85rem; }
-    th { background: #888888; color: #111111; padding: 12px; border-bottom: 2px solid #666666; text-transform: uppercase; font-weight: 900; }
-    td { padding: 12px; border-bottom: 1px solid #777777; vertical-align: middle; color: #111111; font-weight: 600; }
-    .table-thumb { width: 48px; height: 48px; background: #ffffff; border-radius: 8px; object-fit: contain; }
+    table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9rem; }
+    th { background: #888888; color: #f39c12; padding: 14px; border-bottom: 2px solid #666666; text-transform: uppercase; font-weight: 900; font-size: 0.95rem; }
+    td { padding: 12px 14px; border-bottom: 1px solid #777777; vertical-align: middle; color: #ffffff; font-weight: 700; }
+    .table-thumb { width: 52px; height: 52px; background: #ffffff; border-radius: 8px; object-fit: contain; }
     
-    .action-btns { display: flex; gap: 6px; }
+    .action-btns { display: flex; gap: 8px; }
     .btn-edit { 
-      background: #3b82f6; color: #fff; padding: 6px 10px; 
-      border: 2px solid transparent; border-radius: 4px; cursor: pointer; font-weight: bold; 
+      background: #3b82f6; color: #fff; padding: 8px 12px; 
+      border: 2px solid transparent; border-radius: 6px; cursor: pointer; font-weight: bold; 
     }
     .btn-edit:focus, .btn-edit:hover {
       border-color: #ffffff !important;
@@ -122,341 +133,293 @@
     }
 
     .btn-delete { 
-      background: #ef4444; color: #fff; padding: 6px 10px; 
-      border: 2px solid transparent; border-radius: 4px; cursor: pointer; font-weight: bold; 
+      background: #ef4444; color: #fff; padding: 8px 12px; 
+      border: 2px solid transparent; border-radius: 6px; cursor: pointer; font-weight: bold; 
     }
     .btn-delete:focus, .btn-delete:hover {
       border-color: #ffffff !important;
       outline: none !important;
     }
 
-    .tag-badge { font-size: 0.7rem; padding: 2px 6px; border-radius: 4px; font-weight: bold; text-transform: uppercase; display: inline-block; margin-top: 4px; }
+    .tag-badge { font-size: 0.75rem; padding: 3px 8px; border-radius: 4px; font-weight: 900; text-transform: uppercase; display: inline-block; margin-top: 4px; }
     .tag-index { background: #22c55e; color: #000; }
     .tag-ococ { background: #3b82f6; color: #fff; }
     .tag-set { background: #a855f7; color: #fff; }
-</style>
+  </style>
 </head>
 <body>
 
-  <div class="mouse-hover-trigger" onmouseenter="openSidebar()"></div>
+  <div class="mouse-hover-trigger" onmouseenter="openMenu()"></div>
 
-  <nav class="sidebar-menu" id="sidebarMenu" onmouseleave="closeSidebar()">
-    <div class="sidebar-title">⚙️ Painel Admin</div>
-    <button class="menu-item" onclick="location.href='index.html'" tabindex="0">🏠 Home</button>
-    <button class="menu-item" onclick="location.href='ococ.html'" tabindex="0">🌍 OCOC</button>
-    <button class="menu-item" onclick="location.href='sets.html'" tabindex="0">📦 Sets de Latas</button>
-    <button class="menu-item" onclick="location.href='admin.html'" tabindex="0">⚙️ Cadastro (Admin)</button>
-  </nav>
+  <aside class="sidebar-menu" id="sidebarMenu" onmouseleave="closeMenu()">
+    <div class="sidebar-title">⚙️ GERENCIAMENTO</div>
+    <button class="menu-item" onclick="location.href='index.html'" tabindex="0"><i>🏠</i><span>Home</span></button>
+    <button class="menu-item" onclick="location.href='ococ.html'" tabindex="0"><i>🌍</i><span>OCOC</span></button>
+    <button class="menu-item" onclick="location.href='sets.html'" tabindex="0"><i>📦</i><span>Sets</span></button>
+    <button class="menu-item" onclick="location.href='admin.html'" tabindex="0"><i>⚙️</i><span>Admin</span></button>
+  </aside>
 
-  <div class="main-content" id="mainContent">
+  <main class="main-content">
     <div class="admin-grid">
-      <div class="panel-box">
-        <div class="panel-title"><span id="formTitle">Cadastrar Nova Lata</span></div>
+      <!-- FORMULÁRIO DE CADASTRO/EDIÇÃO -->
+      <section class="panel-box">
+        <h2 class="panel-title" id="formTitle">➕ CADASTRAR NOVA LATA</h2>
         <form id="canForm" onsubmit="handleFormSubmit(event)">
           <input type="hidden" id="canId">
 
-          <!-- Destino do Cadastro -->
           <div class="dest-selector-box">
-            <div class="form-group" style="margin-bottom: 8px;">
-              <label style="color: #f39c12; font-weight: bold;">TIPO DE CADASTRO *</label>
-              <select id="typeSelector" class="form-control" onchange="toggleFormFields()" required tabindex="0">
-                <option value="NORMAL">Lata Normal (Vai para o Index)</option>
-                <option value="SET">Lata de SET (Vai APENAS para Sets)</option>
-              </select>
-            </div>
-
-            <!-- Opção OCOC (Visível apenas se for Lata Normal) -->
-            <div id="ococOptionBox">
-              <label class="checkbox-inline">
-                <input type="checkbox" id="checkIsOcoc" tabindex="0">
-                Exibir também na página OCOC (Um por País) 🌍
-              </label>
-            </div>
-
-            <!-- Campo Nome do Set (Visível apenas se for SET) -->
-            <div id="setNameBox" class="form-group" style="display: none; margin-top: 10px;">
-              <label style="color: #a855f7;">Nome do Set / Coleção *</label>
-              <input type="text" id="inputSetName" class="form-control" placeholder="Ex: Lendas do Rock 2024" tabindex="0">
+            <label style="color:#f39c12; font-weight: 900;">EXIBIR NAS PÁGINAS:</label>
+            <div style="display: flex; gap: 16px; margin-top: 6px;">
+              <label class="checkbox-inline"><input type="checkbox" id="destIndex" checked> HOME</label>
+              <label class="checkbox-inline"><input type="checkbox" id="destOcoc"> OCOC</label>
+              <label class="checkbox-inline"><input type="checkbox" id="destSet"> SETS</label>
             </div>
           </div>
 
           <div class="form-group">
-            <label>Nome Completo / Edição *</label>
-            <input type="text" id="inputName" class="form-control" required placeholder="Ex: Heineken Live Openair" tabindex="0">
+            <label>NOME DA LATA / CERVEJA</label>
+            <input type="text" id="canName" class="form-control" required placeholder="Ex: Heineken Premium">
           </div>
 
           <div class="form-row">
             <div class="form-group">
-              <label>Cervejaria *</label>
-              <input type="text" id="inputBrewery" class="form-control" required placeholder="Ex: Heineken" tabindex="0">
+              <label>CERVEJARIA / MARCA</label>
+              <input type="text" id="canBrewery" class="form-control" placeholder="Ex: Heineken">
             </div>
             <div class="form-group">
-              <label>País de Origem *</label>
-              <input type="text" id="inputCountry" class="form-control" required placeholder="Ex: Suíça" tabindex="0">
+              <label>PAÍS / ORIGEM</label>
+              <input type="text" id="canCountry" class="form-control" placeholder="Ex: Holanda">
             </div>
           </div>
 
           <div class="form-row">
             <div class="form-group">
-              <label>Volume</label>
-              <input type="text" id="inputVolume" class="form-control" placeholder="Ex: 500ml" tabindex="0">
+              <label>VOLUME</label>
+              <input type="text" id="canVolume" class="form-control" placeholder="Ex: 350ml">
             </div>
             <div class="form-group">
-              <label>Ano</label>
-              <input type="text" id="inputYear" class="form-control" placeholder="Ex: 2024" tabindex="0">
+              <label>ANO</label>
+              <input type="text" id="canYear" class="form-control" placeholder="Ex: 2023">
             </div>
           </div>
 
           <div class="form-group">
-            <label>Código de Barras</label>
-            <input type="text" id="inputBarcode" class="form-control" placeholder="Ex: 7610055020750" tabindex="0">
+            <label>CÓDIGO DE BARRAS</label>
+            <input type="text" id="canBarcode" class="form-control" placeholder="Ex: 7891234567890">
           </div>
 
-          <div style="margin-top: 18px; border-top: 1px solid #27272a; padding-top: 14px;">
-            <label style="font-size: 0.85rem; color: #f39c12; font-weight: bold; margin-bottom: 10px; display: block;">Fotos da Lata:</label>
-            <div class="form-group"><label>Foto 1: Capa (Index)</label><div class="image-input-wrapper"><input type="text" id="inputImgCover" class="form-control"><label for="fileCover" class="btn-file-custom">📁 Buscar</label><input type="file" id="fileCover" class="file-input-hidden" accept="image/*" onchange="handleFileSelect(event, 'inputImgCover')"></div></div>
-            <div class="form-group"><label>Foto 2: Frente (Lightbox)</label><div class="image-input-wrapper"><input type="text" id="inputImgFront" class="form-control"><label for="fileFront" class="btn-file-custom">📁 Buscar</label><input type="file" id="fileFront" class="file-input-hidden" accept="image/*" onchange="handleFileSelect(event, 'inputImgFront')"></div></div>
-            <div class="form-group"><label>Foto 3: Lado Esquerdo</label><div class="image-input-wrapper"><input type="text" id="inputImgLeft" class="form-control"><label for="fileLeft" class="btn-file-custom">📁 Buscar</label><input type="file" id="fileLeft" class="file-input-hidden" accept="image/*" onchange="handleFileSelect(event, 'inputImgLeft')"></div></div>
-            <div class="form-group"><label>Foto 4: Traseira</label><div class="image-input-wrapper"><input type="text" id="inputImgBack" class="form-control"><label for="fileBack" class="btn-file-custom">📁 Buscar</label><input type="file" id="fileBack" class="file-input-hidden" accept="image/*" onchange="handleFileSelect(event, 'inputImgBack')"></div></div>
-            <div class="form-group"><label>Foto 5: Lado Direito</label><div class="image-input-wrapper"><input type="text" id="inputImgRight" class="form-control"><label for="fileRight" class="btn-file-custom">📁 Buscar</label><input type="file" id="fileRight" class="file-input-hidden" accept="image/*" onchange="handleFileSelect(event, 'inputImgRight')"></div></div>
+          <!-- INPUTS DE IMAGENS -->
+          <div class="form-group">
+            <label>FOTO FRONTAL (CAPA)</label>
+            <div class="image-input-wrapper">
+              <input type="text" id="imgFront" class="form-control" placeholder="URL da foto frontal">
+              <button type="button" class="btn-file-custom" onclick="triggerFileInput('fileFront')">📁 Upload</button>
+              <input type="file" id="fileFront" class="file-input-hidden" accept="image/*" onchange="uploadImage(this, 'imgFront')">
+            </div>
           </div>
 
-          <button type="submit" class="btn-save" id="btnSave">Salvar e Publicar no Google Drive</button>
-          <button type="button" class="btn-cancel" id="btnCancel" onclick="resetForm()">Cancelar Edição</button>
+          <div class="form-group">
+            <label>FOTO ESQUERDA</label>
+            <div class="image-input-wrapper">
+              <input type="text" id="imgLeft" class="form-control" placeholder="URL da foto esquerda">
+              <button type="button" class="btn-file-custom" onclick="triggerFileInput('fileLeft')">📁 Upload</button>
+              <input type="file" id="fileLeft" class="file-input-hidden" accept="image/*" onchange="uploadImage(this, 'imgLeft')">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>FOTO TRASEIRA</label>
+            <div class="image-input-wrapper">
+              <input type="text" id="imgBack" class="form-control" placeholder="URL da foto traseira">
+              <button type="button" class="btn-file-custom" onclick="triggerFileInput('fileBack')">📁 Upload</button>
+              <input type="file" id="fileBack" class="file-input-hidden" accept="image/*" onchange="uploadImage(this, 'imgBack')">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>FOTO DIREITA</label>
+            <div class="image-input-wrapper">
+              <input type="text" id="imgRight" class="form-control" placeholder="URL da foto direita">
+              <button type="button" class="btn-file-custom" onclick="triggerFileInput('fileRight')">📁 Upload</button>
+              <input type="file" id="fileRight" class="file-input-hidden" accept="image/*" onchange="uploadImage(this, 'imgRight')">
+            </div>
+          </div>
+
+          <button type="submit" class="btn-save" id="btnSubmit">💾 SALVAR LATA</button>
+          <button type="button" class="btn-cancel" id="btnCancel" onclick="resetForm()">❌ CANCELAR EDIÇÃO</button>
         </form>
-      </div>
+      </section>
 
-      <div class="panel-box">
-        <div class="panel-title"><span>Latas Cadastradas (<span id="totalCount">0</span>)</span></div>
+      <!-- TABELA DE ITENS CADASTRADOS -->
+      <section class="panel-box">
+        <h2 class="panel-title">📋 CATÁLOGO CADASTRADO</h2>
         <div style="overflow-x: auto;">
           <table>
-            <thead><tr><th>Capa</th><th>Nome / Tipo</th><th>Origem</th><th>Ações</th></tr></thead>
-            <tbody id="tableBody"></tbody>
+            <thead>
+              <tr>
+                <th>FOTO</th>
+                <th>NOME / CERVEJARIA</th>
+                <th>ORIGEM / ANO</th>
+                <th>EXIBIÇÃO</th>
+                <th>AÇÕES</th>
+              </tr>
+            </thead>
+            <tbody id="catalogTableBody">
+              <!-- Preenchido dinamicamente pelo JavaScript -->
+            </tbody>
           </table>
         </div>
-      </div>
+      </section>
     </div>
-  </div>
+  </main>
 
-  <script>
-    const API_URL = "https://script.google.com/macros/s/AKfycbwFIsSgEF2grkBpliyO_hSD0Lh2ULq6xHoJC6mDLYvjemTLYe67jF38MDNWP2ixITzE/exec";
-    let canCatalog = [];
+<script>
+  const API_URL = "https://script.google.com/macros/s/AKfycbwFIsSgEF2grkBpliyO_hSD0Lh2ULq6xHoJC6mDLYvjemTLYe67jF38MDNWP2ixITzE/exec";
+  let catalogData = [];
 
-    function toggleFormFields() {
-      const isSet = document.getElementById("typeSelector").value === "SET";
-      document.getElementById("ococOptionBox").style.display = isSet ? "none" : "block";
-      document.getElementById("setNameBox").style.display = isSet ? "block" : "none";
-      if(isSet) document.getElementById("checkIsOcoc").checked = false;
+  function openMenu() {
+    document.getElementById("sidebarMenu").classList.add("active");
+    document.body.classList.add("menu-open");
+  }
+
+  function closeMenu() {
+    document.getElementById("sidebarMenu").classList.remove("active");
+    document.body.classList.remove("menu-open");
+  }
+
+  async function loadCatalog() {
+    if(!API_URL || API_URL.includes("COLE_AQUI")) return;
+    try {
+      const res = await fetch(API_URL);
+      catalogData = await res.json();
+      renderTable();
+    } catch(e) {
+      console.error("Erro ao carregar catálogo:", e);
     }
+  }
 
-    async function loadDataFromSheet() {
-      if(!API_URL || API_URL.includes("COLE_AQUI")) return;
-      try {
-        const response = await fetch(API_URL);
-        canCatalog = await response.json();
-        renderTable();
-      } catch (err) { console.error(err); }
-    }
+  function renderTable() {
+    const tbody = document.getElementById("catalogTableBody");
+    tbody.innerHTML = "";
 
-    function handleFileSelect(event, targetInputId) {
-      const file = event.target.files[0];
-      if (!file) return;
+    catalogData.forEach((can, index) => {
+      const cover = can.images ? (can.images.cover || can.images.front || can.images.left) : "";
+      
+      let tags = "";
+      if(!can.isSet) tags += `<span class="tag-badge tag-index">Home</span> `;
+      if(can.isOcoc) tags += `<span class="tag-badge tag-ococ">OCOC</span> `;
+      if(can.isSet) tags += `<span class="tag-badge tag-set">Set</span> `;
 
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        const img = new Image();
-        img.onload = function() {
-          const canvas = document.createElement('canvas');
-          let width = img.width, height = img.height, maxDim = 1000;
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td><img src="${cover}" class="table-thumb" alt="Lata"></td>
+        <td><strong>${can.name || '-'}</strong><br><small style="color:#ccc;">${can.brewery || '-'}</small></td>
+        <td>${can.country || '-'}<br><small style="color:#ccc;">${can.year || '-'}</small></td>
+        <td>${tags || '-'}</td>
+        <td>
+          <div class="action-btns">
+            <button class="btn-edit" onclick="editCan(${index})">✏️</button>
+            <button class="btn-delete" onclick="deleteCan('${can.id || index}')">🗑️</button>
+          </div>
+        </td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
 
-          if (width > height) { if (width > maxDim) { height *= maxDim / width; width = maxDim; } }
-          else { if (height > maxDim) { width *= maxDim / height; height = maxDim; } }
+  function triggerFileInput(id) { document.getElementById(id).click(); }
 
-          canvas.width = width; canvas.height = height;
-          const ctx = canvas.getContext('2d');
-          ctx.drawImage(img, 0, 0, width, height);
-          document.getElementById(targetInputId).value = canvas.toDataURL('image/webp', 0.85);
-        };
-        img.src = e.target.result;
-      };
-      reader.readAsDataURL(file);
-    }
+  function uploadImage(input, targetInputId) {
+    const file = input.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      document.getElementById(targetInputId).value = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
 
-    function renderTable() {
-      document.getElementById("totalCount").innerText = canCatalog.length;
-      const tbody = document.getElementById("tableBody");
-      tbody.innerHTML = "";
-      canCatalog.forEach(can => {
-        const coverImg = can.images ? (can.images.cover || can.images.front) : "";
-        const tr = document.createElement("tr");
+  function editCan(index) {
+    const can = catalogData[index];
+    document.getElementById("canId").value = can.id || index;
+    document.getElementById("canName").value = can.name || "";
+    document.getElementById("canBrewery").value = can.brewery || "";
+    document.getElementById("canCountry").value = can.country || "";
+    document.getElementById("canVolume").value = can.volume || "";
+    document.getElementById("canYear").value = can.year || "";
+    document.getElementById("canBarcode").value = can.barcode || "";
 
-        let tagsHtml = "";
-        if (can.isSet) {
-          tagsHtml += `<span class="tag-badge tag-set">SET: ${can.setName || 'Sem nome'}</span>`;
-        } else {
-          tagsHtml += `<span class="tag-badge tag-index">Index</span>`;
-          if (can.isOcoc) tagsHtml += ` <span class="tag-badge tag-ococ">OCOC</span>`;
-        }
+    document.getElementById("imgFront").value = can.images?.front || "";
+    document.getElementById("imgLeft").value = can.images?.left || "";
+    document.getElementById("imgBack").value = can.images?.back || "";
+    document.getElementById("imgRight").value = can.images?.right || "";
 
-        tr.innerHTML = `
-          <td><img src="${coverImg}" class="table-thumb"></td>
-          <td>
-            <strong>${can.name}</strong><br>
-            <span style="color:#71717a; font-size:0.75rem;">${can.brewery}</span><br>
-            ${tagsHtml}
-          </td>
-          <td>${can.country}</td>
-          <td>
-            <div class="action-btns">
-              <button class="btn-edit" onclick="editCan('${can.id}')">Editar</button>
-              <button class="btn-delete" onclick="deleteCan('${can.id}')">Excluir</button>
-            </div>
-          </td>
-        `;
-        tbody.appendChild(tr);
-      });
-    }
+    document.getElementById("destIndex").checked = !can.isSet;
+    document.getElementById("destOcoc").checked = !!can.isOcoc;
+    document.getElementById("destSet").checked = !!can.isSet;
 
-    async function handleFormSubmit(e) {
-      e.preventDefault();
-      const btnSave = document.getElementById("btnSave");
-      btnSave.innerText = "⏳ Salvando no Google Drive...";
-      btnSave.disabled = true;
+    document.getElementById("formTitle").innerText = "✏️ EDITAR LATA";
+    document.getElementById("btnSubmit").innerText = "💾 ATUALIZAR LATA";
+    document.getElementById("btnCancel").style.display = "block";
+  }
 
-      const isSet = document.getElementById("typeSelector").value === "SET";
+  function resetForm() {
+    document.getElementById("canForm").reset();
+    document.getElementById("canId").value = "";
+    document.getElementById("formTitle").innerText = "➕ CADASTRAR NOVA LATA";
+    document.getElementById("btnSubmit").innerText = "💾 SALVAR LATA";
+    document.getElementById("btnCancel").style.display = "none";
+  }
 
-      const payload = {
-        id: document.getElementById("canId").value || String(Date.now()),
-        name: document.getElementById("inputName").value,
-        brewery: document.getElementById("inputBrewery").value,
-        country: document.getElementById("inputCountry").value,
-        volume: document.getElementById("inputVolume").value || "500ML",
-        year: document.getElementById("inputYear").value,
-        barcode: document.getElementById("inputBarcode").value,
-        images: {
-          cover: document.getElementById("inputImgCover").value,
-          front: document.getElementById("inputImgFront").value,
-          left: document.getElementById("inputImgLeft").value,
-          back: document.getElementById("inputImgBack").value,
-          right: document.getElementById("inputImgRight").value
-        },
-        isOcoc: !isSet && document.getElementById("checkIsOcoc").checked,
-        isSet: isSet,
-        setName: isSet ? document.getElementById("inputSetName").value : ""
-      };
-
-      try {
-        const response = await fetch(API_URL, {
-          method: "POST",
-          headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify(payload)
-        });
-        const res = await response.json();
-
-        if (res.status === "success") {
-          alert("Lata salva com sucesso!");
-          loadDataFromSheet();
-          resetForm();
-        } else alert("Erro ao salvar: " + res.message);
-      } catch (err) { alert("Erro de conexão ao salvar."); }
-      finally {
-        btnSave.innerText = "Salvar e Publicar no Google Drive";
-        btnSave.disabled = false;
+  async function handleFormSubmit(e) {
+    e.preventDefault();
+    const canData = {
+      id: document.getElementById("canId").value || Date.now().toString(),
+      name: document.getElementById("canName").value,
+      brewery: document.getElementById("canBrewery").value,
+      country: document.getElementById("canCountry").value,
+      volume: document.getElementById("canVolume").value,
+      year: document.getElementById("canYear").value,
+      barcode: document.getElementById("canBarcode").value,
+      isSet: document.getElementById("destSet").checked,
+      isOcoc: document.getElementById("destOcoc").checked,
+      images: {
+        front: document.getElementById("imgFront").value,
+        left: document.getElementById("imgLeft").value,
+        back: document.getElementById("imgBack").value,
+        right: document.getElementById("imgRight").value,
+        cover: document.getElementById("imgFront").value || document.getElementById("imgLeft").value
       }
+    };
+
+    try {
+      await fetch(API_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(canData)
+      });
+      alert("Lata salva com sucesso!");
+      resetForm();
+      loadCatalog();
+    } catch(err) {
+      console.error("Erro ao salvar:", err);
+      alert("Erro ao salvar lata.");
     }
-
-    function editCan(id) {
-      const can = canCatalog.find(c => String(c.id) === String(id));
-      if (!can) return;
-
-      document.getElementById("canId").value = can.id;
-      document.getElementById("typeSelector").value = can.isSet ? "SET" : "NORMAL";
-      toggleFormFields();
-
-      document.getElementById("checkIsOcoc").checked = can.isOcoc || false;
-      document.getElementById("inputSetName").value = can.setName || "";
-
-      document.getElementById("inputName").value = can.name;
-      document.getElementById("inputBrewery").value = can.brewery;
-      document.getElementById("inputCountry").value = can.country;
-      document.getElementById("inputVolume").value = can.volume;
-      document.getElementById("inputYear").value = can.year || "";
-      document.getElementById("inputBarcode").value = can.barcode || "";
-
-      document.getElementById("inputImgCover").value = can.images?.cover || "";
-      document.getElementById("inputImgFront").value = can.images?.front || "";
-      document.getElementById("inputImgLeft").value = can.images?.left || "";
-      document.getElementById("inputImgBack").value = can.images?.back || "";
-      document.getElementById("inputImgRight").value = can.images?.right || "";
-
-      document.getElementById("formTitle").innerText = "Editar Lata";
-      document.getElementById("btnSave").innerText = "Atualizar Lata no Google Drive";
-      document.getElementById("btnCancel").style.display = "block";
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    async function deleteCan(id) {
-      if (!confirm("Tem certeza que deseja excluir esta lata?")) return;
-      try {
-        const response = await fetch(API_URL, {
-          method: "POST",
-          headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify({ action: "delete", id: String(id) })
-        });
-        const res = await response.json();
-        if (res.status === "success") { loadDataFromSheet(); }
-      } catch (err) { console.error(err); }
-    }
-    // Trava o fundo ao abrir qualquer modal (impede scroll indesejado)
-function openModalCustom(modalElement) {
-  modalElement.classList.add("active");
-  document.body.style.overflow = "hidden";
-}
-
-function closeModalCustom(modalElement) {
-  modalElement.classList.remove("active");
-  document.body.style.overflow = "auto";
-}
-
-// Suporte ao botão "Voltar" do controle remoto da TV em todas as telas
-document.addEventListener("keydown", (e) => {
-  if (e.key === "Escape" || e.key === "Back" || e.keyCode === 10009 || e.keyCode === 27) {
-    // Adicione a lógica de fechar os modais daquela página específica aqui
   }
-});
 
-    function resetForm() {
-      document.getElementById("canForm").reset();
-      document.getElementById("canId").value = "";
-      document.getElementById("typeSelector").value = "NORMAL";
-      toggleFormFields();
-      document.getElementById("formTitle").innerText = "Cadastrar Nova Lata";
-      document.getElementById("btnSave").innerText = "Salvar e Publicar no Google Drive";
-      document.getElementById("btnCancel").style.display = "none";
+  async function deleteCan(id) {
+    if(!confirm("Tem certeza que deseja excluir esta lata?")) return;
+    try {
+      await fetch(`${API_URL}?delete=${id}`, { method: "POST", mode: "no-cors" });
+      alert("Lata excluída com sucesso!");
+      loadCatalog();
+    } catch(err) {
+      console.error("Erro ao excluir:", err);
     }
-    // Trava o fundo ao abrir qualquer modal (impede scroll indesejado)
-function openModalCustom(modalElement) {
-  modalElement.classList.add("active");
-  document.body.style.overflow = "hidden";
-}
-
-function closeModalCustom(modalElement) {
-  modalElement.classList.remove("active");
-  document.body.style.overflow = "auto";
-}
-
-// Suporte ao botão "Voltar" do controle remoto da TV em todas as telas
-document.addEventListener("keydown", (e) => {
-  if (e.key === "Escape" || e.key === "Back" || e.keyCode === 10009 || e.keyCode === 27) {
-    // Adicione a lógica de fechar os modais daquela página específica aqui
   }
-});
 
-    function openSidebar() { document.getElementById("sidebarMenu").classList.add("active"); document.body.classList.add("menu-open"); }
-    function closeSidebar() { document.getElementById("sidebarMenu").classList.remove("active"); document.body.classList.remove("menu-open"); }
-
-    window.onload = loadDataFromSheet;
-    
-  </script>
+  window.onload = loadCatalog;
+</script>
 </body>
 </html>
