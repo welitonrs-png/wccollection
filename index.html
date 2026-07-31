@@ -12,7 +12,6 @@
     ::-webkit-scrollbar { display: none !important; width: 0 !important; height: 0 !important; }
     * { -ms-overflow-style: none !important; scrollbar-width: none !important; }
 
-    /* 🚀 FOCO DOURADO UNIFICADO PARA TV E MOUSE */
     :focus {
       outline: none !important;
       border-color: #f39c12 !important;
@@ -22,7 +21,7 @@
 
     .app-container { display: flex; width: 100vw; height: 100vh; overflow: hidden; position: relative; background-color: #9B9B9B; }
 
-    /* 1. MENU LATERAL RETRÁTIL (LISO E SEM BORDAS) */
+    /* MENU LATERAL RETRÁTIL (LISO E SEM BORDAS) */
     .sidebar {
       width: 60px; min-width: 60px; background: #9B9B9B; border-right: none;
       display: flex; flex-direction: column; padding: 12px 6px; gap: 10px; height: 100%;
@@ -34,7 +33,6 @@
     .sidebar-logo-img { width: 40px; height: 40px; object-fit: contain; transition: width 0.25s ease; }
     .sidebar:hover .sidebar-logo-img, .sidebar:focus-within .sidebar-logo-img { width: 160px; height: auto; }
 
-    /* ITENS DO MENU LIMPOS E SEM CAIXA */
     .menu-item {
       display: flex; align-items: center; gap: 14px; color: #666666; text-decoration: none;
       padding: 10px 12px; border-radius: 8px; font-size: 0.9rem; font-weight: 800;
@@ -46,7 +44,7 @@
     .sidebar:hover .menu-item span, .sidebar:focus-within .menu-item span { opacity: 1; }
     .menu-item:focus, .menu-item:hover, .menu-item:focus i, .menu-item:hover i { color: #f39c12 !important; background: transparent; }
 
-    /* 2. SUBMENUS SLIDE-OVER */
+    /* SUBMENUS SLIDE-OVER */
     .subpanel-overlay {
       position: absolute; top: 0; left: 60px; width: 280px; height: 100%;
       background: #9B9B9B; border-right: none; z-index: 600;
@@ -72,10 +70,9 @@
     .vk-key:focus, .vk-key:hover { color: #f39c12; border-color: #f39c12 !important; }
     .vk-key-wide { grid-column: span 2; }
 
-    /* 3. ÁREA PRINCIPAL DA DIREITA */
+    /* ÁREA PRINCIPAL */
     .main-area { flex: 1; display: flex; flex-direction: column; height: 100vh; padding: 12px 16px; gap: 12px; overflow: hidden; background: #9B9B9B; }
 
-    /* LIGHTBOX SUPERIOR LISO E SEM BORDAS */
     .hero-panel {
       flex: 1; min-height: 0; background: #9B9B9B; border: none; border-radius: 12px;
       display: flex; padding: 12px 16px; gap: 16px; align-items: center;
@@ -92,7 +89,7 @@
     .hero-right-info { flex: 1; display: flex; flex-direction: column; justify-content: center; color: #666666; text-transform: uppercase; font-style: italic; }
     .hero-title { font-size: clamp(1.2rem, 2.2vw, 1.8rem); font-weight: 900; margin-bottom: 10px; line-height: 1.1; color: #f39c12; }
     .info-label { font-size: clamp(0.65rem, 1vw, 0.8rem); font-weight: 900; color: #666666; display: block; margin-top: 2px; }
-    .info-val { font-size: clamp(0.95rem, 1.5vw, 1.2rem); font-weight: 900; color: #666666; margin-bottom: 4px; transition: color 0.15s ease; }
+    .info-val { font-size: clamp(0.95rem, 1.5vw, 1.2rem); font-weight: 900; color: #666666; margin-bottom: 4px; }
 
     .counter-bar { display: flex; justify-content: flex-end; align-items: center; padding: 0 4px; margin-bottom: -4px; }
     .card-counter { font-size: 0.85rem; font-weight: 900; color: #666666; background: transparent; padding: 3px 10px; letter-spacing: 1px; }
@@ -100,7 +97,6 @@
     .catalog-section { height: 180px; min-height: 180px; width: 100%; overflow-x: auto; overflow-y: hidden; scroll-behavior: smooth; flex-shrink: 0; }
     .card-row { display: flex; gap: 10px; height: 100%; width: max-content; }
 
-    /* CARDS RETANGULARES 3x4 NA BASE */
     .card {
       background-color: #fff; border-radius: 8px; height: 100%; aspect-ratio: 3 / 4; overflow: hidden;
       display: flex; justify-content: center; align-items: center; padding: 6px; cursor: pointer;
@@ -109,10 +105,12 @@
     .card img { width: 100%; height: 100%; object-fit: contain; }
     .card:focus, .card:hover { border-color: #f39c12 !important; box-shadow: 0 0 15px rgba(243, 156, 18, 0.8) !important; z-index: 10; }
 
+    /* ZOOM LIMPO (SEM SETAS VISÍVEIS) */
     .zoom-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.95); z-index: 700; display: none; justify-content: center; align-items: center; padding: 16px; }
     .zoom-modal.active { display: flex; }
-    .zoom-modal img { max-width: 85vw; max-height: 85vh; object-fit: contain; border-radius: 6px; }
-    .zoom-close-btn { position: absolute; top: 15px; right: 20px; background: transparent; border: none; color: #fff; font-size: 2.5rem; cursor: pointer; z-index: 710; }
+    .zoom-modal img { max-width: 85vw; max-height: 85vh; object-fit: contain; border-radius: 6px; cursor: pointer; }
+    .zoom-close-btn { position: absolute; top: 15px; right: 20px; background: transparent; border: none; color: #666666; font-size: 2.5rem; cursor: pointer; z-index: 710; }
+    .zoom-close-btn:focus, .zoom-close-btn:hover { color: #f39c12 !important; outline: none !important; }
   </style>
 </head>
 <body>
@@ -167,7 +165,7 @@
 
   <div class="zoom-modal" id="zoomModal">
     <button class="zoom-close-btn" onclick="closeZoomModal()" tabindex="0">&times;</button>
-    <img id="zoomImage" src="" alt="Imagem ampliada">
+    <img id="zoomImage" src="" alt="Imagem ampliada" onclick="navigateZoom(1)">
   </div>
 
 <script>
@@ -175,6 +173,8 @@
   let canCatalog = [];
   let currentFiltered = [];
   let lastFocusedCard = null;
+  let zoomGallery = [];
+  let currentZoomIndex = 0;
 
   const vkKeys = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','1','2','3','4','5','6','7','8','9','0','ESPAÇO','DEL','LIMPAR'];
 
@@ -291,14 +291,14 @@
     const photosContainer = document.getElementById("heroPhotos");
     photosContainer.innerHTML = "";
 
-    const galleryViews = [can.images?.front, can.images?.left, can.images?.back, can.images?.right].filter(Boolean);
+    zoomGallery = [can.images?.front, can.images?.left, can.images?.back, can.images?.right].filter(Boolean);
 
-    galleryViews.forEach((url, idx) => {
+    zoomGallery.forEach((url, idx) => {
       const photoCard = document.createElement("div");
       photoCard.className = "hero-photo-card"; photoCard.tabIndex = 0;
-      photoCard.onclick = () => openZoomModal(url);
+      photoCard.onclick = () => openZoomModal(idx);
       photoCard.onkeydown = (e) => { 
-        if(e.key === "Enter" || e.key === " ") openZoomModal(url);
+        if(e.key === "Enter" || e.key === " ") openZoomModal(idx);
         else if (e.key === "ArrowDown") { e.preventDefault(); if (lastFocusedCard) lastFocusedCard.focus(); }
       };
       photoCard.innerHTML = `<img src="${url}" alt="Foto ${idx+1}">`;
@@ -306,13 +306,32 @@
     });
   }
 
-  function openZoomModal(url) { document.getElementById("zoomImage").src = url; document.getElementById("zoomModal").classList.add("active"); }
-  function closeZoomModal() { document.getElementById("zoomModal").classList.remove("active"); }
+  function openZoomModal(index) {
+    if (!zoomGallery || zoomGallery.length === 0) return;
+    currentZoomIndex = index;
+    document.getElementById("zoomImage").src = zoomGallery[currentZoomIndex];
+    document.getElementById("zoomModal").classList.add("active");
+  }
+
+  function navigateZoom(direction) {
+    if (!zoomGallery || zoomGallery.length === 0) return;
+    currentZoomIndex = (currentZoomIndex + direction + zoomGallery.length) % zoomGallery.length;
+    document.getElementById("zoomImage").src = zoomGallery[currentZoomIndex];
+  }
+
+  function closeZoomModal() {
+    document.getElementById("zoomModal").classList.remove("active");
+  }
 
   document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" || e.key === "Back" || e.keyCode === 10009 || e.keyCode === 27) {
-      if (document.getElementById("zoomModal").classList.contains("active")) closeZoomModal();
-      else closeSubpanels();
+    const isZoomActive = document.getElementById("zoomModal").classList.contains("active");
+    
+    if (isZoomActive) {
+      if (e.key === "ArrowLeft") { e.preventDefault(); navigateZoom(-1); }
+      else if (e.key === "ArrowRight") { e.preventDefault(); navigateZoom(1); }
+      else if (e.key === "Escape" || e.key === "Back" || e.keyCode === 10009 || e.keyCode === 27) { closeZoomModal(); }
+    } else if (e.key === "Escape" || e.key === "Back" || e.keyCode === 10009 || e.keyCode === 27) {
+      closeSubpanels();
     }
   });
 
