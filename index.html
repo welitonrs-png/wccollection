@@ -3,301 +3,172 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BeerCan Catalog - Coleção de Latas</title>
-<style>
+  <title>BeerCan Catalog - Dashboard TV</title>
+  <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; outline: none; }
-    body { background-color: #000000; color: #ffffff; padding: 8px; max-width: 1800px; margin: 0 auto; user-select: none; overflow-x: hidden; }
+    body { background-color: #000000; color: #ffffff; height: 100vh; overflow: hidden; display: flex; user-select: none; }
 
-    /* 🚀 ESTILO DE FOCO GERAL UNIFICADO PARA TV E MOUSE (SEM BORDA DUPLICADA) */
+    /* 🚀 ESTILO DE FOCO GERAL PARA SMART TV E MOUSE */
     :focus {
-      outline: none !important; /* Desativa a borda externa duplicada do navegador */
+      outline: none !important;
       border-color: #f39c12 !important;
       box-shadow: 0 0 15px rgba(243, 156, 18, 0.9) !important;
       z-index: 100;
     }
 
-    /* Área de detecção invisível no canto esquerdo para abrir o menu ao passar o mouse */
-    .mouse-hover-trigger {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 20px;
-      height: 100vh;
-      z-index: 450;
-    }
+    /* 1. ESTRUTURA PRINCIPAL EM 2 COLUNAS */
+    .app-container { display: flex; width: 100vw; height: 100vh; overflow: hidden; }
 
-    /* Menu Lateral Deslizante */
-    .sidebar-menu {
-      position: fixed;
-      top: 0;
-      left: -290px;
-      width: 280px;
-      height: 100vh;
+    /* MENU LATERAL FIXO (ESQUERDA) */
+    .sidebar {
+      width: 260px;
+      min-width: 260px;
       background: #0d0d0d;
       border-right: 1px solid #222;
-      z-index: 500;
-      padding: 20px 12px;
       display: flex;
       flex-direction: column;
-      gap: 8px;
-      transition: left 0.25s ease-in-out;
-      box-shadow: 10px 0 25px rgba(0,0,0,0.8);
+      padding: 16px 12px;
+      gap: 12px;
+      height: 100%;
       overflow-y: auto;
     }
-    .sidebar-menu.active { left: 0; }
 
-    /* Estilo da Logo WCCollection */
-    .sidebar-logo-container {
-      width: 100%;
-      padding-bottom: 10px;
-      margin-bottom: 8px;
-      border-bottom: 1px solid #222;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-    .sidebar-logo-img {
-      width: 100%;
-      max-width: 220px;
-      height: auto;
-      object-fit: contain;
-      display: block;
-    }
+    .sidebar-logo-container { width: 100%; text-align: center; padding-bottom: 8px; border-bottom: 1px solid #222; }
+    .sidebar-logo-img { width: 100%; max-width: 180px; height: auto; object-fit: contain; }
 
     .menu-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      color: #ccc;
-      text-decoration: none;
-      padding: 8px 10px;
-      border-radius: 6px;
-      font-size: 0.85rem;
-      font-weight: 600;
-      background: transparent;
-      border: 2px solid transparent;
-      cursor: pointer;
-      width: 100%;
-      text-align: left;
-      transition: border-color 0.15s ease;
+      display: flex; align-items: center; gap: 8px; color: #ccc; text-decoration: none;
+      padding: 8px 10px; border-radius: 6px; font-size: 0.85rem; font-weight: 600;
+      background: transparent; border: 2px solid transparent; cursor: pointer; width: 100%; text-align: left;
     }
-    .menu-item:focus, .menu-item:hover {
-      background: #18181b;
-      color: #f39c12;
-      border-color: #f39c12 !important;
-      outline: none !important;
-    }
-    .menu-badge { margin-left: auto; background: #222; color: #f39c12; padding: 2px 8px; border-radius: 12px; font-size: 0.75rem; }
+    .menu-item:focus, .menu-item:hover { background: #18181b; color: #f39c12; border-color: #f39c12 !important; }
 
-    /* Campo de Pesquisa no Menu */
     .menu-search-box {
-      width: 100%;
-      padding: 8px;
-      background: #000;
-      border: 2px solid #333;
-      border-radius: 6px;
-      color: #f39c12;
-      font-size: 0.9rem;
-      font-weight: bold;
-      text-align: center;
-      transition: border-color 0.15s ease;
-    }
-    .menu-search-box:focus {
-      border-color: #f39c12 !important;
-      outline: none !important;
+      width: 100%; padding: 8px; background: #000; border: 2px solid #333;
+      border-radius: 6px; color: #f39c12; font-size: 0.85rem; font-weight: bold; text-align: center;
     }
 
-    /* Teclado Virtual Compacto */
-    .vk-container {
-      display: grid;
-      grid-template-columns: repeat(6, 1fr);
-      gap: 4px;
-      background: #111;
-      padding: 6px;
-      border-radius: 6px;
-      border: 1px solid #222;
-      margin-bottom: 6px;
-    }
-    .vk-key {
-      background: #18181b;
-      border: 2px solid #27272a;
-      color: #fff;
-      padding: 6px 0;
-      border-radius: 4px;
-      font-size: 0.75rem;
-      font-weight: bold;
-      cursor: pointer;
-      text-align: center;
-      transition: border-color 0.15s ease;
-    }
-    .vk-key:focus, .vk-key:hover {
-      background: #f39c12;
-      color: #000;
-      border-color: #f39c12 !important;
-      outline: none !important;
-    }
+    .vk-container { display: grid; grid-template-columns: repeat(6, 1fr); gap: 3px; background: #111; padding: 4px; border-radius: 6px; border: 1px solid #222; }
+    .vk-key { background: #18181b; border: 1px solid #27272a; color: #fff; padding: 4px 0; border-radius: 4px; font-size: 0.7rem; font-weight: bold; cursor: pointer; text-align: center; }
+    .vk-key:focus, .vk-key:hover { background: #f39c12; color: #000; border-color: #f39c12 !important; }
     .vk-key-wide { grid-column: span 2; }
 
-    /* Conteúdo Principal Responsivo ao Menu */
-    .main-content {
-      transition: margin-left 0.25s ease-in-out, width 0.25s ease-in-out;
-      width: 100%;
-    }
-    body.menu-open .main-content {
-      margin-left: 280px;
-      width: calc(100% - 280px);
+    .brand-section-title { font-size: 0.75rem; color: #8e8e93; font-weight: bold; text-transform: uppercase; margin-top: 10px; border-bottom: 1px solid #222; padding-bottom: 4px; }
+    .brand-list { display: flex; flex-direction: column; gap: 4px; max-height: 200px; overflow-y: auto; }
+    .brand-item { font-size: 0.8rem; padding: 6px; border-radius: 4px; background: #141414; color: #aaa; cursor: pointer; border: 1px solid transparent; }
+    .brand-item:focus, .brand-item:hover { color: #fff; background: #222; border-color: #f39c12 !important; }
+
+    /* ÁREA DE CONTEÚDO (DIREITA) */
+    .main-area { flex: 1; display: flex; flex-direction: column; height: 100%; padding: 12px; gap: 12px; overflow: hidden; background: #000; }
+
+    /* 2. PAINEL DE DESTAQUE SUPERIOR (HERO) */
+    .hero-panel {
+      height: 48%;
+      background: #0d0d0d;
+      border: 1px solid #222;
+      border-radius: 10px;
+      display: flex;
+      padding: 12px;
+      gap: 16px;
     }
 
-    /* Grid do Catálogo (5 colunas) */
-    .card-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
-    @media (min-width: 600px), (orientation: landscape) { 
-      .card-grid { grid-template-columns: repeat(5, 1fr); gap: 8px; } 
+    .hero-left-photos {
+      flex: 1;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      max-width: 440px;
+      height: 100%;
     }
 
-    /* CARDS DA GRADE DA COLEÇÃO */
-    .card { 
-      background-color: #fff; 
-      border-radius: 6px; 
-      aspect-ratio: 1 / 1; 
-      overflow: hidden; 
-      display: flex; 
-      justify-content: center; 
-      align-items: center; 
-      padding: 4px; 
-      cursor: pointer; 
-      border: 4px solid transparent; /* Reserva a borda única de 4px */
-      box-sizing: border-box;
-      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    .hero-photo-card {
+      background: #fff; border-radius: 6px; padding: 4px; display: flex;
+      justify-content: center; align-items: center; cursor: pointer;
+      border: 3px solid transparent; box-sizing: border-box; height: 100%;
     }
+    .hero-photo-card img { width: 100%; height: 100%; object-fit: contain; }
+    .hero-photo-card:focus, .hero-photo-card:hover { border-color: #f39c12 !important; box-shadow: 0 0 15px rgba(243, 156, 18, 0.8) !important; }
 
-    .card:focus, .card:hover { 
-      border-color: #f39c12 !important; 
-      box-shadow: 0 0 15px rgba(243, 156, 18, 0.8) !important; 
-      outline: none !important; /* Elimina a borda duplicada */
-      z-index: 10; 
+    .hero-right-info { flex: 1; display: flex; flex-direction: column; justify-content: center; color: #f39c12; text-transform: uppercase; font-style: italic; }
+    .hero-title { font-size: clamp(1.2rem, 2.5vw, 2rem); font-weight: 900; margin-bottom: 12px; line-height: 1.1; color: #f39c12; }
+    .info-label { font-size: 0.75rem; font-weight: 900; color: #8e8e93; display: block; margin-top: 4px; }
+    .info-val { font-size: 1.1rem; font-weight: 900; color: #f39c12; margin-bottom: 6px; }
+
+    /* 3. GRADE DE CARDS (BASE INFERIOR) */
+    .catalog-section { flex: 1; overflow-y: auto; padding-right: 4px; }
+    .card-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; }
+
+    .card {
+      background-color: #fff; border-radius: 6px; aspect-ratio: 1 / 1;
+      overflow: hidden; display: flex; justify-content: center; align-items: center;
+      padding: 4px; cursor: pointer; border: 4px solid transparent; box-sizing: border-box;
     }
-    .card img { width: 100%; height: 100%; object-fit: contain; transform: none !important; }
+    .card img { width: 100%; height: 100%; object-fit: contain; }
+    .card:focus, .card:hover { border-color: #f39c12 !important; box-shadow: 0 0 15px rgba(243, 156, 18, 0.8) !important; z-index: 10; }
 
-    /* Lightbox Modal Fixo */
-    .lightbox-modal-overlay { 
-      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; 
-      background: rgba(0,0,0,0.95); z-index: 600; 
-      display: flex; justify-content: center; align-items: center; 
-      padding: 12px; opacity: 0; pointer-events: none; transition: opacity 0.25s; overflow: hidden;
-    }
-    .lightbox-modal-overlay.active { opacity: 1; pointer-events: auto; }
-
-    .lightbox-content-wrapper { 
-      width: 100%; max-width: 1200px; max-height: 95vh; 
-      display: flex; flex-direction: column; gap: 16px; 
-      position: relative; align-items: center; justify-content: center; overflow: hidden;
-    }
-
-    @media (min-width: 768px), (orientation: landscape) { 
-      .lightbox-content-wrapper { flex-direction: row; align-items: center; gap: 24px; } 
-    }
-
-    .lightbox-left-grid { 
-      flex: 1; display: grid; grid-template-columns: repeat(2, 1fr); 
-      gap: 8px; width: 100%; max-width: 420px; aspect-ratio: 1 / 1; margin: 0 auto; 
-    }
-
-    /* FOTOS DENTRO DO LIGHTBOX */
-    .view-card-item { 
-      background: #fff; 
-      border-radius: 6px; 
-      padding: 4px; 
-      display: flex; 
-      justify-content: center; 
-      align-items: center; 
-      cursor: pointer; 
-      border: 4px solid transparent; /* Reserva a borda única */
-      box-sizing: border-box;
-      transition: border-color 0.15s ease, box-shadow 0.15s ease;
-    }
-
-    .view-card-item:focus, .view-card-item:hover { 
-      border-color: #f39c12 !important; 
-      box-shadow: 0 0 15px rgba(243, 156, 18, 0.8) !important; 
-      outline: none !important; /* Elimina a borda duplicada */
-    }
-    .view-card-item img { width: 100%; height: 100%; object-fit: contain; transform: none !important; }
-
-    .lightbox-right-info { flex: 1; color: #f39c12; text-transform: uppercase; font-style: italic; width: 100%; text-align: left; }
-    .can-main-title { font-size: clamp(1.1rem, 3.5vw, 1.8rem); font-weight: 900; margin-bottom: 16px; color: #f39c12 !important; line-height: 1.1; }
-    .info-field-label { font-size: clamp(0.65rem, 1.2vw, 0.85rem); font-weight: 900; color: #8e8e93; margin-bottom: 1px; display: block; }
-    .info-field-value { font-size: clamp(0.95rem, 2.2vw, 1.3rem); font-weight: 900; margin-bottom: 10px; color: #f39c12; line-height: 1.1; }
-
-    .lightbox-close-btn { 
-      position: absolute; top: -10px; right: 0; background: transparent !important; border: none !important; color: #ffffff; 
-      width: 40px; height: 40px; font-size: 2.2rem; font-weight: 300; cursor: pointer; display: flex; justify-content: center; align-items: center; z-index: 10;
-      transition: color 0.15s ease;
-    }
-    .lightbox-close-btn:focus, .lightbox-close-btn:hover { 
-      color: #f39c12 !important; 
-      outline: none !important; 
-    }
-
-    /* Modal Zoom Ampliado */
+    /* MODAL ZOOM ENTRADA TOTAL */
     .zoom-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.98); z-index: 700; display: none; justify-content: center; align-items: center; padding: 16px; }
     .zoom-modal.active { display: flex; }
     .zoom-modal img { max-width: 85vw; max-height: 85vh; object-fit: contain; border-radius: 6px; }
     .zoom-close-btn { position: absolute; top: 15px; right: 20px; background: transparent; border: none; color: #fff; font-size: 2.5rem; cursor: pointer; z-index: 710; }
-    .zoom-close-btn:focus, .zoom-close-btn:hover {
-      color: #f39c12 !important;
-      outline: none !important;
-    }
-</style>
+  </style>
 </head>
 <body>
 
-  <!-- Zone de hover invisível no canto esquerdo -->
-  <div class="mouse-hover-trigger" onmouseenter="openSidebar()"></div>
+  <div class="app-container">
 
-  <!-- Menu Lateral Deslizante -->
-  <nav class="sidebar-menu" id="sidebarMenu" onmouseleave="closeSidebar()">
-    <div class="sidebar-logo-container">
-      <img src="logo.png" alt="WCCollection Logo" class="sidebar-logo-img">
-    </div>
-    <button class="menu-item" onclick="location.href='index.html'" tabindex="0">🏠 Home</button>
-
-    <!-- Item de Pesquisa + Campo + Teclado Embutido -->
-    <div class="menu-item" style="cursor: default;">🔍 Pesquisar</div>
-    <input type="text" id="menuSearchInput" class="menu-search-box" placeholder="Digite ou use as teclas abaixo..." tabindex="0">
-
-    <!-- Teclado Virtual Compacto -->
-    <div class="vk-container" id="vkContainer"></div>
-
-    <button class="menu-item" onclick="location.href='ococ.html'" tabindex="0">🌍 OCOC (Um por País)</button>
-    <button class="menu-item" onclick="location.href='sets.html'" tabindex="0">📦 Sets de Latas</button>
-    <button class="menu-item" onclick="location.href='admin.html'" tabindex="0">⚙️ Cadastro (Admin)</button>
-
-    <div class="menu-item" style="margin-top: auto; cursor: default;">
-      📊 Encontrados <span class="menu-badge" id="totalCountBadge">0</span>
-    </div>
-  </nav>
-
-  <!-- Container Principal Responsivo aos Cards -->
-  <div class="main-content" id="mainContent">
-    <div class="card-grid" id="cardGrid"></div>
-  </div>
-
-  <!-- Lightbox Modal -->
-  <div class="lightbox-modal-overlay" id="detailModal">
-    <div class="lightbox-content-wrapper">
-      <button class="lightbox-close-btn" id="btnCloseModal" onclick="closeModal()" tabindex="0">&times;</button>
-      <div class="lightbox-left-grid" id="lightboxLeftGrid"></div>
-      <div class="lightbox-right-info">
-        <div class="can-main-title" id="lbTitle"></div>
-        <div><span class="info-field-label">ORIGEM:</span><div class="info-field-value" id="lbCountry"></div></div>
-        <div><span class="info-field-label">VOLUME:</span><div class="info-field-value" id="lbVolume"></div></div>
-        <div id="fieldYear"><span class="info-field-label">ANO:</span><div class="info-field-value" id="lbYear"></div></div>
-        <div id="fieldBarcode"><span class="info-field-label">CÓD. BARRAS:</span><div class="info-field-value" id="lbBarcode"></div></div>
+    <!-- MENU LATERAL FIXO (ESQUERDA) -->
+    <aside class="sidebar">
+      <div class="sidebar-logo-container">
+        <img src="logo.png" alt="WCCollection Logo" class="sidebar-logo-img">
       </div>
-    </div>
+
+      <button class="menu-item" onclick="location.href='index.html'" tabindex="0">🏠 Home</button>
+      
+      <input type="text" id="menuSearchInput" class="menu-search-box" placeholder="Pesquisar..." tabindex="0">
+      <div class="vk-container" id="vkContainer"></div>
+
+      <button class="menu-item" onclick="location.href='ococ.html'" tabindex="0">🌍 OCOC (Um p/ País)</button>
+      <button class="menu-item" onclick="location.href='sets.html'" tabindex="0">📦 Sets de Latas</button>
+      <button class="menu-item" onclick="location.href='admin.html'" tabindex="0">⚙️ Cadastro (Admin)</button>
+
+      <div class="brand-section-title">Marcas</div>
+      <div class="brand-list" id="brandList">
+        <!-- Lista de Marcas Gerada via JS -->
+      </div>
+    </aside>
+
+    <!-- ÁREA PRINCIPAL (HERO TOP + GRADE BASE) -->
+    <main class="main-area">
+
+      <!-- PAINEL DE DESTAQUE SUPERIOR (ATUALIZA AUTO) -->
+      <section class="hero-panel" id="heroPanel">
+        <div class="hero-left-photos" id="heroPhotos">
+          <div class="hero-photo-card"><img src="" alt=""></div>
+          <div class="hero-photo-card"><img src="" alt=""></div>
+          <div class="hero-photo-card"><img src="" alt=""></div>
+          <div class="hero-photo-card"><img src="" alt=""></div>
+        </div>
+
+        <div class="hero-right-info">
+          <div class="hero-title" id="heroTitle">SELECIONE UMA LATA</div>
+          <div><span class="info-label">ORIGEM:</span><div class="info-val" id="heroCountry">-</div></div>
+          <div><span class="info-label">VOLUME:</span><div class="info-val" id="heroVolume">-</div></div>
+          <div><span class="info-label">ANO:</span><div class="info-val" id="heroYear">-</div></div>
+          <div><span class="info-label">CÓD. BARRAS:</span><div class="info-val" id="heroBarcode">-</div></div>
+        </div>
+      </section>
+
+      <!-- GRADE DE CARDS (ROLA AQUI) -->
+      <section class="catalog-section">
+        <div class="card-grid" id="cardGrid"></div>
+      </section>
+
+    </main>
+
   </div>
 
-  <!-- Modal Zoom -->
+  <!-- MODAL ZOOM (AMPLIAR FOTO) -->
   <div class="zoom-modal" id="zoomModal">
     <button class="zoom-close-btn" onclick="closeZoomModal()" tabindex="0">&times;</button>
     <img id="zoomImage" src="" alt="Imagem ampliada">
@@ -307,19 +178,9 @@
   const API_URL = "https://script.google.com/macros/s/AKfycbwFIsSgEF2grkBpliyO_hSD0Lh2ULq6xHoJC6mDLYvjemTLYe67jF38MDNWP2ixITzE/exec";
   let canCatalog = [];
   let currentFiltered = [];
-  let lastFocusedElement = null;
   let currentGalleryViews = [];
-  let currentZoomIndex = 0;
 
-  const vkKeys = [
-    'A','B','C','D','E','F',
-    'G','H','I','J','K','L',
-    'M','N','O','P','Q','R',
-    'S','T','U','V','W','X',
-    'Y','Z','1','2','3','4',
-    '5','6','7','8','9','0',
-    'ESPAÇO','DEL','LIMPAR'
-  ];
+  const vkKeys = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','1','2','3','4','5','6','7','8','9','0','ESPAÇO','DEL','LIMPAR'];
 
   async function fetchCatalogFromSheet() {
     if(!API_URL || API_URL.includes("COLE_AQUI")) return;
@@ -327,9 +188,10 @@
       const response = await fetch(API_URL);
       canCatalog = await response.json();
       currentFiltered = canCatalog.filter(can => !can.isSet);
-      document.getElementById("totalCountBadge").innerText = currentFiltered.length;
       renderApp();
       buildVirtualKeyboard();
+      buildBrandList();
+      if(currentFiltered.length > 0) updateHeroPanel(currentFiltered[0]);
     } catch (err) {
       console.error("Erro ao carregar catálogo:", err);
     }
@@ -338,27 +200,12 @@
   function buildVirtualKeyboard() {
     const container = document.getElementById("vkContainer");
     container.innerHTML = "";
-
-    vkKeys.forEach((k, idx) => {
+    vkKeys.forEach(k => {
       const btn = document.createElement("button");
-      let extraClass = "";
-      if (k === 'ESPAÇO' || k === 'DEL' || k === 'LIMPAR') extraClass = "vk-key-wide";
-
-      btn.className = `vk-key ${extraClass}`;
+      btn.className = `vk-key ${ (k === 'ESPAÇO' || k === 'DEL' || k === 'LIMPAR') ? 'vk-key-wide' : '' }`;
       btn.tabIndex = 0;
       btn.innerText = k;
       btn.onclick = () => handleVkPress(k);
-
-      btn.onkeydown = (e) => {
-        if (e.key === "ArrowRight") {
-          const isRightEdge = (idx + 1) % 6 === 0 || k === 'LIMPAR';
-          if (isRightEdge) {
-            e.preventDefault();
-            closeSidebarAndFocusGrid();
-          }
-        }
-      };
-
       container.appendChild(btn);
     });
 
@@ -372,8 +219,31 @@
     else if (key === 'DEL') input.value = input.value.slice(0, -1);
     else if (key === 'LIMPAR') input.value = '';
     else input.value += key;
-
     filterCatalog(input.value);
+  }
+
+  function buildBrandList() {
+    const brandContainer = document.getElementById("brandList");
+    brandContainer.innerHTML = "";
+    
+    // Extrai cervejarias/marcas únicas
+    const brands = [...new Set(canCatalog.map(c => c.brewery).filter(Boolean))].sort();
+    
+    const allBtn = document.createElement("div");
+    allBtn.className = "brand-item";
+    allBtn.tabIndex = 0;
+    allBtn.innerText = "Todas as Marcas";
+    allBtn.onclick = () => filterCatalog("");
+    brandContainer.appendChild(allBtn);
+
+    brands.forEach(b => {
+      const item = document.createElement("div");
+      item.className = "brand-item";
+      item.tabIndex = 0;
+      item.innerText = b;
+      item.onclick = () => filterCatalog(b);
+      brandContainer.appendChild(item);
+    });
   }
 
   function filterCatalog(query) {
@@ -386,149 +256,66 @@
         .join(" ")
         .includes(val);
     });
-    document.getElementById("totalCountBadge").innerText = currentFiltered.length;
     renderApp();
+    if(currentFiltered.length > 0) updateHeroPanel(currentFiltered[0]);
   }
 
   function renderApp() {
     const grid = document.getElementById("cardGrid");
     grid.innerHTML = "";
 
-    currentFiltered.forEach((can, index) => {
+    currentFiltered.forEach((can) => {
       const coverImg = can.images ? (can.images.cover || can.images.front || can.images.left) : "";
       const card = document.createElement("div");
       card.className = "card";
       card.tabIndex = 0;
-      card.dataset.index = index;
-      card.onclick = () => openDetailModal(can.id);
+      
+      // 🚀 Atualiza o topo automaticamente ao passar o foco da TV ou o Mouse!
+      card.onfocus = () => updateHeroPanel(can);
+      card.onmouseenter = () => updateHeroPanel(can);
+      card.onclick = () => updateHeroPanel(can);
 
-      card.onkeydown = (e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          openDetailModal(can.id);
-        } else if (e.key === "ArrowRight") {
-          const cols = window.innerWidth >= 600 || window.matchMedia("(orientation: landscape)").matches ? 5 : 3;
-          if ((index + 1) % cols === 0) {
-            const nextCard = grid.children[index + 1];
-            if (nextCard) { e.preventDefault(); nextCard.focus(); }
-          }
-        } else if (e.key === "ArrowLeft") {
-          const cols = window.innerWidth >= 600 || window.matchMedia("(orientation: landscape)").matches ? 5 : 3;
-          if (index % cols === 0) {
-            e.preventDefault();
-            openSidebar();
-          }
-        }
-      };
-
-      card.innerHTML = `<img src="${coverImg}" alt="${can.name}" loading="lazy" decoding="async">`;
+      card.innerHTML = `<img src="${coverImg}" alt="${can.name}" loading="lazy">`;
       grid.appendChild(card);
     });
   }
 
-  function openSidebar() {
-    document.getElementById("sidebarMenu").classList.add("active");
-    document.body.classList.add("menu-open");
-  }
+  // 🚀 ATUALIZA O PAINEL SUPERIOR COM AS 4 FOTOS E DADOS DA LATA SELECIONADA
+  function updateHeroPanel(can) {
+    document.getElementById("heroTitle").innerText = (can.name || "").toUpperCase();
+    document.getElementById("heroCountry").innerText = (can.country || "-").toUpperCase();
+    document.getElementById("heroVolume").innerText = (can.volume || "-").toUpperCase();
+    document.getElementById("heroYear").innerText = can.year || "-";
+    document.getElementById("heroBarcode").innerText = can.barcode || "-";
 
-  function closeSidebar() {
-    document.getElementById("sidebarMenu").classList.remove("active");
-    document.body.classList.remove("menu-open");
-  }
-
-  function closeSidebarAndFocusGrid() {
-    closeSidebar();
-    const firstCard = document.querySelector(".card");
-    if (firstCard) firstCard.focus();
-  }
-
-  function openDetailModal(id) {
-    const can = canCatalog.find(c => String(c.id) === String(id));
-    if (!can) return;
-
-    lastFocusedElement = document.activeElement;
-
-    document.getElementById("lbTitle").innerText = (can.name || "").toUpperCase();
-    document.getElementById("lbCountry").innerText = (can.country || "-").toUpperCase();
-    document.getElementById("lbVolume").innerText = (can.volume || "-").toUpperCase();
-    document.getElementById("lbYear").innerText = can.year || "-";
-    document.getElementById("lbBarcode").innerText = can.barcode || "-";
-
-    const leftGrid = document.getElementById("lightboxLeftGrid");
-    leftGrid.innerHTML = "";
+    const photosContainer = document.getElementById("heroPhotos");
+    photosContainer.innerHTML = "";
 
     currentGalleryViews = [can.images?.front, can.images?.left, can.images?.back, can.images?.right].filter(Boolean);
 
-    currentGalleryViews.forEach((url, index) => {
-      const item = document.createElement("div");
-      item.className = "view-card-item";
-      item.tabIndex = 0;
-      item.onclick = () => openZoomModal(index);
-      item.onkeydown = (e) => { if(e.key === "Enter" || e.key === " ") openZoomModal(index); };
-      item.innerHTML = `<img src="${url}">`;
-      leftGrid.appendChild(item);
+    currentGalleryViews.forEach((url, idx) => {
+      const photoCard = document.createElement("div");
+      photoCard.className = "hero-photo-card";
+      photoCard.tabIndex = 0;
+      photoCard.onclick = () => openZoomModal(url);
+      photoCard.onkeydown = (e) => { if(e.key === "Enter" || e.key === " ") openZoomModal(url); };
+      photoCard.innerHTML = `<img src="${url}" alt="Foto ${idx+1}">`;
+      photosContainer.appendChild(photoCard);
     });
-
-    document.getElementById("detailModal").classList.add("active");
-    document.body.style.overflow = "hidden"; // 🚀 Bloqueia scroll do fundo para a TV não mover a tela de trás
-
-    // 🚀 Move o foco automaticamente para a 1ª foto da lata
-    setTimeout(() => {
-      const firstPhoto = leftGrid.querySelector(".view-card-item");
-      if (firstPhoto) firstPhoto.focus();
-    }, 100);
   }
 
-  function openZoomModal(index) {
-    if (currentGalleryViews.length === 0) return;
-    currentZoomIndex = index;
-    document.getElementById("zoomImage").src = currentGalleryViews[currentZoomIndex];
+  function openZoomModal(url) {
+    document.getElementById("zoomImage").src = url;
     document.getElementById("zoomModal").classList.add("active");
-    
-    setTimeout(() => {
-      const closeBtn = document.querySelector(".zoom-close-btn");
-      if (closeBtn) closeBtn.focus();
-    }, 100);
   }
 
-  function navigateZoom(direction) {
-    if (currentGalleryViews.length <= 1) return;
-    currentZoomIndex = (currentZoomIndex + direction + currentGalleryViews.length) % currentGalleryViews.length;
-    document.getElementById("zoomImage").src = currentGalleryViews[currentZoomIndex];
-  }
-
-  function closeZoomModal() { 
-    document.getElementById("zoomModal").classList.remove("active"); 
-  }
-
-  function closeModal() {
-    document.getElementById("detailModal").classList.remove("active");
-    document.body.style.overflow = "auto"; // 🚀 Desbloqueia o scroll do fundo
-    if(lastFocusedElement) lastFocusedElement.focus(); // 🚀 Retorna o foco exatamente ao card anterior
+  function closeZoomModal() {
+    document.getElementById("zoomModal").classList.remove("active");
   }
 
   document.addEventListener("keydown", (e) => {
-    const zoomModal = document.getElementById("zoomModal");
-    const isZoomActive = zoomModal && zoomModal.classList.contains("active");
-
-    if (isZoomActive) {
-      if (e.key === "ArrowLeft") {
-        e.preventDefault();
-        navigateZoom(-1);
-      } else if (e.key === "ArrowRight") {
-        e.preventDefault();
-        navigateZoom(1);
-      }
-    }
-
-    // Tecla ESC ou Voltar no Controle para fechar os modais
     if (e.key === "Escape" || e.key === "Back" || e.keyCode === 10009 || e.keyCode === 27) {
-      if (isZoomActive) {
-        closeZoomModal();
-      } else if (document.getElementById("detailModal") && document.getElementById("detailModal").classList.contains("active")) {
-        closeModal();
-      } else if (document.getElementById("sidebarMenu") && document.getElementById("sidebarMenu").classList.contains("active")) {
-        closeSidebar();
-      }
+      closeZoomModal();
     }
   });
 
