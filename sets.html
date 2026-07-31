@@ -27,6 +27,7 @@
       z-index: 500; transition: width 0.25s ease-in-out; overflow: hidden; white-space: nowrap; position: relative;
     }
     .sidebar:hover, .sidebar:focus-within { width: 250px; min-width: 250px; box-shadow: 10px 0 25px rgba(0,0,0,0.15); }
+
     .sidebar-logo-container { width: 100%; text-align: center; padding-bottom: 8px; border-bottom: none; }
     .sidebar-logo-img { width: 40px; height: 40px; object-fit: contain; transition: width 0.25s ease; }
     .sidebar:hover .sidebar-logo-img, .sidebar:focus-within .sidebar-logo-img { width: 160px; height: auto; }
@@ -74,7 +75,7 @@
       display: flex; padding: 12px 16px; gap: 16px; align-items: center;
     }
     
-    /* LIGHTBOX COM FOTOS RETANGULARES DEITADAS (4:3) PARA SETS */
+    /* LIGHTBOX RETANGULAR DEITADO 4:3 PARA SETS */
     .hero-left-photos { height: 100%; aspect-ratio: 4 / 3; display: grid; grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(2, 1fr); gap: 8px; }
     .hero-photo-card {
       background: #fff; border-radius: 6px; padding: 4px; display: flex; justify-content: center; align-items: center;
@@ -106,8 +107,9 @@
 
     .zoom-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.95); z-index: 700; display: none; justify-content: center; align-items: center; padding: 16px; }
     .zoom-modal.active { display: flex; }
-    .zoom-modal img { max-width: 85vw; max-height: 85vh; object-fit: contain; border-radius: 6px; }
-    .zoom-close-btn { position: absolute; top: 15px; right: 20px; background: transparent; border: none; color: #fff; font-size: 2.5rem; cursor: pointer; z-index: 710; }
+    .zoom-modal img { max-width: 85vw; max-height: 85vh; object-fit: contain; border-radius: 6px; cursor: pointer; }
+    .zoom-close-btn { position: absolute; top: 15px; right: 20px; background: transparent; border: none; color: #666666; font-size: 2.5rem; cursor: pointer; z-index: 710; }
+    .zoom-close-btn:focus, .zoom-close-btn:hover { color: #f39c12 !important; outline: none !important; }
   </style>
 </head>
 <body>
@@ -161,7 +163,7 @@
 
   <div class="zoom-modal" id="zoomModal">
     <button class="zoom-close-btn" onclick="closeZoomModal()" tabindex="0">&times;</button>
-    <img id="zoomImage" src="" alt="Imagem ampliada">
+    <img id="zoomImage" src="" alt="Imagem ampliada" onclick="navigateZoom(1)">
   </div>
 
 <script>
@@ -169,6 +171,8 @@
   let canCatalog = [];
   let currentFiltered = [];
   let lastFocusedCard = null;
+  let zoomGallery = [];
+  let currentZoomIndex = 0;
 
   const vkKeys = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','1','2','3','4','5','6','7','8','9','0','ESPAÇO','DEL','LIMPAR'];
 
@@ -284,23 +288,47 @@
     const photosContainer = document.getElementById("heroPhotos");
     photosContainer.innerHTML = "";
 
-    const galleryViews = [can.images?.front, can.images?.left, can.images?.back, can.images?.right].filter(Boolean);
-    galleryViews.forEach((url, idx) => {
+    zoomGallery = [can.images?.front, can.images?.left, can.images?.back, can.images?.right].filter(Boolean);
+
+    zoomGallery.forEach((url, idx) => {
       const photoCard = document.createElement("div");
       photoCard.className = "hero-photo-card"; photoCard.tabIndex = 0;
-      photoCard.onclick = () => openZoomModal(url);
-      photoCard.onkeydown = (e) => { if(e.key === "Enter" || e.key === " ") openZoomModal(url); else if (e.key === "ArrowDown") { e.preventDefault(); if (lastFocusedCard) lastFocusedCard.focus(); } };
+      photoCard.onclick = () => openZoomModal(idx);
+      photoCard.onkeydown = (e) => { 
+        if(e.key === "Enter" || e.key === " ") openZoomModal(idx);
+        else if (e.key === "ArrowDown") { e.preventDefault(); if (lastFocusedCard) lastFocusedCard.focus(); }
+      };
       photoCard.innerHTML = `<img src="${url}" alt="Foto ${idx+1}">`;
       photosContainer.appendChild(photoCard);
     });
   }
 
-  function openZoomModal(url) { document.getElementById("zoomImage").src = url; document.getElementById("zoomModal").classList.add("active"); }
-  function closeZoomModal() { document.getElementById("zoomModal").classList.remove("active"); }
+  function openZoomModal(index) {
+    if (!zoomGallery || zoomGallery.length === 0) return;
+    currentZoomIndex = index;
+    document.getElementById("zoomImage").src = zoomGallery[currentZoomIndex];
+    document.getElementById("zoomModal").classList.add("active");
+  }
+
+  function navigateZoom(direction) {
+    if (!zoomGallery || zoomGallery.length === 0) return;
+    currentZoomIndex = (currentZoomIndex + direction + zoomGallery.length) % zoomGallery.length;
+    document.getElementById("zoomImage").src = zoomGallery[currentZoomIndex];
+  }
+
+  function closeZoomModal() {
+    document.getElementById("zoomModal").classList.remove("active");
+  }
 
   document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" || e.key === "Back" || e.keyCode === 10009 || e.keyCode === 27) {
-      if (document.getElementById("zoomModal").classList.contains("active")) closeZoomModal(); else closeSubpanels();
+    const isZoomActive = document.getElementById("zoomModal").classList.contains("active");
+    
+    if (isZoomActive) {
+      if (e.key === "ArrowLeft") { e.preventDefault(); navigateZoom(-1); }
+      else if (e.key === "ArrowRight") { e.preventDefault(); navigateZoom(1); }
+      else if (e.key === "Escape" || e.key === "Back" || e.keyCode === 10009 || e.keyCode === 27) { closeZoomModal(); }
+    } else if (e.key === "Escape" || e.key === "Back" || e.keyCode === 10009 || e.keyCode === 27) {
+      closeSubpanels();
     }
   });
 
