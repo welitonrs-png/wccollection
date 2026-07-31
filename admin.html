@@ -9,7 +9,6 @@
     
     body { background-color: #9B9B9B; color: #666666; padding: 20px; max-width: 1400px; margin: 0 auto; overflow-x: hidden; }
 
-    /* 🚀 FOCO DOURADO UNIFICADO PARA TV E MOUSE */
     :focus {
       outline: none !important;
       border-color: #f39c12 !important;
@@ -19,7 +18,6 @@
 
     .mouse-hover-trigger { position: fixed; top: 0; left: 0; width: 20px; height: 100vh; z-index: 450; }
 
-    /* MENU LATERAL SLIDE-OVER */
     .sidebar-menu {
       position: fixed; top: 0; left: -290px; width: 280px; height: 100vh;
       background: #9B9B9B; border-right: none; z-index: 500;
@@ -29,7 +27,6 @@
     .sidebar-menu.active { left: 0; }
     .sidebar-title { font-size: 1.2rem; color: #f39c12; font-weight: 900; margin-bottom: 8px; border-bottom: 2px solid #666666; padding-bottom: 6px; }
     
-    /* 🚀 ITENS E ÍCONES DO MENU EM CINZA #666666 */
     .menu-item {
       display: flex; align-items: center; gap: 12px; color: #666666; text-decoration: none;
       padding: 10px 12px; border-radius: 8px; font-size: 0.95rem; font-weight: 800;
@@ -54,10 +51,7 @@
     .admin-grid { display: grid; grid-template-columns: 1fr; gap: 24px; }
     @media (min-width: 900px) { .admin-grid { grid-template-columns: 480px 1fr; } }
     
-    /* PAINÉIS LISOS */
     .panel-box { background: #888888; border: none; border-radius: 16px; padding: 22px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-    
-    /* 🚀 TÍTULOS E RÓTULOS EM DOURADO E COM FONTES MAIORES */
     .panel-title { font-size: 1.3rem; font-weight: 900; color: #f39c12; margin-bottom: 18px; text-transform: uppercase; letter-spacing: 0.5px; }
     
     .form-group { margin-bottom: 16px; }
@@ -208,6 +202,16 @@
             <input type="text" id="canBarcode" class="form-control" placeholder="Ex: 7891234567890">
           </div>
 
+          <!-- 🏷️ NOVO CAMPO: LOGO DA MARCA -->
+          <div class="form-group">
+            <label>🏷️ LOGO DA MARCA / CERVEJARIA</label>
+            <div class="image-input-wrapper">
+              <input type="text" id="imgBrandLogo" class="form-control" placeholder="URL da imagem do logo">
+              <button type="button" class="btn-file-custom" onclick="triggerFileInput('fileBrandLogo')">📁 Upload</button>
+              <input type="file" id="fileBrandLogo" class="file-input-hidden" accept="image/*" onchange="uploadImage(this, 'imgBrandLogo')">
+            </div>
+          </div>
+
           <!-- INPUTS DE IMAGENS -->
           <div class="form-group">
             <label>FOTO FRONTAL (CAPA)</label>
@@ -265,7 +269,6 @@
               </tr>
             </thead>
             <tbody id="catalogTableBody">
-              <!-- Preenchido dinamicamente pelo JavaScript -->
             </tbody>
           </table>
         </div>
@@ -349,6 +352,7 @@
     document.getElementById("canYear").value = can.year || "";
     document.getElementById("canBarcode").value = can.barcode || "";
 
+    document.getElementById("imgBrandLogo").value = can.brandLogo || can.images?.brandLogo || "";
     document.getElementById("imgFront").value = can.images?.front || "";
     document.getElementById("imgLeft").value = can.images?.left || "";
     document.getElementById("imgBack").value = can.images?.back || "";
@@ -381,9 +385,11 @@
       volume: document.getElementById("canVolume").value,
       year: document.getElementById("canYear").value,
       barcode: document.getElementById("canBarcode").value,
+      brandLogo: document.getElementById("imgBrandLogo").value,
       isSet: document.getElementById("destSet").checked,
       isOcoc: document.getElementById("destOcoc").checked,
       images: {
+        brandLogo: document.getElementById("imgBrandLogo").value,
         front: document.getElementById("imgFront").value,
         left: document.getElementById("imgLeft").value,
         back: document.getElementById("imgBack").value,
