@@ -8,6 +8,14 @@
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; outline: none; }
     body { background-color: #000000; color: #ffffff; padding: 8px; max-width: 1800px; margin: 0 auto; user-select: none; overflow-x: hidden; }
 
+    /* 🚀 DESTAQUE VISUAL PARA O CONTROLE REMOTO DA SMART TV */
+    :focus {
+      outline: 4px solid #f39c12 !important;
+      outline-offset: 3px;
+      box-shadow: 0 0 15px rgba(243, 156, 18, 0.9) !important;
+      z-index: 100;
+    }
+
     /* Área de detecção invisível no canto esquerdo para abrir o menu ao passar o mouse */
     .mouse-hover-trigger {
       position: fixed;
@@ -37,26 +45,25 @@
       overflow-y: auto;
     }
     .sidebar-menu.active { left: 0; }
-/* Estilo da Logo WCCollection */
-.sidebar-logo-container {
-  width: 100%;
-  padding-bottom: 10px;
-  margin-bottom: 8px;
-  border-bottom: 1px solid #222;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-.sidebar-logo-img {
-  width: 100%;
-  max-width: 220px;
-  height: auto;
-  object-fit: contain;
-  display: block;
-}
-    
-    .sidebar-title { font-size: 1.1rem; color: #f39c12; font-weight: 900; margin-bottom: 6px; border-bottom: 1px solid #222; padding-bottom: 6px; }
-    
+
+    /* Estilo da Logo WCCollection */
+    .sidebar-logo-container {
+      width: 100%;
+      padding-bottom: 10px;
+      margin-bottom: 8px;
+      border-bottom: 1px solid #222;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .sidebar-logo-img {
+      width: 100%;
+      max-width: 220px;
+      height: auto;
+      object-fit: contain;
+      display: block;
+    }
+
     .menu-item {
       display: flex;
       align-items: center;
@@ -137,7 +144,7 @@
     @media (min-width: 600px), (orientation: landscape) { 
       .card-grid { grid-template-columns: repeat(5, 1fr); gap: 8px; } 
     }
-    
+
     .card { 
       background-color: #fff; 
       border-radius: 6px; 
@@ -174,7 +181,7 @@
     @media (min-width: 768px), (orientation: landscape) { 
       .lightbox-content-wrapper { flex-direction: row; align-items: center; gap: 24px; } 
     }
-    
+
     .lightbox-left-grid { 
       flex: 1; display: grid; grid-template-columns: repeat(2, 1fr); 
       gap: 8px; width: 100%; max-width: 420px; aspect-ratio: 1 / 1; margin: 0 auto; 
@@ -193,7 +200,7 @@
     .can-main-title { font-size: clamp(1.1rem, 3.5vw, 1.8rem); font-weight: 900; margin-bottom: 16px; color: #f39c12 !important; line-height: 1.1; }
     .info-field-label { font-size: clamp(0.65rem, 1.2vw, 0.85rem); font-weight: 900; color: #8e8e93; margin-bottom: 1px; display: block; }
     .info-field-value { font-size: clamp(0.95rem, 2.2vw, 1.3rem); font-weight: 900; margin-bottom: 10px; color: #f39c12; line-height: 1.1; }
-    
+
     .lightbox-close-btn { 
       position: absolute; top: -10px; right: 0; background: transparent !important; border: none !important; color: #ffffff; 
       width: 40px; height: 40px; font-size: 2.2rem; font-weight: 300; cursor: pointer; display: flex; justify-content: center; align-items: center; z-index: 10;
@@ -204,9 +211,6 @@
     .zoom-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.98); z-index: 700; display: none; justify-content: center; align-items: center; padding: 16px; }
     .zoom-modal.active { display: flex; }
     .zoom-modal img { max-width: 85vw; max-height: 85vh; object-fit: contain; border-radius: 6px; }
-    .zoom-nav-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #ffffff; font-size: 2rem; width: 50px; height: 50px; border-radius: 50%; cursor: pointer; display: flex; justify-content: center; align-items: center; z-index: 710; }
-    .zoom-nav-btn:hover, .zoom-nav-btn:focus { background: #f39c12; color: #000; border-color: #f39c12; }
-    .zoom-nav-left { left: 15px; } .zoom-nav-right { right: 15px; }
     .zoom-close-btn { position: absolute; top: 15px; right: 20px; background: transparent; border: none; color: #fff; font-size: 2.5rem; cursor: pointer; z-index: 710; }
   </style>
 </head>
@@ -217,15 +221,15 @@
 
   <!-- Menu Lateral Deslizante -->
   <nav class="sidebar-menu" id="sidebarMenu" onmouseleave="closeSidebar()">
- <div class="sidebar-logo-container">
-  <img src="logo.png" alt="WCCollection Logo" class="sidebar-logo-img">
-</div>
+    <div class="sidebar-logo-container">
+      <img src="logo.png" alt="WCCollection Logo" class="sidebar-logo-img">
+    </div>
     <button class="menu-item" onclick="location.href='index.html'" tabindex="0">🏠 Home</button>
-    
+
     <!-- Item de Pesquisa + Campo + Teclado Embutido -->
     <div class="menu-item" style="cursor: default;">🔍 Pesquisar</div>
-    <input type="text" id="menuSearchInput" class="menu-search-box" readonly placeholder="Clique nas teclas abaixo..." tabindex="-1">
-    
+    <input type="text" id="menuSearchInput" class="menu-search-box" placeholder="Digite ou use as teclas abaixo..." tabindex="0">
+
     <!-- Teclado Virtual Compacto -->
     <div class="vk-container" id="vkContainer"></div>
 
@@ -259,11 +263,10 @@
   </div>
 
   <!-- Modal Zoom -->
-<!-- Modal Zoom limpo (Navegação apenas por Teclado/Mouse) -->
-<div class="zoom-modal" id="zoomModal">
-  <button class="zoom-close-btn" onclick="closeZoomModal()">&times;</button>
-  <img id="zoomImage" src="" alt="Imagem ampliada">
-</div>
+  <div class="zoom-modal" id="zoomModal">
+    <button class="zoom-close-btn" onclick="closeZoomModal()" tabindex="0">&times;</button>
+    <img id="zoomImage" src="" alt="Imagem ampliada">
+  </div>
 
 <script>
   const API_URL = "https://script.google.com/macros/s/AKfycbwFIsSgEF2grkBpliyO_hSD0Lh2ULq6xHoJC6mDLYvjemTLYe67jF38MDNWP2ixITzE/exec";
@@ -288,7 +291,7 @@
     try {
       const response = await fetch(API_URL);
       canCatalog = await response.json();
-      currentFiltered = canCatalog.filter(can => !can.isSet); // Ignora latas de SET no index
+      currentFiltered = canCatalog.filter(can => !can.isSet);
       document.getElementById("totalCountBadge").innerText = currentFiltered.length;
       renderApp();
       buildVirtualKeyboard();
@@ -300,18 +303,17 @@
   function buildVirtualKeyboard() {
     const container = document.getElementById("vkContainer");
     container.innerHTML = "";
-    
+
     vkKeys.forEach((k, idx) => {
       const btn = document.createElement("button");
       let extraClass = "";
       if (k === 'ESPAÇO' || k === 'DEL' || k === 'LIMPAR') extraClass = "vk-key-wide";
-      
+
       btn.className = `vk-key ${extraClass}`;
       btn.tabIndex = 0;
       btn.innerText = k;
       btn.onclick = () => handleVkPress(k);
-      
-      // Mover para a direita no controle sai do menu e volta pros cards
+
       btn.onkeydown = (e) => {
         if (e.key === "ArrowRight") {
           const isRightEdge = (idx + 1) % 6 === 0 || k === 'LIMPAR';
@@ -321,18 +323,14 @@
           }
         }
       };
-      
+
       container.appendChild(btn);
     });
 
-    // 🚀 Habilita digitação via Teclado Físico
     const input = document.getElementById("menuSearchInput");
-    input.removeAttribute("readonly"); // Permite digitar com teclado físico
-    input.placeholder = "Digite ou use as teclas abaixo...";
     input.oninput = (e) => filterCatalog(e.target.value);
   }
 
-  // Ação ao clicar nos botões do Teclado Virtual
   function handleVkPress(key) {
     const input = document.getElementById("menuSearchInput");
     if (key === 'ESPAÇO') input.value += ' ';
@@ -346,7 +344,7 @@
   function filterCatalog(query) {
     const val = query.toLowerCase().trim();
     currentFiltered = canCatalog.filter(can => {
-      if (can.isSet) return false; // Bloqueia latas de SET
+      if (can.isSet) return false;
       if (!val) return true;
       return [can.name, can.brewery, can.country, can.volume, can.year, can.barcode]
         .map(v => String(v || "").toLowerCase())
@@ -368,7 +366,7 @@
       card.tabIndex = 0;
       card.dataset.index = index;
       card.onclick = () => openDetailModal(can.id);
-      
+
       card.onkeydown = (e) => {
         if (e.key === "Enter" || e.key === " ") {
           openDetailModal(can.id);
@@ -386,7 +384,7 @@
           }
         }
       };
-      
+
       card.innerHTML = `<img src="${coverImg}" alt="${can.name}" loading="lazy" decoding="async">`;
       grid.appendChild(card);
     });
@@ -436,6 +434,13 @@
     });
 
     document.getElementById("detailModal").classList.add("active");
+    document.body.style.overflow = "hidden"; // 🚀 Bloqueia scroll do fundo para a TV não mover a tela de trás
+
+    // 🚀 Move o foco automaticamente para a 1ª foto da lata
+    setTimeout(() => {
+      const firstPhoto = leftGrid.querySelector(".view-card-item");
+      if (firstPhoto) firstPhoto.focus();
+    }, 100);
   }
 
   function openZoomModal(index) {
@@ -443,6 +448,11 @@
     currentZoomIndex = index;
     document.getElementById("zoomImage").src = currentGalleryViews[currentZoomIndex];
     document.getElementById("zoomModal").classList.add("active");
+    
+    setTimeout(() => {
+      const closeBtn = document.querySelector(".zoom-close-btn");
+      if (closeBtn) closeBtn.focus();
+    }, 100);
   }
 
   function navigateZoom(direction) {
@@ -451,38 +461,41 @@
     document.getElementById("zoomImage").src = currentGalleryViews[currentZoomIndex];
   }
 
-  function closeZoomModal() { document.getElementById("zoomModal").classList.remove("active"); }
+  function closeZoomModal() { 
+    document.getElementById("zoomModal").classList.remove("active"); 
+  }
+
   function closeModal() {
     document.getElementById("detailModal").classList.remove("active");
-    if(lastFocusedElement) lastFocusedElement.focus();
+    document.body.style.overflow = "auto"; // 🚀 Desbloqueia o scroll do fundo
+    if(lastFocusedElement) lastFocusedElement.focus(); // 🚀 Retorna o foco exatamente ao card anterior
   }
 
-document.addEventListener("keydown", (e) => {
-  const zoomModal = document.getElementById("zoomModal");
-  const isZoomActive = zoomModal && zoomModal.classList.contains("active");
+  document.addEventListener("keydown", (e) => {
+    const zoomModal = document.getElementById("zoomModal");
+    const isZoomActive = zoomModal && zoomModal.classList.contains("active");
 
-  // Se o Modal de Zoom estiver aberto, navega pelas fotos com as setas Esquerda e Direita
-  if (isZoomActive) {
-    if (e.key === "ArrowLeft") {
-      e.preventDefault();
-      navigateZoom(-1); // Volta a foto
-    } else if (e.key === "ArrowRight") {
-      e.preventDefault();
-      navigateZoom(1);  // Avança a foto
-    }
-  }
-
-  // Tecla ESC ou Voltar no Controle para fechar os modais
-  if (e.key === "Escape" || e.key === "Back" || e.keyCode === 10009 || e.keyCode === 27) {
     if (isZoomActive) {
-      closeZoomModal();
-    } else if (document.getElementById("detailModal") && document.getElementById("detailModal").classList.contains("active")) {
-      closeModal();
-    } else if (document.getElementById("sidebarMenu") && document.getElementById("sidebarMenu").classList.contains("active")) {
-      closeSidebar();
+      if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        navigateZoom(-1);
+      } else if (e.key === "ArrowRight") {
+        e.preventDefault();
+        navigateZoom(1);
+      }
     }
-  }
-});
+
+    // Tecla ESC ou Voltar no Controle para fechar os modais
+    if (e.key === "Escape" || e.key === "Back" || e.keyCode === 10009 || e.keyCode === 27) {
+      if (isZoomActive) {
+        closeZoomModal();
+      } else if (document.getElementById("detailModal") && document.getElementById("detailModal").classList.contains("active")) {
+        closeModal();
+      } else if (document.getElementById("sidebarMenu") && document.getElementById("sidebarMenu").classList.contains("active")) {
+        closeSidebar();
+      }
+    }
+  });
 
   window.onload = fetchCatalogFromSheet;
 </script>
