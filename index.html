@@ -59,54 +59,82 @@
     .brand-item:focus, .brand-item:hover { color: #fff; background: #222; border-color: #f39c12 !important; }
 
     /* ÁREA DE CONTEÚDO (DIREITA) */
-    .main-area { flex: 1; display: flex; flex-direction: column; height: 100%; padding: 12px; gap: 12px; overflow: hidden; background: #000; }
+    .main-area { flex: 1; display: flex; flex-direction: column; height: 100%; padding: 16px; gap: 16px; overflow: hidden; background: #000; }
 
     /* 2. PAINEL DE DESTAQUE SUPERIOR (HERO) */
     .hero-panel {
-      height: 48%;
+      flex: 1;
       background: #0d0d0d;
       border: 1px solid #222;
-      border-radius: 10px;
+      border-radius: 12px;
       display: flex;
-      padding: 12px;
-      gap: 16px;
+      padding: 16px;
+      gap: 20px;
+      overflow: hidden;
     }
 
     .hero-left-photos {
       flex: 1;
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 8px;
-      max-width: 440px;
+      gap: 10px;
+      max-width: 480px;
       height: 100%;
     }
 
     .hero-photo-card {
-      background: #fff; border-radius: 6px; padding: 4px; display: flex;
+      background: #fff; border-radius: 8px; padding: 6px; display: flex;
       justify-content: center; align-items: center; cursor: pointer;
-      border: 3px solid transparent; box-sizing: border-box; height: 100%;
+      border: 4px solid transparent; box-sizing: border-box; height: 100%;
+      transition: border-color 0.15s ease;
     }
     .hero-photo-card img { width: 100%; height: 100%; object-fit: contain; }
     .hero-photo-card:focus, .hero-photo-card:hover { border-color: #f39c12 !important; box-shadow: 0 0 15px rgba(243, 156, 18, 0.8) !important; }
 
     .hero-right-info { flex: 1; display: flex; flex-direction: column; justify-content: center; color: #f39c12; text-transform: uppercase; font-style: italic; }
-    .hero-title { font-size: clamp(1.2rem, 2.5vw, 2rem); font-weight: 900; margin-bottom: 12px; line-height: 1.1; color: #f39c12; }
-    .info-label { font-size: 0.75rem; font-weight: 900; color: #8e8e93; display: block; margin-top: 4px; }
-    .info-val { font-size: 1.1rem; font-weight: 900; color: #f39c12; margin-bottom: 6px; }
+    .hero-title { font-size: clamp(1.4rem, 2.8vw, 2.2rem); font-weight: 900; margin-bottom: 16px; line-height: 1.1; color: #f39c12; }
+    .info-label { font-size: 0.8rem; font-weight: 900; color: #8e8e93; display: block; margin-top: 6px; }
+    .info-val { font-size: 1.2rem; font-weight: 900; color: #f39c12; margin-bottom: 8px; }
 
-    /* 3. GRADE DE CARDS (BASE INFERIOR) */
-    .catalog-section { flex: 1; overflow-y: auto; padding-right: 4px; }
-    .card-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; }
+    /* 3. CARROSSEL DE CARDS EM UMA ÚNICA LINHA HORIZONTAL */
+    .catalog-section { 
+      height: 220px; 
+      min-height: 220px;
+      width: 100%;
+      overflow-x: auto; 
+      overflow-y: hidden;
+      scroll-behavior: smooth;
+      padding-bottom: 8px;
+    }
+    
+    /* Força todos os cards a ficarem em 1 linha sem quebrar */
+    .card-row { 
+      display: flex; 
+      gap: 12px; 
+      height: 100%;
+      width: max-content;
+    }
 
     .card {
-      background-color: #fff; border-radius: 6px; aspect-ratio: 1 / 1;
-      overflow: hidden; display: flex; justify-content: center; align-items: center;
-      padding: 4px; cursor: pointer; border: 4px solid transparent; box-sizing: border-box;
+      background-color: #fff; 
+      border-radius: 8px; 
+      height: 100%;
+      aspect-ratio: 1 / 1;
+      overflow: hidden; 
+      display: flex; 
+      justify-content: center; 
+      align-items: center;
+      padding: 6px; 
+      cursor: pointer; 
+      border: 4px solid transparent; 
+      box-sizing: border-box;
+      flex-shrink: 0;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
     }
     .card img { width: 100%; height: 100%; object-fit: contain; }
     .card:focus, .card:hover { border-color: #f39c12 !important; box-shadow: 0 0 15px rgba(243, 156, 18, 0.8) !important; z-index: 10; }
 
-    /* MODAL ZOOM ENTRADA TOTAL */
+    /* MODAL ZOOM (AMPLIAR FOTO) */
     .zoom-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.98); z-index: 700; display: none; justify-content: center; align-items: center; padding: 16px; }
     .zoom-modal.active { display: flex; }
     .zoom-modal img { max-width: 85vw; max-height: 85vh; object-fit: contain; border-radius: 6px; }
@@ -133,15 +161,13 @@
       <button class="menu-item" onclick="location.href='admin.html'" tabindex="0">⚙️ Cadastro (Admin)</button>
 
       <div class="brand-section-title">Marcas</div>
-      <div class="brand-list" id="brandList">
-        <!-- Lista de Marcas Gerada via JS -->
-      </div>
+      <div class="brand-list" id="brandList"></div>
     </aside>
 
-    <!-- ÁREA PRINCIPAL (HERO TOP + GRADE BASE) -->
+    <!-- ÁREA PRINCIPAL (HERO TOP + CARROSSEL BASE) -->
     <main class="main-area">
 
-      <!-- PAINEL DE DESTAQUE SUPERIOR (ATUALIZA AUTO) -->
+      <!-- PAINEL DE DESTAQUE SUPERIOR -->
       <section class="hero-panel" id="heroPanel">
         <div class="hero-left-photos" id="heroPhotos">
           <div class="hero-photo-card"><img src="" alt=""></div>
@@ -159,9 +185,9 @@
         </div>
       </section>
 
-      <!-- GRADE DE CARDS (ROLA AQUI) -->
-      <section class="catalog-section">
-        <div class="card-grid" id="cardGrid"></div>
+      <!-- CARROSSEL EM 1 ÚNICA LINHA HORIZONTAL -->
+      <section class="catalog-section" id="catalogSection">
+        <div class="card-row" id="cardRow"></div>
       </section>
 
     </main>
@@ -178,7 +204,7 @@
   const API_URL = "https://script.google.com/macros/s/AKfycbwFIsSgEF2grkBpliyO_hSD0Lh2ULq6xHoJC6mDLYvjemTLYe67jF38MDNWP2ixITzE/exec";
   let canCatalog = [];
   let currentFiltered = [];
-  let currentGalleryViews = [];
+  let lastFocusedCard = null;
 
   const vkKeys = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','1','2','3','4','5','6','7','8','9','0','ESPAÇO','DEL','LIMPAR'];
 
@@ -226,7 +252,6 @@
     const brandContainer = document.getElementById("brandList");
     brandContainer.innerHTML = "";
     
-    // Extrai cervejarias/marcas únicas
     const brands = [...new Set(canCatalog.map(c => c.brewery).filter(Boolean))].sort();
     
     const allBtn = document.createElement("div");
@@ -261,8 +286,8 @@
   }
 
   function renderApp() {
-    const grid = document.getElementById("cardGrid");
-    grid.innerHTML = "";
+    const row = document.getElementById("cardRow");
+    row.innerHTML = "";
 
     currentFiltered.forEach((can) => {
       const coverImg = can.images ? (can.images.cover || can.images.front || can.images.left) : "";
@@ -270,17 +295,29 @@
       card.className = "card";
       card.tabIndex = 0;
       
-      // 🚀 Atualiza o topo automaticamente ao passar o foco da TV ou o Mouse!
-      card.onfocus = () => updateHeroPanel(can);
+      card.onfocus = () => {
+        updateHeroPanel(can);
+        lastFocusedCard = card;
+        // Rola horizontalmente a linha de forma suave para o card focado ficar visível
+        card.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+      };
       card.onmouseenter = () => updateHeroPanel(can);
       card.onclick = () => updateHeroPanel(can);
 
+      // Atalho: Seta para cima pula direto para a 1ª foto do topo
+      card.onkeydown = (e) => {
+        if (e.key === "ArrowUp") {
+          e.preventDefault();
+          const firstPhoto = document.querySelector(".hero-photo-card");
+          if (firstPhoto) firstPhoto.focus();
+        }
+      };
+
       card.innerHTML = `<img src="${coverImg}" alt="${can.name}" loading="lazy">`;
-      grid.appendChild(card);
+      row.appendChild(card);
     });
   }
 
-  // 🚀 ATUALIZA O PAINEL SUPERIOR COM AS 4 FOTOS E DADOS DA LATA SELECIONADA
   function updateHeroPanel(can) {
     document.getElementById("heroTitle").innerText = (can.name || "").toUpperCase();
     document.getElementById("heroCountry").innerText = (can.country || "-").toUpperCase();
@@ -291,14 +328,22 @@
     const photosContainer = document.getElementById("heroPhotos");
     photosContainer.innerHTML = "";
 
-    currentGalleryViews = [can.images?.front, can.images?.left, can.images?.back, can.images?.right].filter(Boolean);
+    const galleryViews = [can.images?.front, can.images?.left, can.images?.back, can.images?.right].filter(Boolean);
 
-    currentGalleryViews.forEach((url, idx) => {
+    galleryViews.forEach((url, idx) => {
       const photoCard = document.createElement("div");
       photoCard.className = "hero-photo-card";
       photoCard.tabIndex = 0;
       photoCard.onclick = () => openZoomModal(url);
-      photoCard.onkeydown = (e) => { if(e.key === "Enter" || e.key === " ") openZoomModal(url); };
+      photoCard.onkeydown = (e) => { 
+        if(e.key === "Enter" || e.key === " ") {
+          openZoomModal(url);
+        } else if (e.key === "ArrowDown") {
+          // Seta para baixo na foto devolve o foco para a fileira de cards
+          e.preventDefault();
+          if (lastFocusedCard) lastFocusedCard.focus();
+        }
+      };
       photoCard.innerHTML = `<img src="${url}" alt="Foto ${idx+1}">`;
       photosContainer.appendChild(photoCard);
     });
