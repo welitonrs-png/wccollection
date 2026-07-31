@@ -8,6 +8,10 @@
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; outline: none; }
     body { background-color: #000000; color: #ffffff; height: 100vh; overflow: hidden; display: flex; user-select: none; }
 
+    /* 🚀 OCULTAR BARRAS DE ROLAGEM EM TODOS OS NAVEGADORES */
+    ::-webkit-scrollbar { display: none !important; width: 0 !important; height: 0 !important; }
+    * { -ms-overflow-style: none !important; scrollbar-width: none !important; }
+
     /* 🚀 FOCO LIMPO PARA SMART TV E MOUSE */
     :focus {
       outline: none !important;
@@ -20,7 +24,7 @@
 
     /* 1. MENU LATERAL RETRÁTIL (COMEÇA COMPACTO APENAS COM ÍCONES) */
     .sidebar {
-      width: 60px; /* Largura inicial recolhida */
+      width: 60px;
       min-width: 60px;
       background: #0d0d0d;
       border-right: 1px solid #222;
@@ -69,7 +73,7 @@
     .sidebar:hover .menu-item span, .sidebar:focus-within .menu-item span { opacity: 1; }
     .menu-item:focus, .menu-item:hover { background: #18181b; color: #f39c12; border-color: #f39c12 !important; }
 
-    /* 2. SUBMENUS SLIDE-OVER (SOBREPOSIÇÃO DE MARCAS E PESQUISA) */
+    /* 2. SUBMENUS SLIDE-OVER (MARCAS E PESQUISA) */
     .subpanel-overlay {
       position: absolute;
       top: 0;
@@ -135,10 +139,12 @@
       height: 100%;
     }
 
+    /* 🚀 FOTOS DO HERO MANTÊM 3/4 NO TOPO PARA COMBINAR */
     .hero-photo-card {
       background: #fff; border-radius: 8px; padding: 6px; display: flex;
       justify-content: center; align-items: center; cursor: pointer;
       border: 4px solid transparent; box-sizing: border-box; height: 100%;
+      aspect-ratio: 3 / 4;
       transition: border-color 0.15s ease;
     }
     .hero-photo-card img { width: 100%; height: 100%; object-fit: contain; }
@@ -151,8 +157,8 @@
 
     /* CARROSSEL DE CARDS EM 1 LINHA HORIZONTAL */
     .catalog-section { 
-      height: 220px; 
-      min-height: 220px;
+      height: 230px; 
+      min-height: 230px;
       width: 100%;
       overflow-x: auto; 
       overflow-y: hidden;
@@ -162,11 +168,12 @@
     
     .card-row { display: flex; gap: 12px; height: 100%; width: max-content; }
 
+    /* 🚀 CARDS RETANGULARES (3 LARGURA x 4 ALTURA) */
     .card {
       background-color: #fff; 
       border-radius: 8px; 
       height: 100%;
-      aspect-ratio: 1 / 1;
+      aspect-ratio: 3 / 4; /* Formato 3x4 em pé */
       overflow: hidden; 
       display: flex; 
       justify-content: center; 
@@ -192,7 +199,7 @@
 
   <div class="app-container">
 
-    <!-- 1. MENU LATERAL RETRÁTIL (SOMENTE ÍCONES QUE EXPANDEM) -->
+    <!-- 1. MENU LATERAL RETRÁTIL (SOMENTE ÍCONES) -->
     <aside class="sidebar">
       <div class="sidebar-logo-container">
         <img src="logo.png" alt="WCCollection Logo" class="sidebar-logo-img">
@@ -206,7 +213,7 @@
       <button class="menu-item" onclick="location.href='admin.html'" tabindex="0"><i>⚙️</i><span>Admin</span></button>
     </aside>
 
-    <!-- 2. SUBPAINEL DE MARCAS (SOBREPOSIÇÃO) -->
+    <!-- 2. SUBPAINEL DE MARCAS -->
     <div class="subpanel-overlay" id="brandPanel">
       <div class="subpanel-header">
         <div class="subpanel-title">🏷️ Marcas</div>
@@ -215,7 +222,7 @@
       <div class="brand-list-scroll" id="brandListScroll"></div>
     </div>
 
-    <!-- 3. SUBPAINEL DE PESQUISA + TECLADO (SOBREPOSIÇÃO) -->
+    <!-- 3. SUBPAINEL DE PESQUISA + TECLADO -->
     <div class="subpanel-overlay" id="searchPanel">
       <div class="subpanel-header">
         <div class="subpanel-title">🔍 Pesquisar</div>
@@ -225,7 +232,7 @@
       <div class="vk-container" id="vkContainer"></div>
     </div>
 
-    <!-- 4. ÁREA PRINCIPAL (HERO TOP + CARROSSEL BASE) -->
+    <!-- 4. ÁREA PRINCIPAL -->
     <main class="main-area">
 
       <!-- PAINEL DE DESTAQUE SUPERIOR -->
