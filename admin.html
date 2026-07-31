@@ -155,7 +155,6 @@
 
   <main class="main-content">
     <div class="admin-grid">
-      <!-- FORMULÁRIO DE CADASTRO/EDIÇÃO -->
       <section class="panel-box">
         <h2 class="panel-title" id="formTitle">➕ CADASTRAR NOVA LATA</h2>
         <form id="canForm" onsubmit="handleFormSubmit(event)">
@@ -202,19 +201,31 @@
             <input type="text" id="canBarcode" class="form-control" placeholder="Ex: 7891234567890">
           </div>
 
-          <!-- 🏷️ NOVO CAMPO: LOGO DA MARCA -->
+          <!-- 🖼️ 6 CAMPOS INDEPENDENTES DE IMAGEM -->
+          
+          <!-- 1. LOGO DA MARCA (NÃO VAI PRO CARD DA LATA) -->
           <div class="form-group">
-            <label>🏷️ LOGO DA MARCA / CERVEJARIA</label>
+            <label>🏷️ 1. LOGO DA MARCA / CERVEJARIA (CANTO SUPERIOR DO LIGHTBOX)</label>
             <div class="image-input-wrapper">
-              <input type="text" id="imgBrandLogo" class="form-control" placeholder="URL da imagem do logo">
+              <input type="text" id="imgBrandLogo" class="form-control" placeholder="URL da imagem do logo da marca">
               <button type="button" class="btn-file-custom" onclick="triggerFileInput('fileBrandLogo')">📁 Upload</button>
               <input type="file" id="fileBrandLogo" class="file-input-hidden" accept="image/*" onchange="uploadImage(this, 'imgBrandLogo')">
             </div>
           </div>
 
-          <!-- INPUTS DE IMAGENS -->
+          <!-- 2. CAPA PERSONALIZADA -->
           <div class="form-group">
-            <label>FOTO FRONTAL (CAPA)</label>
+            <label>⭐ 2. FOTO DE CAPA (EXIBIDA NO CARTÃO/INÍCIO)</label>
+            <div class="image-input-wrapper">
+              <input type="text" id="imgCover" class="form-control" placeholder="URL da imagem de capa (se vazio usa a frontal)">
+              <button type="button" class="btn-file-custom" onclick="triggerFileInput('fileCover')">📁 Upload</button>
+              <input type="file" id="fileCover" class="file-input-hidden" accept="image/*" onchange="uploadImage(this, 'imgCover')">
+            </div>
+          </div>
+
+          <!-- 3. FOTO FRONTAL -->
+          <div class="form-group">
+            <label>📷 3. FOTO FRONTAL</label>
             <div class="image-input-wrapper">
               <input type="text" id="imgFront" class="form-control" placeholder="URL da foto frontal">
               <button type="button" class="btn-file-custom" onclick="triggerFileInput('fileFront')">📁 Upload</button>
@@ -222,8 +233,9 @@
             </div>
           </div>
 
+          <!-- 4. FOTO ESQUERDA -->
           <div class="form-group">
-            <label>FOTO ESQUERDA</label>
+            <label>📷 4. FOTO ESQUERDA</label>
             <div class="image-input-wrapper">
               <input type="text" id="imgLeft" class="form-control" placeholder="URL da foto esquerda">
               <button type="button" class="btn-file-custom" onclick="triggerFileInput('fileLeft')">📁 Upload</button>
@@ -231,8 +243,9 @@
             </div>
           </div>
 
+          <!-- 5. FOTO TRASEIRA -->
           <div class="form-group">
-            <label>FOTO TRASEIRA</label>
+            <label>📷 5. FOTO TRASEIRA</label>
             <div class="image-input-wrapper">
               <input type="text" id="imgBack" class="form-control" placeholder="URL da foto traseira">
               <button type="button" class="btn-file-custom" onclick="triggerFileInput('fileBack')">📁 Upload</button>
@@ -240,8 +253,9 @@
             </div>
           </div>
 
+          <!-- 6. FOTO DIREITA -->
           <div class="form-group">
-            <label>FOTO DIREITA</label>
+            <label>📷 6. FOTO DIREITA</label>
             <div class="image-input-wrapper">
               <input type="text" id="imgRight" class="form-control" placeholder="URL da foto direita">
               <button type="button" class="btn-file-custom" onclick="triggerFileInput('fileRight')">📁 Upload</button>
@@ -254,7 +268,6 @@
         </form>
       </section>
 
-      <!-- TABELA DE ITENS CADASTRADOS -->
       <section class="panel-box">
         <h2 class="panel-title">📋 CATÁLOGO CADASTRADO</h2>
         <div style="overflow-x: auto;">
@@ -306,6 +319,7 @@
     tbody.innerHTML = "";
 
     catalogData.forEach((can, index) => {
+      // Prioridade de exibição do card: Capa -> Frontal -> Esquerda
       const cover = can.images ? (can.images.cover || can.images.front || can.images.left) : "";
       
       let tags = "";
@@ -352,7 +366,9 @@
     document.getElementById("canYear").value = can.year || "";
     document.getElementById("canBarcode").value = can.barcode || "";
 
+    // Preenche todos os 6 campos no formulário
     document.getElementById("imgBrandLogo").value = can.brandLogo || can.images?.brandLogo || "";
+    document.getElementById("imgCover").value = can.images?.cover || "";
     document.getElementById("imgFront").value = can.images?.front || "";
     document.getElementById("imgLeft").value = can.images?.left || "";
     document.getElementById("imgBack").value = can.images?.back || "";
@@ -377,6 +393,14 @@
 
   async function handleFormSubmit(e) {
     e.preventDefault();
+    
+    const brandLogoVal = document.getElementById("imgBrandLogo").value;
+    const coverVal = document.getElementById("imgCover").value;
+    const frontVal = document.getElementById("imgFront").value;
+    const leftVal = document.getElementById("imgLeft").value;
+    const backVal = document.getElementById("imgBack").value;
+    const rightVal = document.getElementById("imgRight").value;
+
     const canData = {
       id: document.getElementById("canId").value || Date.now().toString(),
       name: document.getElementById("canName").value,
@@ -385,16 +409,16 @@
       volume: document.getElementById("canVolume").value,
       year: document.getElementById("canYear").value,
       barcode: document.getElementById("canBarcode").value,
-      brandLogo: document.getElementById("imgBrandLogo").value,
+      brandLogo: brandLogoVal, // Logo da marca salvo de forma isolada
       isSet: document.getElementById("destSet").checked,
       isOcoc: document.getElementById("destOcoc").checked,
       images: {
-        brandLogo: document.getElementById("imgBrandLogo").value,
-        front: document.getElementById("imgFront").value,
-        left: document.getElementById("imgLeft").value,
-        back: document.getElementById("imgBack").value,
-        right: document.getElementById("imgRight").value,
-        cover: document.getElementById("imgFront").value || document.getElementById("imgLeft").value
+        brandLogo: brandLogoVal,
+        cover: coverVal || frontVal || leftVal, // Garante que a capa NUNCA seja o logo da marca
+        front: frontVal,
+        left: leftVal,
+        back: backVal,
+        right: rightVal
       }
     };
 
