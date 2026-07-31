@@ -68,19 +68,14 @@
     .tag-set { background: #a855f7; color: #fff; }
 
     /* 🚀 DESTAQUE VISUAL PARA O CONTROLE REMOTO DA SMART TV */
+/* 1. ESTILO DE FOCO GERAL (Sem a borda externa duplicada) */
 :focus {
-  outline: 4px solid #f39c12 !important;
-  outline-offset: 3px;
+  outline: none !important; /* Desativa a segunda borda do navegador */
+  border-color: #f39c12 !important;
   box-shadow: 0 0 15px rgba(243, 156, 18, 0.9) !important;
   z-index: 100;
 }
-    /* 🚀 DESTAQUE VISUAL PARA O CONTROLE REMOTO DA SMART TV */
-:focus {
-  outline: 4px solid #f39c12 !important;
-  outline-offset: 3px;
-  box-shadow: 0 0 15px rgba(243, 156, 18, 0.9) !important;
-  z-index: 100;
-}
+
   </style>
 </head>
 <body>
