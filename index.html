@@ -74,13 +74,12 @@
 
     .main-area { flex: 1; display: flex; flex-direction: column; height: 100vh; padding: 12px 16px; gap: 12px; overflow: hidden; background: #9B9B9B; }
 
-    /* 🎯 HERO PANEL COM CONTAINER FIXO NO CANTO SUPERIOR DIREITO */
+    /* PAINEL PRINCIPAL FIXO NA TELA */
     .hero-panel {
       flex: 1; min-height: 0; background: #9B9B9B; border: none; border-radius: 12px;
       display: flex; padding: 12px 16px; gap: 24px; align-items: center; position: relative;
     }
     
-    /* 🔴 ÁREA DO LOGO DA MARCA (CÍRCULO VERMELHO) */
     .hero-brand-logo-container {
       position: absolute; top: 12px; right: 24px; width: 220px; height: 100px;
       display: flex; justify-content: flex-end; align-items: flex-start; z-index: 20; pointer-events: none;
@@ -122,6 +121,7 @@
     .card img { width: 100%; height: 100%; object-fit: contain; }
     .card:focus, .card:hover { border-color: #f39c12 !important; box-shadow: 0 0 15px rgba(243, 156, 18, 0.8) !important; z-index: 10; }
 
+    /* LIGHTBOX APENAS AO CLICAR NA IMAGEM DE DETALHE */
     .zoom-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.95); z-index: 700; display: none; justify-content: center; align-items: center; padding: 16px; }
     .zoom-modal.active { display: flex; }
     .zoom-modal img { max-width: 85vw; max-height: 85vh; object-fit: contain; border-radius: 6px; cursor: pointer; }
@@ -154,8 +154,8 @@
     </div>
 
     <main class="main-area">
+      <!-- PAINEL FIXO NO PRÓPRIO HTML -->
       <section class="hero-panel" id="heroPanel">
-        <!-- 🔴 EXIBIÇÃO DA MARCA NO CANTO SUPERIOR DIREITO -->
         <div class="hero-brand-logo-container" id="heroBrandLogo"></div>
 
         <div class="hero-left-photos" id="heroPhotos">
@@ -182,6 +182,7 @@
     </main>
   </div>
 
+  <!-- LIGHTBOX PARA AMPLIAR QUANDO CLICAR -->
   <div class="zoom-modal" id="zoomModal">
     <button class="zoom-close-btn" onclick="closeZoomModal()" tabindex="0">&times;</button>
     <img id="zoomImage" src="" alt="Imagem ampliada" onclick="navigateZoom(1)">
@@ -282,11 +283,11 @@
     row.innerHTML = "";
 
     currentFiltered.forEach((can, index) => {
-      // 🚀 CAPA GARANTIDA: NUNCA USA O LOGO DA MARCA COMO CAPA
-      const coverImg = can.images ? (can.images.front || can.images.left || can.images.back || can.images.right || can.images.cover) : "";
+      const coverImg = can.images ? (can.images.cover || can.images.front || can.images.left) : "";
       const card = document.createElement("div");
       card.className = "card"; card.tabIndex = 0;
       
+      // AO NAVEGAR COM O CONTROLE REMOTE/MOUSE, APENAS ATUALIZA O PAINEL FIXO
       card.onfocus = () => { updateHeroPanel(can, index); lastFocusedCard = card; card.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' }); };
       card.onmouseenter = () => updateHeroPanel(can, index);
       card.onclick = () => updateHeroPanel(can, index);
@@ -304,11 +305,10 @@
     document.getElementById("heroYear").innerText = can.year || "-";
     document.getElementById("heroBarcode").innerText = can.barcode || "-";
 
-    // 🔴 CARREGA O LOGO DA MARCA NO CANTO SUPERIOR DIREITO
     const logoContainer = document.getElementById("heroBrandLogo");
     const logoUrl = can.brandLogo || can.images?.brandLogo;
     if (logoUrl) {
-      logoContainer.innerHTML = `<img src="${logoUrl}" alt="Logo da Cervejaria">`;
+      logoContainer.innerHTML = `<img src="${logoUrl}" alt="Logo Marca">`;
     } else {
       logoContainer.innerHTML = "";
     }
@@ -320,12 +320,12 @@
     const photosContainer = document.getElementById("heroPhotos");
     photosContainer.innerHTML = "";
 
-    // 🚀 APENAS FOTOS DA LATA NO CARROSEL DE ZOOM (SEM O LOGO DA MARCA)
     zoomGallery = [can.images?.front, can.images?.left, can.images?.back, can.images?.right].filter(Boolean);
 
     zoomGallery.forEach((url, idx) => {
       const photoCard = document.createElement("div");
       photoCard.className = "hero-photo-card"; photoCard.tabIndex = 0;
+      // CLICAR NA IMAGEM DE DETALHE ABRE O ZOOOM
       photoCard.onclick = () => openZoomModal(idx);
       photoCard.onkeydown = (e) => { 
         if(e.key === "Enter" || e.key === " ") openZoomModal(idx);
