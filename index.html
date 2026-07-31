@@ -8,13 +8,13 @@
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; outline: none; }
     body { background-color: #000000; color: #ffffff; padding: 8px; max-width: 1800px; margin: 0 auto; user-select: none; overflow-x: hidden; }
 
-    /* 🚀 DESTAQUE VISUAL PARA O CONTROLE REMOTO DA SMART TV */
-    :focus {
-      outline: 4px solid #f39c12 !important;
-      outline-offset: 3px;
-      box-shadow: 0 0 15px rgba(243, 156, 18, 0.9) !important;
-      z-index: 100;
-    }
+/* 1. ESTILO DE FOCO GERAL (Sem a borda externa duplicada) */
+:focus {
+  outline: none !important; /* Desativa a segunda borda do navegador */
+  border-color: #f39c12 !important;
+  box-shadow: 0 0 15px rgba(243, 156, 18, 0.9) !important;
+  z-index: 100;
+}
 
     /* Área de detecção invisível no canto esquerdo para abrir o menu ao passar o mouse */
     .mouse-hover-trigger {
@@ -145,23 +145,29 @@
       .card-grid { grid-template-columns: repeat(5, 1fr); gap: 8px; } 
     }
 
-    .card { 
-      background-color: #fff; 
-      border-radius: 6px; 
-      aspect-ratio: 1 / 1; 
-      overflow: hidden; 
-      display: flex; 
-      justify-content: center; 
-      align-items: center; 
-      padding: 4px; 
-      cursor: pointer; 
-      border: 3px solid transparent; 
-      box-sizing: border-box;
-      transform: none !important;
-      transition: border-color 0.15s ease, box-shadow 0.15s ease;
-    }
+/* 2. AJUSTE NOS CARDS DA GRADE */
+.card { 
+  background-color: #fff; 
+  border-radius: 6px; 
+  aspect-ratio: 1 / 1; 
+  overflow: hidden; 
+  display: flex; 
+  justify-content: center; 
+  align-items: center; 
+  padding: 4px; 
+  cursor: pointer; 
+  border: 4px solid transparent; /* Reserva a borda única */
+  box-sizing: border-box;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.card:focus, .card:hover { 
+  border-color: #f39c12 !important; 
+  box-shadow: 0 0 15px rgba(243, 156, 18, 0.8) !important; 
+  outline: none !important; /* Impede duplicar no card */
+  z-index: 10; 
+}
     .card img { width: 100%; height: 100%; object-fit: contain; transform: none !important; }
-    .card:focus, .card:hover { border-color: #f39c12 !important; box-shadow: 0 0 15px rgba(243, 156, 18, 0.8); transform: none !important; z-index: 10; }
 
     /* Lightbox Modal Fixo */
     .lightbox-modal-overlay { 
@@ -187,14 +193,27 @@
       gap: 8px; width: 100%; max-width: 420px; aspect-ratio: 1 / 1; margin: 0 auto; 
     }
 
-    .view-card-item { 
-      background: #fff; border-radius: 6px; padding: 4px; 
-      display: flex; justify-content: center; align-items: center; 
-      cursor: pointer; border: 3px solid transparent; box-sizing: border-box;
-      transform: none !important; transition: border-color 0.15s ease, box-shadow 0.15s ease;
-    }
+/* 3. AJUSTE NAS FOTOS DENTRO DO LIGHTBOX */
+.view-card-item { 
+  background: #fff; 
+  border-radius: 6px; 
+  padding: 4px; 
+  display: flex; 
+  justify-content: center; 
+  align-items: center; 
+  cursor: pointer; 
+  border: 4px solid transparent; 
+  box-sizing: border-box;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.view-card-item:focus, .view-card-item:hover { 
+  border-color: #f39c12 !important; 
+  box-shadow: 0 0 15px rgba(243, 156, 18, 0.8) !important; 
+  outline: none !important; /* Impede duplicar na foto do lightbox */
+}
     .view-card-item img { width: 100%; height: 100%; object-fit: contain; transform: none !important; }
-    .view-card-item:focus, .view-card-item:hover { border-color: #f39c12 !important; box-shadow: 0 0 15px rgba(243, 156, 18, 0.8); transform: none !important; }
+  
 
     .lightbox-right-info { flex: 1; color: #f39c12; text-transform: uppercase; font-style: italic; width: 100%; text-align: left; }
     .can-main-title { font-size: clamp(1.1rem, 3.5vw, 1.8rem); font-weight: 900; margin-bottom: 16px; color: #f39c12 !important; line-height: 1.1; }
