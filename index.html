@@ -6,7 +6,9 @@
   <title>BeerCan Catalog - Dashboard TV</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; outline: none; }
-    body { background-color: #000000; color: #ffffff; height: 100vh; overflow: hidden; display: flex; user-select: none; }
+    
+    /* 🚀 COR DE FUNDO GERAL MUDADA PARA #9B9B9B */
+    body { background-color: #9B9B9B; color: #ffffff; height: 100vh; overflow: hidden; display: flex; user-select: none; }
 
     /* 🚀 OCULTAR BARRAS DE ROLAGEM EM TODOS OS NAVEGADORES */
     ::-webkit-scrollbar { display: none !important; width: 0 !important; height: 0 !important; }
@@ -20,14 +22,14 @@
       z-index: 100;
     }
 
-    .app-container { display: flex; width: 100vw; height: 100vh; overflow: hidden; position: relative; }
+    .app-container { display: flex; width: 100vw; height: 100vh; overflow: hidden; position: relative; background-color: #9B9B9B; }
 
     /* 1. MENU LATERAL RETRÁTIL (APENAS ÍCONES) */
     .sidebar {
       width: 60px;
       min-width: 60px;
       background: #0d0d0d;
-      border-right: 1px solid #222;
+      border-right: 1px solid #333;
       display: flex;
       flex-direction: column;
       padding: 12px 6px;
@@ -43,7 +45,7 @@
     .sidebar:hover, .sidebar:focus-within {
       width: 250px;
       min-width: 250px;
-      box-shadow: 10px 0 30px rgba(0,0,0,0.9);
+      box-shadow: 10px 0 30px rgba(0,0,0,0.5);
     }
 
     .sidebar-logo-container { width: 100%; text-align: center; padding-bottom: 8px; border-bottom: 1px solid #222; }
@@ -68,7 +70,7 @@
       display: flex; flex-direction: column; padding: 16px; gap: 12px;
       transform: translateX(-100%); opacity: 0; pointer-events: none;
       transition: transform 0.25s ease-in-out, opacity 0.25s ease-in-out;
-      box-shadow: 15px 0 35px rgba(0,0,0,0.8);
+      box-shadow: 15px 0 35px rgba(0,0,0,0.5);
     }
     .subpanel-overlay.active { transform: translateX(0); opacity: 1; pointer-events: auto; }
 
@@ -87,7 +89,7 @@
     .vk-key:focus, .vk-key:hover { background: #f39c12; color: #000; border-color: #f39c12 !important; }
     .vk-key-wide { grid-column: span 2; }
 
-    /* 3. ÁREA PRINCIPAL DA DIREITA */
+    /* 3. ÁREA PRINCIPAL DA DIREITA (FUNDOS EM #9B9B9B) */
     .main-area { 
       flex: 1; 
       display: flex; 
@@ -96,20 +98,21 @@
       padding: 12px 16px; 
       gap: 12px; 
       overflow: hidden; 
-      background: #000; 
+      background: #9B9B9B; 
     }
 
-    /* PAINEL DE DESTAQUE SUPERIOR (HERO) */
+    /* PAINEL DE DESTAQUE SUPERIOR (HERO EM TOM ESCURO PARA DESTACAR TEXTOS E FOTOS) */
     .hero-panel {
       flex: 1;
       min-height: 0;
-      background: #0d0d0d;
-      border: 1px solid #222;
+      background: #18181b;
+      border: 1px solid #3f3f46;
       border-radius: 12px;
       display: flex;
       padding: 12px 16px;
       gap: 16px;
       align-items: center;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.15);
     }
 
     .hero-left-photos {
@@ -141,10 +144,10 @@
 
     .hero-right-info { flex: 1; display: flex; flex-direction: column; justify-content: center; color: #f39c12; text-transform: uppercase; font-style: italic; }
     .hero-title { font-size: clamp(1.2rem, 2.2vw, 1.8rem); font-weight: 900; margin-bottom: 10px; line-height: 1.1; color: #f39c12; }
-    .info-label { font-size: clamp(0.65rem, 1vw, 0.8rem); font-weight: 900; color: #8e8e93; display: block; margin-top: 2px; }
+    .info-label { font-size: clamp(0.65rem, 1vw, 0.8rem); font-weight: 900; color: #a1a1aa; display: block; margin-top: 2px; }
     .info-val { font-size: clamp(0.95rem, 1.5vw, 1.2rem); font-weight: 900; color: #f39c12; margin-bottom: 4px; }
 
-    /* 🚀 CONTADOR DE LATAS (POSICIONADO NO CANTO DIREITO ACIMA DOS CARDS) */
+    /* CONTADOR DE LATAS */
     .counter-bar {
       display: flex;
       justify-content: flex-end;
@@ -155,9 +158,9 @@
     .card-counter {
       font-size: 0.85rem;
       font-weight: 900;
-      color: #f39c12;
-      background: rgba(243, 156, 18, 0.1);
-      border: 1px solid rgba(243, 156, 18, 0.3);
+      color: #000;
+      background: rgba(255, 255, 255, 0.4);
+      border: 1px solid rgba(0, 0, 0, 0.2);
       padding: 3px 10px;
       border-radius: 12px;
       letter-spacing: 1px;
@@ -261,7 +264,7 @@
         </div>
       </section>
 
-      <!-- 🚀 BARRA DE CONTADOR DE LATAS (EX: 1/129) -->
+      <!-- BARRA DE CONTADOR DE LATAS (EX: 1/129) -->
       <div class="counter-bar">
         <div class="card-counter" id="cardCounter">0/0</div>
       </div>
@@ -409,7 +412,6 @@
     });
   }
 
-  // 🚀 ATUALIZA DADOS E CONTADOR (EX: 1/129)
   function updateHeroPanel(can, index = 0) {
     document.getElementById("heroTitle").innerText = (can.name || "").toUpperCase();
     document.getElementById("heroCountry").innerText = (can.country || "-").toUpperCase();
@@ -417,7 +419,6 @@
     document.getElementById("heroYear").innerText = can.year || "-";
     document.getElementById("heroBarcode").innerText = can.barcode || "-";
 
-    // Atualiza a contagem dinâmica no topo do carrossel
     const total = currentFiltered.length;
     const currentNum = total > 0 ? (index + 1) : 0;
     document.getElementById("cardCounter").innerText = `${currentNum}/${total}`;
