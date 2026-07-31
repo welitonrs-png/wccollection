@@ -7,14 +7,11 @@
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; outline: none; }
     
-    /* 🚀 COR DE FUNDO GERAL MUDADA PARA #9B9B9B */
     body { background-color: #9B9B9B; color: #ffffff; height: 100vh; overflow: hidden; display: flex; user-select: none; }
 
-    /* 🚀 OCULTAR BARRAS DE ROLAGEM EM TODOS OS NAVEGADORES */
     ::-webkit-scrollbar { display: none !important; width: 0 !important; height: 0 !important; }
     * { -ms-overflow-style: none !important; scrollbar-width: none !important; }
 
-    /* 🚀 FOCO LIMPO PARA SMART TV E MOUSE */
     :focus {
       outline: none !important;
       border-color: #f39c12 !important;
@@ -24,29 +21,13 @@
 
     .app-container { display: flex; width: 100vw; height: 100vh; overflow: hidden; position: relative; background-color: #9B9B9B; }
 
-    /* 1. MENU LATERAL RETRÁTIL (COM FUNDO #9B9B9B) */
+    /* MENU LATERAL RETRÁTIL */
     .sidebar {
-      width: 60px;
-      min-width: 60px;
-      background: #9B9B9B;
-      border-right: 1px solid #7a7a7a;
-      display: flex;
-      flex-direction: column;
-      padding: 12px 6px;
-      gap: 10px;
-      height: 100%;
-      z-index: 500;
-      transition: width 0.25s ease-in-out;
-      overflow: hidden;
-      white-space: nowrap;
-      position: relative;
+      width: 60px; min-width: 60px; background: #9B9B9B; border-right: 1px solid #7a7a7a;
+      display: flex; flex-direction: column; padding: 12px 6px; gap: 10px; height: 100%;
+      z-index: 500; transition: width 0.25s ease-in-out; overflow: hidden; white-space: nowrap; position: relative;
     }
-
-    .sidebar:hover, .sidebar:focus-within {
-      width: 250px;
-      min-width: 250px;
-      box-shadow: 10px 0 30px rgba(0,0,0,0.3);
-    }
+    .sidebar:hover, .sidebar:focus-within { width: 250px; min-width: 250px; box-shadow: 10px 0 30px rgba(0,0,0,0.3); }
 
     .sidebar-logo-container { width: 100%; text-align: center; padding-bottom: 8px; border-bottom: 1px solid #7a7a7a; }
     .sidebar-logo-img { width: 40px; height: 40px; object-fit: contain; transition: width 0.25s ease; }
@@ -63,14 +44,13 @@
     .sidebar:hover .menu-item span, .sidebar:focus-within .menu-item span { opacity: 1; }
     .menu-item:focus, .menu-item:hover { background: #828282; color: #f39c12; border-color: #f39c12 !important; }
 
-    /* 2. SUBMENUS SLIDE-OVER (MARCAS E PESQUISA COM FUNDO #9B9B9B) */
+    /* SUBMENUS SLIDE-OVER */
     .subpanel-overlay {
       position: absolute; top: 0; left: 60px; width: 280px; height: 100%;
       background: #9B9B9B; border-right: 1px solid #7a7a7a; z-index: 600;
       display: flex; flex-direction: column; padding: 16px; gap: 12px;
       transform: translateX(-100%); opacity: 0; pointer-events: none;
-      transition: transform 0.25s ease-in-out, opacity 0.25s ease-in-out;
-      box-shadow: 15px 0 35px rgba(0,0,0,0.3);
+      transition: transform 0.25s ease-in-out, opacity 0.25s ease-in-out; box-shadow: 15px 0 35px rgba(0,0,0,0.3);
     }
     .subpanel-overlay.active { transform: translateX(0); opacity: 1; pointer-events: auto; }
 
@@ -90,55 +70,27 @@
     .vk-key:focus, .vk-key:hover { background: #f39c12; color: #000; border-color: #f39c12 !important; }
     .vk-key-wide { grid-column: span 2; }
 
-    /* 3. ÁREA PRINCIPAL DA DIREITA */
-    .main-area { 
-      flex: 1; 
-      display: flex; 
-      flex-direction: column; 
-      height: 100vh; 
-      padding: 12px 16px; 
-      gap: 12px; 
-      overflow: hidden; 
-      background: #9B9B9B; 
-    }
+    /* ÁREA PRINCIPAL DA DIREITA */
+    .main-area { flex: 1; display: flex; flex-direction: column; height: 100vh; padding: 12px 16px; gap: 12px; overflow: hidden; background: #9B9B9B; }
 
-    /* PAINEL DE DESTAQUE / LIGHTBOX SUPERIOR (COM FUNDO #9B9B9B) */
+    /* 🚀 PAINEL LIGHTBOX SUPERIOR (SEM BORDA / FUNDO LISO) */
     .hero-panel {
       flex: 1;
       min-height: 0;
       background: #9B9B9B;
-      border: 2px solid #7a7a7a;
+      border: none;
       border-radius: 12px;
       display: flex;
       padding: 12px 16px;
       gap: 16px;
       align-items: center;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
     }
 
-    .hero-left-photos {
-      height: 100%;
-      aspect-ratio: 1 / 1;
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      grid-template-rows: repeat(2, 1fr);
-      gap: 8px;
-    }
-
+    .hero-left-photos { height: 100%; aspect-ratio: 1 / 1; display: grid; grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(2, 1fr); gap: 8px; }
+    
     .hero-photo-card {
-      background: #fff; 
-      border-radius: 6px; 
-      padding: 4px; 
-      display: flex;
-      justify-content: center; 
-      align-items: center; 
-      cursor: pointer;
-      border: 4px solid transparent; 
-      box-sizing: border-box; 
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      transition: border-color 0.15s ease;
+      background: #fff; border-radius: 6px; padding: 4px; display: flex; justify-content: center; align-items: center;
+      cursor: pointer; border: 4px solid transparent; box-sizing: border-box; width: 100%; height: 100%; overflow: hidden; transition: border-color 0.15s ease;
     }
     .hero-photo-card img { width: 100%; height: 100%; object-fit: contain; }
     .hero-photo-card:focus, .hero-photo-card:hover { border-color: #f39c12 !important; box-shadow: 0 0 15px rgba(243, 156, 18, 0.8) !important; }
@@ -148,59 +100,21 @@
     .info-label { font-size: clamp(0.65rem, 1vw, 0.8rem); font-weight: 900; color: #333; display: block; margin-top: 2px; }
     .info-val { font-size: clamp(0.95rem, 1.5vw, 1.2rem); font-weight: 900; color: #111; margin-bottom: 4px; }
 
-    /* CONTADOR DE LATAS */
-    .counter-bar {
-      display: flex;
-      justify-content: flex-end;
-      align-items: center;
-      padding: 0 4px;
-      margin-bottom: -4px;
-    }
-    .card-counter {
-      font-size: 0.85rem;
-      font-weight: 900;
-      color: #111;
-      background: rgba(255, 255, 255, 0.5);
-      border: 1px solid rgba(0, 0, 0, 0.2);
-      padding: 3px 10px;
-      border-radius: 12px;
-      letter-spacing: 1px;
-    }
+    .counter-bar { display: flex; justify-content: flex-end; align-items: center; padding: 0 4px; margin-bottom: -4px; }
+    .card-counter { font-size: 0.85rem; font-weight: 900; color: #111; background: rgba(255, 255, 255, 0.5); border: 1px solid rgba(0, 0, 0, 0.2); padding: 3px 10px; border-radius: 12px; letter-spacing: 1px; }
 
-    /* CARROSSEL DE CARDS EM 1 LINHA HORIZONTAL */
-    .catalog-section { 
-      height: 180px; 
-      min-height: 180px;
-      width: 100%;
-      overflow-x: auto; 
-      overflow-y: hidden;
-      scroll-behavior: smooth;
-      flex-shrink: 0;
-    }
-    
+    .catalog-section { height: 180px; min-height: 180px; width: 100%; overflow-x: auto; overflow-y: hidden; scroll-behavior: smooth; flex-shrink: 0; }
     .card-row { display: flex; gap: 10px; height: 100%; width: max-content; }
 
     /* CARDS RETANGULARES 3x4 NA BASE */
     .card {
-      background-color: #fff; 
-      border-radius: 8px; 
-      height: 100%;
-      aspect-ratio: 3 / 4;
-      overflow: hidden; 
-      display: flex; 
-      justify-content: center; 
-      align-items: center;
-      padding: 6px; 
-      cursor: pointer; 
-      border: 4px solid transparent; 
-      box-sizing: border-box;
-      flex-shrink: 0;
-      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+      background-color: #fff; border-radius: 8px; height: 100%; aspect-ratio: 3 / 4; overflow: hidden;
+      display: flex; justify-content: center; align-items: center; padding: 6px; cursor: pointer;
+      border: 4px solid transparent; box-sizing: border-box; flex-shrink: 0; transition: border-color 0.15s ease, box-shadow 0.15s ease;
     }
     .card img { width: 100%; height: 100%; object-fit: contain; }
     .card:focus, .card:hover { border-color: #f39c12 !important; box-shadow: 0 0 15px rgba(243, 156, 18, 0.8) !important; z-index: 10; }
 
-    /* MODAL ZOOM */
     .zoom-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.95); z-index: 700; display: none; justify-content: center; align-items: center; padding: 16px; }
     .zoom-modal.active { display: flex; }
     .zoom-modal img { max-width: 85vw; max-height: 85vh; object-fit: contain; border-radius: 6px; }
@@ -210,13 +124,8 @@
 <body>
 
   <div class="app-container">
-
-    <!-- MENU LATERAL RETRÁTIL -->
     <aside class="sidebar">
-      <div class="sidebar-logo-container">
-        <img src="logo.png" alt="WCCollection Logo" class="sidebar-logo-img">
-      </div>
-
+      <div class="sidebar-logo-container"><img src="logo.png" alt="WCCollection Logo" class="sidebar-logo-img"></div>
       <button class="menu-item" onclick="location.href='index.html'" tabindex="0"><i>🏠</i><span>Home</span></button>
       <button class="menu-item" onclick="toggleSubpanel('searchPanel')" tabindex="0"><i>🔍</i><span>Pesquisar</span></button>
       <button class="menu-item" onclick="toggleSubpanel('brandPanel')" tabindex="0"><i>🏷️</i><span>Marcas</span></button>
@@ -225,29 +134,18 @@
       <button class="menu-item" onclick="location.href='admin.html'" tabindex="0"><i>⚙️</i><span>Admin</span></button>
     </aside>
 
-    <!-- SUBPAINEL DE MARCAS -->
     <div class="subpanel-overlay" id="brandPanel">
-      <div class="subpanel-header">
-        <div class="subpanel-title">🏷️ Marcas</div>
-        <button class="subpanel-close-btn" onclick="closeSubpanels()">&times;</button>
-      </div>
+      <div class="subpanel-header"><div class="subpanel-title">🏷️ Marcas</div><button class="subpanel-close-btn" onclick="closeSubpanels()">&times;</button></div>
       <div class="brand-list-scroll" id="brandListScroll"></div>
     </div>
 
-    <!-- SUBPAINEL DE PESQUISA + TECLADO -->
     <div class="subpanel-overlay" id="searchPanel">
-      <div class="subpanel-header">
-        <div class="subpanel-title">🔍 Pesquisar</div>
-        <button class="subpanel-close-btn" onclick="closeSubpanels()">&times;</button>
-      </div>
+      <div class="subpanel-header"><div class="subpanel-title">🔍 Pesquisar</div><button class="subpanel-close-btn" onclick="closeSubpanels()">&times;</button></div>
       <input type="text" id="menuSearchInput" class="menu-search-box" placeholder="Digite para buscar..." tabindex="0">
       <div class="vk-container" id="vkContainer"></div>
     </div>
 
-    <!-- ÁREA PRINCIPAL -->
     <main class="main-area">
-
-      <!-- PAINEL DE DESTAQUE SUPERIOR -->
       <section class="hero-panel" id="heroPanel">
         <div class="hero-left-photos" id="heroPhotos">
           <div class="hero-photo-card"><img src="" alt=""></div>
@@ -265,21 +163,14 @@
         </div>
       </section>
 
-      <!-- BARRA DE CONTADOR DE LATAS (EX: 1/129) -->
-      <div class="counter-bar">
-        <div class="card-counter" id="cardCounter">0/0</div>
-      </div>
+      <div class="counter-bar"><div class="card-counter" id="cardCounter">0/0</div></div>
 
-      <!-- CARROSSEL EM 1 LINHA HORIZONTAL -->
       <section class="catalog-section" id="catalogSection">
         <div class="card-row" id="cardRow"></div>
       </section>
-
     </main>
-
   </div>
 
-  <!-- MODAL ZOOM -->
   <div class="zoom-modal" id="zoomModal">
     <button class="zoom-close-btn" onclick="closeZoomModal()" tabindex="0">&times;</button>
     <img id="zoomImage" src="" alt="Imagem ampliada">
@@ -325,8 +216,7 @@
     vkKeys.forEach(k => {
       const btn = document.createElement("button");
       btn.className = `vk-key ${ (k === 'ESPAÇO' || k === 'DEL' || k === 'LIMPAR') ? 'vk-key-wide' : '' }`;
-      btn.tabIndex = 0;
-      btn.innerText = k;
+      btn.tabIndex = 0; btn.innerText = k;
       btn.onclick = () => handleVkPress(k);
       container.appendChild(btn);
     });
@@ -347,21 +237,16 @@
   function buildBrandList() {
     const brandContainer = document.getElementById("brandListScroll");
     brandContainer.innerHTML = "";
-    
     const brands = [...new Set(canCatalog.map(c => c.brewery).filter(Boolean))].sort();
     
     const allBtn = document.createElement("button");
-    allBtn.className = "brand-btn";
-    allBtn.tabIndex = 0;
-    allBtn.innerText = "⭐ Todas as Marcas";
+    allBtn.className = "brand-btn"; allBtn.tabIndex = 0; allBtn.innerText = "⭐ Todas as Marcas";
     allBtn.onclick = () => { filterCatalog(""); closeSubpanels(); };
     brandContainer.appendChild(allBtn);
 
     brands.forEach(b => {
       const btn = document.createElement("button");
-      btn.className = "brand-btn";
-      btn.tabIndex = 0;
-      btn.innerText = b;
+      btn.className = "brand-btn"; btn.tabIndex = 0; btn.innerText = b;
       btn.onclick = () => { filterCatalog(b); closeSubpanels(); };
       brandContainer.appendChild(btn);
     });
@@ -372,10 +257,7 @@
     currentFiltered = canCatalog.filter(can => {
       if (can.isSet) return false;
       if (!val) return true;
-      return [can.name, can.brewery, can.country, can.volume, can.year, can.barcode]
-        .map(v => String(v || "").toLowerCase())
-        .join(" ")
-        .includes(val);
+      return [can.name, can.brewery, can.country, can.volume, can.year, can.barcode].map(v => String(v || "").toLowerCase()).join(" ").includes(val);
     });
     renderApp();
     if(currentFiltered.length > 0) updateHeroPanel(currentFiltered[0], 0);
@@ -389,24 +271,12 @@
     currentFiltered.forEach((can, index) => {
       const coverImg = can.images ? (can.images.cover || can.images.front || can.images.left) : "";
       const card = document.createElement("div");
-      card.className = "card";
-      card.tabIndex = 0;
+      card.className = "card"; card.tabIndex = 0;
       
-      card.onfocus = () => {
-        updateHeroPanel(can, index);
-        lastFocusedCard = card;
-        card.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-      };
+      card.onfocus = () => { updateHeroPanel(can, index); lastFocusedCard = card; card.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' }); };
       card.onmouseenter = () => updateHeroPanel(can, index);
       card.onclick = () => updateHeroPanel(can, index);
-
-      card.onkeydown = (e) => {
-        if (e.key === "ArrowUp") {
-          e.preventDefault();
-          const firstPhoto = document.querySelector(".hero-photo-card");
-          if (firstPhoto) firstPhoto.focus();
-        }
-      };
+      card.onkeydown = (e) => { if (e.key === "ArrowUp") { e.preventDefault(); const firstPhoto = document.querySelector(".hero-photo-card"); if (firstPhoto) firstPhoto.focus(); } };
 
       card.innerHTML = `<img src="${coverImg}" alt="${can.name}" loading="lazy">`;
       row.appendChild(card);
@@ -431,38 +301,24 @@
 
     galleryViews.forEach((url, idx) => {
       const photoCard = document.createElement("div");
-      photoCard.className = "hero-photo-card";
-      photoCard.tabIndex = 0;
+      photoCard.className = "hero-photo-card"; photoCard.tabIndex = 0;
       photoCard.onclick = () => openZoomModal(url);
       photoCard.onkeydown = (e) => { 
-        if(e.key === "Enter" || e.key === " ") {
-          openZoomModal(url);
-        } else if (e.key === "ArrowDown") {
-          e.preventDefault();
-          if (lastFocusedCard) lastFocusedCard.focus();
-        }
+        if(e.key === "Enter" || e.key === " ") openZoomModal(url);
+        else if (e.key === "ArrowDown") { e.preventDefault(); if (lastFocusedCard) lastFocusedCard.focus(); }
       };
       photoCard.innerHTML = `<img src="${url}" alt="Foto ${idx+1}">`;
       photosContainer.appendChild(photoCard);
     });
   }
 
-  function openZoomModal(url) {
-    document.getElementById("zoomImage").src = url;
-    document.getElementById("zoomModal").classList.add("active");
-  }
-
-  function closeZoomModal() {
-    document.getElementById("zoomModal").classList.remove("active");
-  }
+  function openZoomModal(url) { document.getElementById("zoomImage").src = url; document.getElementById("zoomModal").classList.add("active"); }
+  function closeZoomModal() { document.getElementById("zoomModal").classList.remove("active"); }
 
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape" || e.key === "Back" || e.keyCode === 10009 || e.keyCode === 27) {
-      if (document.getElementById("zoomModal").classList.contains("active")) {
-        closeZoomModal();
-      } else {
-        closeSubpanels();
-      }
+      if (document.getElementById("zoomModal").classList.contains("active")) closeZoomModal();
+      else closeSubpanels();
     }
   });
 
