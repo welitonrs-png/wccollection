@@ -22,7 +22,7 @@
 
     .app-container { display: flex; width: 100vw; height: 100vh; overflow: hidden; position: relative; }
 
-    /* 1. MENU LATERAL RETRÁTIL (COMEÇA COMPACTO APENAS COM ÍCONES) */
+    /* 1. MENU LATERAL RETRÁTIL (APENAS ÍCONES) */
     .sidebar {
       width: 60px;
       min-width: 60px;
@@ -40,7 +40,6 @@
       position: relative;
     }
 
-    /* Expande ao passar o mouse ou focar com controle remoto */
     .sidebar:hover, .sidebar:focus-within {
       width: 250px;
       min-width: 250px;
@@ -52,21 +51,10 @@
     .sidebar:hover .sidebar-logo-img, .sidebar:focus-within .sidebar-logo-img { width: 160px; height: auto; }
 
     .menu-item {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      color: #ccc;
-      text-decoration: none;
-      padding: 10px 12px;
-      border-radius: 8px;
-      font-size: 0.9rem;
-      font-weight: 600;
-      background: transparent;
-      border: 2px solid transparent;
-      cursor: pointer;
-      width: 100%;
-      text-align: left;
-      transition: border-color 0.15s ease, background 0.15s ease;
+      display: flex; align-items: center; gap: 14px; color: #ccc; text-decoration: none;
+      padding: 10px 12px; border-radius: 8px; font-size: 0.9rem; font-weight: 600;
+      background: transparent; border: 2px solid transparent; cursor: pointer; width: 100%;
+      text-align: left; transition: border-color 0.15s ease, background 0.15s ease;
     }
     .menu-item i { font-size: 1.2rem; min-width: 24px; text-align: center; font-style: normal; }
     .menu-item span { opacity: 0; transition: opacity 0.2s ease; }
@@ -75,29 +63,14 @@
 
     /* 2. SUBMENUS SLIDE-OVER (MARCAS E PESQUISA) */
     .subpanel-overlay {
-      position: absolute;
-      top: 0;
-      left: 60px;
-      width: 280px;
-      height: 100%;
-      background: #111113;
-      border-right: 1px solid #27272a;
-      z-index: 600;
-      display: flex;
-      flex-direction: column;
-      padding: 16px;
-      gap: 12px;
-      transform: translateX(-100%);
-      opacity: 0;
-      pointer-events: none;
+      position: absolute; top: 0; left: 60px; width: 280px; height: 100%;
+      background: #111113; border-right: 1px solid #27272a; z-index: 600;
+      display: flex; flex-direction: column; padding: 16px; gap: 12px;
+      transform: translateX(-100%); opacity: 0; pointer-events: none;
       transition: transform 0.25s ease-in-out, opacity 0.25s ease-in-out;
       box-shadow: 15px 0 35px rgba(0,0,0,0.8);
     }
-    .subpanel-overlay.active {
-      transform: translateX(0);
-      opacity: 1;
-      pointer-events: auto;
-    }
+    .subpanel-overlay.active { transform: translateX(0); opacity: 1; pointer-events: auto; }
 
     .subpanel-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #222; padding-bottom: 8px; }
     .subpanel-title { font-size: 1rem; color: #f39c12; font-weight: 900; text-transform: uppercase; }
@@ -108,73 +81,89 @@
     .brand-btn { font-size: 0.85rem; padding: 10px; border-radius: 6px; background: #18181b; color: #ccc; cursor: pointer; border: 2px solid transparent; text-align: left; }
     .brand-btn:focus, .brand-btn:hover { color: #fff; background: #222; border-color: #f39c12 !important; }
 
-    /* TECLADO E CAMPO DE PESQUISA */
     .menu-search-box { width: 100%; padding: 8px; background: #000; border: 2px solid #333; border-radius: 6px; color: #f39c12; font-size: 0.85rem; font-weight: bold; text-align: center; }
     .vk-container { display: grid; grid-template-columns: repeat(6, 1fr); gap: 3px; background: #000; padding: 4px; border-radius: 6px; border: 1px solid #222; }
     .vk-key { background: #18181b; border: 1px solid #27272a; color: #fff; padding: 6px 0; border-radius: 4px; font-size: 0.7rem; font-weight: bold; cursor: pointer; text-align: center; }
     .vk-key:focus, .vk-key:hover { background: #f39c12; color: #000; border-color: #f39c12 !important; }
     .vk-key-wide { grid-column: span 2; }
 
-    /* 3. ÁREA PRINCIPAL DA DIREITA */
-    .main-area { flex: 1; display: flex; flex-direction: column; height: 100%; padding: 16px; gap: 16px; overflow: hidden; background: #000; }
+    /* 3. ÁREA PRINCIPAL DA DIREITA (Otimizada para 100% Landscape) */
+    .main-area { 
+      flex: 1; 
+      display: flex; 
+      flex-direction: column; 
+      height: 100vh; 
+      padding: 12px 16px; 
+      gap: 12px; 
+      overflow: hidden; 
+      background: #000; 
+    }
 
-    /* PAINEL DE DESTAQUE SUPERIOR (HERO) */
+    /* PAINEL DE DESTAQUE SUPERIOR (HERO DE RESPONSIVIDADE DINÂMICA) */
     .hero-panel {
       flex: 1;
+      min-height: 0; /* Impede estourar a altura da tela */
       background: #0d0d0d;
       border: 1px solid #222;
       border-radius: 12px;
       display: flex;
-      padding: 16px;
-      gap: 20px;
-      overflow: hidden;
+      padding: 12px 16px;
+      gap: 16px;
+      align-items: center;
     }
 
+    /* Fotos Quadradas Dinâmicas (Encaixe Total sem Cortar) */
     .hero-left-photos {
-      flex: 1;
+      height: 100%;
+      aspect-ratio: 1 / 1; /* Força o container das 4 fotos a ser um quadrado perfeito */
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
-      max-width: 480px;
-      height: 100%;
+      grid-template-rows: repeat(2, 1fr);
+      gap: 8px;
     }
 
-    /* 🚀 FOTOS DO HERO MANTÊM 3/4 NO TOPO PARA COMBINAR */
-/* 🚀 FOTOS DO HERO (TOPO) VOLTAM A SER QUADRADAS 1:1 */
     .hero-photo-card {
-      background: #fff; border-radius: 8px; padding: 6px; display: flex;
-      justify-content: center; align-items: center; cursor: pointer;
-      border: 4px solid transparent; box-sizing: border-box; height: 100%;
-      aspect-ratio: 1 / 1; /* Quadrado */
+      background: #fff; 
+      border-radius: 6px; 
+      padding: 4px; 
+      display: flex;
+      justify-content: center; 
+      align-items: center; 
+      cursor: pointer;
+      border: 4px solid transparent; 
+      box-sizing: border-box; 
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
       transition: border-color 0.15s ease;
     }
     .hero-photo-card img { width: 100%; height: 100%; object-fit: contain; }
     .hero-photo-card:focus, .hero-photo-card:hover { border-color: #f39c12 !important; box-shadow: 0 0 15px rgba(243, 156, 18, 0.8) !important; }
 
     .hero-right-info { flex: 1; display: flex; flex-direction: column; justify-content: center; color: #f39c12; text-transform: uppercase; font-style: italic; }
-    .hero-title { font-size: clamp(1.4rem, 2.8vw, 2.2rem); font-weight: 900; margin-bottom: 16px; line-height: 1.1; color: #f39c12; }
-    .info-label { font-size: 0.8rem; font-weight: 900; color: #8e8e93; display: block; margin-top: 6px; }
-    .info-val { font-size: 1.2rem; font-weight: 900; color: #f39c12; margin-bottom: 8px; }
+    .hero-title { font-size: clamp(1.2rem, 2.2vw, 1.8rem); font-weight: 900; margin-bottom: 10px; line-height: 1.1; color: #f39c12; }
+    .info-label { font-size: clamp(0.65rem, 1vw, 0.8rem); font-weight: 900; color: #8e8e93; display: block; margin-top: 2px; }
+    .info-val { font-size: clamp(0.95rem, 1.5vw, 1.2rem); font-weight: 900; color: #f39c12; margin-bottom: 4px; }
 
-    /* CARROSSEL DE CARDS EM 1 LINHA HORIZONTAL */
+    /* CARROSSEL DE CARDS EM 1 LINHA HORIZONTAL (ALTURA FIXA ENCAIXADA) */
     .catalog-section { 
-      height: 230px; 
-      min-height: 230px;
+      height: 180px; 
+      min-height: 180px;
       width: 100%;
       overflow-x: auto; 
       overflow-y: hidden;
       scroll-behavior: smooth;
-      padding-bottom: 8px;
+      flex-shrink: 0;
     }
     
-    .card-row { display: flex; gap: 12px; height: 100%; width: max-content; }
+    .card-row { display: flex; gap: 10px; height: 100%; width: max-content; }
 
-    /* 🚀 CARDS RETANGULARES (3 LARGURA x 4 ALTURA) */
+    /* CARDS RETANGULARES 3x4 NA BASE */
     .card {
       background-color: #fff; 
       border-radius: 8px; 
       height: 100%;
-      aspect-ratio: 3 / 4; /* Formato 3x4 em pé */
+      aspect-ratio: 3 / 4;
       overflow: hidden; 
       display: flex; 
       justify-content: center; 
@@ -200,7 +189,7 @@
 
   <div class="app-container">
 
-    <!-- 1. MENU LATERAL RETRÁTIL (SOMENTE ÍCONES) -->
+    <!-- MENU LATERAL RETRÁTIL (SOMENTE ÍCONES) -->
     <aside class="sidebar">
       <div class="sidebar-logo-container">
         <img src="logo.png" alt="WCCollection Logo" class="sidebar-logo-img">
@@ -214,7 +203,7 @@
       <button class="menu-item" onclick="location.href='admin.html'" tabindex="0"><i>⚙️</i><span>Admin</span></button>
     </aside>
 
-    <!-- 2. SUBPAINEL DE MARCAS -->
+    <!-- SUBPAINEL DE MARCAS -->
     <div class="subpanel-overlay" id="brandPanel">
       <div class="subpanel-header">
         <div class="subpanel-title">🏷️ Marcas</div>
@@ -223,7 +212,7 @@
       <div class="brand-list-scroll" id="brandListScroll"></div>
     </div>
 
-    <!-- 3. SUBPAINEL DE PESQUISA + TECLADO -->
+    <!-- SUBPAINEL DE PESQUISA + TECLADO -->
     <div class="subpanel-overlay" id="searchPanel">
       <div class="subpanel-header">
         <div class="subpanel-title">🔍 Pesquisar</div>
@@ -233,7 +222,7 @@
       <div class="vk-container" id="vkContainer"></div>
     </div>
 
-    <!-- 4. ÁREA PRINCIPAL -->
+    <!-- ÁREA PRINCIPAL -->
     <main class="main-area">
 
       <!-- PAINEL DE DESTAQUE SUPERIOR -->
