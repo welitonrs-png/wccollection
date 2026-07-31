@@ -4,12 +4,21 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BeerCan Catalog - Painel Admin</title>
-  <style>
+<style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; outline: none; }
     body { background-color: #09090b; color: #ffffff; padding: 20px; max-width: 1400px; margin: 0 auto; overflow-x: hidden; }
 
+    /* 🚀 ESTILO DE FOCO UNIFICADO E LIMPO PARA TV E MOUSE (SEM BORDA DUPLICADA) */
+    :focus {
+      outline: none !important; /* Desativa a segunda borda externa do navegador */
+      border-color: #f39c12 !important; /* Aplica borda única em tom dourado */
+      box-shadow: 0 0 15px rgba(243, 156, 18, 0.9) !important;
+      z-index: 100;
+    }
+
     .mouse-hover-trigger { position: fixed; top: 0; left: 0; width: 20px; height: 100vh; z-index: 450; }
 
+    /* Menu Lateral Deslizante */
     .sidebar-menu {
       position: fixed; top: 0; left: -290px; width: 280px; height: 100vh;
       background: #0d0d0d; border-right: 1px solid #222; z-index: 500;
@@ -23,8 +32,14 @@
       display: flex; align-items: center; gap: 10px; color: #ccc; text-decoration: none;
       padding: 8px 10px; border-radius: 6px; font-size: 0.85rem; font-weight: 600;
       background: transparent; border: 2px solid transparent; cursor: pointer; width: 100%; text-align: left;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
     }
-    .menu-item:focus, .menu-item:hover { background: #18181b; color: #f39c12; border-color: #f39c12; }
+    .menu-item:focus, .menu-item:hover { 
+      background: #18181b; 
+      color: #f39c12; 
+      border-color: #f39c12 !important; 
+      outline: none !important;
+    }
 
     .main-content { transition: margin-left 0.25s ease-in-out, width 0.25s ease-in-out; width: 100%; }
     body.menu-open .main-content { margin-left: 280px; width: calc(100% - 280px); }
@@ -37,8 +52,17 @@
     
     .form-group { margin-bottom: 14px; }
     .form-group label { display: block; font-size: 0.75rem; color: #a1a1aa; margin-bottom: 6px; text-transform: uppercase; font-weight: 600; }
-    .form-control { width: 100%; padding: 10px 12px; background: #09090b; border: 1px solid #27272a; border-radius: 8px; color: #ffffff; font-size: 0.9rem; }
-    .form-control:focus { border-color: #f39c12; }
+    
+    /* Campos de Formulário com Foco Limpo */
+    .form-control { 
+      width: 100%; padding: 10px 12px; background: #09090b; 
+      border: 2px solid #27272a; border-radius: 8px; color: #ffffff; font-size: 0.9rem; 
+      transition: border-color 0.15s ease;
+    }
+    .form-control:focus { 
+      border-color: #f39c12 !important; 
+      outline: none !important;
+    }
     
     .form-row { display: flex; gap: 10px; }
     .form-row .form-group { flex: 1; }
@@ -48,35 +72,69 @@
     .checkbox-inline input { width: 18px; height: 18px; accent-color: #f39c12; }
 
     .image-input-wrapper { display: flex; gap: 8px; align-items: center; }
-    .btn-file-custom { background: #27272a; color: #f39c12; border: 1px solid #3f3f46; padding: 9px 12px; border-radius: 8px; font-size: 0.8rem; font-weight: bold; cursor: pointer; white-space: nowrap; }
+    .btn-file-custom { 
+      background: #27272a; color: #f39c12; border: 2px solid #3f3f46; 
+      padding: 9px 12px; border-radius: 8px; font-size: 0.8rem; font-weight: bold; 
+      cursor: pointer; white-space: nowrap; transition: border-color 0.15s ease;
+    }
+    .btn-file-custom:focus, .btn-file-custom:hover {
+      border-color: #f39c12 !important;
+      outline: none !important;
+    }
     .file-input-hidden { display: none; }
     
-    .btn-save { width: 100%; padding: 12px; background: #f39c12; color: #000; border: none; border-radius: 10px; font-weight: bold; font-size: 1rem; cursor: pointer; margin-top: 10px; }
-    .btn-cancel { width: 100%; padding: 10px; background: #27272a; color: #ffffff; border: none; border-radius: 8px; font-weight: bold; margin-top: 8px; display: none; cursor: pointer; }
+    /* Botões de Ação */
+    .btn-save { 
+      width: 100%; padding: 12px; background: #f39c12; color: #000; 
+      border: 2px solid #f39c12; border-radius: 10px; font-weight: bold; 
+      font-size: 1rem; cursor: pointer; margin-top: 10px; transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+    .btn-save:focus, .btn-save:hover {
+      border-color: #ffffff !important;
+      box-shadow: 0 0 15px rgba(243, 156, 18, 0.9) !important;
+      outline: none !important;
+    }
+
+    .btn-cancel { 
+      width: 100%; padding: 10px; background: #27272a; color: #ffffff; 
+      border: 2px solid transparent; border-radius: 8px; font-weight: bold; 
+      margin-top: 8px; display: none; cursor: pointer; 
+    }
+    .btn-cancel:focus, .btn-cancel:hover {
+      border-color: #f39c12 !important;
+      outline: none !important;
+    }
     
+    /* Tabela */
     table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.85rem; }
     th { background: #09090b; color: #a1a1aa; padding: 12px; border-bottom: 1px solid #27272a; text-transform: uppercase; }
     td { padding: 12px; border-bottom: 1px solid #27272a; vertical-align: middle; }
     .table-thumb { width: 48px; height: 48px; background: #ffffff; border-radius: 8px; object-fit: contain; }
+    
     .action-btns { display: flex; gap: 6px; }
-    .btn-edit { background: #3b82f6; color: #fff; padding: 6px 10px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; }
-    .btn-delete { background: #ef4444; color: #fff; padding: 6px 10px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; }
+    .btn-edit { 
+      background: #3b82f6; color: #fff; padding: 6px 10px; 
+      border: 2px solid transparent; border-radius: 4px; cursor: pointer; font-weight: bold; 
+    }
+    .btn-edit:focus, .btn-edit:hover {
+      border-color: #ffffff !important;
+      outline: none !important;
+    }
+
+    .btn-delete { 
+      background: #ef4444; color: #fff; padding: 6px 10px; 
+      border: 2px solid transparent; border-radius: 4px; cursor: pointer; font-weight: bold; 
+    }
+    .btn-delete:focus, .btn-delete:hover {
+      border-color: #ffffff !important;
+      outline: none !important;
+    }
 
     .tag-badge { font-size: 0.7rem; padding: 2px 6px; border-radius: 4px; font-weight: bold; text-transform: uppercase; display: inline-block; margin-top: 4px; }
     .tag-index { background: #22c55e; color: #000; }
     .tag-ococ { background: #3b82f6; color: #fff; }
     .tag-set { background: #a855f7; color: #fff; }
-
-    /* 🚀 DESTAQUE VISUAL PARA O CONTROLE REMOTO DA SMART TV */
-/* 1. ESTILO DE FOCO GERAL (Sem a borda externa duplicada) */
-:focus {
-  outline: none !important; /* Desativa a segunda borda do navegador */
-  border-color: #f39c12 !important;
-  box-shadow: 0 0 15px rgba(243, 156, 18, 0.9) !important;
-  z-index: 100;
-}
-
-  </style>
+</style>
 </head>
 <body>
 
