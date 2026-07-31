@@ -74,6 +74,13 @@
   box-shadow: 0 0 15px rgba(243, 156, 18, 0.9) !important;
   z-index: 100;
 }
+    /* 🚀 DESTAQUE VISUAL PARA O CONTROLE REMOTO DA SMART TV */
+:focus {
+  outline: 4px solid #f39c12 !important;
+  outline-offset: 3px;
+  box-shadow: 0 0 15px rgba(243, 156, 18, 0.9) !important;
+  z-index: 100;
+}
   </style>
 </head>
 <body>
@@ -374,6 +381,23 @@ document.addEventListener("keydown", (e) => {
       document.getElementById("btnSave").innerText = "Salvar e Publicar no Google Drive";
       document.getElementById("btnCancel").style.display = "none";
     }
+    // Trava o fundo ao abrir qualquer modal (impede scroll indesejado)
+function openModalCustom(modalElement) {
+  modalElement.classList.add("active");
+  document.body.style.overflow = "hidden";
+}
+
+function closeModalCustom(modalElement) {
+  modalElement.classList.remove("active");
+  document.body.style.overflow = "auto";
+}
+
+// Suporte ao botão "Voltar" do controle remoto da TV em todas as telas
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" || e.key === "Back" || e.keyCode === 10009 || e.keyCode === 27) {
+    // Adicione a lógica de fechar os modais daquela página específica aqui
+  }
+});
 
     function openSidebar() { document.getElementById("sidebarMenu").classList.add("active"); document.body.classList.add("menu-open"); }
     function closeSidebar() { document.getElementById("sidebarMenu").classList.remove("active"); document.body.classList.remove("menu-open"); }
