@@ -88,10 +88,9 @@
     .hero-left-photos { height: 100%; aspect-ratio: 1 / 1; display: grid; grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(2, 1fr); gap: 8px; }
     .hero-photo-card {
       background: #fff; border-radius: 6px; padding: 4px; display: flex; justify-content: center; align-items: center;
-      cursor: pointer; border: 4px solid transparent; box-sizing: border-box; width: 100%; height: 100%; overflow: hidden; transition: border-color 0.15s ease;
+      width: 100%; height: 100%; overflow: hidden; pointer-events: none;
     }
     .hero-photo-card img { width: 100%; height: 100%; object-fit: contain; }
-    .hero-photo-card:focus, .hero-photo-card:hover { border-color: #f39c12 !important; box-shadow: 0 0 15px rgba(243, 156, 18, 0.8) !important; }
 
     .hero-right-info { 
       flex: 1; height: 100%; display: flex; flex-direction: column; 
@@ -187,7 +186,6 @@
   const API_URL = "https://script.google.com/macros/s/AKfycbwFIsSgEF2grkBpliyO_hSD0Lh2ULq6xHoJC6mDLYvjemTLYe67jF38MDNWP2ixITzE/exec";
   let canCatalog = [];
   let currentFiltered = [];
-  let lastFocusedCard = null;
   let zoomGallery = [];
   let currentZoomIndex = 0;
 
@@ -289,10 +287,16 @@
       const card = document.createElement("div");
       card.className = "card"; card.tabIndex = 0;
       
-      card.onfocus = () => { updateHeroPanel(can, index); lastFocusedCard = card; card.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' }); };
+      card.onfocus = () => { updateHeroPanel(can, index); card.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' }); };
       card.onmouseenter = () => updateHeroPanel(can, index);
-      card.onclick = () => updateHeroPanel(can, index);
-      card.onkeydown = (e) => { if (e.key === "ArrowUp") { e.preventDefault(); const firstPhoto = document.querySelector(".hero-photo-card"); if (firstPhoto) firstPhoto.focus(); } };
+      
+      card.onclick = () => openZoomModal(0);
+      card.onkeydown = (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          openZoomModal(0);
+        }
+      };
 
       card.innerHTML = `<img src="${coverImg}" alt="${can.name}" loading="lazy"><div class="card-label">${can.country || ''}</div>`;
       row.appendChild(card);
@@ -325,12 +329,7 @@
 
     zoomGallery.forEach((url, idx) => {
       const photoCard = document.createElement("div");
-      photoCard.className = "hero-photo-card"; photoCard.tabIndex = 0;
-      photoCard.onclick = () => openZoomModal(idx);
-      photoCard.onkeydown = (e) => { 
-        if(e.key === "Enter" || e.key === " ") openZoomModal(idx);
-        else if (e.key === "ArrowDown") { e.preventDefault(); if (lastFocusedCard) lastFocusedCard.focus(); }
-      };
+      photoCard.className = "hero-photo-card";
       photoCard.innerHTML = `<img src="${url}" alt="Foto ${idx+1}">`;
       photosContainer.appendChild(photoCard);
     });
