@@ -8,13 +8,13 @@
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; outline: none; }
     body { background-color: #000000; color: #ffffff; padding: 8px; max-width: 1800px; margin: 0 auto; user-select: none; overflow-x: hidden; }
 
-/* 1. ESTILO DE FOCO GERAL (Sem a borda externa duplicada) */
-:focus {
-  outline: none !important; /* Desativa a segunda borda do navegador */
-  border-color: #f39c12 !important;
-  box-shadow: 0 0 15px rgba(243, 156, 18, 0.9) !important;
-  z-index: 100;
-}
+    /* 🚀 ESTILO DE FOCO GERAL UNIFICADO PARA TV E MOUSE (SEM BORDA DUPLICADA) */
+    :focus {
+      outline: none !important; /* Desativa a borda externa duplicada do navegador */
+      border-color: #f39c12 !important;
+      box-shadow: 0 0 15px rgba(243, 156, 18, 0.9) !important;
+      z-index: 100;
+    }
 
     /* Área de detecção invisível no canto esquerdo para abrir o menu ao passar o mouse */
     .mouse-hover-trigger {
@@ -79,11 +79,13 @@
       cursor: pointer;
       width: 100%;
       text-align: left;
+      transition: border-color 0.15s ease;
     }
     .menu-item:focus, .menu-item:hover {
       background: #18181b;
       color: #f39c12;
-      border-color: #f39c12;
+      border-color: #f39c12 !important;
+      outline: none !important;
     }
     .menu-badge { margin-left: auto; background: #222; color: #f39c12; padding: 2px 8px; border-radius: 12px; font-size: 0.75rem; }
 
@@ -92,12 +94,17 @@
       width: 100%;
       padding: 8px;
       background: #000;
-      border: 1px solid #333;
+      border: 2px solid #333;
       border-radius: 6px;
       color: #f39c12;
       font-size: 0.9rem;
       font-weight: bold;
       text-align: center;
+      transition: border-color 0.15s ease;
+    }
+    .menu-search-box:focus {
+      border-color: #f39c12 !important;
+      outline: none !important;
     }
 
     /* Teclado Virtual Compacto */
@@ -113,7 +120,7 @@
     }
     .vk-key {
       background: #18181b;
-      border: 1px solid #27272a;
+      border: 2px solid #27272a;
       color: #fff;
       padding: 6px 0;
       border-radius: 4px;
@@ -121,11 +128,13 @@
       font-weight: bold;
       cursor: pointer;
       text-align: center;
+      transition: border-color 0.15s ease;
     }
     .vk-key:focus, .vk-key:hover {
       background: #f39c12;
       color: #000;
-      border-color: #f39c12;
+      border-color: #f39c12 !important;
+      outline: none !important;
     }
     .vk-key-wide { grid-column: span 2; }
 
@@ -145,28 +154,28 @@
       .card-grid { grid-template-columns: repeat(5, 1fr); gap: 8px; } 
     }
 
-/* 2. AJUSTE NOS CARDS DA GRADE */
-.card { 
-  background-color: #fff; 
-  border-radius: 6px; 
-  aspect-ratio: 1 / 1; 
-  overflow: hidden; 
-  display: flex; 
-  justify-content: center; 
-  align-items: center; 
-  padding: 4px; 
-  cursor: pointer; 
-  border: 4px solid transparent; /* Reserva a borda única */
-  box-sizing: border-box;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
-}
+    /* CARDS DA GRADE DA COLEÇÃO */
+    .card { 
+      background-color: #fff; 
+      border-radius: 6px; 
+      aspect-ratio: 1 / 1; 
+      overflow: hidden; 
+      display: flex; 
+      justify-content: center; 
+      align-items: center; 
+      padding: 4px; 
+      cursor: pointer; 
+      border: 4px solid transparent; /* Reserva a borda única de 4px */
+      box-sizing: border-box;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
 
-.card:focus, .card:hover { 
-  border-color: #f39c12 !important; 
-  box-shadow: 0 0 15px rgba(243, 156, 18, 0.8) !important; 
-  outline: none !important; /* Impede duplicar no card */
-  z-index: 10; 
-}
+    .card:focus, .card:hover { 
+      border-color: #f39c12 !important; 
+      box-shadow: 0 0 15px rgba(243, 156, 18, 0.8) !important; 
+      outline: none !important; /* Elimina a borda duplicada */
+      z-index: 10; 
+    }
     .card img { width: 100%; height: 100%; object-fit: contain; transform: none !important; }
 
     /* Lightbox Modal Fixo */
@@ -193,27 +202,26 @@
       gap: 8px; width: 100%; max-width: 420px; aspect-ratio: 1 / 1; margin: 0 auto; 
     }
 
-/* 3. AJUSTE NAS FOTOS DENTRO DO LIGHTBOX */
-.view-card-item { 
-  background: #fff; 
-  border-radius: 6px; 
-  padding: 4px; 
-  display: flex; 
-  justify-content: center; 
-  align-items: center; 
-  cursor: pointer; 
-  border: 4px solid transparent; 
-  box-sizing: border-box;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
-}
+    /* FOTOS DENTRO DO LIGHTBOX */
+    .view-card-item { 
+      background: #fff; 
+      border-radius: 6px; 
+      padding: 4px; 
+      display: flex; 
+      justify-content: center; 
+      align-items: center; 
+      cursor: pointer; 
+      border: 4px solid transparent; /* Reserva a borda única */
+      box-sizing: border-box;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
 
-.view-card-item:focus, .view-card-item:hover { 
-  border-color: #f39c12 !important; 
-  box-shadow: 0 0 15px rgba(243, 156, 18, 0.8) !important; 
-  outline: none !important; /* Impede duplicar na foto do lightbox */
-}
+    .view-card-item:focus, .view-card-item:hover { 
+      border-color: #f39c12 !important; 
+      box-shadow: 0 0 15px rgba(243, 156, 18, 0.8) !important; 
+      outline: none !important; /* Elimina a borda duplicada */
+    }
     .view-card-item img { width: 100%; height: 100%; object-fit: contain; transform: none !important; }
-  
 
     .lightbox-right-info { flex: 1; color: #f39c12; text-transform: uppercase; font-style: italic; width: 100%; text-align: left; }
     .can-main-title { font-size: clamp(1.1rem, 3.5vw, 1.8rem); font-weight: 900; margin-bottom: 16px; color: #f39c12 !important; line-height: 1.1; }
@@ -223,15 +231,23 @@
     .lightbox-close-btn { 
       position: absolute; top: -10px; right: 0; background: transparent !important; border: none !important; color: #ffffff; 
       width: 40px; height: 40px; font-size: 2.2rem; font-weight: 300; cursor: pointer; display: flex; justify-content: center; align-items: center; z-index: 10;
+      transition: color 0.15s ease;
     }
-    .lightbox-close-btn:focus, .lightbox-close-btn:hover { color: #f39c12 !important; }
+    .lightbox-close-btn:focus, .lightbox-close-btn:hover { 
+      color: #f39c12 !important; 
+      outline: none !important; 
+    }
 
     /* Modal Zoom Ampliado */
     .zoom-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.98); z-index: 700; display: none; justify-content: center; align-items: center; padding: 16px; }
     .zoom-modal.active { display: flex; }
     .zoom-modal img { max-width: 85vw; max-height: 85vh; object-fit: contain; border-radius: 6px; }
     .zoom-close-btn { position: absolute; top: 15px; right: 20px; background: transparent; border: none; color: #fff; font-size: 2.5rem; cursor: pointer; z-index: 710; }
-  </style>
+    .zoom-close-btn:focus, .zoom-close-btn:hover {
+      color: #f39c12 !important;
+      outline: none !important;
+    }
+</style>
 </head>
 <body>
 
