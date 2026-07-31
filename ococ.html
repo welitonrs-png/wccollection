@@ -3,402 +3,318 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>WCCollection - OCOC (Um por País)</title>
-<style>
+  <title>BeerCan Catalog - OCOC</title>
+  <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; outline: none; }
-    body { background-color: #000000; color: #ffffff; padding: 8px; max-width: 1800px; margin: 0 auto; user-select: none; overflow-x: hidden; }
+    
+    body { background-color: #9B9B9B; color: #ffffff; height: 100vh; overflow: hidden; display: flex; user-select: none; }
 
-    /* 🚀 ESTILO DE FOCO GERAL UNIFICADO PARA TV E MOUSE (SEM BORDA DUPLICADA) */
+    ::-webkit-scrollbar { display: none !important; width: 0 !important; height: 0 !important; }
+    * { -ms-overflow-style: none !important; scrollbar-width: none !important; }
+
     :focus {
-      outline: none !important; /* Desativa a borda externa duplicada do navegador */
+      outline: none !important;
       border-color: #f39c12 !important;
       box-shadow: 0 0 15px rgba(243, 156, 18, 0.9) !important;
       z-index: 100;
     }
 
-    .mouse-hover-trigger { position: fixed; top: 0; left: 0; width: 20px; height: 100vh; z-index: 450; }
+    .app-container { display: flex; width: 100vw; height: 100vh; overflow: hidden; position: relative; background-color: #9B9B9B; }
 
-    /* Menu Lateral Deslizante */
-    .sidebar-menu {
-      position: fixed; top: 0; left: -290px; width: 280px; height: 100vh;
-      background: #0d0d0d; border-right: 1px solid #222; z-index: 500;
-      padding: 20px 12px; display: flex; flex-direction: column; gap: 8px;
-      transition: left 0.25s ease-in-out; box-shadow: 10px 0 25px rgba(0,0,0,0.8); overflow-y: auto;
+    /* MENU LATERAL RETRÁTIL */
+    .sidebar {
+      width: 60px; min-width: 60px; background: #9B9B9B; border-right: 1px solid #7a7a7a;
+      display: flex; flex-direction: column; padding: 12px 6px; gap: 10px; height: 100%;
+      z-index: 500; transition: width 0.25s ease-in-out; overflow: hidden; white-space: nowrap; position: relative;
     }
-    .sidebar-menu.active { left: 0; }
-
-    .sidebar-logo-container {
-      width: 100%; padding-bottom: 10px; margin-bottom: 6px; border-bottom: 1px solid #222;
-      display: flex; justify-content: center; align-items: center;
-    }
-    .sidebar-logo-img { width: 100%; max-width: 220px; height: auto; object-fit: contain; display: block; }
+    .sidebar:hover, .sidebar:focus-within { width: 250px; min-width: 250px; box-shadow: 10px 0 30px rgba(0,0,0,0.3); }
+    .sidebar-logo-container { width: 100%; text-align: center; padding-bottom: 8px; border-bottom: 1px solid #7a7a7a; }
+    .sidebar-logo-img { width: 40px; height: 40px; object-fit: contain; transition: width 0.25s ease; }
+    .sidebar:hover .sidebar-logo-img, .sidebar:focus-within .sidebar-logo-img { width: 160px; height: auto; }
 
     .menu-item {
-      display: flex; align-items: center; gap: 10px; color: #ccc; text-decoration: none;
-      padding: 8px 10px; border-radius: 6px; font-size: 0.85rem; font-weight: 600;
-      background: transparent; border: 2px solid transparent; cursor: pointer; width: 100%; text-align: left;
-      transition: border-color 0.15s ease;
+      display: flex; align-items: center; gap: 14px; color: #111; text-decoration: none;
+      padding: 10px 12px; border-radius: 8px; font-size: 0.9rem; font-weight: 700;
+      background: transparent; border: 2px solid transparent; cursor: pointer; width: 100%;
+      text-align: left; transition: border-color 0.15s ease, background 0.15s ease;
     }
-    .menu-item:focus, .menu-item:hover { 
-      background: #18181b; 
-      color: #f39c12; 
-      border-color: #f39c12 !important; 
-      outline: none !important;
-    }
-    .menu-badge { margin-left: auto; background: #222; color: #f39c12; padding: 2px 8px; border-radius: 12px; font-size: 0.75rem; }
+    .menu-item i { font-size: 1.2rem; min-width: 24px; text-align: center; font-style: normal; }
+    .menu-item span { opacity: 0; transition: opacity 0.2s ease; }
+    .sidebar:hover .menu-item span, .sidebar:focus-within .menu-item span { opacity: 1; }
+    .menu-item:focus, .menu-item:hover { background: #828282; color: #f39c12; border-color: #f39c12 !important; }
 
-    .menu-search-box { 
-      width: 100%; padding: 8px; background: #000; 
-      border: 2px solid #333; border-radius: 6px; color: #f39c12; 
-      font-size: 0.9rem; font-weight: bold; text-align: center; 
-      transition: border-color 0.15s ease;
+    /* SUBMENUS SLIDE-OVER */
+    .subpanel-overlay {
+      position: absolute; top: 0; left: 60px; width: 280px; height: 100%;
+      background: #9B9B9B; border-right: 1px solid #7a7a7a; z-index: 600;
+      display: flex; flex-direction: column; padding: 16px; gap: 12px;
+      transform: translateX(-100%); opacity: 0; pointer-events: none;
+      transition: transform 0.25s ease-in-out, opacity 0.25s ease-in-out; box-shadow: 15px 0 35px rgba(0,0,0,0.3);
     }
-    .menu-search-box:focus {
-      border-color: #f39c12 !important;
-      outline: none !important;
-    }
+    .subpanel-overlay.active { transform: translateX(0); opacity: 1; pointer-events: auto; }
 
-    /* Teclado Virtual */
-    .vk-container { display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; background: #111; padding: 6px; border-radius: 6px; border: 1px solid #222; margin-bottom: 6px; }
-    .vk-key { 
-      background: #18181b; border: 2px solid #27272a; color: #fff; 
-      padding: 6px 0; border-radius: 4px; font-size: 0.75rem; font-weight: bold; 
-      cursor: pointer; text-align: center; transition: border-color 0.15s ease;
-    }
-    .vk-key:focus, .vk-key:hover { 
-      background: #f39c12; color: #000; 
-      border-color: #f39c12 !important; 
-      outline: none !important;
-    }
+    .subpanel-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #7a7a7a; padding-bottom: 8px; }
+    .subpanel-title { font-size: 1rem; color: #111; font-weight: 900; text-transform: uppercase; }
+    .subpanel-close-btn { background: transparent; border: none; color: #111; font-size: 1.4rem; cursor: pointer; }
+    .subpanel-close-btn:focus, .subpanel-close-btn:hover { color: #f39c12; }
+
+    .brand-list-scroll { display: flex; flex-direction: column; gap: 6px; overflow-y: auto; flex: 1; padding-right: 4px; }
+    .brand-btn { font-size: 0.85rem; padding: 10px; border-radius: 6px; background: #828282; color: #fff; cursor: pointer; border: 2px solid transparent; text-align: left; font-weight: bold; }
+    .brand-btn:focus, .brand-btn:hover { color: #fff; background: #6e6e6e; border-color: #f39c12 !important; }
+
+    .menu-search-box { width: 100%; padding: 8px; background: #828282; border: 2px solid #6e6e6e; border-radius: 6px; color: #fff; font-size: 0.85rem; font-weight: bold; text-align: center; }
+    .menu-search-box::placeholder { color: #ddd; }
+    .vk-container { display: grid; grid-template-columns: repeat(6, 1fr); gap: 3px; background: #828282; padding: 4px; border-radius: 6px; border: 1px solid #6e6e6e; }
+    .vk-key { background: #9B9B9B; border: 1px solid #7a7a7a; color: #111; padding: 6px 0; border-radius: 4px; font-size: 0.7rem; font-weight: bold; cursor: pointer; text-align: center; }
+    .vk-key:focus, .vk-key:hover { background: #f39c12; color: #000; border-color: #f39c12 !important; }
     .vk-key-wide { grid-column: span 2; }
 
-    .main-content { transition: margin-left 0.25s ease-in-out, width 0.25s ease-in-out; width: 100%; }
-    body.menu-open .main-content { margin-left: 280px; width: calc(100% - 280px); }
+    /* ÁREA PRINCIPAL DA DIREITA */
+    .main-area { flex: 1; display: flex; flex-direction: column; height: 100vh; padding: 12px 16px; gap: 12px; overflow: hidden; background: #9B9B9B; }
 
-    .card-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
-    @media (min-width: 600px), (orientation: landscape) { .card-grid { grid-template-columns: repeat(5, 1fr); gap: 8px; } }
-    
-    /* CARDS DA GRADE OCOC (COM RÓTULO DE PAÍS) */
-    .card { 
-      background-color: #fff; border-radius: 6px; aspect-ratio: 1 / 1; 
-      overflow: hidden; display: flex; flex-direction: column; justify-content: center; 
-      align-items: center; padding: 4px; cursor: pointer; 
-      border: 4px solid transparent; /* Reserva a borda única */
-      position: relative; box-sizing: border-box;
-      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    .hero-panel {
+      flex: 1; min-height: 0; background: #9B9B9B; border: 2px solid #7a7a7a; border-radius: 12px;
+      display: flex; padding: 12px 16px; gap: 16px; align-items: center; box-shadow: 0 4px 15px rgba(0,0,0,0.1);
     }
-    .card img { width: 100%; height: 80%; object-fit: contain; }
-    .card-country-label { 
-      background: rgba(0,0,0,0.85); color: #f39c12; width: 100%; 
-      text-align: center; font-size: 0.75rem; font-weight: bold; 
-      padding: 2px 0; text-transform: uppercase; white-space: nowrap; 
-      overflow: hidden; text-overflow: ellipsis; 
+    .hero-left-photos { height: 100%; aspect-ratio: 1 / 1; display: grid; grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(2, 1fr); gap: 8px; }
+    .hero-photo-card {
+      background: #fff; border-radius: 6px; padding: 4px; display: flex; justify-content: center; align-items: center;
+      cursor: pointer; border: 4px solid transparent; box-sizing: border-box; width: 100%; height: 100%; overflow: hidden; transition: border-color 0.15s ease;
     }
-    .card:focus, .card:hover { 
-      border-color: #f39c12 !important; 
-      box-shadow: 0 0 15px rgba(243, 156, 18, 0.8) !important; 
-      outline: none !important; /* Elimina a borda duplicada */
-      z-index: 10;
-    }
+    .hero-photo-card img { width: 100%; height: 100%; object-fit: contain; }
+    .hero-photo-card:focus, .hero-photo-card:hover { border-color: #f39c12 !important; box-shadow: 0 0 15px rgba(243, 156, 18, 0.8) !important; }
 
-    /* Lightbox Modal */
-    .lightbox-modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.95); z-index: 600; display: flex; justify-content: center; align-items: center; padding: 12px; opacity: 0; pointer-events: none; transition: opacity 0.25s; overflow: hidden; }
-    .lightbox-modal-overlay.active { opacity: 1; pointer-events: auto; }
-    .lightbox-content-wrapper { width: 100%; max-width: 1200px; max-height: 95vh; display: flex; flex-direction: column; gap: 16px; position: relative; align-items: center; justify-content: center; overflow: hidden; }
-    @media (min-width: 768px), (orientation: landscape) { .lightbox-content-wrapper { flex-direction: row; align-items: center; gap: 24px; } }
-    .lightbox-left-grid { flex: 1; display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; width: 100%; max-width: 420px; aspect-ratio: 1 / 1; margin: 0 auto; }
-    
-    /* FOTOS DENTRO DO LIGHTBOX */
-    .view-card-item { 
-      background: #fff; border-radius: 6px; padding: 4px; 
-      display: flex; justify-content: center; align-items: center; 
-      cursor: pointer; border: 4px solid transparent; box-sizing: border-box; 
-      transition: border-color 0.15s ease, box-shadow 0.15s ease;
-    }
-    .view-card-item img { width: 100%; height: 100%; object-fit: contain; }
-    .view-card-item:focus, .view-card-item:hover { 
-      border-color: #f39c12 !important; 
-      box-shadow: 0 0 15px rgba(243, 156, 18, 0.8) !important; 
-      outline: none !important; /* Elimina a borda duplicada */
-    }
+    .hero-right-info { flex: 1; display: flex; flex-direction: column; justify-content: center; color: #111; text-transform: uppercase; font-style: italic; }
+    .hero-title { font-size: clamp(1.2rem, 2.2vw, 1.8rem); font-weight: 900; margin-bottom: 10px; line-height: 1.1; color: #111; }
+    .info-label { font-size: clamp(0.65rem, 1vw, 0.8rem); font-weight: 900; color: #333; display: block; margin-top: 2px; }
+    .info-val { font-size: clamp(0.95rem, 1.5vw, 1.2rem); font-weight: 900; color: #111; margin-bottom: 4px; }
 
-    .lightbox-right-info { flex: 1; color: #f39c12; text-transform: uppercase; font-style: italic; width: 100%; text-align: left; }
-    .can-main-title { font-size: clamp(1.1rem, 3.5vw, 1.8rem); font-weight: 900; margin-bottom: 16px; color: #f39c12 !important; line-height: 1.1; }
-    .info-field-label { font-size: clamp(0.65rem, 1.2vw, 0.85rem); font-weight: 900; color: #8e8e93; margin-bottom: 1px; display: block; }
-    .info-field-value { font-size: clamp(0.95rem, 2.2vw, 1.3rem); font-weight: 900; margin-bottom: 10px; color: #f39c12; line-height: 1.1; }
-    
-    .lightbox-close-btn { 
-      position: absolute; top: -10px; right: 0; background: transparent !important; 
-      border: none !important; color: #ffffff; width: 40px; height: 40px; 
-      font-size: 2.2rem; font-weight: 300; cursor: pointer; display: flex; 
-      justify-content: center; align-items: center; z-index: 10; 
-      transition: color 0.15s ease;
-    }
-    .lightbox-close-btn:focus, .lightbox-close-btn:hover { 
-      color: #f39c12 !important; 
-      outline: none !important; 
-    }
+    .counter-bar { display: flex; justify-content: flex-end; align-items: center; padding: 0 4px; margin-bottom: -4px; }
+    .card-counter { font-size: 0.85rem; font-weight: 900; color: #111; background: rgba(255, 255, 255, 0.5); border: 1px solid rgba(0, 0, 0, 0.2); padding: 3px 10px; border-radius: 12px; letter-spacing: 1px; }
 
-    /* Modal Zoom */
-    .zoom-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.98); z-index: 700; display: none; justify-content: center; align-items: center; padding: 16px; }
+    .catalog-section { height: 180px; min-height: 180px; width: 100%; overflow-x: auto; overflow-y: hidden; scroll-behavior: smooth; flex-shrink: 0; }
+    .card-row { display: flex; gap: 10px; height: 100%; width: max-content; }
+
+    /* CARDS RETANGULARES 3x4 NA BASE */
+    .card {
+      background-color: #fff; border-radius: 8px; height: 100%; aspect-ratio: 3 / 4; overflow: hidden;
+      display: flex; flex-direction: column; justify-content: space-between; align-items: center; padding: 4px;
+      cursor: pointer; border: 4px solid transparent; box-sizing: border-box; flex-shrink: 0; transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+    .card img { width: 100%; height: calc(100% - 20px); object-fit: contain; }
+    .card-label { background: rgba(0,0,0,0.8); color: #f39c12; width: 100%; text-align: center; font-size: 0.65rem; font-weight: bold; padding: 2px 0; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; border-radius: 0 0 4px 4px; }
+    .card:focus, .card:hover { border-color: #f39c12 !important; box-shadow: 0 0 15px rgba(243, 156, 18, 0.8) !important; z-index: 10; }
+
+    .zoom-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.95); z-index: 700; display: none; justify-content: center; align-items: center; padding: 16px; }
     .zoom-modal.active { display: flex; }
     .zoom-modal img { max-width: 85vw; max-height: 85vh; object-fit: contain; border-radius: 6px; }
-    .zoom-nav-btn { 
-      position: absolute; top: 50%; transform: translateY(-50%); 
-      background: rgba(255, 255, 255, 0.1); border: 2px solid rgba(255, 255, 255, 0.2); 
-      color: #ffffff; font-size: 2rem; width: 50px; height: 50px; 
-      border-radius: 50%; cursor: pointer; display: flex; 
-      justify-content: center; align-items: center; z-index: 710; 
-      transition: border-color 0.15s ease, background 0.15s ease;
-    }
-    .zoom-nav-btn:focus, .zoom-nav-btn:hover {
-      background: #f39c12; color: #000;
-      border-color: #f39c12 !important;
-      outline: none !important;
-    }
-    .zoom-nav-left { left: 15px; } .zoom-nav-right { right: 15px; }
-    
-    .zoom-close-btn { 
-      position: absolute; top: 15px; right: 20px; background: transparent; 
-      border: none; color: #fff; font-size: 2.5rem; cursor: pointer; z-index: 710; 
-      transition: color 0.15s ease;
-    }
-    .zoom-close-btn:focus, .zoom-close-btn:hover {
-      color: #f39c12 !important;
-      outline: none !important;
-    }
-</style>
+    .zoom-close-btn { position: absolute; top: 15px; right: 20px; background: transparent; border: none; color: #fff; font-size: 2.5rem; cursor: pointer; z-index: 710; }
+  </style>
 </head>
 <body>
 
-  <div class="mouse-hover-trigger" onmouseenter="openSidebar()"></div>
+  <div class="app-container">
+    <aside class="sidebar">
+      <div class="sidebar-logo-container"><img src="logo.png" alt="WCCollection Logo" class="sidebar-logo-img"></div>
+      <button class="menu-item" onclick="location.href='index.html'" tabindex="0"><i>🏠</i><span>Home</span></button>
+      <button class="menu-item" onclick="toggleSubpanel('searchPanel')" tabindex="0"><i>🔍</i><span>Pesquisar</span></button>
+      <button class="menu-item" onclick="toggleSubpanel('brandPanel')" tabindex="0"><i>🏷️</i><span>Marcas</span></button>
+      <button class="menu-item" onclick="location.href='ococ.html'" tabindex="0"><i>🌍</i><span>OCOC</span></button>
+      <button class="menu-item" onclick="location.href='sets.html'" tabindex="0"><i>📦</i><span>Sets</span></button>
+      <button class="menu-item" onclick="location.href='admin.html'" tabindex="0"><i>⚙️</i><span>Admin</span></button>
+    </aside>
 
-  <nav class="sidebar-menu" id="sidebarMenu" onmouseleave="closeSidebar()">
-    <div class="sidebar-logo-container">
-      <img src="logo.png" alt="WCCollection Logo" class="sidebar-logo-img">
+    <div class="subpanel-overlay" id="brandPanel">
+      <div class="subpanel-header"><div class="subpanel-title">🏷️ Marcas</div><button class="subpanel-close-btn" onclick="closeSubpanels()">&times;</button></div>
+      <div class="brand-list-scroll" id="brandListScroll"></div>
     </div>
 
-    <button class="menu-item" onclick="location.href='index.html'" tabindex="0">🏠 Home</button>
-    <div class="menu-item" style="cursor: default;">🔍 Pesquisar País</div>
-    <input type="text" id="menuSearchInput" class="menu-search-box" placeholder="Digite ou use as teclas..." tabindex="0">
-    <div class="vk-container" id="vkContainer"></div>
-    <button class="menu-item" onclick="location.href='ococ.html'" tabindex="0">🌍 OCOC (Um por País)</button>
-    <button class="menu-item" onclick="location.href='sets.html'" tabindex="0">📦 Sets de Latas</button>
-    <button class="menu-item" onclick="location.href='admin.html'" tabindex="0">⚙️ Cadastro (Admin)</button>
-    <div class="menu-item" style="margin-top: auto; cursor: default;">
-      📊 Países Encontrados <span class="menu-badge" id="totalCountBadge">0</span>
+    <div class="subpanel-overlay" id="searchPanel">
+      <div class="subpanel-header"><div class="subpanel-title">🔍 Pesquisar</div><button class="subpanel-close-btn" onclick="closeSubpanels()">&times;</button></div>
+      <input type="text" id="menuSearchInput" class="menu-search-box" placeholder="Digite para buscar..." tabindex="0">
+      <div class="vk-container" id="vkContainer"></div>
     </div>
-  </nav>
 
-  <div class="main-content" id="mainContent">
-    <div class="card-grid" id="ococGrid"></div>
+    <main class="main-area">
+      <section class="hero-panel" id="heroPanel">
+        <div class="hero-left-photos" id="heroPhotos">
+          <div class="hero-photo-card"><img src="" alt=""></div>
+          <div class="hero-photo-card"><img src="" alt=""></div>
+          <div class="hero-photo-card"><img src="" alt=""></div>
+          <div class="hero-photo-card"><img src="" alt=""></div>
+        </div>
+        <div class="hero-right-info">
+          <div class="hero-title" id="heroTitle">SELECIONE UMA LATA (OCOC)</div>
+          <div><span class="info-label">PAÍS / ORIGEM:</span><div class="info-val" id="heroCountry">-</div></div>
+          <div><span class="info-label">VOLUME:</span><div class="info-val" id="heroVolume">-</div></div>
+          <div><span class="info-label">ANO:</span><div class="info-val" id="heroYear">-</div></div>
+          <div><span class="info-label">CÓD. BARRAS:</span><div class="info-val" id="heroBarcode">-</div></div>
+        </div>
+      </section>
+
+      <div class="counter-bar"><div class="card-counter" id="cardCounter">0/0</div></div>
+
+      <section class="catalog-section" id="catalogSection">
+        <div class="card-row" id="cardRow"></div>
+      </section>
+    </main>
   </div>
 
-  <!-- Lightbox Modal -->
-  <div class="lightbox-modal-overlay" id="detailModal">
-    <div class="lightbox-content-wrapper">
-      <button class="lightbox-close-btn" onclick="closeModal()" tabindex="0">&times;</button>
-      <div class="lightbox-left-grid" id="lightboxLeftGrid"></div>
-      <div class="lightbox-right-info">
-        <div class="can-main-title" id="lbTitle"></div>
-        <div><span class="info-field-label">CERVEJARIA:</span><div class="info-field-value" id="lbBrewery"></div></div>
-        <div><span class="info-field-label">ORIGEM:</span><div class="info-field-value" id="lbCountry"></div></div>
-        <div><span class="info-field-label">VOLUME:</span><div class="info-field-value" id="lbVolume"></div></div>
-        <div id="fieldYear"><span class="info-field-label">ANO:</span><div class="info-field-value" id="lbYear"></div></div>
-        <div id="fieldBarcode"><span class="info-field-label">CÓD. BARRAS:</span><div class="info-field-value" id="lbBarcode"></div></div>
-      </div>
-    </div>
+  <div class="zoom-modal" id="zoomModal">
+    <button class="zoom-close-btn" onclick="closeZoomModal()" tabindex="0">&times;</button>
+    <img id="zoomImage" src="" alt="Imagem ampliada">
   </div>
 
-  <!-- Modal Zoom -->
-<!-- Modal Zoom limpo (Navegação apenas por Teclado/Mouse) -->
-<div class="zoom-modal" id="zoomModal">
-  <button class="zoom-close-btn" onclick="closeZoomModal()">&times;</button>
-  <img id="zoomImage" src="" alt="Imagem ampliada">
-</div>
+<script>
+  const API_URL = "https://script.google.com/macros/s/AKfycbwFIsSgEF2grkBpliyO_hSD0Lh2ULq6xHoJC6mDLYvjemTLYe67jF38MDNWP2ixITzE/exec";
+  let canCatalog = [];
+  let currentFiltered = [];
+  let lastFocusedCard = null;
 
-  <script>
-    const API_URL = "https://script.google.com/macros/s/AKfycbwFIsSgEF2grkBpliyO_hSD0Lh2ULq6xHoJC6mDLYvjemTLYe67jF38MDNWP2ixITzE/exec";
-    let ocoCatalog = [];
-    let filteredOcoc = [];
-    let lastFocusedElement = null;
-    let currentGalleryViews = [];
-    let currentZoomIndex = 0;
+  const vkKeys = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','1','2','3','4','5','6','7','8','9','0','ESPAÇO','DEL','LIMPAR'];
 
-    const vkKeys = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','1','2','3','4','5','6','7','8','9','0','ESPAÇO','DEL','LIMPAR'];
-
-    async function loadOCOC() {
-      if(!API_URL || API_URL.includes("COLE_AQUI")) return;
-      try {
-        const response = await fetch(API_URL);
-        const data = await response.json();
-        
-        // Filtro flexível do OCOC
-        ocoCatalog = data.filter(can => {
-          const isSet = can.isSet === true || String(can.isSet).toLowerCase() === "true";
-          const isOcoc = can.isOcoc === true || 
-                         String(can.isOcoc).toLowerCase() === "true" || 
-                         String(can.isOcoc) === "1" || 
-                         String(can.isOcoc).toLowerCase() === "sim";
-          return !isSet && isOcoc;
-        });
-
-        filteredOcoc = [...ocoCatalog];
-        document.getElementById("totalCountBadge").innerText = ocoCatalog.length;
-        renderOCOC();
-        buildVirtualKeyboard();
-      } catch (err) { 
-        console.error("Erro ao carregar OCOC:", err); 
-      }
-    }
-
-    function renderOCOC() {
-      const grid = document.getElementById("ococGrid");
-      grid.innerHTML = "";
-
-      if (filteredOcoc.length === 0) {
-        grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: #8e8e93; padding: 40px; font-weight: bold;">Nenhuma lata OCOC encontrada.<br><span style="font-size:0.8rem; font-weight:normal;">Verifique se a caixinha "OCOC" foi marcada no cadastro no Admin.</span></div>`;
-        return;
-      }
-
-      filteredOcoc.forEach((can, index) => {
-        const coverImg = can.images ? (can.images.cover || can.images.front) : "";
-        const card = document.createElement("div");
-        card.className = "card";
-        card.tabIndex = 0;
-        card.onclick = () => openDetailModal(can.id);
-        card.onkeydown = (e) => {
-          if (e.key === "Enter" || e.key === " ") {
-            openDetailModal(can.id);
-          } else if (e.key === "ArrowLeft" && index % 5 === 0) {
-            e.preventDefault();
-            openSidebar();
-          }
-        };
-        card.innerHTML = `<img src="${coverImg}" alt="${can.name}"><div class="card-country-label">${can.country}</div>`;
-        grid.appendChild(card);
+  async function fetchCatalogFromSheet() {
+    if(!API_URL || API_URL.includes("COLE_AQUI")) return;
+    try {
+      const response = await fetch(API_URL);
+      canCatalog = await response.json();
+      
+      // Filtra 1 lata por País (OCOC)
+      const countryMap = new Map();
+      canCatalog.forEach(can => {
+        if (!can.isSet && can.country && !countryMap.has(can.country.toLowerCase())) {
+          countryMap.set(can.country.toLowerCase(), can);
+        }
       });
+      currentFiltered = Array.from(countryMap.values()).sort((a,b) => (a.country || "").localeCompare(b.country || ""));
+      
+      renderApp();
+      buildVirtualKeyboard();
+      buildBrandList();
+      if(currentFiltered.length > 0) updateHeroPanel(currentFiltered[0], 0);
+    } catch (err) {
+      console.error("Erro ao carregar catálogo:", err);
     }
+  }
 
-    function openDetailModal(id) {
-      const can = ocoCatalog.find(c => String(c.id) === String(id));
-      if (!can) return;
+  function toggleSubpanel(panelId) {
+    const target = document.getElementById(panelId);
+    const isActive = target.classList.contains("active");
+    closeSubpanels();
+    if (!isActive) target.classList.add("active");
+  }
 
-      lastFocusedElement = document.activeElement;
+  function closeSubpanels() {
+    document.querySelectorAll(".subpanel-overlay").forEach(p => p.classList.remove("active"));
+  }
 
-      document.getElementById("lbTitle").innerText = (can.name || "").toUpperCase();
-      document.getElementById("lbBrewery").innerText = (can.brewery || "-").toUpperCase();
-      document.getElementById("lbCountry").innerText = (can.country || "-").toUpperCase();
-      document.getElementById("lbVolume").innerText = (can.volume || "-").toUpperCase();
-      document.getElementById("lbYear").innerText = can.year || "-";
-      document.getElementById("lbBarcode").innerText = can.barcode || "-";
+  function buildVirtualKeyboard() {
+    const container = document.getElementById("vkContainer");
+    container.innerHTML = "";
+    vkKeys.forEach(k => {
+      const btn = document.createElement("button");
+      btn.className = `vk-key ${ (k === 'ESPAÇO' || k === 'DEL' || k === 'LIMPAR') ? 'vk-key-wide' : '' }`;
+      btn.tabIndex = 0; btn.innerText = k;
+      btn.onclick = () => handleVkPress(k);
+      container.appendChild(btn);
+    });
+    const input = document.getElementById("menuSearchInput");
+    input.oninput = (e) => filterCatalog(e.target.value);
+  }
 
-      const leftGrid = document.getElementById("lightboxLeftGrid");
-      leftGrid.innerHTML = "";
+  function handleVkPress(key) {
+    const input = document.getElementById("menuSearchInput");
+    if (key === 'ESPAÇO') input.value += ' ';
+    else if (key === 'DEL') input.value = input.value.slice(0, -1);
+    else if (key === 'LIMPAR') input.value = '';
+    else input.value += key;
+    filterCatalog(input.value);
+  }
 
-      currentGalleryViews = [can.images?.front, can.images?.left, can.images?.back, can.images?.right].filter(Boolean);
-
-      currentGalleryViews.forEach((url, index) => {
-        const item = document.createElement("div");
-        item.className = "view-card-item";
-        item.tabIndex = 0;
-        item.onclick = () => openZoomModal(index);
-        item.onkeydown = (e) => { if(e.key === "Enter" || e.key === " ") openZoomModal(index); };
-        item.innerHTML = `<img src="${url}">`;
-        leftGrid.appendChild(item);
-      });
-
-      document.getElementById("detailModal").classList.add("active");
-    }
-
-    function buildVirtualKeyboard() {
-      const container = document.getElementById("vkContainer");
-      container.innerHTML = "";
-      vkKeys.forEach(k => {
-        const btn = document.createElement("button");
-        btn.className = `vk-key ${['ESPAÇO','DEL','LIMPAR'].includes(k) ? 'vk-key-wide' : ''}`;
-        btn.tabIndex = 0;
-        btn.innerText = k;
-        btn.onclick = () => handleVkPress(k);
-        container.appendChild(btn);
-      });
-
-      const input = document.getElementById("menuSearchInput");
-      if(input) {
-        input.oninput = (e) => {
-          const val = e.target.value.toLowerCase().trim();
-          filteredOcoc = ocoCatalog.filter(can => 
-            (can.country && can.country.toLowerCase().includes(val)) || 
-            (can.name && can.name.toLowerCase().includes(val))
-          );
-          document.getElementById("totalCountBadge").innerText = filteredOcoc.length;
-          renderOCOC();
-        };
-      }
-    }
-
-    function handleVkPress(key) {
-      const input = document.getElementById("menuSearchInput");
-      if (key === 'ESPAÇO') input.value += ' ';
-      else if (key === 'DEL') input.value = input.value.slice(0, -1);
-      else if (key === 'LIMPAR') input.value = '';
-      else input.value += key;
-
-      const val = input.value.toLowerCase().trim();
-      filteredOcoc = ocoCatalog.filter(can => 
-        (can.country && can.country.toLowerCase().includes(val)) || 
-        (can.name && can.name.toLowerCase().includes(val))
-      );
-      document.getElementById("totalCountBadge").innerText = filteredOcoc.length;
-      renderOCOC();
-    }
-
-    function openZoomModal(index) {
-      if (currentGalleryViews.length === 0) return;
-      currentZoomIndex = index;
-      document.getElementById("zoomImage").src = currentGalleryViews[currentZoomIndex];
-      document.getElementById("zoomModal").classList.add("active");
-    }
-
-    function navigateZoom(direction) {
-      if (currentGalleryViews.length <= 1) return;
-      currentZoomIndex = (currentZoomIndex + direction + currentGalleryViews.length) % currentGalleryViews.length;
-      document.getElementById("zoomImage").src = currentGalleryViews[currentZoomIndex];
-    }
-
-    function closeZoomModal() { document.getElementById("zoomModal").classList.remove("active"); }
-    function closeModal() { document.getElementById("detailModal").classList.remove("active"); if(lastFocusedElement) lastFocusedElement.focus(); }
-
-    function openSidebar() { document.getElementById("sidebarMenu").classList.add("active"); document.body.classList.add("menu-open"); }
-    function closeSidebar() { document.getElementById("sidebarMenu").classList.remove("active"); document.body.classList.remove("menu-open"); }
+  function buildBrandList() {
+    const brandContainer = document.getElementById("brandListScroll");
+    brandContainer.innerHTML = "";
+    const brands = [...new Set(currentFiltered.map(c => c.brewery).filter(Boolean))].sort();
     
-document.addEventListener("keydown", (e) => {
-  const zoomModal = document.getElementById("zoomModal");
-  const isZoomActive = zoomModal && zoomModal.classList.contains("active");
+    const allBtn = document.createElement("button");
+    allBtn.className = "brand-btn"; allBtn.tabIndex = 0; allBtn.innerText = "⭐ Todos os Países";
+    allBtn.onclick = () => { filterCatalog(""); closeSubpanels(); };
+    brandContainer.appendChild(allBtn);
 
-  // Se o Modal de Zoom estiver aberto, navega pelas fotos com as setas Esquerda e Direita
-  if (isZoomActive) {
-    if (e.key === "ArrowLeft") {
-      e.preventDefault();
-      navigateZoom(-1); // Volta a foto
-    } else if (e.key === "ArrowRight") {
-      e.preventDefault();
-      navigateZoom(1);  // Avança a foto
-    }
+    brands.forEach(b => {
+      const btn = document.createElement("button");
+      btn.className = "brand-btn"; btn.tabIndex = 0; btn.innerText = b;
+      btn.onclick = () => { filterCatalog(b); closeSubpanels(); };
+      brandContainer.appendChild(btn);
+    });
   }
 
-  // Tecla ESC ou Voltar no Controle para fechar os modais
-  if (e.key === "Escape" || e.key === "Back" || e.keyCode === 10009 || e.keyCode === 27) {
-    if (isZoomActive) {
-      closeZoomModal();
-    } else if (document.getElementById("detailModal") && document.getElementById("detailModal").classList.contains("active")) {
-      closeModal();
-    } else if (document.getElementById("sidebarMenu") && document.getElementById("sidebarMenu").classList.contains("active")) {
-      closeSidebar();
-    }
+  function filterCatalog(query) {
+    const val = query.toLowerCase().trim();
+    currentFiltered = canCatalog.filter(can => {
+      if (can.isSet) return false;
+      if (!val) return true;
+      return [can.name, can.brewery, can.country, can.volume, can.year, can.barcode].map(v => String(v || "").toLowerCase()).join(" ").includes(val);
+    });
+    renderApp();
+    if(currentFiltered.length > 0) updateHeroPanel(currentFiltered[0], 0);
+    else document.getElementById("cardCounter").innerText = "0/0";
   }
-});
-    window.onload = loadOCOC;
-  </script>
+
+  function renderApp() {
+    const row = document.getElementById("cardRow");
+    row.innerHTML = "";
+
+    currentFiltered.forEach((can, index) => {
+      const coverImg = can.images ? (can.images.cover || can.images.front || can.images.left) : "";
+      const card = document.createElement("div");
+      card.className = "card"; card.tabIndex = 0;
+      
+      card.onfocus = () => { updateHeroPanel(can, index); lastFocusedCard = card; card.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' }); };
+      card.onmouseenter = () => updateHeroPanel(can, index);
+      card.onclick = () => updateHeroPanel(can, index);
+      card.onkeydown = (e) => { if (e.key === "ArrowUp") { e.preventDefault(); const firstPhoto = document.querySelector(".hero-photo-card"); if (firstPhoto) firstPhoto.focus(); } };
+
+      card.innerHTML = `<img src="${coverImg}" alt="${can.name}" loading="lazy"><div class="card-label">${can.country || ''}</div>`;
+      row.appendChild(card);
+    });
+  }
+
+  function updateHeroPanel(can, index = 0) {
+    document.getElementById("heroTitle").innerText = (can.name || "").toUpperCase();
+    document.getElementById("heroCountry").innerText = (can.country || "-").toUpperCase();
+    document.getElementById("heroVolume").innerText = (can.volume || "-").toUpperCase();
+    document.getElementById("heroYear").innerText = can.year || "-";
+    document.getElementById("heroBarcode").innerText = can.barcode || "-";
+
+    const total = currentFiltered.length;
+    const currentNum = total > 0 ? (index + 1) : 0;
+    document.getElementById("cardCounter").innerText = `${currentNum}/${total}`;
+
+    const photosContainer = document.getElementById("heroPhotos");
+    photosContainer.innerHTML = "";
+
+    const galleryViews = [can.images?.front, can.images?.left, can.images?.back, can.images?.right].filter(Boolean);
+    galleryViews.forEach((url, idx) => {
+      const photoCard = document.createElement("div");
+      photoCard.className = "hero-photo-card"; photoCard.tabIndex = 0;
+      photoCard.onclick = () => openZoomModal(url);
+      photoCard.onkeydown = (e) => { if(e.key === "Enter" || e.key === " ") openZoomModal(url); else if (e.key === "ArrowDown") { e.preventDefault(); if (lastFocusedCard) lastFocusedCard.focus(); } };
+      photoCard.innerHTML = `<img src="${url}" alt="Foto ${idx+1}">`;
+      photosContainer.appendChild(photoCard);
+    });
+  }
+
+  function openZoomModal(url) { document.getElementById("zoomImage").src = url; document.getElementById("zoomModal").classList.add("active"); }
+  function closeZoomModal() { document.getElementById("zoomModal").classList.remove("active"); }
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" || e.key === "Back" || e.keyCode === 10009 || e.keyCode === 27) {
+      if (document.getElementById("zoomModal").classList.contains("active")) closeZoomModal(); else closeSubpanels();
+    }
+  });
+
+  window.onload = fetchCatalogFromSheet;
+</script>
 </body>
 </html>
