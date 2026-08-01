@@ -27,21 +27,23 @@
     .sidebar-menu.active { left: 0; }
     .sidebar-title { font-size: 1.2rem; color: #f39c12; font-weight: 900; margin-bottom: 8px; border-bottom: 2px solid #666666; padding-bottom: 6px; }
     
+    /* 🎨 ITEM DO MENU ADMIN SEM BORDAS E APENAS COR AO SELECIONAR */
     .menu-item {
       display: flex; align-items: center; gap: 12px; color: #666666; text-decoration: none;
       padding: 10px 12px; border-radius: 8px; font-size: 0.95rem; font-weight: 800;
-      background: transparent; border: 2px solid transparent; cursor: pointer; width: 100%; text-align: left;
-      transition: color 0.15s ease, border-color 0.15s ease;
+      background: transparent; border: none !important; outline: none !important; box-shadow: none !important; cursor: pointer; width: 100%; text-align: left;
+      transition: color 0.15s ease;
     }
     .menu-item i { 
       font-size: 1.2rem; min-width: 24px; text-align: center; font-style: normal; 
       color: #666666; filter: grayscale(100%) opacity(0.75); transition: filter 0.15s ease, color 0.15s ease; 
     }
     .menu-item:focus, .menu-item:hover { 
-      background: transparent; 
+      background: transparent !important; 
       color: #f39c12 !important; 
-      border-color: #f39c12 !important; 
+      border: none !important; 
       outline: none !important;
+      box-shadow: none !important;
     }
     .menu-item:focus i, .menu-item:hover i { filter: none !important; color: #f39c12 !important; }
 
@@ -201,9 +203,6 @@
             <input type="text" id="canBarcode" class="form-control" placeholder="Ex: 7891234567890">
           </div>
 
-          <!-- 🖼️ 6 CAMPOS INDEPENDENTES DE IMAGEM -->
-          
-          <!-- 1. LOGO DA MARCA (NÃO VAI PRO CARD DA LATA) -->
           <div class="form-group">
             <label>🏷️ 1. LOGO DA MARCA / CERVEJARIA (CANTO SUPERIOR DO LIGHTBOX)</label>
             <div class="image-input-wrapper">
@@ -213,7 +212,6 @@
             </div>
           </div>
 
-          <!-- 2. CAPA PERSONALIZADA -->
           <div class="form-group">
             <label>⭐ 2. FOTO DE CAPA (EXIBIDA NO CARTÃO/INÍCIO)</label>
             <div class="image-input-wrapper">
@@ -223,7 +221,6 @@
             </div>
           </div>
 
-          <!-- 3. FOTO FRONTAL -->
           <div class="form-group">
             <label>📷 3. FOTO FRONTAL</label>
             <div class="image-input-wrapper">
@@ -233,7 +230,6 @@
             </div>
           </div>
 
-          <!-- 4. FOTO ESQUERDA -->
           <div class="form-group">
             <label>📷 4. FOTO ESQUERDA</label>
             <div class="image-input-wrapper">
@@ -243,7 +239,6 @@
             </div>
           </div>
 
-          <!-- 5. FOTO TRASEIRA -->
           <div class="form-group">
             <label>📷 5. FOTO TRASEIRA</label>
             <div class="image-input-wrapper">
@@ -253,7 +248,6 @@
             </div>
           </div>
 
-          <!-- 6. FOTO DIREITA -->
           <div class="form-group">
             <label>📷 6. FOTO DIREITA</label>
             <div class="image-input-wrapper">
@@ -319,7 +313,6 @@
     tbody.innerHTML = "";
 
     catalogData.forEach((can, index) => {
-      // Prioridade de exibição do card: Capa -> Frontal -> Esquerda
       const cover = can.images ? (can.images.cover || can.images.front || can.images.left) : "";
       
       let tags = "";
@@ -366,7 +359,6 @@
     document.getElementById("canYear").value = can.year || "";
     document.getElementById("canBarcode").value = can.barcode || "";
 
-    // Preenche todos os 6 campos no formulário
     document.getElementById("imgBrandLogo").value = can.brandLogo || can.images?.brandLogo || "";
     document.getElementById("imgCover").value = can.images?.cover || "";
     document.getElementById("imgFront").value = can.images?.front || "";
@@ -409,12 +401,12 @@
       volume: document.getElementById("canVolume").value,
       year: document.getElementById("canYear").value,
       barcode: document.getElementById("canBarcode").value,
-      brandLogo: brandLogoVal, // Logo da marca salvo de forma isolada
+      brandLogo: brandLogoVal,
       isSet: document.getElementById("destSet").checked,
       isOcoc: document.getElementById("destOcoc").checked,
       images: {
         brandLogo: brandLogoVal,
-        cover: coverVal || frontVal || leftVal, // Garante que a capa NUNCA seja o logo da marca
+        cover: coverVal || frontVal || leftVal,
         front: frontVal,
         left: leftVal,
         back: backVal,
