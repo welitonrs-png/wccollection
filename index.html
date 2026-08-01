@@ -7,7 +7,6 @@
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; outline: none; }
     
-    /* 🎯 COR DE FUNDO ESCURECIDA PARA ALTO CONTRASTE NA TV */
     body { background-color: #2A2A2A; color: #DDDDDD; height: 100vh; overflow: hidden; display: flex; user-select: none; }
 
     ::-webkit-scrollbar { display: none !important; width: 0 !important; height: 0 !important; }
@@ -15,7 +14,6 @@
 
     .app-container { display: flex; width: 100vw; height: 100vh; overflow: hidden; position: relative; background-color: #2A2A2A; }
 
-    /* 🎯 MENU LATERAL ESCURO E CONTRASTADO */
     .sidebar {
       width: 60px; min-width: 60px; background: #1E1E1E; border-right: none;
       display: flex; flex-direction: column; padding: 10px 4px; gap: 2px; height: 100%;
@@ -27,7 +25,6 @@
     .sidebar-logo-img { width: 40px; height: 40px; object-fit: contain; transition: width 0.25s ease; }
     .sidebar:hover .sidebar-logo-img, .sidebar:focus-within .sidebar-logo-img { width: 150px; height: auto; }
 
-    /* 🎯 TEXTOS DO MENU VISÍVEIS (CINZA CLARO #DDDDDD) */
     .menu-item {
       display: flex; align-items: center; gap: 12px; color: #DDDDDD; text-decoration: none;
       padding: 6px 10px; border-radius: 6px; font-size: 1rem; font-weight: 900; text-transform: uppercase;
@@ -184,6 +181,15 @@
 
   const vkKeys = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','1','2','3','4','5','6','7','8','9','0','ESPAÇO','DEL','LIMPAR'];
 
+  // 🎯 Otimizador de imagens CDN (Google Drive) para ultra alta performance
+  function getOptimizedImageUrl(url, size = 300) {
+    if (!url) return '';
+    if (url.includes('googleusercontent.com')) {
+      return url.split('=')[0] + `=s${size}-rw`;
+    }
+    return url;
+  }
+
   async function fetchCatalogFromSheet() {
     if(!API_URL || API_URL.includes("COLE_AQUI")) return;
     try {
@@ -196,7 +202,6 @@
       buildVirtualKeyboard();
       buildBrandList();
       if(currentFiltered.length > 0) updateHeroPanel(currentFiltered[0], 0);
-      
       focusCardSafely(0);
     } catch (err) {
       console.error("Erro ao carregar catálogo:", err);
@@ -302,7 +307,10 @@
 
     pageItems.forEach((can, localIndex) => {
       const globalIndex = startIndex + localIndex;
-      const coverImg = can.images ? (can.images.cover || can.images.front || can.images.left) : "";
+      // 🎯 Usa miniatura ultra leve (300px) nos cards
+      const rawCover = can.images ? (can.images.cover || can.images.front || can.images.left) : "";
+      const coverImg = getOptimizedImageUrl(rawCover, 300);
+
       const card = document.createElement("div");
       card.className = "card"; card.tabIndex = 0;
       card.dataset.globalIndex = globalIndex;
@@ -374,7 +382,7 @@
     const logoContainer = document.getElementById("heroBrandLogo");
     const logoUrl = can.brandLogo || can.images?.brandLogo;
     if (logoUrl) {
-      logoContainer.innerHTML = `<img src="${logoUrl}" alt="LOGO MARCA">`;
+      logoContainer.innerHTML = `<img src="${getOptimizedImageUrl(logoUrl, 400)}" alt="LOGO MARCA">`;
     } else {
       logoContainer.innerHTML = "";
     }
@@ -388,10 +396,12 @@
 
     zoomGallery = [can.images?.front, can.images?.left, can.images?.back, can.images?.right].filter(Boolean);
 
+    // 🎯 Precarrega e exibe em HD otimizado (1000px) no painel
     zoomGallery.forEach((url, idx) => {
+      const optimizedUrl = getOptimizedImageUrl(url, 1000);
       const photoCard = document.createElement("div");
       photoCard.className = "hero-photo-card";
-      photoCard.innerHTML = `<img src="${url}" alt="FOTO ${idx+1}">`;
+      photoCard.innerHTML = `<img src="${optimizedUrl}" alt="FOTO ${idx+1}" loading="lazy">`;
       photosContainer.appendChild(photoCard);
     });
   }
@@ -400,7 +410,8 @@
     if (!zoomGallery || zoomGallery.length === 0) return;
     currentZoomIndex = index;
     const imgElem = document.getElementById("zoomImage");
-    imgElem.src = zoomGallery[currentZoomIndex];
+    // 🎯 Zoom em alta resolução (1200px)
+    imgElem.src = getOptimizedImageUrl(zoomGallery[currentZoomIndex], 1200);
     imgElem.classList.remove("zoomed");
     document.getElementById("zoomModal").classList.add("active");
   }
@@ -415,7 +426,7 @@
     const imgElem = document.getElementById("zoomImage");
     imgElem.classList.remove("zoomed");
     currentZoomIndex = (currentZoomIndex + direction + zoomGallery.length) % zoomGallery.length;
-    imgElem.src = zoomGallery[currentZoomIndex];
+    imgElem.src = getOptimizedImageUrl(zoomGallery[currentZoomIndex], 1200);
   }
 
   function closeZoomModal() {
