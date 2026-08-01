@@ -14,7 +14,7 @@
 
     .app-container { display: flex; width: 100vw; height: 100vh; overflow: hidden; position: relative; background-color: #2A2A2A; }
 
-    /* MENU LATERAL PADRONIZADO */
+    /* MENU LATERAL */
     .sidebar {
       width: 60px; min-width: 60px; background: #1E1E1E; border-right: none;
       display: flex; flex-direction: column; padding: 10px 4px; gap: 2px; height: 100%;
@@ -51,7 +51,7 @@
     .vk-key:focus, .vk-key:hover { color: #f39c12; border-color: #f39c12 !important; }
     .vk-key-wide { grid-column: span 2; }
 
-    /* ÁREA PRINCIPAL E FORMULÁRIO */
+    /* ÁREA PRINCIPAL */
     .main-area { flex: 1; display: flex; flex-direction: column; height: 100vh; padding: 24px; gap: 24px; overflow-y: auto; background: #2A2A2A; min-width: 0; }
     .admin-card { background: #333333; border-radius: 12px; padding: 24px; color: #fff; max-width: 1100px; margin: 0 auto; width: 100%; }
     .admin-title { font-size: 1.4rem; font-weight: 900; color: #f39c12; margin-bottom: 8px; text-transform: uppercase; }
@@ -76,7 +76,7 @@
     .admin-btn-secondary { background: #555555; color: #fff; }
     .admin-btn-secondary:hover { background: #777777; }
 
-    /* TABELA DE ITENS CADASTRADOS */
+    /* TABELA DE GESTÃO */
     .table-container { width: 100%; overflow-x: auto; margin-top: 16px; border-radius: 6px; border: 1px solid #444; }
     .data-table { width: 100%; border-collapse: collapse; background: #222; text-align: left; font-size: 0.85rem; }
     .data-table th { background: #111; color: #f39c12; padding: 12px; text-transform: uppercase; border-bottom: 2px solid #444; }
@@ -123,7 +123,7 @@
       <!-- FORMULÁRIO DE CADASTRO / EDIÇÃO -->
       <div class="admin-card">
         <h1 class="admin-title" id="formTitle">CADASTRAR NOVA LATA</h1>
-        <p class="admin-desc">Preencha as informações para adicionar ou modificar itens do seu catálogo.</p>
+        <p class="admin-desc">Preencha as informações abaixo para adicionar ou modificar itens do seu catálogo.</p>
         
         <form id="canForm" onsubmit="handleFormSubmit(event)">
           <input type="hidden" id="editIndex" value="-1">
@@ -172,27 +172,31 @@
             </div>
           </div>
 
-          <div class="section-subtitle">FOTOS E IMAGENS (URLS)</div>
+          <div class="section-subtitle">FOTOS E IMAGENS (6 URLS)</div>
           <div class="form-grid">
             <div class="form-group">
-              <label for="imgFront">Foto Frente (URL)</label>
+              <label for="brandLogo">1. Logo da Marca (URL)</label>
+              <input type="url" id="brandLogo" class="form-control" placeholder="https://...">
+            </div>
+            <div class="form-group">
+              <label for="imgCover">2. Foto Capa - Cards (URL)</label>
+              <input type="url" id="imgCover" class="form-control" placeholder="https://...">
+            </div>
+            <div class="form-group">
+              <label for="imgFront">3. Foto Frente (URL)</label>
               <input type="url" id="imgFront" class="form-control" placeholder="https://...">
             </div>
             <div class="form-group">
-              <label for="imgLeft">Foto Esquerda (URL)</label>
+              <label for="imgLeft">4. Foto Esquerda (URL)</label>
               <input type="url" id="imgLeft" class="form-control" placeholder="https://...">
             </div>
             <div class="form-group">
-              <label for="imgBack">Foto Verso (URL)</label>
+              <label for="imgBack">5. Foto Traseira / Verso (URL)</label>
               <input type="url" id="imgBack" class="form-control" placeholder="https://...">
             </div>
             <div class="form-group">
-              <label for="imgRight">Foto Direita (URL)</label>
+              <label for="imgRight">6. Foto Direita (URL)</label>
               <input type="url" id="imgRight" class="form-control" placeholder="https://...">
-            </div>
-            <div class="form-group">
-              <label for="brandLogo">Logo da Marca (URL)</label>
-              <input type="url" id="brandLogo" class="form-control" placeholder="https://...">
             </div>
           </div>
 
@@ -205,7 +209,7 @@
         <div class="status-box" id="statusBox"></div>
       </div>
 
-      <!-- TABELA DE GESTÃO DE ITENS CADASTRADOS -->
+      <!-- TABELA DE GESTÃO -->
       <div class="admin-card">
         <h1 class="admin-title">ITENS CADASTRADOS NO CATÁLOGO</h1>
         <p class="admin-desc">Gerencie, edite ou exclua latas diretamente da lista.</p>
@@ -304,7 +308,7 @@
     }
   }
 
-  /* PREENCHER FORMULÁRIO PARA EDIÇÃO (INCLUINDO FOTO DIREITA) */
+  /* PREENCHER FORMULÁRIO PARA EDIÇÃO COM AS 6 FOTOS */
   function editItem(index) {
     const item = catalogData[index];
     if (!item) return;
@@ -327,11 +331,13 @@
       document.getElementById("typeLata").checked = true;
     }
 
+    // Preenche as 6 fotos
+    document.getElementById("brandLogo").value = item.brandLogo || item.images?.brandLogo || "";
+    document.getElementById("imgCover").value = item.images?.cover || "";
     document.getElementById("imgFront").value = item.images?.front || "";
     document.getElementById("imgLeft").value = item.images?.left || "";
     document.getElementById("imgBack").value = item.images?.back || "";
     document.getElementById("imgRight").value = item.images?.right || "";
-    document.getElementById("brandLogo").value = item.brandLogo || item.images?.brandLogo || "";
 
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
@@ -364,7 +370,9 @@
       barcode: document.getElementById("barcode").value,
       isSet: selectedType === "set",
       isOcoc: selectedType === "ococ",
+      brandLogo: document.getElementById("brandLogo").value,
       images: {
+        cover: document.getElementById("imgCover").value,
         front: document.getElementById("imgFront").value,
         left: document.getElementById("imgLeft").value,
         back: document.getElementById("imgBack").value,
