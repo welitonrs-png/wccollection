@@ -331,6 +331,22 @@
               if (firstMenuItem) firstMenuItem.focus();
             }
           }
+        } else if (e.key === "ArrowDown") {
+          // 🎯 IMPEDE A TV DE IR PARA O MENU AO APERTAR PARA BAIXO
+          e.preventDefault();
+          if ((startIndex + CARDS_PER_ROW) < currentFiltered.length) {
+            currentPage++;
+            renderApp();
+            setTimeout(() => focusFirstCard(), 30);
+          }
+        } else if (e.key === "ArrowUp") {
+          // 🎯 IMPEDE A TV DE IR PARA O MENU AO APERTAR PARA CIMA
+          e.preventDefault();
+          if (currentPage > 0) {
+            currentPage--;
+            renderApp();
+            setTimeout(() => focusFirstCard(), 30);
+          }
         }
       };
 
