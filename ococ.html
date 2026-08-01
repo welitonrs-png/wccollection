@@ -32,11 +32,12 @@
     .sidebar-logo-img { width: 40px; height: 40px; object-fit: contain; transition: width 0.25s ease; }
     .sidebar:hover .sidebar-logo-img, .sidebar:focus-within .sidebar-logo-img { width: 160px; height: auto; }
 
+    /* 🎨 ITEM DO MENU SEM BORDAS E APENAS MUDANÇA DE COR AO SELECIONAR */
     .menu-item {
       display: flex; align-items: center; gap: 14px; color: #666666; text-decoration: none;
       padding: 10px 12px; border-radius: 8px; font-size: 0.9rem; font-weight: 800;
-      background: transparent; border: 2px solid transparent; cursor: pointer; width: 100%;
-      text-align: left; transition: color 0.15s ease, border-color 0.15s ease;
+      background: transparent; border: none !important; outline: none !important; box-shadow: none !important; cursor: pointer; width: 100%;
+      text-align: left; transition: color 0.15s ease;
     }
     .menu-item i { 
       font-size: 1.2rem; min-width: 24px; text-align: center; font-style: normal; 
@@ -44,7 +45,7 @@
     }
     .menu-item span { opacity: 0; transition: opacity 0.2s ease; }
     .sidebar:hover .menu-item span, .sidebar:focus-within .menu-item span { opacity: 1; }
-    .menu-item:focus, .menu-item:hover { color: #f39c12 !important; background: transparent; }
+    .menu-item:focus, .menu-item:hover { color: #f39c12 !important; background: transparent !important; border: none !important; outline: none !important; box-shadow: none !important; }
     .menu-item:focus i, .menu-item:hover i { filter: none !important; color: #f39c12 !important; }
 
     .subpanel-overlay {
@@ -62,8 +63,8 @@
     .subpanel-close-btn:focus, .subpanel-close-btn:hover { color: #f39c12; }
 
     .brand-list-scroll { display: flex; flex-direction: column; gap: 6px; overflow-y: auto; flex: 1; padding-right: 4px; }
-    .brand-btn { font-size: 0.85rem; padding: 10px; border-radius: 6px; background: transparent; color: #666666; cursor: pointer; border: 2px solid transparent; text-align: left; font-weight: bold; transition: color 0.15s ease; }
-    .brand-btn:focus, .brand-btn:hover { color: #f39c12; border-color: #f39c12 !important; background: transparent; }
+    .brand-btn { font-size: 0.85rem; padding: 10px; border-radius: 6px; background: transparent; color: #666666; cursor: pointer; border: none !important; outline: none !important; box-shadow: none !important; text-align: left; font-weight: bold; transition: color 0.15s ease; }
+    .brand-btn:focus, .brand-btn:hover { color: #f39c12 !important; background: transparent !important; border: none !important; outline: none !important; box-shadow: none !important; }
 
     .menu-search-box { width: 100%; padding: 8px; background: #888888; border: 2px solid #666666; border-radius: 6px; color: #fff; font-size: 0.85rem; font-weight: bold; text-align: center; }
     .menu-search-box::placeholder { color: #ccc; }
@@ -210,7 +211,6 @@
       buildBrandList();
       if(currentFiltered.length > 0) updateHeroPanel(currentFiltered[0], 0);
 
-      // 🎯 INICIA COM O FOCO NO PRIMEIRO CARD ASSIM QUE O APP ABRE
       setTimeout(() => focusFirstCard(), 100);
     } catch (err) {
       console.error("Erro ao carregar catálogo:", err);
