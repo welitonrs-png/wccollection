@@ -14,25 +14,27 @@
 
     .app-container { display: flex; width: 100vw; height: 100vh; overflow: hidden; position: relative; background-color: #9B9B9B; }
 
+    /* 🎯 MENU COM ESPAÇAMENTO COMPACTO ENTRE LINHAS */
     .sidebar {
       width: 60px; min-width: 60px; background: #9B9B9B; border-right: none;
-      display: flex; flex-direction: column; padding: 12px 6px; gap: 8px; height: 100%;
+      display: flex; flex-direction: column; padding: 10px 4px; gap: 2px; height: 100%;
       z-index: 500; transition: width 0.25s ease-in-out; overflow-y: auto; overflow-x: hidden; white-space: nowrap; position: relative;
     }
     .sidebar:hover, .sidebar:focus-within { width: 250px; min-width: 250px; box-shadow: 10px 0 25px rgba(0,0,0,0.15); }
 
-    .sidebar-logo-container { width: 100%; text-align: center; padding-bottom: 8px; border-bottom: none; flex-shrink: 0; }
+    .sidebar-logo-container { width: 100%; text-align: center; padding-bottom: 4px; border-bottom: none; flex-shrink: 0; }
     .sidebar-logo-img { width: 40px; height: 40px; object-fit: contain; transition: width 0.25s ease; }
-    .sidebar:hover .sidebar-logo-img, .sidebar:focus-within .sidebar-logo-img { width: 160px; height: auto; }
+    .sidebar:hover .sidebar-logo-img, .sidebar:focus-within .sidebar-logo-img { width: 150px; height: auto; }
 
+    /* 🎯 FONTE AUMENTADA E COMPACTADA */
     .menu-item {
-      display: flex; align-items: center; gap: 14px; color: #666666; text-decoration: none;
-      padding: 10px 12px; border-radius: 8px; font-size: 0.9rem; font-weight: 800; text-transform: uppercase;
+      display: flex; align-items: center; gap: 12px; color: #666666; text-decoration: none;
+      padding: 6px 10px; border-radius: 6px; font-size: 1rem; font-weight: 900; text-transform: uppercase;
       background: transparent; border: none !important; outline: none !important; box-shadow: none !important; cursor: pointer; width: 100%;
       text-align: left; transition: color 0.15s ease; flex-shrink: 0;
     }
     .menu-item i { 
-      font-size: 1.2rem; min-width: 24px; text-align: center; font-style: normal; 
+      font-size: 1.25rem; min-width: 24px; text-align: center; font-style: normal; 
       color: #666666; filter: grayscale(100%) opacity(0.75); transition: filter 0.15s ease, color 0.15s ease; 
     }
     .menu-item span { opacity: 0; transition: opacity 0.2s ease; }
@@ -40,37 +42,23 @@
     .menu-item:focus, .menu-item:hover { color: #f39c12 !important; background: transparent !important; border: none !important; outline: none !important; box-shadow: none !important; }
     .menu-item:focus i, .menu-item:hover i { filter: none !important; color: #f39c12 !important; }
 
-    /* 🎯 CONTEÚNER DE MARCAS INLINE NO PRÓPRIO MENU */
-    .brand-inline-container {
-      display: none; flex-direction: column; gap: 4px; padding-left: 12px; margin-top: -4px; margin-bottom: 4px; flex-shrink: 0;
+    /* 🎯 CONTEÚNERES INLINE EXPANSÍVEIS NO PRÓPRIO MENU */
+    .inline-panel-container {
+      display: none; flex-direction: column; gap: 4px; padding-left: 8px; padding-right: 4px; margin-top: 2px; margin-bottom: 4px; flex-shrink: 0;
     }
-    .brand-inline-container.active { display: flex; }
+    .inline-panel-container.active { display: flex; }
 
     .brand-btn { 
-      font-size: 0.8rem; padding: 8px 10px; border-radius: 6px; background: transparent; color: #666666; cursor: pointer; 
+      font-size: 0.85rem; padding: 6px 8px; border-radius: 4px; background: transparent; color: #666666; cursor: pointer; 
       border: none !important; outline: none !important; box-shadow: none !important; text-align: left; font-weight: 800; 
       text-transform: uppercase; transition: color 0.15s ease; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
     .brand-btn:focus, .brand-btn:hover { color: #f39c12 !important; background: transparent !important; border: none !important; outline: none !important; box-shadow: none !important; }
 
-    .subpanel-overlay {
-      position: absolute; top: 0; left: 60px; width: 280px; height: 100%;
-      background: #9B9B9B; border-right: none; z-index: 600;
-      display: flex; flex-direction: column; padding: 16px; gap: 12px;
-      transform: translateX(-100%); opacity: 0; pointer-events: none;
-      transition: transform 0.25s ease-in-out, opacity 0.25s ease-in-out; box-shadow: 15px 0 25px rgba(0,0,0,0.15);
-    }
-    .subpanel-overlay.active { transform: translateX(0); opacity: 1; pointer-events: auto; }
-
-    .subpanel-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #666666; padding-bottom: 8px; }
-    .subpanel-title { font-size: 1rem; color: #666666; font-weight: 900; text-transform: uppercase; }
-    .subpanel-close-btn { background: transparent; border: none; color: #666666; font-size: 1.4rem; cursor: pointer; font-weight: bold; }
-    .subpanel-close-btn:focus, .subpanel-close-btn:hover { color: #f39c12; }
-
-    .menu-search-box { width: 100%; padding: 8px; background: #888888; border: 2px solid #666666; border-radius: 6px; color: #fff; font-size: 0.85rem; font-weight: bold; text-align: center; text-transform: uppercase; }
+    .menu-search-box { width: 100%; padding: 6px; background: #888888; border: 2px solid #666666; border-radius: 6px; color: #fff; font-size: 0.8rem; font-weight: bold; text-align: center; text-transform: uppercase; margin-bottom: 4px; }
     .menu-search-box::placeholder { color: #ccc; text-transform: uppercase; }
-    .vk-container { display: grid; grid-template-columns: repeat(6, 1fr); gap: 3px; background: transparent; padding: 4px; border-radius: 6px; }
-    .vk-key { background: transparent; border: 1px solid #666666; color: #666666; padding: 6px 0; border-radius: 4px; font-size: 0.7rem; font-weight: bold; cursor: pointer; text-align: center; text-transform: uppercase; }
+    .vk-container { display: grid; grid-template-columns: repeat(6, 1fr); gap: 2px; background: transparent; padding: 2px; border-radius: 6px; }
+    .vk-key { background: transparent; border: 1px solid #666666; color: #666666; padding: 5px 0; border-radius: 4px; font-size: 0.65rem; font-weight: bold; cursor: pointer; text-align: center; text-transform: uppercase; }
     .vk-key:focus, .vk-key:hover { color: #f39c12; border-color: #f39c12 !important; }
     .vk-key-wide { grid-column: span 2; }
 
@@ -134,22 +122,22 @@
     <aside class="sidebar" id="sidebar">
       <div class="sidebar-logo-container"><img src="logo.png" alt="WCCollection Logo" class="sidebar-logo-img"></div>
       <button class="menu-item" onclick="location.href='index.html'" tabindex="0"><i>🏠</i><span>HOME</span></button>
-      <button class="menu-item" onclick="toggleSubpanel('searchPanel')" tabindex="0"><i>🔍</i><span>PESQUISAR</span></button>
       
-      <!-- 🎯 MARCAS COM EXPANSÃO INLINE -->
+      <!-- 🎯 PESQUISA INLINE (SOMENTE AO CLICAR) -->
+      <button class="menu-item" onclick="toggleSearchInline()" tabindex="0"><i>🔍</i><span>PESQUISAR</span></button>
+      <div class="inline-panel-container" id="searchInlineContainer">
+        <input type="text" id="menuSearchInput" class="menu-search-box" placeholder="DIGITE PARA BUSCAR..." tabindex="0">
+        <div class="vk-container" id="vkContainer"></div>
+      </div>
+
+      <!-- 🎯 MARCAS INLINE -->
       <button class="menu-item" onclick="toggleBrandInline()" tabindex="0"><i>🏷️</i><span>MARCAS</span></button>
-      <div class="brand-inline-container" id="brandInlineList"></div>
+      <div class="inline-panel-container" id="brandInlineList"></div>
 
       <button class="menu-item" onclick="location.href='ococ.html'" tabindex="0"><i>🌍</i><span>OCOC</span></button>
       <button class="menu-item" onclick="location.href='sets.html'" tabindex="0"><i>📦</i><span>SETS</span></button>
       <button class="menu-item" onclick="location.href='admin.html'" tabindex="0"><i>⚙️</i><span>ADMIN</span></button>
     </aside>
-
-    <div class="subpanel-overlay" id="searchPanel">
-      <div class="subpanel-header"><div class="subpanel-title">🔍 PESQUISAR</div><button class="subpanel-close-btn" onclick="closeSubpanels()">&times;</button></div>
-      <input type="text" id="menuSearchInput" class="menu-search-box" placeholder="DIGITE PARA BUSCAR..." tabindex="0">
-      <div class="vk-container" id="vkContainer"></div>
-    </div>
 
     <main class="main-area">
       <section class="hero-panel" id="heroPanel">
@@ -234,19 +222,14 @@
     }
   }
 
-  function toggleSubpanel(panelId) {
-    const target = document.getElementById(panelId);
-    const isActive = target.classList.contains("active");
-    closeSubpanels();
-    if (!isActive) target.classList.add("active");
-  }
-
-  function closeSubpanels() {
-    document.querySelectorAll(".subpanel-overlay").forEach(p => p.classList.remove("active"));
+  function toggleSearchInline() {
+    document.getElementById("brandInlineList").classList.remove("active");
+    const container = document.getElementById("searchInlineContainer");
+    container.classList.toggle("active");
   }
 
   function toggleBrandInline() {
-    closeSubpanels();
+    document.getElementById("searchInlineContainer").classList.remove("active");
     const container = document.getElementById("brandInlineList");
     container.classList.toggle("active");
   }
@@ -438,11 +421,11 @@
       else if (e.key === "Escape" || e.key === "Back" || e.keyCode === 10009 || e.keyCode === 27) { closeZoomModal(); }
     } else {
       if (e.key === "Escape" || e.key === "Back" || e.keyCode === 10009 || e.keyCode === 27) {
-        closeSubpanels();
+        document.getElementById("searchInlineContainer").classList.remove("active");
         document.getElementById("brandInlineList").classList.remove("active");
       }
       
-      if (activeElem && (activeElem.classList.contains("menu-item") || activeElem.classList.contains("brand-btn")) && e.key === "ArrowRight") {
+      if (activeElem && (activeElem.classList.contains("menu-item") || activeElem.classList.contains("brand-btn") || activeElem.classList.contains("vk-key") || activeElem.id === "menuSearchInput") && e.key === "ArrowRight") {
         e.preventDefault();
         focusCardSafely(0);
       }
