@@ -133,7 +133,6 @@
 
       <button class="menu-item" onclick="location.href='ococ.html'" tabindex="0"><i>🌍</i><span>OCOC</span></button>
       <button class="menu-item" onclick="location.href='sets.html'" tabindex="0"><i>📦</i><span>SETS</span></button>
-      <button class="menu-item" onclick="location.href='admin.html'" tabindex="0"><i>⚙️</i><span>ADMIN</span></button>
     </aside>
 
     <main class="main-area">
@@ -181,7 +180,6 @@
 
   const vkKeys = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','1','2','3','4','5','6','7','8','9','0','ESPAÇO','DEL','LIMPAR'];
 
-  // 🎯 Otimizador de imagens CDN (Google Drive) para ultra alta performance
   function getOptimizedImageUrl(url, size = 300) {
     if (!url) return '';
     if (url.includes('googleusercontent.com')) {
@@ -307,7 +305,6 @@
 
     pageItems.forEach((can, localIndex) => {
       const globalIndex = startIndex + localIndex;
-      // 🎯 Usa miniatura ultra leve (300px) nos cards
       const rawCover = can.images ? (can.images.cover || can.images.front || can.images.left) : "";
       const coverImg = getOptimizedImageUrl(rawCover, 300);
 
@@ -396,7 +393,6 @@
 
     zoomGallery = [can.images?.front, can.images?.left, can.images?.back, can.images?.right].filter(Boolean);
 
-    // 🎯 Precarrega e exibe em HD otimizado (1000px) no painel
     zoomGallery.forEach((url, idx) => {
       const optimizedUrl = getOptimizedImageUrl(url, 1000);
       const photoCard = document.createElement("div");
@@ -410,7 +406,6 @@
     if (!zoomGallery || zoomGallery.length === 0) return;
     currentZoomIndex = index;
     const imgElem = document.getElementById("zoomImage");
-    // 🎯 Zoom em alta resolução (1200px)
     imgElem.src = getOptimizedImageUrl(zoomGallery[currentZoomIndex], 1200);
     imgElem.classList.remove("zoomed");
     document.getElementById("zoomModal").classList.add("active");
