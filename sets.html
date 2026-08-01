@@ -179,12 +179,20 @@
   let currentPage = 0;
   let activeLocalIndex = 0;
 
+  function getOptimizedImageUrl(url, size = 300) {
+    if (!url) return '';
+    if (url.includes('googleusercontent.com')) {
+      return url.split('=')[0] + `=s${size}-rw`;
+    }
+    return url;
+  }
+
   async function fetchCatalogFromSheet() {
     if(!API_URL || API_URL.includes("COLE_AQUI")) return;
     try {
       const response = await fetch(API_URL);
       canCatalog = await response.json();
-      currentFiltered = canCatalog.filter(can => can.isSet === true || can.isSet === "true");
+      currentFiltered = canCatalog.filter(can => can.isSet === true || String(can.isSet).toLowerCase() === "true");
       currentPage = 0;
       activeLocalIndex = 0;
       
@@ -195,7 +203,7 @@
 
       focusCardSafely(0);
     } catch (err) {
-      console.error("Erro ao carregar catálogo:", err);
+      console.error("Erro ao carregar sets:", err);
     }
   }
 
@@ -236,7 +244,6 @@
       const btn = document.createElement("button");
       btn.className = `vk-key ${ (k === 'ESPAÇO' || k === 'DEL' || k === 'LIMPAR') ? 'vk-key-wide' : '' }`;
       btn.tabIndex = 0; btn.innerText = k;
-      btn.onclick = () => handleVkPress(k);
       container.appendChild(btn);
     });
     const input = document.getElementById("menuSearchInput");
@@ -273,7 +280,7 @@
   function filterCatalog(query) {
     const val = query.toLowerCase().trim();
     currentFiltered = canCatalog.filter(can => {
-      if (!can.isSet && can.isSet !== "true") return false;
+      if (!(can.isSet === true || String(can.isSet).toLowerCase() === "true")) return false;
       if (!val) return true;
       return [can.name, can.brewery, can.country, can.volume, can.year, can.barcode].map(v => String(v || "").toLowerCase()).join(" ").includes(val);
     });
@@ -297,7 +304,9 @@
 
     pageItems.forEach((can, localIndex) => {
       const globalIndex = startIndex + localIndex;
-      const coverImg = can.images ? (can.images.front || can.images.left || can.images.back || can.images.right || can.images.cover) : "";
+      const rawCover = can.images ? (can.images.cover || can.images.front || can.images.left || can.images.back || can.images.right) : "";
+      const coverImg = getOptimizedImageUrl(rawCover, 300);
+
       const card = document.createElement("div");
       card.className = "card"; card.tabIndex = 0;
       card.dataset.globalIndex = globalIndex;
@@ -369,7 +378,7 @@
     const logoContainer = document.getElementById("heroBrandLogo");
     const logoUrl = can.brandLogo || can.images?.brandLogo;
     if (logoUrl) {
-      logoContainer.innerHTML = `<img src="${logoUrl}" alt="LOGO DA CERVEJARIA">`;
+      logoContainer.innerHTML = `<img src="${getOptimizedImageUrl(logoUrl, 400)}" alt="LOGO DA CERVEJARIA">`;
     } else {
       logoContainer.innerHTML = "";
     }
@@ -384,9 +393,10 @@
     zoomGallery = [can.images?.front, can.images?.left, can.images?.back, can.images?.right].filter(Boolean);
 
     zoomGallery.forEach((url, idx) => {
+      const optimizedUrl = getOptimizedImageUrl(url, 1000);
       const photoCard = document.createElement("div");
       photoCard.className = "hero-photo-card";
-      photoCard.innerHTML = `<img src="${url}" alt="FOTO ${idx+1}">`;
+      photoCard.innerHTML = `<img src="${optimizedUrl}" alt="FOTO ${idx+1}" loading="lazy">`;
       photosContainer.appendChild(photoCard);
     });
   }
@@ -395,7 +405,7 @@
     if (!zoomGallery || zoomGallery.length === 0) return;
     currentZoomIndex = index;
     const imgElem = document.getElementById("zoomImage");
-    imgElem.src = zoomGallery[currentZoomIndex];
+    imgElem.src = getOptimizedImageUrl(zoomGallery[currentZoomIndex], 1200);
     imgElem.classList.remove("zoomed");
     document.getElementById("zoomModal").classList.add("active");
   }
@@ -410,7 +420,7 @@
     const imgElem = document.getElementById("zoomImage");
     imgElem.classList.remove("zoomed");
     currentZoomIndex = (currentZoomIndex + direction + zoomGallery.length) % zoomGallery.length;
-    imgElem.src = zoomGallery[currentZoomIndex];
+    imgElem.src = getOptimizedImageUrl(zoomGallery[currentZoomIndex], 1200);
   }
 
   function closeZoomModal() {
