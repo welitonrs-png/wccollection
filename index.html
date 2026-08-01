@@ -7,33 +7,36 @@
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; outline: none; }
     
-    body { background-color: #9B9B9B; color: #666666; height: 100vh; overflow: hidden; display: flex; user-select: none; }
+    /* 🎯 COR DE FUNDO ESCURECIDA PARA ALTO CONTRASTE NA TV */
+    body { background-color: #2A2A2A; color: #DDDDDD; height: 100vh; overflow: hidden; display: flex; user-select: none; }
 
     ::-webkit-scrollbar { display: none !important; width: 0 !important; height: 0 !important; }
     * { -ms-overflow-style: none !important; scrollbar-width: none !important; }
 
-    .app-container { display: flex; width: 100vw; height: 100vh; overflow: hidden; position: relative; background-color: #9B9B9B; }
+    .app-container { display: flex; width: 100vw; height: 100vh; overflow: hidden; position: relative; background-color: #2A2A2A; }
 
+    /* 🎯 MENU LATERAL ESCURO E CONTRASTADO */
     .sidebar {
-      width: 60px; min-width: 60px; background: #9B9B9B; border-right: none;
+      width: 60px; min-width: 60px; background: #1E1E1E; border-right: none;
       display: flex; flex-direction: column; padding: 10px 4px; gap: 2px; height: 100%;
       z-index: 500; transition: width 0.25s ease-in-out; overflow-y: auto; overflow-x: hidden; white-space: nowrap; position: relative;
     }
-    .sidebar:hover, .sidebar:focus-within { width: 250px; min-width: 250px; box-shadow: 10px 0 25px rgba(0,0,0,0.15); }
+    .sidebar:hover, .sidebar:focus-within { width: 250px; min-width: 250px; box-shadow: 10px 0 25px rgba(0,0,0,0.5); }
 
     .sidebar-logo-container { width: 100%; text-align: center; padding-bottom: 4px; border-bottom: none; flex-shrink: 0; }
     .sidebar-logo-img { width: 40px; height: 40px; object-fit: contain; transition: width 0.25s ease; }
     .sidebar:hover .sidebar-logo-img, .sidebar:focus-within .sidebar-logo-img { width: 150px; height: auto; }
 
+    /* 🎯 TEXTOS DO MENU VISÍVEIS (CINZA CLARO #DDDDDD) */
     .menu-item {
-      display: flex; align-items: center; gap: 12px; color: #666666; text-decoration: none;
+      display: flex; align-items: center; gap: 12px; color: #DDDDDD; text-decoration: none;
       padding: 6px 10px; border-radius: 6px; font-size: 1rem; font-weight: 900; text-transform: uppercase;
       background: transparent; border: none !important; outline: none !important; box-shadow: none !important; cursor: pointer; width: 100%;
       text-align: left; transition: color 0.15s ease; flex-shrink: 0;
     }
     .menu-item i { 
       font-size: 1.25rem; min-width: 24px; text-align: center; font-style: normal; 
-      color: #666666; filter: grayscale(100%) opacity(0.75); transition: filter 0.15s ease, color 0.15s ease; 
+      color: #DDDDDD; filter: grayscale(100%) opacity(0.85); transition: filter 0.15s ease, color 0.15s ease; 
     }
     .menu-item span { opacity: 0; transition: opacity 0.2s ease; }
     .sidebar:hover .menu-item span, .sidebar:focus-within .menu-item span { opacity: 1; }
@@ -46,23 +49,23 @@
     .inline-panel-container.active { display: flex; }
 
     .brand-btn { 
-      font-size: 0.85rem; padding: 6px 8px; border-radius: 4px; background: transparent; color: #666666; cursor: pointer; 
+      font-size: 0.85rem; padding: 6px 8px; border-radius: 4px; background: transparent; color: #CCCCCC; cursor: pointer; 
       border: none !important; outline: none !important; box-shadow: none !important; text-align: left; font-weight: 800; 
       text-transform: uppercase; transition: color 0.15s ease; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
     .brand-btn:focus, .brand-btn:hover { color: #f39c12 !important; background: transparent !important; border: none !important; outline: none !important; box-shadow: none !important; }
 
-    .menu-search-box { width: 100%; padding: 6px; background: #888888; border: 2px solid #666666; border-radius: 6px; color: #fff; font-size: 0.8rem; font-weight: bold; text-align: center; text-transform: uppercase; margin-bottom: 4px; }
-    .menu-search-box::placeholder { color: #ccc; text-transform: uppercase; }
+    .menu-search-box { width: 100%; padding: 6px; background: #333333; border: 2px solid #555555; border-radius: 6px; color: #fff; font-size: 0.8rem; font-weight: bold; text-align: center; text-transform: uppercase; margin-bottom: 4px; }
+    .menu-search-box::placeholder { color: #aaa; text-transform: uppercase; }
     .vk-container { display: grid; grid-template-columns: repeat(6, 1fr); gap: 2px; background: transparent; padding: 2px; border-radius: 6px; }
-    .vk-key { background: transparent; border: 1px solid #666666; color: #666666; padding: 5px 0; border-radius: 4px; font-size: 0.65rem; font-weight: bold; cursor: pointer; text-align: center; text-transform: uppercase; }
+    .vk-key { background: transparent; border: 1px solid #555555; color: #CCCCCC; padding: 5px 0; border-radius: 4px; font-size: 0.65rem; font-weight: bold; cursor: pointer; text-align: center; text-transform: uppercase; }
     .vk-key:focus, .vk-key:hover { color: #f39c12; border-color: #f39c12 !important; }
     .vk-key-wide { grid-column: span 2; }
 
-    .main-area { flex: 1; display: flex; flex-direction: column; height: 100vh; padding: 12px 16px; gap: 10px; overflow: hidden; background: #9B9B9B; min-width: 0; }
+    .main-area { flex: 1; display: flex; flex-direction: column; height: 100vh; padding: 12px 16px; gap: 10px; overflow: hidden; background: #2A2A2A; min-width: 0; }
 
     .hero-panel {
-      flex: 1; min-height: 0; background: #9B9B9B; border: none; border-radius: 12px;
+      flex: 1; min-height: 0; background: #2A2A2A; border: none; border-radius: 12px;
       display: flex; padding: 12px 16px; gap: 24px; align-items: center; position: relative;
     }
     
@@ -106,7 +109,6 @@
     
     .card.focused { border-color: #f39c12 !important; box-shadow: 0 0 10px rgba(243, 156, 18, 0.7) !important; outline: none !important; z-index: 10; }
 
-    /* 🎯 LIGHTBOX COM ZOOM E SEM BOTÃO 'X' */
     .zoom-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.95); z-index: 700; display: none; justify-content: center; align-items: center; padding: 16px; }
     .zoom-modal.active { display: flex; }
     .zoom-modal img { 
@@ -423,7 +425,6 @@
     focusCardSafely(activeLocalIndex);
   }
 
-  /* 🎯 TECLAS DO CONTROLE NO LIGHTBOX: ENTER = ZOOM, CIMA/BAIXO = SAIR */
   document.addEventListener("keydown", (e) => {
     const isZoomActive = document.getElementById("zoomModal").classList.contains("active");
 
