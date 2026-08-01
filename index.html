@@ -100,7 +100,6 @@
     .counter-bar { display: flex; justify-content: flex-end; align-items: center; padding: 0 4px; margin-bottom: -4px; }
     .card-counter { font-size: 0.85rem; font-weight: 900; color: #f39c12; background: transparent; padding: 3px 10px; letter-spacing: 1px; }
 
-    /* 🎯 ESTEIRA DE CARDS DE TAMANHO FIXO E PROPORCIONAL */
     .catalog-section { height: 175px; min-height: 175px; width: 100%; overflow: hidden; flex-shrink: 0; }
     .card-row { display: flex; gap: 12px; height: 100%; width: 100%; justify-content: flex-start; align-items: center; }
 
@@ -314,7 +313,6 @@
           if (localIndex === 0) {
             e.preventDefault();
             if (currentPage > 0) {
-              // 🎯 VOLTA PARA A LINHA ANTERIOR E FOCO NO ÚLTIMO CARD
               currentPage--;
               renderApp();
               setTimeout(() => {
@@ -322,10 +320,25 @@
                 if (cards.length > 0) cards[cards.length - 1].focus();
               }, 30);
             } else {
-              // 🎯 APENAS NA PRIMEIRA LINHA ENTRA NO MENU
               const firstMenuItem = document.querySelector(".menu-item");
               if (firstMenuItem) firstMenuItem.focus();
             }
+          }
+        } else if (e.key === "ArrowDown") {
+          // 🎯 IMPEDE A TV DE IR PARA O MENU AO APERTAR PARA BAIXO
+          e.preventDefault();
+          if ((startIndex + CARDS_PER_ROW) < currentFiltered.length) {
+            currentPage++;
+            renderApp();
+            setTimeout(() => focusFirstCard(), 30);
+          }
+        } else if (e.key === "ArrowUp") {
+          // 🎯 IMPEDE A TV DE IR PARA O MENU AO APERTAR PARA CIMA
+          e.preventDefault();
+          if (currentPage > 0) {
+            currentPage--;
+            renderApp();
+            setTimeout(() => focusFirstCard(), 30);
           }
         }
       };
