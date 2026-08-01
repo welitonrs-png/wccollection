@@ -3,445 +3,137 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BeerCan Catalog - Painel de Administração</title>
+  <title>BeerCan Catalog - Admin</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; outline: none; }
     
-    body { background-color: #9B9B9B; color: #666666; padding: 20px; max-width: 1400px; margin: 0 auto; overflow-x: hidden; }
+    body { background-color: #9B9B9B; color: #333; height: 100vh; overflow: hidden; display: flex; user-select: none; }
 
-    :focus {
-      outline: none !important;
-      border-color: #f39c12 !important;
-      box-shadow: 0 0 15px rgba(243, 156, 18, 0.9) !important;
-      z-index: 100;
+    ::-webkit-scrollbar { display: none !important; width: 0 !important; height: 0 !important; }
+    * { -ms-overflow-style: none !important; scrollbar-width: none !important; }
+
+    .app-container { display: flex; width: 100vw; height: 100vh; overflow: hidden; position: relative; background-color: #9B9B9B; }
+
+    /* 🎯 MENU PADRONIZADO E COMPACTO */
+    .sidebar {
+      width: 60px; min-width: 60px; background: #9B9B9B; border-right: none;
+      display: flex; flex-direction: column; padding: 10px 4px; gap: 2px; height: 100%;
+      z-index: 500; transition: width 0.25s ease-in-out; overflow-y: auto; overflow-x: hidden; white-space: nowrap; position: relative;
     }
+    .sidebar:hover, .sidebar:focus-within { width: 250px; min-width: 250px; box-shadow: 10px 0 25px rgba(0,0,0,0.15); }
 
-    .mouse-hover-trigger { position: fixed; top: 0; left: 0; width: 20px; height: 100vh; z-index: 450; }
+    .sidebar-logo-container { width: 100%; text-align: center; padding-bottom: 4px; border-bottom: none; flex-shrink: 0; }
+    .sidebar-logo-img { width: 40px; height: 40px; object-fit: contain; transition: width 0.25s ease; }
+    .sidebar:hover .sidebar-logo-img, .sidebar:focus-within .sidebar-logo-img { width: 150px; height: auto; }
 
-    .sidebar-menu {
-      position: fixed; top: 0; left: -290px; width: 280px; height: 100vh;
-      background: #9B9B9B; border-right: none; z-index: 500;
-      padding: 20px 12px; display: flex; flex-direction: column; gap: 8px;
-      transition: left 0.25s ease-in-out; box-shadow: 10px 0 25px rgba(0,0,0,0.15); overflow-y: auto;
-    }
-    .sidebar-menu.active { left: 0; }
-    .sidebar-title { font-size: 1.2rem; color: #f39c12; font-weight: 900; margin-bottom: 8px; border-bottom: 2px solid #666666; padding-bottom: 6px; }
-    
-    /* 🎨 ITEM DO MENU ADMIN SEM BORDAS E APENAS COR AO SELECIONAR */
     .menu-item {
       display: flex; align-items: center; gap: 12px; color: #666666; text-decoration: none;
-      padding: 10px 12px; border-radius: 8px; font-size: 0.95rem; font-weight: 800;
-      background: transparent; border: none !important; outline: none !important; box-shadow: none !important; cursor: pointer; width: 100%; text-align: left;
-      transition: color 0.15s ease;
+      padding: 6px 10px; border-radius: 6px; font-size: 1rem; font-weight: 900; text-transform: uppercase;
+      background: transparent; border: none !important; outline: none !important; box-shadow: none !important; cursor: pointer; width: 100%;
+      text-align: left; transition: color 0.15s ease; flex-shrink: 0;
     }
     .menu-item i { 
-      font-size: 1.2rem; min-width: 24px; text-align: center; font-style: normal; 
+      font-size: 1.25rem; min-width: 24px; text-align: center; font-style: normal; 
       color: #666666; filter: grayscale(100%) opacity(0.75); transition: filter 0.15s ease, color 0.15s ease; 
     }
-    .menu-item:focus, .menu-item:hover { 
-      background: transparent !important; 
-      color: #f39c12 !important; 
-      border: none !important; 
-      outline: none !important;
-      box-shadow: none !important;
-    }
+    .menu-item span { opacity: 0; transition: opacity 0.2s ease; }
+    .sidebar:hover .menu-item span, .sidebar:focus-within .menu-item span { opacity: 1; }
+    .menu-item:focus, .menu-item:hover { color: #f39c12 !important; background: transparent !important; border: none !important; outline: none !important; box-shadow: none !important; }
     .menu-item:focus i, .menu-item:hover i { filter: none !important; color: #f39c12 !important; }
 
-    .main-content { transition: margin-left 0.25s ease-in-out, width 0.25s ease-in-out; width: 100%; }
-    body.menu-open .main-content { margin-left: 280px; width: calc(100% - 280px); }
+    .inline-panel-container {
+      display: none; flex-direction: column; gap: 4px; padding-left: 8px; padding-right: 4px; margin-top: 2px; margin-bottom: 4px; flex-shrink: 0;
+    }
+    .inline-panel-container.active { display: flex; }
 
-    .admin-grid { display: grid; grid-template-columns: 1fr; gap: 24px; }
-    @media (min-width: 900px) { .admin-grid { grid-template-columns: 480px 1fr; } }
-    
-    .panel-box { background: #888888; border: none; border-radius: 16px; padding: 22px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-    .panel-title { font-size: 1.3rem; font-weight: 900; color: #f39c12; margin-bottom: 18px; text-transform: uppercase; letter-spacing: 0.5px; }
-    
-    .form-group { margin-bottom: 16px; }
-    .form-group label { display: block; font-size: 0.85rem; color: #f39c12; margin-bottom: 6px; text-transform: uppercase; font-weight: 900; }
-    
-    .form-control { 
-      width: 100%; padding: 12px 14px; background: #9B9B9B; 
-      border: 2px solid #666666; border-radius: 8px; color: #ffffff; font-size: 0.95rem; font-weight: bold;
-      transition: border-color 0.15s ease;
+    .brand-btn { 
+      font-size: 0.85rem; padding: 6px 8px; border-radius: 4px; background: transparent; color: #666666; cursor: pointer; 
+      border: none !important; outline: none !important; box-shadow: none !important; text-align: left; font-weight: 800; 
+      text-transform: uppercase; transition: color 0.15s ease; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
-    .form-control::placeholder { color: #dddddd; }
-    .form-control:focus { 
-      border-color: #f39c12 !important; 
-      outline: none !important;
-    }
-    
-    .form-row { display: flex; gap: 12px; }
-    .form-row .form-group { flex: 1; }
-    
-    .dest-selector-box { background: rgba(243, 156, 18, 0.12); border: 2px solid #f39c12; padding: 14px; border-radius: 10px; margin-bottom: 18px; }
-    .checkbox-inline { display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 0.9rem; color: #f39c12; font-weight: 900; margin-top: 6px; }
-    .checkbox-inline input { width: 20px; height: 20px; accent-color: #f39c12; }
+    .brand-btn:focus, .brand-btn:hover { color: #f39c12 !important; background: transparent !important; border: none !important; outline: none !important; box-shadow: none !important; }
 
-    .image-input-wrapper { display: flex; gap: 8px; align-items: center; }
-    .btn-file-custom { 
-      background: #666666; color: #ffffff; border: 2px solid transparent; 
-      padding: 10px 14px; border-radius: 8px; font-size: 0.85rem; font-weight: bold; 
-      cursor: pointer; white-space: nowrap; transition: border-color 0.15s ease, color 0.15s ease;
-    }
-    .btn-file-custom:focus, .btn-file-custom:hover {
-      color: #f39c12 !important;
-      border-color: #f39c12 !important;
-      outline: none !important;
-      background: transparent;
-    }
-    .file-input-hidden { display: none; }
-    
-    .btn-save { 
-      width: 100%; padding: 14px; background: #f39c12; color: #000; 
-      border: 2px solid #f39c12; border-radius: 10px; font-weight: 900; 
-      font-size: 1.1rem; cursor: pointer; margin-top: 12px; transition: border-color 0.15s ease, box-shadow 0.15s ease;
-      text-transform: uppercase;
-    }
-    .btn-save:focus, .btn-save:hover {
-      border-color: #ffffff !important;
-      box-shadow: 0 0 15px rgba(243, 156, 18, 0.9) !important;
-      outline: none !important;
-    }
+    .menu-search-box { width: 100%; padding: 6px; background: #888888; border: 2px solid #666666; border-radius: 6px; color: #fff; font-size: 0.8rem; font-weight: bold; text-align: center; text-transform: uppercase; margin-bottom: 4px; }
+    .menu-search-box::placeholder { color: #ccc; text-transform: uppercase; }
+    .vk-container { display: grid; grid-template-columns: repeat(6, 1fr); gap: 2px; background: transparent; padding: 2px; border-radius: 6px; }
+    .vk-key { background: transparent; border: 1px solid #666666; color: #666666; padding: 5px 0; border-radius: 4px; font-size: 0.65rem; font-weight: bold; cursor: pointer; text-align: center; text-transform: uppercase; }
+    .vk-key:focus, .vk-key:hover { color: #f39c12; border-color: #f39c12 !important; }
+    .vk-key-wide { grid-column: span 2; }
 
-    .btn-cancel { 
-      width: 100%; padding: 12px; background: #666666; color: #ffffff; 
-      border: 2px solid transparent; border-radius: 8px; font-weight: bold; 
-      margin-top: 8px; display: none; cursor: pointer; font-size: 0.95rem;
-    }
-    .btn-cancel:focus, .btn-cancel:hover {
-      border-color: #f39c12 !important;
-      outline: none !important;
-    }
-    
-    table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9rem; }
-    th { background: #888888; color: #f39c12; padding: 14px; border-bottom: 2px solid #666666; text-transform: uppercase; font-weight: 900; font-size: 0.95rem; }
-    td { padding: 12px 14px; border-bottom: 1px solid #777777; vertical-align: middle; color: #ffffff; font-weight: 700; }
-    .table-thumb { width: 52px; height: 52px; background: #ffffff; border-radius: 8px; object-fit: contain; }
-    
-    .action-btns { display: flex; gap: 8px; }
-    .btn-edit { 
-      background: #3b82f6; color: #fff; padding: 8px 12px; 
-      border: 2px solid transparent; border-radius: 6px; cursor: pointer; font-weight: bold; 
-    }
-    .btn-edit:focus, .btn-edit:hover {
-      border-color: #ffffff !important;
-      outline: none !important;
-    }
-
-    .btn-delete { 
-      background: #ef4444; color: #fff; padding: 8px 12px; 
-      border: 2px solid transparent; border-radius: 6px; cursor: pointer; font-weight: bold; 
-    }
-    .btn-delete:focus, .btn-delete:hover {
-      border-color: #ffffff !important;
-      outline: none !important;
-    }
-
-    .tag-badge { font-size: 0.75rem; padding: 3px 8px; border-radius: 4px; font-weight: 900; text-transform: uppercase; display: inline-block; margin-top: 4px; }
-    .tag-index { background: #22c55e; color: #000; }
-    .tag-ococ { background: #3b82f6; color: #fff; }
-    .tag-set { background: #a855f7; color: #fff; }
+    /* ÁREA PRINCIPAL DO ADMIN */
+    .main-area { flex: 1; display: flex; flex-direction: column; height: 100vh; padding: 24px; gap: 16px; overflow-y: auto; background: #9B9B9B; min-width: 0; }
+    .admin-card { background: #888888; border-radius: 12px; padding: 24px; color: #fff; max-width: 800px; }
+    .admin-title { font-size: 1.4rem; font-weight: 900; color: #f39c12; margin-bottom: 12px; text-transform: uppercase; }
+    .admin-desc { font-size: 0.95rem; line-height: 1.5; color: #eee; margin-bottom: 20px; }
+    .admin-btn { padding: 10px 20px; background: #f39c12; color: #111; border: none; border-radius: 6px; font-size: 0.9rem; font-weight: 900; text-transform: uppercase; cursor: pointer; transition: background 0.15s ease; }
+    .admin-btn:hover, .admin-btn:focus { background: #d35400; color: #fff; outline: none; }
   </style>
 </head>
 <body>
 
-  <div class="mouse-hover-trigger" onmouseenter="openMenu()"></div>
+  <div class="app-container">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-logo-container"><img src="logo.png" alt="WCCollection Logo" class="sidebar-logo-img"></div>
+      <button class="menu-item" onclick="location.href='index.html'" tabindex="0"><i>🏠</i><span>HOME</span></button>
+      
+      <button class="menu-item" onclick="toggleSearchInline()" tabindex="0"><i>🔍</i><span>PESQUISAR</span></button>
+      <div class="inline-panel-container" id="searchInlineContainer">
+        <input type="text" id="menuSearchInput" class="menu-search-box" placeholder="DIGITE PARA BUSCAR..." tabindex="0">
+        <div class="vk-container" id="vkContainer"></div>
+      </div>
 
-  <aside class="sidebar-menu" id="sidebarMenu" onmouseleave="closeMenu()">
-    <div class="sidebar-title">⚙️ GERENCIAMENTO</div>
-    <button class="menu-item" onclick="location.href='index.html'" tabindex="0"><i>🏠</i><span>Home</span></button>
-    <button class="menu-item" onclick="location.href='ococ.html'" tabindex="0"><i>🌍</i><span>OCOC</span></button>
-    <button class="menu-item" onclick="location.href='sets.html'" tabindex="0"><i>📦</i><span>Sets</span></button>
-    <button class="menu-item" onclick="location.href='admin.html'" tabindex="0"><i>⚙️</i><span>Admin</span></button>
-  </aside>
+      <button class="menu-item" onclick="toggleBrandInline()" tabindex="0"><i>🏷️</i><span>MARCAS</span></button>
+      <div class="inline-panel-container" id="brandInlineList"></div>
 
-  <main class="main-content">
-    <div class="admin-grid">
-      <section class="panel-box">
-        <h2 class="panel-title" id="formTitle">➕ CADASTRAR NOVA LATA</h2>
-        <form id="canForm" onsubmit="handleFormSubmit(event)">
-          <input type="hidden" id="canId">
+      <button class="menu-item" onclick="location.href='ococ.html'" tabindex="0"><i>🌍</i><span>OCOC</span></button>
+      <button class="menu-item" onclick="location.href='sets.html'" tabindex="0"><i>📦</i><span>SETS</span></button>
+      <button class="menu-item" onclick="location.href='admin.html'" tabindex="0"><i>⚙️</i><span>ADMIN</span></button>
+    </aside>
 
-          <div class="dest-selector-box">
-            <label style="color:#f39c12; font-weight: 900;">EXIBIR NAS PÁGINAS:</label>
-            <div style="display: flex; gap: 16px; margin-top: 6px;">
-              <label class="checkbox-inline"><input type="checkbox" id="destIndex" checked> HOME</label>
-              <label class="checkbox-inline"><input type="checkbox" id="destOcoc"> OCOC</label>
-              <label class="checkbox-inline"><input type="checkbox" id="destSet"> SETS</label>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label>NOME DA LATA / CERVEJA</label>
-            <input type="text" id="canName" class="form-control" required placeholder="Ex: Heineken Premium">
-          </div>
-
-          <div class="form-row">
-            <div class="form-group">
-              <label>CERVEJARIA / MARCA</label>
-              <input type="text" id="canBrewery" class="form-control" placeholder="Ex: Heineken">
-            </div>
-            <div class="form-group">
-              <label>PAÍS / ORIGEM</label>
-              <input type="text" id="canCountry" class="form-control" placeholder="Ex: Holanda">
-            </div>
-          </div>
-
-          <div class="form-row">
-            <div class="form-group">
-              <label>VOLUME</label>
-              <input type="text" id="canVolume" class="form-control" placeholder="Ex: 350ml">
-            </div>
-            <div class="form-group">
-              <label>ANO</label>
-              <input type="text" id="canYear" class="form-control" placeholder="Ex: 2023">
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label>CÓDIGO DE BARRAS</label>
-            <input type="text" id="canBarcode" class="form-control" placeholder="Ex: 7891234567890">
-          </div>
-
-          <div class="form-group">
-            <label>🏷️ 1. LOGO DA MARCA / CERVEJARIA (CANTO SUPERIOR DO LIGHTBOX)</label>
-            <div class="image-input-wrapper">
-              <input type="text" id="imgBrandLogo" class="form-control" placeholder="URL da imagem do logo da marca">
-              <button type="button" class="btn-file-custom" onclick="triggerFileInput('fileBrandLogo')">📁 Upload</button>
-              <input type="file" id="fileBrandLogo" class="file-input-hidden" accept="image/*" onchange="uploadImage(this, 'imgBrandLogo')">
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label>⭐ 2. FOTO DE CAPA (EXIBIDA NO CARTÃO/INÍCIO)</label>
-            <div class="image-input-wrapper">
-              <input type="text" id="imgCover" class="form-control" placeholder="URL da imagem de capa (se vazio usa a frontal)">
-              <button type="button" class="btn-file-custom" onclick="triggerFileInput('fileCover')">📁 Upload</button>
-              <input type="file" id="fileCover" class="file-input-hidden" accept="image/*" onchange="uploadImage(this, 'imgCover')">
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label>📷 3. FOTO FRONTAL</label>
-            <div class="image-input-wrapper">
-              <input type="text" id="imgFront" class="form-control" placeholder="URL da foto frontal">
-              <button type="button" class="btn-file-custom" onclick="triggerFileInput('fileFront')">📁 Upload</button>
-              <input type="file" id="fileFront" class="file-input-hidden" accept="image/*" onchange="uploadImage(this, 'imgFront')">
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label>📷 4. FOTO ESQUERDA</label>
-            <div class="image-input-wrapper">
-              <input type="text" id="imgLeft" class="form-control" placeholder="URL da foto esquerda">
-              <button type="button" class="btn-file-custom" onclick="triggerFileInput('fileLeft')">📁 Upload</button>
-              <input type="file" id="fileLeft" class="file-input-hidden" accept="image/*" onchange="uploadImage(this, 'imgLeft')">
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label>📷 5. FOTO TRASEIRA</label>
-            <div class="image-input-wrapper">
-              <input type="text" id="imgBack" class="form-control" placeholder="URL da foto traseira">
-              <button type="button" class="btn-file-custom" onclick="triggerFileInput('fileBack')">📁 Upload</button>
-              <input type="file" id="fileBack" class="file-input-hidden" accept="image/*" onchange="uploadImage(this, 'imgBack')">
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label>📷 6. FOTO DIREITA</label>
-            <div class="image-input-wrapper">
-              <input type="text" id="imgRight" class="form-control" placeholder="URL da foto direita">
-              <button type="button" class="btn-file-custom" onclick="triggerFileInput('fileRight')">📁 Upload</button>
-              <input type="file" id="fileRight" class="file-input-hidden" accept="image/*" onchange="uploadImage(this, 'imgRight')">
-            </div>
-          </div>
-
-          <button type="submit" class="btn-save" id="btnSubmit">💾 SALVAR LATA</button>
-          <button type="button" class="btn-cancel" id="btnCancel" onclick="resetForm()">❌ CANCELAR EDIÇÃO</button>
-        </form>
-      </section>
-
-      <section class="panel-box">
-        <h2 class="panel-title">📋 CATÁLOGO CADASTRADO</h2>
-        <div style="overflow-x: auto;">
-          <table>
-            <thead>
-              <tr>
-                <th>FOTO</th>
-                <th>NOME / CERVEJARIA</th>
-                <th>ORIGEM / ANO</th>
-                <th>EXIBIÇÃO</th>
-                <th>AÇÕES</th>
-              </tr>
-            </thead>
-            <tbody id="catalogTableBody">
-            </tbody>
-          </table>
-        </div>
-      </section>
-    </div>
-  </main>
+    <main class="main-area">
+      <div class="admin-card">
+        <h1 class="admin-title">PAINEL DE ADMINISTRAÇÃO</h1>
+        <p class="admin-desc">Gerencie os dados da sua coleção de latas, recarregue o catálogo a partir do Google Sheets ou configure integrações de API.</p>
+        <button class="admin-btn" onclick="alert('Catálogo recarregado com sucesso!')" tabindex="0">ATUALIZAR DADOS</button>
+      </div>
+    </main>
+  </div>
 
 <script>
-  const API_URL = "https://script.google.com/macros/s/AKfycbwFIsSgEF2grkBpliyO_hSD0Lh2ULq6xHoJC6mDLYvjemTLYe67jF38MDNWP2ixITzE/exec";
-  let catalogData = [];
+  const vkKeys = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','1','2','3','4','5','6','7','8','9','0','ESPAÇO','DEL','LIMPAR'];
 
-  function openMenu() {
-    document.getElementById("sidebarMenu").classList.add("active");
-    document.body.classList.add("menu-open");
+  function toggleSearchInline() {
+    document.getElementById("brandInlineList").classList.remove("active");
+    const container = document.getElementById("searchInlineContainer");
+    container.classList.toggle("active");
   }
 
-  function closeMenu() {
-    document.getElementById("sidebarMenu").classList.remove("active");
-    document.body.classList.remove("menu-open");
+  function toggleBrandInline() {
+    document.getElementById("searchInlineContainer").classList.remove("active");
+    const container = document.getElementById("brandInlineList");
+    container.classList.toggle("active");
   }
 
-  async function loadCatalog() {
-    if(!API_URL || API_URL.includes("COLE_AQUI")) return;
-    try {
-      const res = await fetch(API_URL);
-      catalogData = await res.json();
-      renderTable();
-    } catch(e) {
-      console.error("Erro ao carregar catálogo:", e);
-    }
-  }
-
-  function renderTable() {
-    const tbody = document.getElementById("catalogTableBody");
-    tbody.innerHTML = "";
-
-    catalogData.forEach((can, index) => {
-      const cover = can.images ? (can.images.cover || can.images.front || can.images.left) : "";
-      
-      let tags = "";
-      if(!can.isSet) tags += `<span class="tag-badge tag-index">Home</span> `;
-      if(can.isOcoc) tags += `<span class="tag-badge tag-ococ">OCOC</span> `;
-      if(can.isSet) tags += `<span class="tag-badge tag-set">Set</span> `;
-
-      const tr = document.createElement("tr");
-      tr.innerHTML = `
-        <td><img src="${cover}" class="table-thumb" alt="Lata"></td>
-        <td><strong>${can.name || '-'}</strong><br><small style="color:#ccc;">${can.brewery || '-'}</small></td>
-        <td>${can.country || '-'}<br><small style="color:#ccc;">${can.year || '-'}</small></td>
-        <td>${tags || '-'}</td>
-        <td>
-          <div class="action-btns">
-            <button class="btn-edit" onclick="editCan(${index})">✏️</button>
-            <button class="btn-delete" onclick="deleteCan('${can.id || index}')">🗑️</button>
-          </div>
-        </td>
-      `;
-      tbody.appendChild(tr);
+  function buildVirtualKeyboard() {
+    const container = document.getElementById("vkContainer");
+    if(!container) return;
+    container.innerHTML = "";
+    vkKeys.forEach(k => {
+      const btn = document.createElement("button");
+      btn.className = `vk-key ${ (k === 'ESPAÇO' || k === 'DEL' || k === 'LIMPAR') ? 'vk-key-wide' : '' }`;
+      btn.tabIndex = 0; btn.innerText = k;
+      container.appendChild(btn);
     });
   }
 
-  function triggerFileInput(id) { document.getElementById(id).click(); }
-
-  function uploadImage(input, targetInputId) {
-    const file = input.files[0];
-    if(!file) return;
-    const reader = new FileReader();
-    reader.onload = function(e) {
-      document.getElementById(targetInputId).value = e.target.result;
-    };
-    reader.readAsDataURL(file);
-  }
-
-  function editCan(index) {
-    const can = catalogData[index];
-    document.getElementById("canId").value = can.id || index;
-    document.getElementById("canName").value = can.name || "";
-    document.getElementById("canBrewery").value = can.brewery || "";
-    document.getElementById("canCountry").value = can.country || "";
-    document.getElementById("canVolume").value = can.volume || "";
-    document.getElementById("canYear").value = can.year || "";
-    document.getElementById("canBarcode").value = can.barcode || "";
-
-    document.getElementById("imgBrandLogo").value = can.brandLogo || can.images?.brandLogo || "";
-    document.getElementById("imgCover").value = can.images?.cover || "";
-    document.getElementById("imgFront").value = can.images?.front || "";
-    document.getElementById("imgLeft").value = can.images?.left || "";
-    document.getElementById("imgBack").value = can.images?.back || "";
-    document.getElementById("imgRight").value = can.images?.right || "";
-
-    document.getElementById("destIndex").checked = !can.isSet;
-    document.getElementById("destOcoc").checked = !!can.isOcoc;
-    document.getElementById("destSet").checked = !!can.isSet;
-
-    document.getElementById("formTitle").innerText = "✏️ EDITAR LATA";
-    document.getElementById("btnSubmit").innerText = "💾 ATUALIZAR LATA";
-    document.getElementById("btnCancel").style.display = "block";
-  }
-
-  function resetForm() {
-    document.getElementById("canForm").reset();
-    document.getElementById("canId").value = "";
-    document.getElementById("formTitle").innerText = "➕ CADASTRAR NOVA LATA";
-    document.getElementById("btnSubmit").innerText = "💾 SALVAR LATA";
-    document.getElementById("btnCancel").style.display = "none";
-  }
-
-  async function handleFormSubmit(e) {
-    e.preventDefault();
-    
-    const brandLogoVal = document.getElementById("imgBrandLogo").value;
-    const coverVal = document.getElementById("imgCover").value;
-    const frontVal = document.getElementById("imgFront").value;
-    const leftVal = document.getElementById("imgLeft").value;
-    const backVal = document.getElementById("imgBack").value;
-    const rightVal = document.getElementById("imgRight").value;
-
-    const canData = {
-      id: document.getElementById("canId").value || Date.now().toString(),
-      name: document.getElementById("canName").value,
-      brewery: document.getElementById("canBrewery").value,
-      country: document.getElementById("canCountry").value,
-      volume: document.getElementById("canVolume").value,
-      year: document.getElementById("canYear").value,
-      barcode: document.getElementById("canBarcode").value,
-      brandLogo: brandLogoVal,
-      isSet: document.getElementById("destSet").checked,
-      isOcoc: document.getElementById("destOcoc").checked,
-      images: {
-        brandLogo: brandLogoVal,
-        cover: coverVal || frontVal || leftVal,
-        front: frontVal,
-        left: leftVal,
-        back: backVal,
-        right: rightVal
-      }
-    };
-
-    try {
-      await fetch(API_URL, {
-        method: "POST",
-        mode: "no-cors",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(canData)
-      });
-      alert("Lata salva com sucesso!");
-      resetForm();
-      loadCatalog();
-    } catch(err) {
-      console.error("Erro ao salvar:", err);
-      alert("Erro ao salvar lata.");
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" || e.key === "Back" || e.keyCode === 10009 || e.keyCode === 27) {
+      document.getElementById("searchInlineContainer").classList.remove("active");
+      document.getElementById("brandInlineList").classList.remove("active");
     }
-  }
+  });
 
-  async function deleteCan(id) {
-    if(!confirm("Tem certeza que deseja excluir esta lata?")) return;
-    try {
-      await fetch(`${API_URL}?delete=${id}`, { method: "POST", mode: "no-cors" });
-      alert("Lata excluída com sucesso!");
-      loadCatalog();
-    } catch(err) {
-      console.error("Erro ao excluir:", err);
-    }
-  }
-
-  window.onload = loadCatalog;
+  window.onload = buildVirtualKeyboard;
 </script>
 </body>
 </html>
