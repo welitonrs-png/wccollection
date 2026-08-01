@@ -184,9 +184,7 @@
 
   const CARDS_PER_ROW = 5;
   let currentPage = 0;
-  let currentColumnIndex = 0;
-
-  const vkKeys = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','1','2','3','4','5','6','7','8','9','0','ESPAÇO','DEL','LIMPAR'];
+  let activeLocalIndex = 0;
 
   async function fetchCatalogFromSheet() {
     if(!API_URL || API_URL.includes("COLE_AQUI")) return;
@@ -195,7 +193,7 @@
       canCatalog = await response.json();
       currentFiltered = canCatalog.filter(can => can.isSet === true || can.isSet === "true");
       currentPage = 0;
-      currentColumnIndex = 0;
+      activeLocalIndex = 0;
       
       renderApp();
       buildVirtualKeyboard();
@@ -212,11 +210,11 @@
     document.querySelectorAll(".card").forEach(c => c.blur());
   }
 
-  function focusSpecificCard(colIndex) {
+  function focusSpecificCard(requestedIndex) {
     clearAllCardFocus();
     const cards = document.querySelectorAll(".card");
     if (cards.length > 0) {
-      const targetIndex = Math.min(colIndex, cards.length - 1);
+      const targetIndex = Math.min(requestedIndex, cards.length - 1);
       cards[targetIndex].focus();
     }
   }
@@ -281,7 +279,7 @@
       return [can.name, can.brewery, can.country, can.volume, can.year, can.barcode].map(v => String(v || "").toLowerCase()).join(" ").includes(val);
     });
     currentPage = 0;
-    currentColumnIndex = 0;
+    activeLocalIndex = 0;
     renderApp();
     if(currentFiltered.length > 0) {
       updateHeroPanel(currentFiltered[0], 0);
@@ -306,7 +304,7 @@
       card.dataset.globalIndex = globalIndex;
       
       card.onfocus = () => {
-        currentColumnIndex = localIndex;
+        activeLocalIndex = localIndex;
         updateHeroPanel(can, globalIndex);
       };
       card.onmouseenter = () => updateHeroPanel(can, globalIndex);
@@ -320,7 +318,6 @@
           if (localIndex === pageItems.length - 1 && (startIndex + CARDS_PER_ROW) < currentFiltered.length) {
             e.preventDefault();
             currentPage++;
-            currentColumnIndex = 0;
             renderApp();
             setTimeout(() => focusSpecificCard(0), 30);
           }
@@ -329,7 +326,6 @@
             e.preventDefault();
             if (currentPage > 0) {
               currentPage--;
-              currentColumnIndex = CARDS_PER_ROW - 1;
               renderApp();
               setTimeout(() => focusSpecificCard(CARDS_PER_ROW - 1), 30);
             } else {
@@ -343,14 +339,14 @@
           if ((startIndex + CARDS_PER_ROW) < currentFiltered.length) {
             currentPage++;
             renderApp();
-            setTimeout(() => focusSpecificCard(currentColumnIndex), 30);
+            setTimeout(() => focusSpecificCard(activeLocalIndex), 30);
           }
         } else if (e.key === "ArrowUp") {
           e.preventDefault();
           if (currentPage > 0) {
             currentPage--;
             renderApp();
-            setTimeout(() => focusSpecificCard(currentColumnIndex), 30);
+            setTimeout(() => focusSpecificCard(activeLocalIndex), 30);
           }
         }
       };
