@@ -14,7 +14,7 @@
 
     .app-container { display: flex; width: 100vw; height: 100vh; overflow: hidden; position: relative; background-color: #2A2A2A; }
 
-    /* MENU LATERAL */
+    /* MENU LATERAL PADRONIZADO */
     .sidebar {
       width: 60px; min-width: 60px; background: #1E1E1E; border-right: none;
       display: flex; flex-direction: column; padding: 10px 4px; gap: 2px; height: 100%;
@@ -304,7 +304,7 @@
     }
   }
 
-  /* PREENCHER FORMULÁRIO PARA EDIÇÃO */
+  /* PREENCHER FORMULÁRIO PARA EDIÇÃO (INCLUINDO FOTO DIREITA) */
   function editItem(index) {
     const item = catalogData[index];
     if (!item) return;
@@ -421,6 +421,13 @@
       statusBox.innerText = "❌ ERRO AO EXCLUIR ITEM.";
     }
   }
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" || e.key === "Back" || e.keyCode === 10009 || e.keyCode === 27) {
+      document.getElementById("searchInlineContainer").classList.remove("active");
+      document.getElementById("brandInlineList").classList.remove("active");
+    }
+  });
 
   window.onload = () => {
     buildVirtualKeyboard();
