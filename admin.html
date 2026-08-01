@@ -63,8 +63,14 @@
     .admin-card { background: #333333; border-radius: 12px; padding: 24px; color: #fff; max-width: 800px; }
     .admin-title { font-size: 1.4rem; font-weight: 900; color: #f39c12; margin-bottom: 12px; text-transform: uppercase; }
     .admin-desc { font-size: 0.95rem; line-height: 1.5; color: #eee; margin-bottom: 20px; }
-    .admin-btn { padding: 10px 20px; background: #f39c12; color: #111; border: none; border-radius: 6px; font-size: 0.9rem; font-weight: 900; text-transform: uppercase; cursor: pointer; transition: background 0.15s ease; }
+    .admin-btn { padding: 12px 24px; background: #f39c12; color: #111; border: none; border-radius: 6px; font-size: 0.9rem; font-weight: 900; text-transform: uppercase; cursor: pointer; transition: background 0.15s ease; }
     .admin-btn:hover, .admin-btn:focus { background: #d35400; color: #fff; outline: none; }
+
+    /* 🎯 CAIXA DE STATUS NA TELA */
+    .status-box { margin-top: 16px; padding: 12px; border-radius: 6px; font-size: 0.9rem; font-weight: bold; text-transform: uppercase; display: none; }
+    .status-box.loading { display: block; background: #444422; color: #f1c40f; border: 1px solid #f1c40f; }
+    .status-box.success { display: block; background: #1e4620; color: #2ecc71; border: 1px solid #2ecc71; }
+    .status-box.error { display: block; background: #4a1515; color: #e74c3c; border: 1px solid #e74c3c; }
   </style>
 </head>
 <body>
@@ -92,12 +98,15 @@
       <div class="admin-card">
         <h1 class="admin-title">PAINEL DE ADMINISTRAÇÃO</h1>
         <p class="admin-desc">Gerencie os dados da sua coleção de latas, recarregue o catálogo a partir do Google Sheets ou configure integrações de API.</p>
-        <button class="admin-btn" onclick="alert('Catálogo recarregado com sucesso!')" tabindex="0">ATUALIZAR DADOS</button>
+        <button class="admin-btn" id="updateBtn" onclick="updateDataFromSheet()" tabindex="0">ATUALIZAR DADOS</button>
+        
+        <div class="status-box" id="statusBox"></div>
       </div>
     </main>
   </div>
 
 <script>
+  const API_URL = "https://script.google.com/macros/s/AKfycbwFIsSgEF2grkBpliyO_hSD0Lh2ULq6xHoJC6mDLYvjemTLYe67jF38MDNWP2ixITzE/exec";
   const vkKeys = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','1','2','3','4','5','6','7','8','9','0','ESPAÇO','DEL','LIMPAR'];
 
   function toggleSearchInline() {
@@ -122,6 +131,37 @@
       btn.tabIndex = 0; btn.innerText = k;
       container.appendChild(btn);
     });
+  }
+
+  /* 🎯 FUNÇÃO REAL DE ATUALIZAÇÃO EXIBINDO STATUS NA TELA DA TV */
+  async function updateDataFromSheet() {
+    const statusBox = document.getElementById("statusBox");
+    const updateBtn = document.getElementById("updateBtn");
+
+    statusBox.className = "status-box loading";
+    statusBox.innerText = "⏳ RECARREGANDO DADOS DO GOOGLE SHEETS...";
+    updateBtn.disabled = true;
+
+    try {
+      // Adiciona um parâmetro dinâmico para forçar a TV a não usar o cache local
+      const cacheBustUrl = API_URL + "?nocache=" + new Date().getTime();
+      const response = await fetch(cacheBustUrl);
+      const data = await response.json();
+
+      if (Array.isArray(data)) {
+        statusBox.className = "status-box success";
+        statusBox.innerText = `✅ SUCESSO! ${data.length} ITENS SINCRONIZADOS COM A PLANILHA.`;
+      } else {
+        statusBox.className = "status-box error";
+        statusBox.innerText = "⚠️ RESPOSTA INESPERADA DA API.";
+      }
+    } catch (err) {
+      console.error("Erro ao atualizar:", err);
+      statusBox.className = "status-box error";
+      statusBox.innerText = "❌ ERRO AO CONECTAR COM O GOOGLE SHEETS. VERIFIQUE A API.";
+    } finally {
+      updateBtn.disabled = false;
+    }
   }
 
   document.addEventListener("keydown", (e) => {
