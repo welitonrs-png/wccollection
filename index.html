@@ -184,7 +184,7 @@
   
   const CARDS_PER_ROW = 6;
   let currentPage = 0;
-  let activeLocalIndex = 0; // 🎯 GUARDA A POSIÇÃO ATUAL REAL DA COLUNA
+  let activeLocalIndex = 0;
 
   const vkKeys = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','1','2','3','4','5','6','7','8','9','0','ESPAÇO','DEL','LIMPAR'];
 
@@ -201,24 +201,29 @@
       buildBrandList();
       if(currentFiltered.length > 0) updateHeroPanel(currentFiltered[0], 0);
       
-      setTimeout(() => focusSpecificCard(0), 100);
+      focusCardSafely(0);
     } catch (err) {
       console.error("Erro ao carregar catálogo:", err);
     }
   }
 
   function clearAllCardFocus() {
+    if (document.activeElement && typeof document.activeElement.blur === 'function') {
+      document.activeElement.blur();
+    }
     document.querySelectorAll(".card").forEach(c => c.blur());
   }
 
-  function focusSpecificCard(requestedIndex) {
+  function focusCardSafely(targetIndex) {
     clearAllCardFocus();
-    const cards = document.querySelectorAll(".card");
-    if (cards.length > 0) {
-      // 🎯 AJUSTA SE A LINHA TIVER MENOS CARDS QUE O SOLICITADO
-      const targetIndex = Math.min(requestedIndex, cards.length - 1);
-      cards[targetIndex].focus();
-    }
+    requestAnimationFrame(() => {
+      const cards = document.querySelectorAll(".card");
+      if (cards.length > 0) {
+        const finalIdx = Math.min(targetIndex, cards.length - 1);
+        activeLocalIndex = finalIdx;
+        cards[finalIdx].focus();
+      }
+    });
   }
 
   function toggleSubpanel(panelId) {
@@ -286,13 +291,14 @@
     renderApp();
     if(currentFiltered.length > 0) {
       updateHeroPanel(currentFiltered[0], 0);
-      setTimeout(() => focusSpecificCard(0), 50);
+      focusCardSafely(0);
     } else {
       document.getElementById("cardCounter").innerText = "0/0";
     }
   }
 
   function renderApp() {
+    clearAllCardFocus();
     const row = document.getElementById("cardRow");
     row.innerHTML = "";
 
@@ -307,7 +313,7 @@
       card.dataset.globalIndex = globalIndex;
       
       card.onfocus = () => {
-        activeLocalIndex = localIndex; // 🎯 ATUALIZA A COLUNA ONDE ESTÁ O FOCO
+        activeLocalIndex = localIndex;
         updateHeroPanel(can, globalIndex);
       };
       card.onmouseenter = () => updateHeroPanel(can, globalIndex);
@@ -322,7 +328,7 @@
             e.preventDefault();
             currentPage++;
             renderApp();
-            setTimeout(() => focusSpecificCard(0), 30);
+            focusCardSafely(0);
           }
         } else if (e.key === "ArrowLeft") {
           if (localIndex === 0) {
@@ -330,7 +336,7 @@
             if (currentPage > 0) {
               currentPage--;
               renderApp();
-              setTimeout(() => focusSpecificCard(CARDS_PER_ROW - 1), 30);
+              focusCardSafely(CARDS_PER_ROW - 1);
             } else {
               clearAllCardFocus();
               const firstMenuItem = document.querySelector(".menu-item");
@@ -342,16 +348,14 @@
           if ((startIndex + CARDS_PER_ROW) < currentFiltered.length) {
             currentPage++;
             renderApp();
-            // 🎯 SOBE/DESCE MANTENDO A COLUNA DO CARD ATUAL
-            setTimeout(() => focusSpecificCard(activeLocalIndex), 30);
+            focusCardSafely(activeLocalIndex);
           }
         } else if (e.key === "ArrowUp") {
           e.preventDefault();
           if (currentPage > 0) {
             currentPage--;
             renderApp();
-            // 🎯 SOBE/DESCE MANTENDO A COLUNA DO CARD ATUAL
-            setTimeout(() => focusSpecificCard(activeLocalIndex), 30);
+            focusCardSafely(activeLocalIndex);
           }
         }
       };
@@ -425,7 +429,7 @@
       
       if (activeElem && activeElem.classList.contains("menu-item") && e.key === "ArrowRight") {
         e.preventDefault();
-        focusSpecificCard(0);
+        focusCardSafely(0);
       }
     }
   });
