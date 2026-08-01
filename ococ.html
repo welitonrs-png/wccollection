@@ -109,13 +109,11 @@
 
     .zoom-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.95); z-index: 700; display: none; justify-content: center; align-items: center; padding: 16px; }
     .zoom-modal.active { display: flex; }
-    .zoom-modal img { max-width: 85vw; max-height: 85vh; object-fit: contain; border-radius: 6px; cursor: pointer; }
-    .zoom-close-btn { 
-      position: absolute; top: 20px; right: 25px; background: transparent; border: 2px solid transparent; 
-      color: #999; font-size: 2.5rem; cursor: pointer; z-index: 710; border-radius: 50%; width: 50px; height: 50px;
-      display: flex; justify-content: center; align-items: center; line-height: 1; transition: color 0.15s ease;
+    .zoom-modal img { 
+      max-width: 85vw; max-height: 85vh; object-fit: contain; border-radius: 6px; cursor: pointer; 
+      transition: transform 0.25s ease-in-out; 
     }
-    .zoom-close-btn:focus, .zoom-close-btn:hover { color: #f39c12 !important; border-color: #f39c12 !important; outline: none !important; background: rgba(0,0,0,0.5); }
+    .zoom-modal img.zoomed { transform: scale(1.5); }
   </style>
 </head>
 <body>
@@ -167,8 +165,7 @@
   </div>
 
   <div class="zoom-modal" id="zoomModal">
-    <button class="zoom-close-btn" id="zoomCloseBtn" onclick="closeZoomModal()" tabindex="0">&times;</button>
-    <img id="zoomImage" src="" alt="Imagem ampliada" onclick="navigateZoom(1)">
+    <img id="zoomImage" src="" alt="Imagem ampliada" onclick="toggleZoomImage()">
   </div>
 
 <script>
@@ -406,21 +403,28 @@
   function openZoomModal(index) {
     if (!zoomGallery || zoomGallery.length === 0) return;
     currentZoomIndex = index;
-    document.getElementById("zoomImage").src = zoomGallery[currentZoomIndex];
+    const imgElem = document.getElementById("zoomImage");
+    imgElem.src = zoomGallery[currentZoomIndex];
+    imgElem.classList.remove("zoomed");
     document.getElementById("zoomModal").classList.add("active");
-    
-    setTimeout(() => {
-      document.getElementById("zoomCloseBtn").focus();
-    }, 50);
+  }
+
+  function toggleZoomImage() {
+    const imgElem = document.getElementById("zoomImage");
+    imgElem.classList.toggle("zoomed");
   }
 
   function navigateZoom(direction) {
     if (!zoomGallery || zoomGallery.length === 0) return;
+    const imgElem = document.getElementById("zoomImage");
+    imgElem.classList.remove("zoomed");
     currentZoomIndex = (currentZoomIndex + direction + zoomGallery.length) % zoomGallery.length;
-    document.getElementById("zoomImage").src = zoomGallery[currentZoomIndex];
+    imgElem.src = zoomGallery[currentZoomIndex];
   }
 
   function closeZoomModal() {
+    const imgElem = document.getElementById("zoomImage");
+    imgElem.classList.remove("zoomed");
     document.getElementById("zoomModal").classList.remove("active");
     focusCardSafely(activeLocalIndex);
   }
@@ -429,10 +433,9 @@
     const isZoomActive = document.getElementById("zoomModal").classList.contains("active");
 
     if (isZoomActive) {
-      if (e.key === "Escape" || e.key === "Back" || e.keyCode === 10009 || e.keyCode === 27 || e.keyCode === 8) {
+      if (e.key === "Enter" || e.key === " " || e.keyCode === 13) {
         e.preventDefault();
-        e.stopPropagation();
-        closeZoomModal();
+        toggleZoomImage();
       } else if (e.key === "ArrowLeft") {
         e.preventDefault();
         navigateZoom(-1);
