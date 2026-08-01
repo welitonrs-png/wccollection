@@ -127,7 +127,7 @@
       <!-- FORMULÁRIO DE CADASTRO / EDIÇÃO -->
       <div class="admin-card">
         <h1 class="admin-title" id="formTitle">CADASTRAR NOVA LATA</h1>
-        <p class="admin-desc">Preencha os dados abaixo. O ID único é gerado automaticamente na gravação.</p>
+        <p class="admin-desc">Preencha os dados abaixo. O ID sequencial é gerado automaticamente na gravação.</p>
         
         <form id="canForm" onsubmit="handleFormSubmit(event)">
           <input type="hidden" id="editIndex" value="-1">
@@ -301,9 +301,17 @@
     reader.readAsDataURL(file);
   }
 
-  /* GERAR ID ÚNICO AUTOMÁTICO */
+  /* 🎯 SOLUÇÃO 2: GERAR ID SEQUENCIAL NUMÉRICO AUTOMÁTICO (EX: 1, 2, 3...) */
   function generateAutoId() {
-    return 'LATA-' + Date.now();
+    if (!catalogData || catalogData.length === 0) return 1;
+
+    const numericIds = catalogData
+      .map(item => parseInt(item.id))
+      .filter(id => !isNaN(id));
+
+    if (numericIds.length === 0) return catalogData.length + 1;
+
+    return Math.max(...numericIds) + 1;
   }
 
   /* CARREGAR ITENS DA PLANILHA NA TABELA */
@@ -329,7 +337,7 @@
 
         const tr = document.createElement("tr");
         tr.innerHTML = `
-          <td><small style="color:#aaa;">${item.id || '-'}</small></td>
+          <td><b style="color:#f39c12;">${item.id || '-'}</b></td>
           <td>${typeBadge}</td>
           <td><b>${item.name || '-'}</b></td>
           <td>${item.brewery || '-'}</td>
@@ -391,7 +399,7 @@
     document.getElementById("typeLata").checked = true;
   }
 
-  /* SUBMETER FORMULÁRIO (GERANDO O ID SE FOR NOVO) */
+  /* SUBMETER FORMULÁRIO (ATRIBUINDO O PRÓXIMO ID SEQUENCIAL) */
   async function handleFormSubmit(event) {
     event.preventDefault();
     const statusBox = document.getElementById("statusBox");
@@ -400,7 +408,7 @@
 
     const selectedType = document.querySelector('input[name="itemType"]:checked').value;
     
-    // 🎯 Se for uma nova lata (editIndex === -1), gera um ID automático único!
+    // 🎯 Se for um novo cadastro, gera o ID numérico sequencial (maior ID + 1)
     const finalId = editIndex >= 0 
       ? (document.getElementById("currentId").value || generateAutoId()) 
       : generateAutoId();
@@ -440,7 +448,7 @@
       });
 
       statusBox.className = "status-box success";
-      statusBox.innerText = editIndex >= 0 ? `✅ ITEM ATUALIZADO (ID: ${finalId})` : `✅ ITEM CADASTRADO COM SUCESSO! (ID: ${finalId})`;
+      statusBox.innerText = editIndex >= 0 ? `✅ ITEM ATUALIZADO (ID: ${finalId})` : `✅ ITEM CADASTRADO COM SUCESSO! (ID ATRIBUÍDO: ${finalId})`;
       resetForm();
       loadCatalogTable();
     } catch (err) {
