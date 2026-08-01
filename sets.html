@@ -178,6 +178,8 @@
   let currentPage = 0;
   let activeLocalIndex = 0;
 
+  const vkKeys = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','1','2','3','4','5','6','7','8','9','0','ESPAÇO','DEL','LIMPAR'];
+
   function getOptimizedImageUrl(url, size = 300) {
     if (!url) return '';
     if (url.includes('googleusercontent.com')) {
@@ -243,6 +245,7 @@
       const btn = document.createElement("button");
       btn.className = `vk-key ${ (k === 'ESPAÇO' || k === 'DEL' || k === 'LIMPAR') ? 'vk-key-wide' : '' }`;
       btn.tabIndex = 0; btn.innerText = k;
+      btn.onclick = () => handleVkPress(k);
       container.appendChild(btn);
     });
     const input = document.getElementById("menuSearchInput");
@@ -303,7 +306,10 @@
 
     pageItems.forEach((can, localIndex) => {
       const globalIndex = startIndex + localIndex;
-      const rawCover = can.images ? (can.images.cover || can.images.front || can.images.left || can.images.back || can.images.right) : "";
+      const rawCover = can.images 
+        ? (can.images.cover || can.images.front || can.images.left || can.images.back || can.images.right || can.brandLogo) 
+        : (can.brandLogo || "");
+
       const coverImg = getOptimizedImageUrl(rawCover, 300);
 
       const card = document.createElement("div");
@@ -368,7 +374,9 @@
   }
 
   function updateHeroPanel(can, index = 0) {
-    document.getElementById("heroTitle").innerText = (can.name || "").toUpperCase();
+    if (!can) return;
+
+    document.getElementById("heroTitle").innerText = (can.name || "SET").toUpperCase();
     document.getElementById("heroCountry").innerText = (can.country || "-").toUpperCase();
     document.getElementById("heroVolume").innerText = (can.volume || "-").toUpperCase();
     document.getElementById("heroYear").innerText = can.year || "-";
@@ -376,7 +384,7 @@
 
     const logoContainer = document.getElementById("heroBrandLogo");
     const logoUrl = can.brandLogo || can.images?.brandLogo;
-    if (logoUrl) {
+    if (logoUrl && logoUrl.trim() !== "") {
       logoContainer.innerHTML = `<img src="${getOptimizedImageUrl(logoUrl, 400)}" alt="LOGO DA CERVEJARIA">`;
     } else {
       logoContainer.innerHTML = "";
@@ -386,18 +394,36 @@
     const currentNum = total > 0 ? (index + 1) : 0;
     document.getElementById("cardCounter").innerText = `${currentNum}/${total}`;
 
+    const rawPhotos = [
+      can.images?.front, 
+      can.images?.left, 
+      can.images?.back, 
+      can.images?.right,
+      can.images?.cover
+    ].filter(url => url && url.trim() !== "");
+
+    if (rawPhotos.length === 0 && logoUrl) {
+      rawPhotos.push(logoUrl);
+    }
+
+    zoomGallery = rawPhotos;
+
     const photosContainer = document.getElementById("heroPhotos");
     photosContainer.innerHTML = "";
 
-    zoomGallery = [can.images?.front, can.images?.left, can.images?.back, can.images?.right].filter(Boolean);
+    const displayPhotos = rawPhotos.slice(0, 4);
 
-    zoomGallery.forEach((url, idx) => {
-      const optimizedUrl = getOptimizedImageUrl(url, 1000);
-      const photoCard = document.createElement("div");
-      photoCard.className = "hero-photo-card";
-      photoCard.innerHTML = `<img src="${optimizedUrl}" alt="FOTO ${idx+1}" loading="lazy">`;
-      photosContainer.appendChild(photoCard);
-    });
+    if (displayPhotos.length > 0) {
+      displayPhotos.forEach((url, idx) => {
+        const optimizedUrl = getOptimizedImageUrl(url, 1000);
+        const photoCard = document.createElement("div");
+        photoCard.className = "hero-photo-card";
+        photoCard.innerHTML = `<img src="${optimizedUrl}" alt="FOTO ${idx+1}" loading="lazy">`;
+        photosContainer.appendChild(photoCard);
+      });
+    } else {
+      photosContainer.innerHTML = `<div class="hero-photo-card" style="grid-column: span 2; grid-row: span 2; color:#aaa; font-size:0.8rem;">SEM FOTOS</div>`;
+    }
   }
 
   function openZoomModal(index) {
