@@ -199,13 +199,18 @@
       buildBrandList();
       if(currentFiltered.length > 0) updateHeroPanel(currentFiltered[0], 0);
       
-      setTimeout(() => focusCardAt(0), 100);
+      setTimeout(() => focusSpecificCard(0), 100);
     } catch (err) {
       console.error("Erro ao carregar catálogo:", err);
     }
   }
 
-  function focusCardAt(index) {
+  function clearAllCardFocus() {
+    document.querySelectorAll(".card").forEach(c => c.blur());
+  }
+
+  function focusSpecificCard(index) {
+    clearAllCardFocus();
     const cards = document.querySelectorAll(".card");
     if (cards.length > 0) {
       const targetIndex = Math.min(index, cards.length - 1);
@@ -277,7 +282,7 @@
     renderApp();
     if(currentFiltered.length > 0) {
       updateHeroPanel(currentFiltered[0], 0);
-      setTimeout(() => focusCardAt(0), 50);
+      setTimeout(() => focusSpecificCard(0), 50);
     } else {
       document.getElementById("cardCounter").innerText = "0/0";
     }
@@ -310,7 +315,7 @@
             e.preventDefault();
             currentPage++;
             renderApp();
-            setTimeout(() => focusCardAt(0), 30);
+            setTimeout(() => focusSpecificCard(0), 30);
           }
         } else if (e.key === "ArrowLeft") {
           if (localIndex === 0) {
@@ -318,27 +323,28 @@
             if (currentPage > 0) {
               currentPage--;
               renderApp();
-              setTimeout(() => focusCardAt(CARDS_PER_ROW - 1), 30);
+              setTimeout(() => focusSpecificCard(CARDS_PER_ROW - 1), 30);
             } else {
+              clearAllCardFocus();
               const firstMenuItem = document.querySelector(".menu-item");
               if (firstMenuItem) firstMenuItem.focus();
             }
           }
         } else if (e.key === "ArrowDown") {
-          // 🎯 NAVEGA PARA A PRÓXIMA LINHA MANTENDO A MESMA COLUNA
+          // 🎯 NAVEGAÇÃO PARA BAIXO PRESERVANDO A COLUNA
           e.preventDefault();
           if ((startIndex + CARDS_PER_ROW) < currentFiltered.length) {
             currentPage++;
             renderApp();
-            setTimeout(() => focusCardAt(localIndex), 30);
+            setTimeout(() => focusSpecificCard(localIndex), 30);
           }
         } else if (e.key === "ArrowUp") {
-          // 🎯 NAVEGA PARA A LINHA ANTERIOR MANTENDO A MESMA COLUNA
+          // 🎯 NAVEGAÇÃO PARA CIMA PRESERVANDO A COLUNA
           e.preventDefault();
           if (currentPage > 0) {
             currentPage--;
             renderApp();
-            setTimeout(() => focusCardAt(localIndex), 30);
+            setTimeout(() => focusSpecificCard(localIndex), 30);
           }
         }
       };
@@ -412,7 +418,7 @@
       
       if (activeElem && activeElem.classList.contains("menu-item") && e.key === "ArrowRight") {
         e.preventDefault();
-        focusCardAt(0);
+        focusSpecificCard(0);
       }
     }
   });
