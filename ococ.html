@@ -209,23 +209,29 @@
       buildBrandList();
       if(currentFiltered.length > 0) updateHeroPanel(currentFiltered[0], 0);
 
-      setTimeout(() => focusSpecificCard(0), 100);
+      focusCardSafely(0);
     } catch (err) {
       console.error("Erro ao carregar catálogo:", err);
     }
   }
 
   function clearAllCardFocus() {
+    if (document.activeElement && typeof document.activeElement.blur === 'function') {
+      document.activeElement.blur();
+    }
     document.querySelectorAll(".card").forEach(c => c.blur());
   }
 
-  function focusSpecificCard(requestedIndex) {
+  function focusCardSafely(targetIndex) {
     clearAllCardFocus();
-    const cards = document.querySelectorAll(".card");
-    if (cards.length > 0) {
-      const targetIndex = Math.min(requestedIndex, cards.length - 1);
-      cards[targetIndex].focus();
-    }
+    requestAnimationFrame(() => {
+      const cards = document.querySelectorAll(".card");
+      if (cards.length > 0) {
+        const finalIdx = Math.min(targetIndex, cards.length - 1);
+        activeLocalIndex = finalIdx;
+        cards[finalIdx].focus();
+      }
+    });
   }
 
   function toggleSubpanel(panelId) {
@@ -292,13 +298,14 @@
     renderApp();
     if(currentFiltered.length > 0) {
       updateHeroPanel(currentFiltered[0], 0);
-      setTimeout(() => focusSpecificCard(0), 50);
+      focusCardSafely(0);
     } else {
       document.getElementById("cardCounter").innerText = "0/0";
     }
   }
 
   function renderApp() {
+    clearAllCardFocus();
     const row = document.getElementById("cardRow");
     row.innerHTML = "";
 
@@ -328,7 +335,7 @@
             e.preventDefault();
             currentPage++;
             renderApp();
-            setTimeout(() => focusSpecificCard(0), 30);
+            focusCardSafely(0);
           }
         } else if (e.key === "ArrowLeft") {
           if (localIndex === 0) {
@@ -336,7 +343,7 @@
             if (currentPage > 0) {
               currentPage--;
               renderApp();
-              setTimeout(() => focusSpecificCard(CARDS_PER_ROW - 1), 30);
+              focusCardSafely(CARDS_PER_ROW - 1);
             } else {
               clearAllCardFocus();
               const firstMenuItem = document.querySelector(".menu-item");
@@ -348,14 +355,14 @@
           if ((startIndex + CARDS_PER_ROW) < currentFiltered.length) {
             currentPage++;
             renderApp();
-            setTimeout(() => focusSpecificCard(activeLocalIndex), 30);
+            focusCardSafely(activeLocalIndex);
           }
         } else if (e.key === "ArrowUp") {
           e.preventDefault();
           if (currentPage > 0) {
             currentPage--;
             renderApp();
-            setTimeout(() => focusSpecificCard(activeLocalIndex), 30);
+            focusCardSafely(activeLocalIndex);
           }
         }
       };
@@ -429,7 +436,7 @@
 
       if (activeElem && activeElem.classList.contains("menu-item") && e.key === "ArrowRight") {
         e.preventDefault();
-        focusSpecificCard(0);
+        focusCardSafely(0);
       }
     }
   });
