@@ -63,7 +63,6 @@
     .form-control { padding: 10px; background: #222222; border: 1px solid #555555; border-radius: 6px; color: #fff; font-size: 0.9rem; }
     .form-control:focus { border-color: #f39c12; }
 
-    /* ESTILO PARA ANEXO DE IMAGEM LOCAL */
     .img-input-container { display: flex; flex-direction: column; gap: 4px; }
     .file-input-btn { font-size: 0.75rem; color: #aaa; background: #111; padding: 6px; border-radius: 4px; border: 1px dashed #555; cursor: pointer; text-align: center; margin-top: 2px; }
     .file-input-btn:hover { border-color: #f39c12; color: #f39c12; }
@@ -128,10 +127,11 @@
       <!-- FORMULÁRIO DE CADASTRO / EDIÇÃO -->
       <div class="admin-card">
         <h1 class="admin-title" id="formTitle">CADASTRAR NOVA LATA</h1>
-        <p class="admin-desc">Preencha os dados ou anexe arquivos de imagem diretamente do seu computador/celular.</p>
+        <p class="admin-desc">Preencha os dados abaixo. O ID único é gerado automaticamente na gravação.</p>
         
         <form id="canForm" onsubmit="handleFormSubmit(event)">
           <input type="hidden" id="editIndex" value="-1">
+          <input type="hidden" id="currentId" value="">
 
           <div class="section-subtitle">TIPO DE ITEM</div>
           <div class="type-selector">
@@ -180,7 +180,6 @@
           <div class="section-subtitle">FOTOS E IMAGENS (URL OU ARQUIVO LOCAL)</div>
           <div class="form-grid">
             
-            <!-- 1. LOGO MARCA -->
             <div class="form-group img-input-container">
               <label for="brandLogo">1. Logo da Marca</label>
               <input type="text" id="brandLogo" class="form-control" placeholder="Cole a URL https://...">
@@ -188,7 +187,6 @@
               <label for="fileBrandLogo" class="file-input-btn">📁 ANEXAR ARQUIVO LOCAL</label>
             </div>
 
-            <!-- 2. CAPA -->
             <div class="form-group img-input-container">
               <label for="imgCover">2. Foto Capa (Cards)</label>
               <input type="text" id="imgCover" class="form-control" placeholder="Cole a URL https://...">
@@ -196,7 +194,6 @@
               <label for="fileImgCover" class="file-input-btn">📁 ANEXAR ARQUIVO LOCAL</label>
             </div>
 
-            <!-- 3. FRENTE -->
             <div class="form-group img-input-container">
               <label for="imgFront">3. Foto Frente</label>
               <input type="text" id="imgFront" class="form-control" placeholder="Cole a URL https://...">
@@ -204,7 +201,6 @@
               <label for="fileImgFront" class="file-input-btn">📁 ANEXAR ARQUIVO LOCAL</label>
             </div>
 
-            <!-- 4. ESQUERDA -->
             <div class="form-group img-input-container">
               <label for="imgLeft">4. Foto Esquerda</label>
               <input type="text" id="imgLeft" class="form-control" placeholder="Cole a URL https://...">
@@ -212,7 +208,6 @@
               <label for="fileImgLeft" class="file-input-btn">📁 ANEXAR ARQUIVO LOCAL</label>
             </div>
 
-            <!-- 5. TRASEIRA -->
             <div class="form-group img-input-container">
               <label for="imgBack">5. Foto Traseira / Verso</label>
               <input type="text" id="imgBack" class="form-control" placeholder="Cole a URL https://...">
@@ -220,7 +215,6 @@
               <label for="fileImgBack" class="file-input-btn">📁 ANEXAR ARQUIVO LOCAL</label>
             </div>
 
-            <!-- 6. DIREITA -->
             <div class="form-group img-input-container">
               <label for="imgRight">6. Foto Direita</label>
               <input type="text" id="imgRight" class="form-control" placeholder="Cole a URL https://...">
@@ -248,12 +242,12 @@
           <table class="data-table">
             <thead>
               <tr>
+                <th>ID</th>
                 <th>Tipo</th>
                 <th>Nome</th>
                 <th>Cervejaria</th>
                 <th>País</th>
                 <th>Volume</th>
-                <th>Ano</th>
                 <th>Ações</th>
               </tr>
             </thead>
@@ -296,7 +290,6 @@
     });
   }
 
-  /* FUNÇÃO PARA CONVERTER O ARQUIVO LOCAL EM BASE64 E PREENCHER O CAMPO DE TEXTO */
   function handleFileSelect(fileInput, targetInputId) {
     const file = fileInput.files[0];
     if (!file) return;
@@ -306,6 +299,11 @@
       document.getElementById(targetInputId).value = e.target.result;
     };
     reader.readAsDataURL(file);
+  }
+
+  /* GERAR ID ÚNICO AUTOMÁTICO */
+  function generateAutoId() {
+    return 'LATA-' + Date.now();
   }
 
   /* CARREGAR ITENS DA PLANILHA NA TABELA */
@@ -331,12 +329,12 @@
 
         const tr = document.createElement("tr");
         tr.innerHTML = `
+          <td><small style="color:#aaa;">${item.id || '-'}</small></td>
           <td>${typeBadge}</td>
           <td><b>${item.name || '-'}</b></td>
           <td>${item.brewery || '-'}</td>
           <td>${item.country || '-'}</td>
           <td>${item.volume || '-'}</td>
-          <td>${item.year || '-'}</td>
           <td>
             <button class="action-btn btn-edit" onclick="editItem(${index})">Editar</button>
             <button class="action-btn btn-delete" onclick="deleteItem(${index})">Excluir</button>
@@ -357,6 +355,7 @@
 
     document.getElementById("formTitle").innerText = "EDITAR LATA / ITEM";
     document.getElementById("editIndex").value = index;
+    document.getElementById("currentId").value = item.id || "";
 
     document.getElementById("name").value = item.name || "";
     document.getElementById("brewery").value = item.brewery || "";
@@ -373,7 +372,6 @@
       document.getElementById("typeLata").checked = true;
     }
 
-    // Preenche os campos de imagem
     document.getElementById("brandLogo").value = item.brandLogo || item.images?.brandLogo || "";
     document.getElementById("imgCover").value = item.images?.cover || "";
     document.getElementById("imgFront").value = item.images?.front || "";
@@ -388,11 +386,12 @@
   function resetForm() {
     document.getElementById("formTitle").innerText = "CADASTRAR NOVA LATA";
     document.getElementById("editIndex").value = "-1";
+    document.getElementById("currentId").value = "";
     document.getElementById("canForm").reset();
     document.getElementById("typeLata").checked = true;
   }
 
-  /* SUBMETER FORMULÁRIO (SALVAR OU EDITAR) */
+  /* SUBMETER FORMULÁRIO (GERANDO O ID SE FOR NOVO) */
   async function handleFormSubmit(event) {
     event.preventDefault();
     const statusBox = document.getElementById("statusBox");
@@ -400,10 +399,16 @@
     const editIndex = parseInt(document.getElementById("editIndex").value);
 
     const selectedType = document.querySelector('input[name="itemType"]:checked').value;
+    
+    // 🎯 Se for uma nova lata (editIndex === -1), gera um ID automático único!
+    const finalId = editIndex >= 0 
+      ? (document.getElementById("currentId").value || generateAutoId()) 
+      : generateAutoId();
 
     const payload = {
       action: editIndex >= 0 ? "edit" : "add",
       index: editIndex,
+      id: finalId,
       name: document.getElementById("name").value,
       brewery: document.getElementById("brewery").value,
       country: document.getElementById("country").value,
@@ -435,7 +440,7 @@
       });
 
       statusBox.className = "status-box success";
-      statusBox.innerText = editIndex >= 0 ? "✅ ITEM ATUALIZADO COM SUCESSO!" : "✅ ITEM CADASTRADO COM SUCESSO!";
+      statusBox.innerText = editIndex >= 0 ? `✅ ITEM ATUALIZADO (ID: ${finalId})` : `✅ ITEM CADASTRADO COM SUCESSO! (ID: ${finalId})`;
       resetForm();
       loadCatalogTable();
     } catch (err) {
