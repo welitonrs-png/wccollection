@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BeerCan Catalog - Admin</title>
+  <title>BeerCan Catalog - Admin & Gestão</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; outline: none; }
     
@@ -14,7 +14,7 @@
 
     .app-container { display: flex; width: 100vw; height: 100vh; overflow: hidden; position: relative; background-color: #2A2A2A; }
 
-    /* MENU LATERAL PADRONIZADO */
+    /* MENU LATERAL */
     .sidebar {
       width: 60px; min-width: 60px; background: #1E1E1E; border-right: none;
       display: flex; flex-direction: column; padding: 10px 4px; gap: 2px; height: 100%;
@@ -32,26 +32,17 @@
       background: transparent; border: none !important; outline: none !important; box-shadow: none !important; cursor: pointer; width: 100%;
       text-align: left; transition: color 0.15s ease; flex-shrink: 0;
     }
-    .menu-item i { 
-      font-size: 1.25rem; min-width: 24px; text-align: center; font-style: normal; 
-      color: #DDDDDD; filter: grayscale(100%) opacity(0.85); transition: filter 0.15s ease, color 0.15s ease; 
-    }
+    .menu-item i { font-size: 1.25rem; min-width: 24px; text-align: center; font-style: normal; color: #DDDDDD; filter: grayscale(100%) opacity(0.85); transition: filter 0.15s ease, color 0.15s ease; }
     .menu-item span { opacity: 0; transition: opacity 0.2s ease; }
     .sidebar:hover .menu-item span, .sidebar:focus-within .menu-item span { opacity: 1; }
-    .menu-item:focus, .menu-item:hover { color: #f39c12 !important; background: transparent !important; border: none !important; outline: none !important; box-shadow: none !important; }
+    .menu-item:focus, .menu-item:hover { color: #f39c12 !important; background: transparent !important; }
     .menu-item:focus i, .menu-item:hover i { filter: none !important; color: #f39c12 !important; }
 
-    .inline-panel-container {
-      display: none; flex-direction: column; gap: 4px; padding-left: 8px; padding-right: 4px; margin-top: 2px; margin-bottom: 4px; flex-shrink: 0;
-    }
+    .inline-panel-container { display: none; flex-direction: column; gap: 4px; padding-left: 8px; padding-right: 4px; margin-top: 2px; margin-bottom: 4px; flex-shrink: 0; }
     .inline-panel-container.active { display: flex; }
 
-    .brand-btn { 
-      font-size: 0.85rem; padding: 6px 8px; border-radius: 4px; background: transparent; color: #CCCCCC; cursor: pointer; 
-      border: none !important; outline: none !important; box-shadow: none !important; text-align: left; font-weight: 800; 
-      text-transform: uppercase; transition: color 0.15s ease; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-    }
-    .brand-btn:focus, .brand-btn:hover { color: #f39c12 !important; background: transparent !important; border: none !important; outline: none !important; box-shadow: none !important; }
+    .brand-btn { font-size: 0.85rem; padding: 6px 8px; border-radius: 4px; background: transparent; color: #CCCCCC; cursor: pointer; border: none !important; text-align: left; font-weight: 800; text-transform: uppercase; transition: color 0.15s ease; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .brand-btn:focus, .brand-btn:hover { color: #f39c12 !important; }
 
     .menu-search-box { width: 100%; padding: 6px; background: #333333; border: 2px solid #555555; border-radius: 6px; color: #fff; font-size: 0.8rem; font-weight: bold; text-align: center; text-transform: uppercase; margin-bottom: 4px; }
     .menu-search-box::placeholder { color: #aaa; text-transform: uppercase; }
@@ -60,29 +51,46 @@
     .vk-key:focus, .vk-key:hover { color: #f39c12; border-color: #f39c12 !important; }
     .vk-key-wide { grid-column: span 2; }
 
-    /* ÁREA PRINCIPAL E FORMULÁRIO DE CADASTRO */
-    .main-area { flex: 1; display: flex; flex-direction: column; height: 100vh; padding: 24px; gap: 16px; overflow-y: auto; background: #2A2A2A; min-width: 0; }
-    .admin-card { background: #333333; border-radius: 12px; padding: 24px; color: #fff; max-width: 900px; margin: 0 auto; width: 100%; }
+    /* ÁREA PRINCIPAL E FORMULÁRIO */
+    .main-area { flex: 1; display: flex; flex-direction: column; height: 100vh; padding: 24px; gap: 24px; overflow-y: auto; background: #2A2A2A; min-width: 0; }
+    .admin-card { background: #333333; border-radius: 12px; padding: 24px; color: #fff; max-width: 1100px; margin: 0 auto; width: 100%; }
     .admin-title { font-size: 1.4rem; font-weight: 900; color: #f39c12; margin-bottom: 8px; text-transform: uppercase; }
     .admin-desc { font-size: 0.9rem; line-height: 1.4; color: #ccc; margin-bottom: 20px; }
 
-    .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; margin-bottom: 20px; }
+    .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 16px; }
     .form-group { display: flex; flex-direction: column; gap: 6px; }
     .form-group label { font-size: 0.8rem; font-weight: bold; color: #f39c12; text-transform: uppercase; }
     .form-control { padding: 10px; background: #222222; border: 1px solid #555555; border-radius: 6px; color: #fff; font-size: 0.9rem; }
     .form-control:focus { border-color: #f39c12; }
 
-    .section-subtitle { font-size: 1.05rem; font-weight: 900; color: #f39c12; margin: 16px 0 10px 0; border-bottom: 1px solid #444; padding-bottom: 6px; text-transform: uppercase; }
+    .section-subtitle { font-size: 1.05rem; font-weight: 900; color: #f39c12; margin: 20px 0 12px 0; border-bottom: 1px solid #444; padding-bottom: 6px; text-transform: uppercase; }
 
-    .checkbox-group { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
-    .checkbox-group input { width: 18px; height: 18px; accent-color: #f39c12; cursor: pointer; }
-    .checkbox-group label { font-size: 0.9rem; font-weight: bold; color: #fff; cursor: pointer; }
+    .type-selector { display: flex; gap: 20px; margin: 12px 0; background: #222; padding: 12px; border-radius: 6px; border: 1px solid #444; }
+    .radio-option { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+    .radio-option input { accent-color: #f39c12; width: 18px; height: 18px; cursor: pointer; }
+    .radio-option label { font-size: 0.85rem; font-weight: bold; color: #ddd; cursor: pointer; }
 
-    .btn-row { display: flex; gap: 12px; margin-top: 10px; }
+    .btn-row { display: flex; gap: 12px; margin-top: 16px; }
     .admin-btn { padding: 12px 24px; background: #f39c12; color: #111; border: none; border-radius: 6px; font-size: 0.9rem; font-weight: 900; text-transform: uppercase; cursor: pointer; transition: background 0.15s ease; }
     .admin-btn:hover, .admin-btn:focus { background: #d35400; color: #fff; }
     .admin-btn-secondary { background: #555555; color: #fff; }
     .admin-btn-secondary:hover { background: #777777; }
+
+    /* TABELA DE ITENS CADASTRADOS */
+    .table-container { width: 100%; overflow-x: auto; margin-top: 16px; border-radius: 6px; border: 1px solid #444; }
+    .data-table { width: 100%; border-collapse: collapse; background: #222; text-align: left; font-size: 0.85rem; }
+    .data-table th { background: #111; color: #f39c12; padding: 12px; text-transform: uppercase; border-bottom: 2px solid #444; }
+    .data-table td { padding: 10px 12px; border-bottom: 1px solid #333; color: #ddd; }
+    .data-table tr:hover { background: #2a2a2a; }
+
+    .badge { padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; text-transform: uppercase; }
+    .badge-lata { background: #2980b9; color: #fff; }
+    .badge-ococ { background: #27ae60; color: #fff; }
+    .badge-set { background: #8e44ad; color: #fff; }
+
+    .action-btn { padding: 6px 12px; border: none; border-radius: 4px; font-size: 0.75rem; font-weight: bold; cursor: pointer; margin-right: 4px; text-transform: uppercase; }
+    .btn-edit { background: #f39c12; color: #000; }
+    .btn-delete { background: #c0392b; color: #fff; }
 
     .status-box { margin-top: 16px; padding: 12px; border-radius: 6px; font-size: 0.9rem; font-weight: bold; text-transform: uppercase; display: none; }
     .status-box.loading { display: block; background: #444422; color: #f1c40f; border: 1px solid #f1c40f; }
@@ -112,15 +120,34 @@
     </aside>
 
     <main class="main-area">
+      <!-- FORMULÁRIO DE CADASTRO / EDIÇÃO -->
       <div class="admin-card">
-        <h1 class="admin-title">CADASTRAR NOVA LATA</h1>
-        <p class="admin-desc">Preencha as informações abaixo para adicionar um novo item ou conjunto diretamente ao seu catálogo e Google Sheets.</p>
+        <h1 class="admin-title" id="formTitle">CADASTRAR NOVA LATA</h1>
+        <p class="admin-desc">Preencha as informações para adicionar ou modificar itens do seu catálogo.</p>
         
         <form id="canForm" onsubmit="handleFormSubmit(event)">
+          <input type="hidden" id="editIndex" value="-1">
+
+          <div class="section-subtitle">TIPO DE ITEM</div>
+          <div class="type-selector">
+            <div class="radio-option">
+              <input type="radio" id="typeLata" name="itemType" value="lata" checked>
+              <label for="typeLata">LATA NORMAL</label>
+            </div>
+            <div class="radio-option">
+              <input type="radio" id="typeOcoc" name="itemType" value="ococ">
+              <label for="typeOcoc">OCOC (Lata Internacional / País)</label>
+            </div>
+            <div class="radio-option">
+              <input type="radio" id="typeSet" name="itemType" value="set">
+              <label for="typeSet">SET / PACK (Coleção Especial)</label>
+            </div>
+          </div>
+
           <div class="section-subtitle">DADOS PRINCIPAIS</div>
           <div class="form-grid">
             <div class="form-group">
-              <label for="name">Nome da Cerveja / Lata *</label>
+              <label for="name">Nome da Cerveja / Item *</label>
               <input type="text" id="name" class="form-control" placeholder="Ex: Heineken Premium Pilsener" required>
             </div>
             <div class="form-group">
@@ -164,41 +191,63 @@
               <input type="url" id="imgRight" class="form-control" placeholder="https://...">
             </div>
             <div class="form-group">
-              <label for="brandLogo">Logo da Cervejaria (URL)</label>
+              <label for="brandLogo">Logo da Marca (URL)</label>
               <input type="url" id="brandLogo" class="form-control" placeholder="https://...">
             </div>
           </div>
 
-          <div class="checkbox-group">
-            <input type="checkbox" id="isSet">
-            <label for="isSet">Este item é um SET / PACK (Coleção Especial)?</label>
-          </div>
-
-          <div class="btn-row" style="margin-top: 24px;">
-            <button type="submit" class="admin-btn" id="submitBtn">CADASTRAR LATA</button>
-            <button type="button" class="admin-btn admin-btn-secondary" onclick="updateDataFromSheet()">SINC. BANCO DE DADOS</button>
+          <div class="btn-row">
+            <button type="submit" class="admin-btn" id="submitBtn">SALVAR ITEM</button>
+            <button type="button" class="admin-btn admin-btn-secondary" onclick="resetForm()">CANCELAR / LIMPAR</button>
           </div>
         </form>
 
         <div class="status-box" id="statusBox"></div>
+      </div>
+
+      <!-- TABELA DE GESTÃO DE ITENS CADASTRADOS -->
+      <div class="admin-card">
+        <h1 class="admin-title">ITENS CADASTRADOS NO CATÁLOGO</h1>
+        <p class="admin-desc">Gerencie, edite ou exclua latas diretamente da lista.</p>
+
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Tipo</th>
+                <th>Nome</th>
+                <th>Cervejaria</th>
+                <th>País</th>
+                <th>Volume</th>
+                <th>Ano</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="catalogTableBody">
+              <tr>
+                <td colspan="7" style="text-align:center; padding: 20px;">Carregando dados da planilha...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </main>
   </div>
 
 <script>
   const API_URL = "https://script.google.com/macros/s/AKfycbwFIsSgEF2grkBpliyO_hSD0Lh2ULq6xHoJC6mDLYvjemTLYe67jF38MDNWP2ixITzE/exec";
+  let catalogData = [];
+
   const vkKeys = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','1','2','3','4','5','6','7','8','9','0','ESPAÇO','DEL','LIMPAR'];
 
   function toggleSearchInline() {
     document.getElementById("brandInlineList").classList.remove("active");
-    const container = document.getElementById("searchInlineContainer");
-    container.classList.toggle("active");
+    document.getElementById("searchInlineContainer").classList.toggle("active");
   }
 
   function toggleBrandInline() {
     document.getElementById("searchInlineContainer").classList.remove("active");
-    const container = document.getElementById("brandInlineList");
-    container.classList.toggle("active");
+    document.getElementById("brandInlineList").classList.toggle("active");
   }
 
   function buildVirtualKeyboard() {
@@ -213,21 +262,108 @@
     });
   }
 
-  /* SUBMIT DO FORMULÁRIO DE CADASTRO */
+  /* CARREGAR ITENS DA PLANILHA NA TABELA */
+  async function loadCatalogTable() {
+    const tbody = document.getElementById("catalogTableBody");
+    try {
+      const response = await fetch(API_URL + "?nocache=" + new Date().getTime());
+      catalogData = await response.json();
+
+      if (!Array.isArray(catalogData) || catalogData.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding: 20px;">Nenhum item cadastrado.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = "";
+      catalogData.forEach((item, index) => {
+        let typeBadge = '<span class="badge badge-lata">LATA</span>';
+        if (item.isSet === true || item.isSet === "true") {
+          typeBadge = '<span class="badge badge-set">SET</span>';
+        } else if (item.isOcoc === true || item.isOcoc === "true") {
+          typeBadge = '<span class="badge badge-ococ">OCOC</span>';
+        }
+
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${typeBadge}</td>
+          <td><b>${item.name || '-'}</b></td>
+          <td>${item.brewery || '-'}</td>
+          <td>${item.country || '-'}</td>
+          <td>${item.volume || '-'}</td>
+          <td>${item.year || '-'}</td>
+          <td>
+            <button class="action-btn btn-edit" onclick="editItem(${index})">Editar</button>
+            <button class="action-btn btn-delete" onclick="deleteItem(${index})">Excluir</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    } catch (err) {
+      console.error(err);
+      tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:#e74c3c; padding: 20px;">Erro ao carregar lista.</td></tr>`;
+    }
+  }
+
+  /* PREENCHER FORMULÁRIO PARA EDIÇÃO */
+  function editItem(index) {
+    const item = catalogData[index];
+    if (!item) return;
+
+    document.getElementById("formTitle").innerText = "EDITAR LATA / ITEM";
+    document.getElementById("editIndex").value = index;
+
+    document.getElementById("name").value = item.name || "";
+    document.getElementById("brewery").value = item.brewery || "";
+    document.getElementById("country").value = item.country || "";
+    document.getElementById("volume").value = item.volume || "";
+    document.getElementById("year").value = item.year || "";
+    document.getElementById("barcode").value = item.barcode || "";
+
+    if (item.isSet === true || item.isSet === "true") {
+      document.getElementById("typeSet").checked = true;
+    } else if (item.isOcoc === true || item.isOcoc === "true") {
+      document.getElementById("typeOcoc").checked = true;
+    } else {
+      document.getElementById("typeLata").checked = true;
+    }
+
+    document.getElementById("imgFront").value = item.images?.front || "";
+    document.getElementById("imgLeft").value = item.images?.left || "";
+    document.getElementById("imgBack").value = item.images?.back || "";
+    document.getElementById("imgRight").value = item.images?.right || "";
+    document.getElementById("brandLogo").value = item.brandLogo || item.images?.brandLogo || "";
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  /* RESETAR FORMULÁRIO */
+  function resetForm() {
+    document.getElementById("formTitle").innerText = "CADASTRAR NOVA LATA";
+    document.getElementById("editIndex").value = "-1";
+    document.getElementById("canForm").reset();
+    document.getElementById("typeLata").checked = true;
+  }
+
+  /* SUBMETER FORMULÁRIO (SALVAR OU EDITAR) */
   async function handleFormSubmit(event) {
     event.preventDefault();
     const statusBox = document.getElementById("statusBox");
     const submitBtn = document.getElementById("submitBtn");
+    const editIndex = parseInt(document.getElementById("editIndex").value);
+
+    const selectedType = document.querySelector('input[name="itemType"]:checked').value;
 
     const payload = {
-      action: "add",
+      action: editIndex >= 0 ? "edit" : "add",
+      index: editIndex,
       name: document.getElementById("name").value,
       brewery: document.getElementById("brewery").value,
       country: document.getElementById("country").value,
       volume: document.getElementById("volume").value,
       year: document.getElementById("year").value,
       barcode: document.getElementById("barcode").value,
-      isSet: document.getElementById("isSet").checked,
+      isSet: selectedType === "set",
+      isOcoc: selectedType === "ococ",
       images: {
         front: document.getElementById("imgFront").value,
         left: document.getElementById("imgLeft").value,
@@ -238,55 +374,58 @@
     };
 
     statusBox.className = "status-box loading";
-    statusBox.innerText = "⏳ ENVIANDO DADOS E SALVANDO NA PLANILHA...";
+    statusBox.innerText = "⏳ SALVANDO DADOS NA PLANILHA...";
     submitBtn.disabled = true;
 
     try {
-      const response = await fetch(API_URL, {
+      await fetch(API_URL, {
         method: "POST",
         headers: { "Content-Type": "text/plain;charset=utf-8" },
         body: JSON.stringify(payload)
       });
 
       statusBox.className = "status-box success";
-      statusBox.innerText = "✅ LATA CADASTRADA COM SUCESSO!";
-      document.getElementById("canForm").reset();
+      statusBox.innerText = editIndex >= 0 ? "✅ ITEM ATUALIZADO COM SUCESSO!" : "✅ ITEM CADASTRADO COM SUCESSO!";
+      resetForm();
+      loadCatalogTable();
     } catch (err) {
-      console.error("Erro no envio:", err);
+      console.error(err);
       statusBox.className = "status-box error";
-      statusBox.innerText = "❌ ERRO AO SALVAR DADOS. VERIFIQUE SUA CONEXÃO.";
+      statusBox.innerText = "❌ ERRO AO SALVAR DADOS. TENTE NOVAMENTE.";
     } finally {
       submitBtn.disabled = false;
     }
   }
 
-  /* FORÇAR ATUALIZAÇÃO / TESTE DE CONEXÃO */
-  async function updateDataFromSheet() {
+  /* EXCLUIR ITEM */
+  async function deleteItem(index) {
+    if (!confirm("Tem certeza que deseja excluir este item?")) return;
+
     const statusBox = document.getElementById("statusBox");
     statusBox.className = "status-box loading";
-    statusBox.innerText = "⏳ TESTANDO SINCRONIZAÇÃO COM O GOOGLE SHEETS...";
+    statusBox.innerText = "⏳ EXCLUINDO ITEM...";
 
     try {
-      const response = await fetch(API_URL + "?nocache=" + new Date().getTime());
-      const data = await response.json();
-      if (Array.isArray(data)) {
-        statusBox.className = "status-box success";
-        statusBox.innerText = `✅ CONECTADO! TOTAL DE ${data.length} ITENS NA PLANILHA.`;
-      }
+      await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({ action: "delete", index: index })
+      });
+
+      statusBox.className = "status-box success";
+      statusBox.innerText = "✅ ITEM EXCLUÍDO COM SUCESSO!";
+      loadCatalogTable();
     } catch (err) {
+      console.error(err);
       statusBox.className = "status-box error";
-      statusBox.innerText = "❌ FALHA NA CONEXÃO COM O GOOGLE SHEETS.";
+      statusBox.innerText = "❌ ERRO AO EXCLUIR ITEM.";
     }
   }
 
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" || e.key === "Back" || e.keyCode === 10009 || e.keyCode === 27) {
-      document.getElementById("searchInlineContainer").classList.remove("active");
-      document.getElementById("brandInlineList").classList.remove("active");
-    }
-  });
-
-  window.onload = buildVirtualKeyboard;
+  window.onload = () => {
+    buildVirtualKeyboard();
+    loadCatalogTable();
+  };
 </script>
 </body>
 </html>
