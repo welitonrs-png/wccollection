@@ -110,7 +110,8 @@
     }
     .card img { width: 100%; height: calc(100% - 20px); object-fit: contain; }
     .card-label { background: rgba(0,0,0,0.8); color: #f39c12; width: 100%; text-align: center; font-size: 0.65rem; font-weight: bold; padding: 2px 0; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; border-radius: 0 0 4px 4px; }
-    .card:focus, .card:hover { border-color: #f39c12 !important; box-shadow: 0 0 10px rgba(243, 156, 18, 0.7) !important; outline: none !important; z-index: 10; }
+    
+    .card.focused { border-color: #f39c12 !important; box-shadow: 0 0 10px rgba(243, 156, 18, 0.7) !important; outline: none !important; z-index: 10; }
 
     .zoom-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.95); z-index: 700; display: none; justify-content: center; align-items: center; padding: 16px; }
     .zoom-modal.active { display: flex; }
@@ -207,22 +208,21 @@
   }
 
   function clearAllCardFocus() {
-    if (document.activeElement && typeof document.activeElement.blur === 'function') {
-      document.activeElement.blur();
-    }
-    document.querySelectorAll(".card").forEach(c => c.blur());
+    document.querySelectorAll(".card").forEach(c => {
+      c.classList.remove("focused");
+      c.blur();
+    });
   }
 
   function focusCardSafely(targetIndex) {
     clearAllCardFocus();
-    requestAnimationFrame(() => {
-      const cards = document.querySelectorAll(".card");
-      if (cards.length > 0) {
-        const finalIdx = Math.min(targetIndex, cards.length - 1);
-        activeLocalIndex = finalIdx;
-        cards[finalIdx].focus();
-      }
-    });
+    const cards = document.querySelectorAll(".card");
+    if (cards.length > 0) {
+      const finalIdx = Math.min(targetIndex, cards.length - 1);
+      activeLocalIndex = finalIdx;
+      cards[finalIdx].classList.add("focused");
+      cards[finalIdx].focus();
+    }
   }
 
   function toggleSubpanel(panelId) {
@@ -296,7 +296,6 @@
   }
 
   function renderApp() {
-    clearAllCardFocus();
     const row = document.getElementById("cardRow");
     row.innerHTML = "";
 
@@ -311,10 +310,11 @@
       card.dataset.globalIndex = globalIndex;
       
       card.onfocus = () => {
+        document.querySelectorAll(".card").forEach(c => c.classList.remove("focused"));
+        card.classList.add("focused");
         activeLocalIndex = localIndex;
         updateHeroPanel(can, globalIndex);
       };
-      card.onmouseenter = () => updateHeroPanel(can, globalIndex);
       
       card.onclick = () => openZoomModal(0);
       card.onkeydown = (e) => {
