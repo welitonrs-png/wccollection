@@ -99,11 +99,10 @@
 
     .card {
       background-color: #fff; border-radius: 8px; height: 100%; aspect-ratio: 3 / 4; flex-shrink: 0;
-      overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; align-items: center; padding: 4px;
+      overflow: hidden; display: flex; justify-content: center; align-items: center; padding: 6px;
       cursor: pointer; border: 2px solid transparent; box-sizing: border-box; transition: border-color 0.15s ease, box-shadow 0.15s ease;
     }
-    .card img { width: 100%; height: calc(100% - 20px); object-fit: contain; }
-    .card-label { background: rgba(0,0,0,0.8); color: #f39c12; width: 100%; text-align: center; font-size: 0.65rem; font-weight: bold; padding: 2px 0; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; border-radius: 0 0 4px 4px; }
+    .card img { width: 100%; height: 100%; object-fit: contain; }
     
     .card.focused { border-color: #f39c12 !important; box-shadow: 0 0 10px rgba(243, 156, 18, 0.7) !important; outline: none !important; z-index: 10; }
 
@@ -313,7 +312,12 @@
 
     pageItems.forEach((can, localIndex) => {
       const globalIndex = startIndex + localIndex;
-      const rawCover = can.images ? (can.images.front || can.images.left || can.images.back || can.images.right || can.images.cover) : "";
+      
+      // 🎯 PRIORIZA A FOTO CAPA (cover), SE NÃO HOUVER PULA PARA FRENTE, ESQUERDA, ETC.
+      const rawCover = can.images 
+        ? (can.images.cover || can.images.front || can.images.left || can.images.back || can.images.right || can.brandLogo) 
+        : (can.brandLogo || "");
+        
       const coverImg = getOptimizedImageUrl(rawCover, 300);
 
       const card = document.createElement("div");
@@ -372,13 +376,15 @@
         }
       };
 
-      card.innerHTML = `<img src="${coverImg}" alt="${can.name}" loading="lazy"><div class="card-label">${(can.country || '').toUpperCase()}</div>`;
+      card.innerHTML = `<img src="${coverImg}" alt="${can.name}" loading="lazy">`;
       row.appendChild(card);
     });
   }
 
   function updateHeroPanel(can, index = 0) {
-    document.getElementById("heroTitle").innerText = (can.name || "").toUpperCase();
+    if (!can) return;
+
+    document.getElementById("heroTitle").innerText = (can.name || "LATA OCOC").toUpperCase();
     document.getElementById("heroCountry").innerText = (can.country || "-").toUpperCase();
     document.getElementById("heroVolume").innerText = (can.volume || "-").toUpperCase();
     document.getElementById("heroYear").innerText = can.year || "-";
@@ -386,7 +392,7 @@
 
     const logoContainer = document.getElementById("heroBrandLogo");
     const logoUrl = can.brandLogo || can.images?.brandLogo;
-    if (logoUrl) {
+    if (logoUrl && logoUrl.trim() !== "") {
       logoContainer.innerHTML = `<img src="${getOptimizedImageUrl(logoUrl, 400)}" alt="LOGO DA CERVEJARIA">`;
     } else {
       logoContainer.innerHTML = "";
@@ -396,18 +402,36 @@
     const currentNum = total > 0 ? (index + 1) : 0;
     document.getElementById("cardCounter").innerText = `${currentNum}/${total}`;
 
+    const rawPhotos = [
+      can.images?.front, 
+      can.images?.left, 
+      can.images?.back, 
+      can.images?.right,
+      can.images?.cover
+    ].filter(url => url && url.trim() !== "");
+
+    if (rawPhotos.length === 0 && logoUrl) {
+      rawPhotos.push(logoUrl);
+    }
+
+    zoomGallery = rawPhotos;
+
     const photosContainer = document.getElementById("heroPhotos");
     photosContainer.innerHTML = "";
 
-    zoomGallery = [can.images?.front, can.images?.left, can.images?.back, can.images?.right].filter(Boolean);
+    const displayPhotos = rawPhotos.slice(0, 4);
 
-    zoomGallery.forEach((url, idx) => {
-      const optimizedUrl = getOptimizedImageUrl(url, 1000);
-      const photoCard = document.createElement("div");
-      photoCard.className = "hero-photo-card";
-      photoCard.innerHTML = `<img src="${optimizedUrl}" alt="FOTO ${idx+1}" loading="lazy">`;
-      photosContainer.appendChild(photoCard);
-    });
+    if (displayPhotos.length > 0) {
+      displayPhotos.forEach((url, idx) => {
+        const optimizedUrl = getOptimizedImageUrl(url, 1000);
+        const photoCard = document.createElement("div");
+        photoCard.className = "hero-photo-card";
+        photoCard.innerHTML = `<img src="${optimizedUrl}" alt="FOTO ${idx+1}" loading="lazy">`;
+        photosContainer.appendChild(photoCard);
+      });
+    } else {
+      photosContainer.innerHTML = `<div class="hero-photo-card" style="grid-column: span 2; grid-row: span 2; color:#aaa; font-size:0.8rem;">SEM FOTOS</div>`;
+    }
   }
 
   function openZoomModal(index) {
