@@ -285,7 +285,7 @@
     const brands = [...new Set(currentFiltered.map(c => c.brewery).filter(Boolean))].sort();
     
     const allBtn = document.createElement("button");
-    allBtn.className = "brand-btn"; allBtn.tabIndex = 0; allBtn.innerText = "⭐ TODOS OS PAÍSES";
+    allBtn.className = "brand-btn"; allBtn.tabIndex = 0; allBtn.innerText = "TODOS OS PAÍSES";
     allBtn.onclick = () => { filterCatalog(""); document.getElementById("brandInlineList").classList.remove("active"); focusCardSafely(0); };
     brandContainer.appendChild(allBtn);
 
@@ -495,7 +495,7 @@
       }
 
       const activeElem = document.activeElement;
-      if (activeElem && (activeElem.classList.contains("cat-btn") || activeElem.classList.contains("brand-btn") || activeElem.classList.contains("vk-key") || activeElem.id === "menuSearchInput") && e.key === "ArrowRight") {
+      if (activeElem && (activeElem.classList.contains("cat-btn") || activeElem.classList.contains("brand-btn")) && e.key === "ArrowRight") {
         e.preventDefault();
         focusCardSafely(0);
       }
