@@ -57,7 +57,7 @@
     }
     .brand-btn:focus, .brand-btn:hover { color: #ffffff !important; background: rgba(255,255,255,0.1) !important; }
 
-    .menu-search-box { width: 100%; padding: 8px; background: #11141d; border: 1px solid #333d52; border-radius: 8px; color: #fff; font-size: 0.8rem; text-align: center; text-transform: uppercase; margin-bottom: 4px; }
+    .menu-search-box { width: 100%; padding: 8px; background: #11141d; border: 1px solid #333d52; border-radius: 8px; color: #fff; font-size: 0.8rem; text-align: center; text-transform: uppercase; margin-bottom: 4px; pointer-events: none; }
     .vk-container { display: grid; grid-template-columns: repeat(6, 1fr); gap: 2px; }
     .vk-key { background: #11141d; border: 1px solid #2a3447; color: #a0aec0; padding: 5px 0; border-radius: 4px; font-size: 0.65rem; font-weight: bold; cursor: pointer; text-align: center; }
     .vk-key:focus, .vk-key:hover { color: #fff; border-color: #fff; background: rgba(255,255,255,0.1); }
@@ -115,7 +115,7 @@
       
       <button class="cat-btn" onclick="toggleSearchInline()" tabindex="0">PESQUISAR</button>
       <div class="inline-panel-container" id="searchInlineContainer">
-        <input type="text" id="menuSearchInput" class="menu-search-box" placeholder="DIGITE PARA BUSCAR..." tabindex="0">
+        <input type="text" id="menuSearchInput" class="menu-search-box" placeholder="DIGITE PARA BUSCAR..." readonly tabindex="-1">
         <div class="vk-container" id="vkContainer"></div>
       </div>
 
@@ -168,6 +168,7 @@
   const CARDS_PER_ROW = 6;
   let currentPage = 0;
   let activeLocalIndex = 0;
+  let lastFocusedMenuElem = null;
 
   const vkKeys = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','1','2','3','4','5','6','7','8','9','0','ESPAÇO','DEL','LIMPAR'];
 
@@ -219,11 +220,18 @@
   function openMenu() {
     document.getElementById("sidebarDrawer").classList.add("open");
     document.getElementById("mainArea").classList.add("pushed");
-    const firstBtn = document.getElementById("sidebarDrawer").querySelector(".cat-btn");
-    if (firstBtn) firstBtn.focus();
+    if (lastFocusedMenuElem && document.getElementById("sidebarDrawer").contains(lastFocusedMenuElem)) {
+      lastFocusedMenuElem.focus();
+    } else {
+      const firstBtn = document.getElementById("sidebarDrawer").querySelector(".cat-btn");
+      if (firstBtn) firstBtn.focus();
+    }
   }
 
   function closeMenu() {
+    if (document.activeElement && document.getElementById("sidebarDrawer").contains(document.activeElement)) {
+      lastFocusedMenuElem = document.activeElement;
+    }
     document.getElementById("sidebarDrawer").classList.remove("open");
     document.getElementById("mainArea").classList.remove("pushed");
   }
@@ -252,16 +260,25 @@
   function buildVirtualKeyboard() {
     const container = document.getElementById("vkContainer");
     container.innerHTML = "";
-    vkKeys.forEach(k => {
+    vkKeys.forEach((k, index) => {
       const btn = document.createElement("button");
       btn.className = `vk-key ${ (k === 'ESPAÇO' || k === 'DEL' || k === 'LIMPAR') ? 'vk-key-wide' : '' }`;
-      btn.tabIndex = 0; btn.innerText = k;
+      btn.tabIndex = 0; 
+      btn.innerText = k;
       btn.onclick = () => handleVkPress(k);
+      
+      btn.onkeydown = (e) => {
+        if (e.key === "ArrowRight") {
+          const isLastInRow = (index + 1) % 6 === 0 || index === vkKeys.length - 1;
+          if (isLastInRow) {
+            e.preventDefault();
+            focusCardSafely(activeLocalIndex);
+          }
+        }
+      };
+
       container.appendChild(btn);
     });
-
-    const input = document.getElementById("menuSearchInput");
-    input.oninput = (e) => filterCatalog(e.target.value);
   }
 
   function handleVkPress(key) {
@@ -468,7 +485,7 @@
       const activeElem = document.activeElement;
       if (activeElem && (activeElem.classList.contains("cat-btn") || activeElem.classList.contains("brand-btn")) && e.key === "ArrowRight") {
         e.preventDefault();
-        focusCardSafely(0);
+        focusCardSafely(activeLocalIndex);
       }
     }
   }, true);
