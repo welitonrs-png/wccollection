@@ -7,86 +7,66 @@
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; outline: none; }
     
-    body { background-color: #2A2A2A; color: #DDDDDD; height: 100vh; overflow: hidden; display: flex; user-select: none; }
+    body { background-color: #1a1e29; color: #DDDDDD; height: 100vh; overflow: hidden; display: flex; user-select: none; }
 
     ::-webkit-scrollbar { display: none !important; width: 0 !important; height: 0 !important; }
     * { -ms-overflow-style: none !important; scrollbar-width: none !important; }
 
-    .app-container { display: flex; width: 100vw; height: 100vh; overflow: hidden; position: relative; background-color: #2A2A2A; }
+    .app-container { display: flex; width: 100vw; height: 100vh; overflow: hidden; position: relative; background-color: #1a1e29; }
 
-    .sidebar {
-      width: 60px; min-width: 60px; background: #1E1E1E; border-right: none;
-      display: flex; flex-direction: column; padding: 10px 4px; gap: 2px; height: 100%;
-      z-index: 500; transition: width 0.25s ease-in-out; overflow-y: auto; overflow-x: hidden; white-space: nowrap; position: relative;
-    }
-    .sidebar:hover, .sidebar:focus-within { width: 250px; min-width: 250px; box-shadow: 10px 0 25px rgba(0,0,0,0.5); }
+    /* ESTRUTURA DO MENU ESTILO STREAMING TV */
+    .menu-wrapper { display: flex; height: 100%; flex-shrink: 0; z-index: 500; }
 
-    .sidebar-logo-container { width: 100%; text-align: center; padding-bottom: 4px; border-bottom: none; flex-shrink: 0; }
-    .sidebar-logo-img { width: 40px; height: 40px; object-fit: contain; transition: width 0.25s ease; }
-    .sidebar:hover .sidebar-logo-img, .sidebar:focus-within .sidebar-logo-img { width: 150px; height: auto; }
+    .sidebar-icons {
+      width: 65px; background: rgba(18, 22, 33, 0.95); display: flex; flex-direction: column;
+      align-items: center; padding: 16px 0; gap: 20px; border-right: 1px solid rgba(255,255,255,0.05);
+    }
+    .sidebar-logo { width: 38px; height: 38px; object-fit: contain; margin-bottom: 12px; }
+    .sidebar-icon-item { color: rgba(255, 255, 255, 0.6); font-size: 1.25rem; font-style: normal; }
 
-    .menu-item {
-      display: flex; align-items: center; gap: 12px; color: #DDDDDD; text-decoration: none;
-      padding: 6px 10px; border-radius: 6px; font-size: 1rem; font-weight: 900; text-transform: uppercase;
-      background: transparent; border: none !important; outline: none !important; box-shadow: none !important; cursor: pointer; width: 100%;
-      text-align: left; transition: color 0.15s ease; flex-shrink: 0;
+    .sidebar-categories {
+      width: 240px; background: rgba(26, 32, 46, 0.95); display: flex; flex-direction: column;
+      padding: 24px 12px; gap: 6px; overflow-y: auto; border-right: 1px solid rgba(255,255,255,0.05);
     }
-    .menu-item i { 
-      font-size: 1.25rem; min-width: 24px; text-align: center; font-style: normal; 
-      color: #DDDDDD; filter: grayscale(100%) opacity(0.85); transition: filter 0.15s ease, color 0.15s ease; 
-    }
-    .menu-item span { opacity: 0; transition: opacity 0.2s ease; }
-    .sidebar:hover .menu-item span, .sidebar:focus-within .menu-item span { opacity: 1; }
-    .menu-item:focus, .menu-item:hover { color: #f39c12 !important; background: transparent !important; border: none !important; outline: none !important; box-shadow: none !important; }
-    .menu-item:focus i, .menu-item:hover i { filter: none !important; color: #f39c12 !important; }
 
-    .inline-panel-container {
-      display: none; flex-direction: column; gap: 4px; padding-left: 8px; padding-right: 4px; margin-top: 2px; margin-bottom: 4px; flex-shrink: 0;
+    .cat-btn {
+      display: flex; align-items: center; width: 100%; padding: 12px 18px; border-radius: 12px;
+      background: transparent; color: #e2e8f0; font-size: 1.05rem; font-weight: 600; border: none;
+      text-align: left; cursor: pointer; transition: all 0.15s ease; text-transform: capitalize;
     }
+
+    .cat-btn:focus, .cat-btn.focused, .cat-btn:hover {
+      background: #ffffff !important; color: #1a1f2c !important; font-weight: 700 !important;
+      box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2); outline: none !important;
+    }
+
+    .inline-panel-container { display: none; flex-direction: column; gap: 4px; padding: 6px 0; }
     .inline-panel-container.active { display: flex; }
 
     .brand-btn { 
-      font-size: 0.85rem; padding: 6px 8px; border-radius: 4px; background: transparent; color: #CCCCCC; cursor: pointer; 
-      border: none !important; outline: none !important; box-shadow: none !important; text-align: left; font-weight: 800; 
-      text-transform: uppercase; transition: color 0.15s ease; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      font-size: 0.85rem; padding: 8px 12px; border-radius: 8px; background: transparent; color: #a0aec0; cursor: pointer; 
+      border: none !important; text-align: left; font-weight: 600; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
-    .brand-btn:focus, .brand-btn:hover { color: #f39c12 !important; background: transparent !important; border: none !important; outline: none !important; box-shadow: none !important; }
+    .brand-btn:focus, .brand-btn:hover { color: #ffffff !important; background: rgba(255,255,255,0.1) !important; }
 
-    .menu-search-box { width: 100%; padding: 6px; background: #333333; border: 2px solid #555555; border-radius: 6px; color: #fff; font-size: 0.8rem; font-weight: bold; text-align: center; text-transform: uppercase; margin-bottom: 4px; }
-    .menu-search-box::placeholder { color: #aaa; text-transform: uppercase; }
-    .vk-container { display: grid; grid-template-columns: repeat(6, 1fr); gap: 2px; background: transparent; padding: 2px; border-radius: 6px; }
-    .vk-key { background: transparent; border: 1px solid #555555; color: #CCCCCC; padding: 5px 0; border-radius: 4px; font-size: 0.65rem; font-weight: bold; cursor: pointer; text-align: center; text-transform: uppercase; }
-    .vk-key:focus, .vk-key:hover { color: #f39c12; border-color: #f39c12 !important; }
+    .menu-search-box { width: 100%; padding: 8px; background: #11141d; border: 1px solid #333d52; border-radius: 8px; color: #fff; font-size: 0.8rem; text-align: center; text-transform: uppercase; margin-bottom: 4px; }
+    .vk-container { display: grid; grid-template-columns: repeat(6, 1fr); gap: 2px; }
+    .vk-key { background: #11141d; border: 1px solid #2a3447; color: #a0aec0; padding: 5px 0; border-radius: 4px; font-size: 0.65rem; font-weight: bold; cursor: pointer; text-align: center; }
+    .vk-key:focus, .vk-key:hover { color: #fff; border-color: #fff; background: rgba(255,255,255,0.1); }
     .vk-key-wide { grid-column: span 2; }
 
-    .main-area { flex: 1; display: flex; flex-direction: column; height: 100vh; padding: 12px 16px; gap: 10px; overflow: hidden; background: #2A2A2A; min-width: 0; }
+    .main-area { flex: 1; display: flex; flex-direction: column; height: 100vh; padding: 16px 24px; gap: 12px; overflow: hidden; background: #1a1e29; min-width: 0; }
 
-    .hero-panel {
-      flex: 1; min-height: 0; background: #2A2A2A; border: none; border-radius: 12px;
-      display: flex; padding: 12px 16px; gap: 24px; align-items: center; position: relative;
-    }
-    
-    .hero-brand-logo-container {
-      position: absolute; top: 12px; right: 24px; width: 220px; height: 100px;
-      display: flex; justify-content: flex-end; align-items: flex-start; z-index: 20; pointer-events: none;
-    }
+    .hero-panel { flex: 1; min-height: 0; background: transparent; border-radius: 12px; display: flex; padding: 12px; gap: 24px; align-items: center; position: relative; }
+    .hero-brand-logo-container { position: absolute; top: 12px; right: 24px; width: 200px; height: 90px; display: flex; justify-content: flex-end; align-items: flex-start; z-index: 20; pointer-events: none; }
     .hero-brand-logo-container img { max-width: 100%; max-height: 100%; object-fit: contain; }
 
     .hero-left-photos { height: 100%; aspect-ratio: 4 / 3; display: grid; grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(2, 1fr); gap: 8px; }
-    .hero-photo-card {
-      background: #fff; border-radius: 6px; padding: 4px; display: flex; justify-content: center; align-items: center;
-      width: 100%; height: 100%; overflow: hidden; pointer-events: none;
-    }
+    .hero-photo-card { background: #ffffff; border-radius: 8px; padding: 4px; display: flex; justify-content: center; align-items: center; width: 100%; height: 100%; overflow: hidden; }
     .hero-photo-card img { width: 100%; height: 100%; object-fit: contain; }
 
-    .hero-right-info { 
-      flex: 1; height: 100%; display: flex; flex-direction: column; 
-      justify-content: flex-start; gap: 12px; color: #f39c12; text-transform: uppercase; font-style: italic; overflow-y: auto; padding-right: 240px;
-    }
-    .hero-title { 
-      font-size: clamp(1.3rem, 2.3vw, 1.9rem); font-weight: 900; line-height: 1.15; 
-      color: #f39c12; margin-bottom: 4px; letter-spacing: 0.5px;
-    }
+    .hero-right-info { flex: 1; height: 100%; display: flex; flex-direction: column; justify-content: flex-start; gap: 10px; color: #f39c12; text-transform: uppercase; font-style: italic; overflow-y: auto; padding-right: 220px; }
+    .hero-title { font-size: clamp(1.3rem, 2.3vw, 1.9rem); font-weight: 900; line-height: 1.15; color: #f39c12; margin-bottom: 4px; letter-spacing: 0.5px; }
     .info-block { display: flex; flex-direction: column; margin-bottom: 2px; }
     .info-label { font-size: clamp(0.75rem, 1.1vw, 0.95rem); font-weight: 900; color: #f39c12; line-height: 1.1; letter-spacing: 0.5px; }
     .info-val { font-size: clamp(1.05rem, 1.7vw, 1.45rem); font-weight: 900; color: #f39c12; line-height: 1.1; margin-top: 1px; }
@@ -103,37 +83,43 @@
       cursor: pointer; border: 2px solid transparent; box-sizing: border-box; transition: border-color 0.15s ease, box-shadow 0.15s ease;
     }
     .card img { width: 100%; height: 100%; object-fit: contain; }
-    
-    .card.focused { border-color: #f39c12 !important; box-shadow: 0 0 10px rgba(243, 156, 18, 0.7) !important; outline: none !important; z-index: 10; }
+    .card.focused { border-color: #ffffff !important; box-shadow: 0 0 15px rgba(255, 255, 255, 0.8) !important; outline: none !important; z-index: 10; }
 
     .zoom-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.95); z-index: 700; display: none; justify-content: center; align-items: center; padding: 16px; }
     .zoom-modal.active { display: flex; }
-    .zoom-modal img { 
-      max-width: 85vw; max-height: 85vh; object-fit: contain; border-radius: 6px; cursor: pointer; 
-      transition: transform 0.25s ease-in-out; 
-    }
+    .zoom-modal img { max-width: 85vw; max-height: 85vh; object-fit: contain; border-radius: 6px; cursor: pointer; transition: transform 0.25s ease-in-out; }
     .zoom-modal img.zoomed { transform: scale(1.5); }
   </style>
 </head>
 <body>
 
   <div class="app-container">
-    <aside class="sidebar" id="sidebar">
-      <div class="sidebar-logo-container"><img src="logo.png" alt="WCCollection Logo" class="sidebar-logo-img"></div>
-      <button class="menu-item" onclick="location.href='index.html'" tabindex="0"><i>🏠</i><span>HOME</span></button>
-      
-      <button class="menu-item" onclick="toggleSearchInline()" tabindex="0"><i>🔍</i><span>PESQUISAR</span></button>
-      <div class="inline-panel-container" id="searchInlineContainer">
-        <input type="text" id="menuSearchInput" class="menu-search-box" placeholder="DIGITE PARA BUSCAR..." tabindex="0">
-        <div class="vk-container" id="vkContainer"></div>
-      </div>
+    <div class="menu-wrapper">
+      <aside class="sidebar-icons">
+        <img src="logo.png" alt="Logo" class="sidebar-logo">
+        <i class="sidebar-icon-item">🔍</i>
+        <i class="sidebar-icon-item">📺</i>
+        <i class="sidebar-icon-item">📦</i>
+        <i class="sidebar-icon-item">🏷️</i>
+        <i class="sidebar-icon-item">🌍</i>
+      </aside>
 
-      <button class="menu-item" onclick="toggleBrandInline()" tabindex="0"><i>🏷️</i><span>MARCAS</span></button>
-      <div class="inline-panel-container" id="brandInlineList"></div>
+      <nav class="sidebar-categories">
+        <button class="cat-btn" onclick="location.href='index.html'" tabindex="0">Home / Catálogo</button>
+        
+        <button class="cat-btn" onclick="toggleSearchInline()" tabindex="0">Pesquisar</button>
+        <div class="inline-panel-container" id="searchInlineContainer">
+          <input type="text" id="menuSearchInput" class="menu-search-box" placeholder="DIGITE PARA BUSCAR..." tabindex="0">
+          <div class="vk-container" id="vkContainer"></div>
+        </div>
 
-      <button class="menu-item" onclick="location.href='ococ.html'" tabindex="0"><i>🌍</i><span>OCOC</span></button>
-      <button class="menu-item" onclick="location.href='sets.html'" tabindex="0"><i>📦</i><span>SETS</span></button>
-    </aside>
+        <button class="cat-btn" onclick="toggleBrandInline()" tabindex="0">Marcas</button>
+        <div class="inline-panel-container" id="brandInlineList"></div>
+
+        <button class="cat-btn" onclick="location.href='ococ.html'" tabindex="0">OCOC (Países)</button>
+        <button class="cat-btn" onclick="location.href='sets.html'" tabindex="0">Sets & Packs</button>
+      </nav>
+    </div>
 
     <main class="main-area">
       <section class="hero-panel" id="heroPanel">
@@ -345,7 +331,7 @@
               focusCardSafely(CARDS_PER_ROW - 1);
             } else {
               clearAllCardFocus();
-              const firstMenuItem = document.querySelector(".menu-item");
+              const firstMenuItem = document.querySelector(".cat-btn");
               if (firstMenuItem) firstMenuItem.focus();
             }
           }
@@ -477,7 +463,7 @@
       }
 
       const activeElem = document.activeElement;
-      if (activeElem && (activeElem.classList.contains("menu-item") || activeElem.classList.contains("brand-btn") || activeElem.classList.contains("vk-key") || activeElem.id === "menuSearchInput") && e.key === "ArrowRight") {
+      if (activeElem && (activeElem.classList.contains("cat-btn") || activeElem.classList.contains("brand-btn") || activeElem.classList.contains("vk-key") || activeElem.id === "menuSearchInput") && e.key === "ArrowRight") {
         e.preventDefault();
         focusCardSafely(0);
       }
