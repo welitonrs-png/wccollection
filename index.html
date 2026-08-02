@@ -14,22 +14,20 @@
 
     .app-container { display: flex; width: 100vw; height: 100vh; overflow: hidden; position: relative; background-color: #1a1e29; }
 
-    /* ESTRUTURA DO MENU ESTILO STREAMING TV */
-    .menu-wrapper { display: flex; height: 100%; flex-shrink: 0; z-index: 500; }
-
-    /* Barra Estreita de Ícones */
-    .sidebar-icons {
-      width: 65px; background: rgba(18, 22, 33, 0.95); display: flex; flex-direction: column;
-      align-items: center; padding: 16px 0; gap: 20px; border-right: 1px solid rgba(255,255,255,0.05);
+    /* MENU GAVETA DESLIZANTE (OCULTO POR PADRÃO) */
+    .sidebar-drawer {
+      position: absolute; top: 0; left: -280px; width: 260px; height: 100vh;
+      background: rgba(22, 27, 38, 0.98); backdrop-filter: blur(10px);
+      display: flex; flex-direction: column; padding: 30px 16px; gap: 8px;
+      z-index: 1000; border-right: 1px solid rgba(255,255,255,0.08);
+      transition: left 0.25s cubic-bezier(0.1, 0.9, 0.2, 1); overflow-y: auto;
+      box-shadow: 10px 0 30px rgba(0,0,0,0.6);
     }
-    .sidebar-logo { width: 38px; height: 38px; object-fit: contain; margin-bottom: 12px; }
-    .sidebar-icon-item { color: rgba(255, 255, 255, 0.6); font-size: 1.25rem; font-style: normal; }
+    
+    /* Quando o menu está visível */
+    .sidebar-drawer.open, .sidebar-drawer:focus-within { left: 0; }
 
-    /* Painel de Categorias Expandido */
-    .sidebar-categories {
-      width: 240px; background: rgba(26, 32, 46, 0.95); display: flex; flex-direction: column;
-      padding: 24px 12px; gap: 6px; overflow-y: auto; border-right: 1px solid rgba(255,255,255,0.05);
-    }
+    .sidebar-logo { width: 100%; height: 50px; object-fit: contain; margin-bottom: 16px; text-align: center; }
 
     .cat-btn {
       display: flex; align-items: center; width: 100%; padding: 12px 18px; border-radius: 12px;
@@ -37,7 +35,7 @@
       text-align: left; cursor: pointer; transition: all 0.15s ease; text-transform: capitalize;
     }
 
-    /* Estilo de Destaque / Foco (Igual à Foto) */
+    /* Estilo de Foco (Igual ao da Foto) */
     .cat-btn:focus, .cat-btn.focused, .cat-btn:hover {
       background: #ffffff !important; color: #1a1f2c !important; font-weight: 700 !important;
       box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2); outline: none !important;
@@ -93,7 +91,7 @@
     .card img { width: 100%; height: 100%; object-fit: contain; }
     .card.focused { border-color: #ffffff !important; box-shadow: 0 0 15px rgba(255, 255, 255, 0.8) !important; outline: none !important; z-index: 10; }
 
-    .zoom-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.95); z-index: 700; display: none; justify-content: center; align-items: center; padding: 16px; }
+    .zoom-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.95); z-index: 2000; display: none; justify-content: center; align-items: center; padding: 16px; }
     .zoom-modal.active { display: flex; }
     .zoom-modal img { max-width: 85vw; max-height: 85vh; object-fit: contain; border-radius: 6px; cursor: pointer; transition: transform 0.25s ease-in-out; }
     .zoom-modal img.zoomed { transform: scale(1.5); }
@@ -102,34 +100,23 @@
 <body>
 
   <div class="app-container">
-    <div class="menu-wrapper">
-      <!-- Ícones da Esquerda -->
-      <aside class="sidebar-icons">
-        <img src="logo.png" alt="Logo" class="sidebar-logo">
-        <i class="sidebar-icon-item">🔍</i>
-        <i class="sidebar-icon-item">📺</i>
-        <i class="sidebar-icon-item">🎬</i>
-        <i class="sidebar-icon-item">🏷️</i>
-        <i class="sidebar-icon-item">📦</i>
-      </aside>
+    <!-- MENU OCULTO QUE SLIDA DA ESQUERDA -->
+    <nav class="sidebar-drawer" id="sidebarDrawer">
+      <img src="logo.png" alt="Logo" class="sidebar-logo">
+      <button class="cat-btn" onclick="location.href='index.html'" tabindex="0">Home / Catálogo</button>
+      
+      <button class="cat-btn" onclick="toggleSearchInline()" tabindex="0">Pesquisar</button>
+      <div class="inline-panel-container" id="searchInlineContainer">
+        <input type="text" id="menuSearchInput" class="menu-search-box" placeholder="DIGITE PARA BUSCAR..." tabindex="0">
+        <div class="vk-container" id="vkContainer"></div>
+      </div>
 
-      <!-- Lista de Categorias Expandida -->
-      <nav class="sidebar-categories">
-        <button class="cat-btn" onclick="location.href='index.html'" tabindex="0">Home / Catálogo</button>
-        
-        <button class="cat-btn" onclick="toggleSearchInline()" tabindex="0">Pesquisar</button>
-        <div class="inline-panel-container" id="searchInlineContainer">
-          <input type="text" id="menuSearchInput" class="menu-search-box" placeholder="DIGITE PARA BUSCAR..." tabindex="0">
-          <div class="vk-container" id="vkContainer"></div>
-        </div>
+      <button class="cat-btn" onclick="toggleBrandInline()" tabindex="0">Marcas</button>
+      <div class="inline-panel-container" id="brandInlineList"></div>
 
-        <button class="cat-btn" onclick="toggleBrandInline()" tabindex="0">Marcas</button>
-        <div class="inline-panel-container" id="brandInlineList"></div>
-
-        <button class="cat-btn" onclick="location.href='ococ.html'" tabindex="0">OCOC (Países)</button>
-        <button class="cat-btn" onclick="location.href='sets.html'" tabindex="0">Sets & Packs</button>
-      </nav>
-    </div>
+      <button class="cat-btn" onclick="location.href='ococ.html'" tabindex="0">OCOC (Países)</button>
+      <button class="cat-btn" onclick="location.href='sets.html'" tabindex="0">Sets & Packs</button>
+    </nav>
 
     <main class="main-area">
       <section class="hero-panel" id="heroPanel">
@@ -210,6 +197,7 @@
   }
 
   function focusCardSafely(targetIndex) {
+    closeMenu();
     clearAllCardFocus();
     const cards = document.querySelectorAll(".card");
     if (cards.length > 0) {
@@ -218,6 +206,18 @@
       cards[finalIdx].classList.add("focused");
       cards[finalIdx].focus();
     }
+  }
+
+  function openMenu() {
+    const drawer = document.getElementById("sidebarDrawer");
+    drawer.classList.add("open");
+    const firstBtn = drawer.querySelector(".cat-btn");
+    if (firstBtn) firstBtn.focus();
+  }
+
+  function closeMenu() {
+    const drawer = document.getElementById("sidebarDrawer");
+    drawer.classList.remove("open");
   }
 
   function toggleSearchInline() {
@@ -263,13 +263,13 @@
     
     const allBtn = document.createElement("button");
     allBtn.className = "brand-btn"; allBtn.tabIndex = 0; allBtn.innerText = "⭐ TODAS AS MARCAS";
-    allBtn.onclick = () => { filterCatalog(""); document.getElementById("brandInlineList").classList.remove("active"); };
+    allBtn.onclick = () => { filterCatalog(""); document.getElementById("brandInlineList").classList.remove("active"); focusCardSafely(0); };
     brandContainer.appendChild(allBtn);
 
     brands.forEach(b => {
       const btn = document.createElement("button");
       btn.className = "brand-btn"; btn.tabIndex = 0; btn.innerText = b.toUpperCase();
-      btn.onclick = () => { filterCatalog(b); document.getElementById("brandInlineList").classList.remove("active"); };
+      btn.onclick = () => { filterCatalog(b); document.getElementById("brandInlineList").classList.remove("active"); focusCardSafely(0); };
       brandContainer.appendChild(btn);
     });
   }
@@ -286,7 +286,6 @@
     renderApp();
     if(currentFiltered.length > 0) {
       updateHeroPanel(currentFiltered[0], 0);
-      focusCardSafely(0);
     } else {
       document.getElementById("cardCounter").innerText = "0/0";
     }
@@ -338,9 +337,9 @@
               renderApp();
               focusCardSafely(CARDS_PER_ROW - 1);
             } else {
+              // PRIMEIRA FOTO DA PÁGINA 1: ABRE O MENU
               clearAllCardFocus();
-              const firstMenuItem = document.querySelector(".cat-btn");
-              if (firstMenuItem) firstMenuItem.focus();
+              openMenu();
             }
           }
         } else if (e.key === "ArrowDown") {
@@ -446,8 +445,8 @@
       }
     } else {
       if (e.key === "Escape" || e.key === "Back" || e.keyCode === 10009 || e.keyCode === 27) {
-        document.getElementById("searchInlineContainer").classList.remove("active");
-        document.getElementById("brandInlineList").classList.remove("active");
+        closeMenu();
+        focusCardSafely(activeLocalIndex);
       }
       
       const activeElem = document.activeElement;
