@@ -214,12 +214,12 @@
   let lastSelectedMenuId = 'menuBtnHome'; 
   let lastSelectedBrandElem = null;
 
-  /* VARIÁVEIS DE CONTROLE DO ZOOM EM 3 NÍVEIS E PAN */
-  let zoomLevel = 1.0; // Valores possíveis: 1.0, 1.5, 2.0
-  let zoomState = 0;   // Estados: 0 (Normal), 1 (1.5x), 2 (2.0x), 3 (1.5x)
+  /* VARIÁVEIS DE CONTROLE DO ZOOM (1.5x e 3.0x) E PAN */
+  let zoomLevel = 1.0; 
+  let zoomState = 0;   // 0: Normal (1.0x), 1: 1.5x, 2: 3.0x, 3: 1.5x
   let panX = 0;
   let panY = 0;
-  const PAN_STEP = 50;
+  const PAN_STEP = 60; // Velocidade de deslocamento pelas setas quando ampliado
 
   const vkKeys = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','1','2','3','4','5','6','7','8','9','0','ESPAÇO','DEL','LIMPAR'];
 
@@ -719,7 +719,7 @@
     }
   }
 
-  /* SISTEMA DE ZOOM EM 3 NÍVEIS E NAVEGAÇÃO PAN */
+  /* SISTEMA DE ZOOM CICLICO (1.5x -> 3.0x -> 1.5x -> Normal) E PAN */
   function openZoomModal(index) {
     if (!zoomGallery || zoomGallery.length === 0) return;
     currentZoomIndex = index;
@@ -745,7 +745,7 @@
   }
 
   function toggleZoomStep() {
-    // Alterna o ciclo: 0 (1.0x) -> 1 (1.5x) -> 2 (2.0x) -> 3 (1.5x) -> 0 (1.0x)
+    // Ciclo: 0 (Normal) -> 1 (1.5x) -> 2 (3.0x) -> 3 (1.5x) -> 0 (Normal)
     zoomState = (zoomState + 1) % 4;
 
     if (zoomState === 0) {
@@ -755,7 +755,7 @@
     } else if (zoomState === 1) {
       zoomLevel = 1.5;
     } else if (zoomState === 2) {
-      zoomLevel = 2.0;
+      zoomLevel = 3.0;
     } else if (zoomState === 3) {
       zoomLevel = 1.5;
     }
@@ -862,7 +862,7 @@
         e.preventDefault();
         toggleZoomStep();
       } else if (zoomLevel > 1.0) {
-        // NAVEGAÇÃO PAN (DESLOCAR IMAGEM DETALHADA QUANDO AMPLIADO EM 1.5x OU 2.0x)
+        // NAVEGAÇÃO PAN (DESLOCAR IMAGEM DETALHADA QUANDO AMPLIADO)
         if (e.key === "ArrowLeft") {
           e.preventDefault();
           panX += PAN_STEP;
