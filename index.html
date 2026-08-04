@@ -75,6 +75,19 @@
       box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2); outline: none !important;
     }
 
+    /* BOTÃO DE SAÍDA NO MENU */
+    .cat-btn.exit-option {
+      margin-top: auto;
+      color: #e74c3c !important;
+      border: 1px solid rgba(231, 76, 60, 0.3);
+    }
+
+    .cat-btn.exit-option:focus, .cat-btn.exit-option:hover {
+      background: #e74c3c !important;
+      color: #ffffff !important;
+      box-shadow: 0 4px 15px rgba(231, 76, 60, 0.4);
+    }
+
     .inline-panel-container { display: none; flex-direction: column; gap: 4px; padding: 6px 0; }
     .inline-panel-container.active { display: flex; }
 
@@ -171,6 +184,9 @@
 
       <button class="cat-btn" id="menuBtnOcoc" onclick="switchTab('ococ')" tabindex="0">OCOC (PAÍSES)</button>
       <button class="cat-btn" id="menuBtnSets" onclick="switchTab('sets')" tabindex="0">SETS & PACKS</button>
+
+      <!-- NOVA OPÇÃO DE SAÍDA NO MENU -->
+      <button class="cat-btn exit-option" id="menuBtnExit" onclick="openExitModal()" tabindex="0">🚪 SAIR</button>
     </nav>
 
     <main class="main-area" id="mainArea" onclick="handleMainAreaClick()">
@@ -758,7 +774,7 @@
     focusCardSafely(activeLocalIndex);
   }
 
-  /* MODAL DE SAÍDA */
+  /* FUNÇÕES DO MODAL DE SAÍDA */
   function openExitModal() {
     closeMenu();
     document.getElementById("exitModal").classList.add("active");
@@ -855,6 +871,7 @@
     }
   }
 
+  /* TRATAMENTO DE TECLAS E BLOQUEIO DO BOTÃO VOLTAR */
   document.addEventListener("keydown", (e) => {
     const isZoomActive = document.getElementById("zoomModal").classList.contains("active");
     const isExitActive = document.getElementById("exitModal").classList.contains("active");
@@ -882,16 +899,19 @@
         const btnYes = document.getElementById("exitBtnYes");
         if (active === btnNo) btnYes.focus();
         else btnNo.focus();
+      } else if (e.key === "Escape" || e.key === "Back" || e.keyCode === 10009 || e.keyCode === 27) {
+        e.preventDefault();
+        closeExitModal();
       }
     } else {
+      // BLOQUEIO DO BOTÃO VOLTAR / BACK DA TV E CELULAR
       if (e.key === "Escape" || e.key === "Back" || e.keyCode === 10009 || e.keyCode === 27) {
-        e.preventDefault();
+        e.preventDefault(); // Impede o fechamento acidental do aplicativo
         if (isMenuOpen) {
           closeMenu();
           focusCardSafely(activeLocalIndex);
-        } else {
-          openExitModal();
         }
+        // Se o menu estiver fechado, O APLICATIVO NÃO FAZ NADA (NÃO FECHA)
       }
 
       const activeElem = document.activeElement;
