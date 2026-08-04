@@ -207,7 +207,8 @@
   let cardsPerRow = 6;
   let currentPage = 0;
   let activeLocalIndex = 0;
-  let lastSelectedMenuId = 'menuBtnHome'; // Guarda o ID da última opção usada no menu
+  let lastSelectedMenuId = 'menuBtnHome'; 
+  let lastSelectedBrandElem = null; // Memoriza o botão da marca clicada
 
   const vkKeys = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','1','2','3','4','5','6','7','8','9','0','ESPAÇO','DEL','LIMPAR'];
 
@@ -271,7 +272,7 @@
         canCatalog = JSON.parse(cachedData);
         processTabChange();
         hideLoadingScreen();
-        focusCardSafely(0); // Garante foco automático na 1ª lata
+        focusCardSafely(0);
       } catch (e) {
         console.error("Erro ao ler cache local:", e);
       }
@@ -289,7 +290,7 @@
         document.getElementById("loadingText").innerText = "PREPARANDO IMAGENS...";
         await preloadFirstImages(currentFiltered, cardsPerRow);
         hideLoadingScreen();
-        focusCardSafely(0); // Garante foco automático na 1ª lata
+        focusCardSafely(0);
       }
     } catch (err) {
       console.error("Erro ao carregar catálogo da API:", err);
@@ -300,6 +301,7 @@
 
   function switchTab(tabName) {
     currentTab = tabName;
+    lastSelectedBrandElem = null; // Limpa a memória de marca individual
     
     if(tabName === 'home') lastSelectedMenuId = 'menuBtnHome';
     else if(tabName === 'ococ') lastSelectedMenuId = 'menuBtnOcoc';
@@ -363,7 +365,6 @@
     closeMenu();
     clearAllCardFocus();
     
-    // Pequeno delay para garantir a renderização completa antes do foco
     setTimeout(() => {
       const cards = document.querySelectorAll(".card");
       if (cards.length > 0) {
@@ -379,7 +380,23 @@
     document.getElementById("sidebarDrawer").classList.add("open");
     document.getElementById("mainArea").classList.add("pushed");
     
-    // Foca na ÚLTIMA opção selecionada pelo usuário
+    // Se estivemos em MARCAS, mantém a lista aberta e foca na marca escolhida
+    if (lastSelectedMenuId === 'menuBtnBrands') {
+      const brandContainer = document.getElementById("brandInlineList");
+      brandContainer.classList.add("active");
+
+      if (lastSelectedBrandElem && brandContainer.contains(lastSelectedBrandElem)) {
+        lastSelectedBrandElem.focus();
+        return;
+      } else {
+        const firstBrand = brandContainer.querySelector(".brand-btn");
+        if (firstBrand) {
+          firstBrand.focus();
+          return;
+        }
+      }
+    }
+
     const targetElem = document.getElementById(lastSelectedMenuId);
     if (targetElem) {
       targetElem.focus();
@@ -411,6 +428,7 @@
 
   function toggleSearchInline() {
     lastSelectedMenuId = 'menuBtnSearch';
+    lastSelectedBrandElem = null;
     document.getElementById("brandInlineList").classList.remove("active");
     const container = document.getElementById("searchInlineContainer");
     container.classList.toggle("active");
@@ -484,8 +502,9 @@
     
     allBtn.onclick = (e) => { 
       e.stopPropagation();
+      lastSelectedMenuId = 'menuBtnBrands';
+      lastSelectedBrandElem = allBtn;
       filterCatalog(""); 
-      document.getElementById("brandInlineList").classList.remove("active"); 
       focusCardSafely(0); 
     };
 
@@ -504,8 +523,9 @@
       
       btn.onclick = (e) => { 
         e.stopPropagation();
+        lastSelectedMenuId = 'menuBtnBrands';
+        lastSelectedBrandElem = btn; // Memoriza a marca clicada
         filterCatalog(b); 
-        document.getElementById("brandInlineList").classList.remove("active"); 
         focusCardSafely(0); 
       };
 
