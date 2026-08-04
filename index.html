@@ -136,6 +136,15 @@
       max-width: 85vw; max-height: 85vh; object-fit: contain; border-radius: 6px; cursor: pointer; 
       transition: transform 0.15s ease-out; transform-origin: center center; 
     }
+
+    /* MODAL VISUAL DE SAÍDA NATIVO */
+    .exit-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); z-index: 4000; display: none; justify-content: center; align-items: center; }
+    .exit-modal.active { display: flex; }
+    .exit-box { background: #161b26; border: 2px solid #333d52; padding: 30px 40px; border-radius: 12px; display: flex; flex-direction: column; align-items: center; gap: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
+    .exit-title { color: #f39c12; font-size: 1.3rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
+    .exit-buttons { display: flex; gap: 16px; }
+    .exit-btn { padding: 10px 24px; border-radius: 8px; font-weight: bold; font-size: 1rem; border: none; cursor: pointer; text-transform: uppercase; background: #2a3447; color: #a0aec0; transition: all 0.15s ease; }
+    .exit-btn:focus, .exit-btn:hover { background: #ffffff; color: #1a1f2c; box-shadow: 0 0 15px rgba(255,255,255,0.3); outline: none; }
   </style>
 </head>
 <body>
@@ -200,6 +209,17 @@
     <img id="zoomImage" src="" alt="Imagem ampliada" onclick="event.stopPropagation(); toggleZoomStep();">
   </div>
 
+  <!-- MODAL DE SAÍDA DO APLICATIVO -->
+  <div class="exit-modal" id="exitModal">
+    <div class="exit-box">
+      <div class="exit-title">TEM CERTEZA QUE QUER SAIR?</div>
+      <div class="exit-buttons">
+        <button class="exit-btn" id="exitBtnNo" onclick="closeExitModal()">NÃO</button>
+        <button class="exit-btn" id="exitBtnYes" onclick="confirmExit()">SIM</button>
+      </div>
+    </div>
+  </div>
+
 <script>
   const API_URL = "https://script.google.com/macros/s/AKfycbwFIsSgEF2grkBpliyO_hSD0Lh2ULq6xHoJC6mDLYvjemTLYe67jF38MDNWP2ixITzE/exec";
   let canCatalog = [];
@@ -219,7 +239,7 @@
   let zoomState = 0;   // 0: Normal (1.0x), 1: 1.5x, 2: 3.0x, 3: 1.5x
   let panX = 0;
   let panY = 0;
-  const PAN_STEP = 60; // Velocidade de deslocamento pelas setas quando ampliado
+  const PAN_STEP = 60;
 
   const vkKeys = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','1','2','3','4','5','6','7','8','9','0','ESPAÇO','DEL','LIMPAR'];
 
@@ -600,7 +620,7 @@
       };
 
       card.onfocus = () => {
-        if (document.getElementById("zoomModal").classList.contains("active")) return;
+        if (document.getElementById("zoomModal").classList.contains("active") || document.getElementById("exitModal").classList.contains("active")) return;
         document.querySelectorAll(".card").forEach(c => c.classList.remove("focused"));
         card.classList.add("focused");
         activeLocalIndex = localIndex;
@@ -613,7 +633,7 @@
       };
 
       card.onkeydown = (e) => {
-        if (document.getElementById("zoomModal").classList.contains("active")) return;
+        if (document.getElementById("zoomModal").classList.contains("active") || document.getElementById("exitModal").classList.contains("active")) return;
 
         if (e.key === "Enter" || e.key === " ") {
           e.preventDefault();
@@ -745,7 +765,6 @@
   }
 
   function toggleZoomStep() {
-    // Ciclo: 0 (Normal) -> 1 (1.5x) -> 2 (3.0x) -> 3 (1.5x) -> 0 (Normal)
     zoomState = (zoomState + 1) % 4;
 
     if (zoomState === 0) {
@@ -775,6 +794,28 @@
     resetZoomTransform();
     document.getElementById("zoomModal").classList.remove("active");
     focusCardSafely(activeLocalIndex);
+  }
+
+  /* SISTEMA DE CONFIRMAÇÃO DE SAÍDA DO APP */
+  function openExitModal() {
+    closeMenu();
+    document.getElementById("exitModal").classList.add("active");
+    document.getElementById("exitBtnNo").focus();
+  }
+
+  function closeExitModal() {
+    document.getElementById("exitModal").classList.remove("active");
+    focusCardSafely(activeLocalIndex);
+  }
+
+  function confirmExit() {
+    if (window.navigator && window.navigator.app && window.navigator.app.exitApp) {
+      window.navigator.app.exitApp();
+    } else if (window.device && window.device.exitApp) {
+      window.device.exitApp();
+    } else {
+      window.close();
+    }
   }
 
   /* DETECÇÃO DE GESTOS SWIPE (TOUCHSCREEN CELULAR / PC) */
@@ -855,6 +896,7 @@
   /* NAVEGAÇÃO DO TECLADO E CONTROLE REMOTO */
   document.addEventListener("keydown", (e) => {
     const isZoomActive = document.getElementById("zoomModal").classList.contains("active");
+    const isExitActive = document.getElementById("exitModal").classList.contains("active");
     const isMenuOpen = document.getElementById("sidebarDrawer").classList.contains("open");
 
     if (isZoomActive) {
@@ -862,7 +904,7 @@
         e.preventDefault();
         toggleZoomStep();
       } else if (zoomLevel > 1.0) {
-        // NAVEGAÇÃO PAN (DESLOCAR IMAGEM DETALHADA QUANDO AMPLIADO)
+        // NAVEGAÇÃO PAN QUANDO AMPLIADO
         if (e.key === "ArrowLeft") {
           e.preventDefault();
           panX += PAN_STEP;
@@ -884,7 +926,7 @@
           closeZoomModal();
         }
       } else {
-        // MODO TAMANHO NORMAL (1.0x): SETAS TROCAM A FOTO DA GALERIA
+        // MODO NORMAL (1.0x)
         if (e.key === "ArrowLeft") {
           e.preventDefault();
           navigateZoom(-1);
@@ -896,12 +938,28 @@
           closeZoomModal();
         }
       }
+    } else if (isExitActive) {
+      // CONTROLE DE TECLAS DENTRO DO MODAL "TEM CERTEZA QUE QUER SAIR?"
+      if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
+        e.preventDefault();
+        const active = document.activeElement;
+        const btnNo = document.getElementById("exitBtnNo");
+        const btnYes = document.getElementById("exitBtnYes");
+        if (active === btnNo) btnYes.focus();
+        else btnNo.focus();
+      } else if (e.key === "Escape" || e.key === "Back" || e.keyCode === 10009 || e.keyCode === 27) {
+        e.preventDefault();
+        closeExitModal();
+      }
     } else {
+      // CAPTURA A TECLA VOLTAR DO CONTROLE REMOTO / CELULAR
       if (e.key === "Escape" || e.key === "Back" || e.keyCode === 10009 || e.keyCode === 27) {
+        e.preventDefault();
         if (isMenuOpen) {
-          e.preventDefault();
           closeMenu();
           focusCardSafely(activeLocalIndex);
+        } else {
+          openExitModal(); // ABRE A MENSAGEM PERGUNTANDO SE QUER SAIR
         }
       }
 
@@ -912,6 +970,25 @@
       }
     }
   }, true);
+
+  // SUPORTE NATIVO CORDOVA/CAPACITOR
+  document.addEventListener("backbutton", (e) => {
+    e.preventDefault();
+    const isZoomActive = document.getElementById("zoomModal").classList.contains("active");
+    const isExitActive = document.getElementById("exitModal").classList.contains("active");
+    const isMenuOpen = document.getElementById("sidebarDrawer").classList.contains("open");
+
+    if (isZoomActive) {
+      closeZoomModal();
+    } else if (isExitActive) {
+      closeExitModal();
+    } else if (isMenuOpen) {
+      closeMenu();
+      focusCardSafely(activeLocalIndex);
+    } else {
+      openExitModal();
+    }
+  }, false);
 
   window.onload = fetchCatalogFromSheet;
 </script>
