@@ -129,10 +129,13 @@
     .card img { width: 100%; height: 100%; object-fit: contain; }
     .card.focused, .card:hover { border-color: #f39c12 !important; box-shadow: none !important; outline: none !important; z-index: 10; }
 
-    .zoom-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.95); z-index: 3000; display: none; justify-content: center; align-items: center; padding: 16px; }
+    /* MODAL DE ZOOM E NAVEGAÇÃO */
+    .zoom-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.95); z-index: 3000; display: none; justify-content: center; align-items: center; padding: 16px; overflow: hidden; }
     .zoom-modal.active { display: flex; }
-    .zoom-modal img { max-width: 85vw; max-height: 85vh; object-fit: contain; border-radius: 6px; cursor: pointer; transition: transform 0.25s ease-in-out; }
-    .zoom-modal img.zoomed { transform: scale(1.5); }
+    .zoom-modal img { 
+      max-width: 85vw; max-height: 85vh; object-fit: contain; border-radius: 6px; cursor: pointer; 
+      transition: transform 0.15s ease-out; transform-origin: center center; 
+    }
   </style>
 </head>
 <body>
@@ -194,7 +197,7 @@
 
   <!-- MODAL DE ZOOM -->
   <div class="zoom-modal" id="zoomModal" onclick="closeZoomModal()">
-    <img id="zoomImage" src="" alt="Imagem ampliada" onclick="event.stopPropagation(); toggleZoomImage();">
+    <img id="zoomImage" src="" alt="Imagem ampliada" onclick="event.stopPropagation(); toggleZoomStep();">
   </div>
 
 <script>
@@ -210,6 +213,13 @@
   let activeLocalIndex = 0;
   let lastSelectedMenuId = 'menuBtnHome'; 
   let lastSelectedBrandElem = null;
+
+  /* VARIÁVEIS DE CONTROLE DO ZOOM EM 3 NÍVEIS E PAN */
+  let zoomLevel = 1.0; // Valores possíveis: 1.0, 1.5, 2.0
+  let zoomState = 0;   // Estados: 0 (Normal), 1 (1.5x), 2 (2.0x), 3 (1.5x)
+  let panX = 0;
+  let panY = 0;
+  const PAN_STEP = 50;
 
   const vkKeys = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','1','2','3','4','5','6','7','8','9','0','ESPAÇO','DEL','LIMPAR'];
 
@@ -709,31 +719,60 @@
     }
   }
 
+  /* SISTEMA DE ZOOM EM 3 NÍVEIS E NAVEGAÇÃO PAN */
   function openZoomModal(index) {
     if (!zoomGallery || zoomGallery.length === 0) return;
     currentZoomIndex = index;
+    resetZoomTransform();
     const imgElem = document.getElementById("zoomImage");
     imgElem.src = getOptimizedImageUrl(zoomGallery[currentZoomIndex], 1200);
-    imgElem.classList.remove("zoomed");
     document.getElementById("zoomModal").classList.add("active");
   }
 
-  function toggleZoomImage() {
+  function resetZoomTransform() {
+    zoomState = 0;
+    zoomLevel = 1.0;
+    panX = 0;
+    panY = 0;
+    applyZoomTransform();
+  }
+
+  function applyZoomTransform() {
     const imgElem = document.getElementById("zoomImage");
-    imgElem.classList.toggle("zoomed");
+    if (imgElem) {
+      imgElem.style.transform = `translate(${panX}px, ${panY}px) scale(${zoomLevel})`;
+    }
+  }
+
+  function toggleZoomStep() {
+    // Alterna o ciclo: 0 (1.0x) -> 1 (1.5x) -> 2 (2.0x) -> 3 (1.5x) -> 0 (1.0x)
+    zoomState = (zoomState + 1) % 4;
+
+    if (zoomState === 0) {
+      zoomLevel = 1.0;
+      panX = 0;
+      panY = 0;
+    } else if (zoomState === 1) {
+      zoomLevel = 1.5;
+    } else if (zoomState === 2) {
+      zoomLevel = 2.0;
+    } else if (zoomState === 3) {
+      zoomLevel = 1.5;
+    }
+
+    applyZoomTransform();
   }
 
   function navigateZoom(direction) {
     if (!zoomGallery || zoomGallery.length === 0) return;
-    const imgElem = document.getElementById("zoomImage");
-    imgElem.classList.remove("zoomed");
     currentZoomIndex = (currentZoomIndex + direction + zoomGallery.length) % zoomGallery.length;
+    resetZoomTransform();
+    const imgElem = document.getElementById("zoomImage");
     imgElem.src = getOptimizedImageUrl(zoomGallery[currentZoomIndex], 1200);
   }
 
   function closeZoomModal() {
-    const imgElem = document.getElementById("zoomImage");
-    imgElem.classList.remove("zoomed");
+    resetZoomTransform();
     document.getElementById("zoomModal").classList.remove("active");
     focusCardSafely(activeLocalIndex);
   }
@@ -813,6 +852,7 @@
     }
   }
 
+  /* NAVEGAÇÃO DO TECLADO E CONTROLE REMOTO */
   document.addEventListener("keydown", (e) => {
     const isZoomActive = document.getElementById("zoomModal").classList.contains("active");
     const isMenuOpen = document.getElementById("sidebarDrawer").classList.contains("open");
@@ -820,16 +860,41 @@
     if (isZoomActive) {
       if (e.key === "Enter" || e.key === " " || e.keyCode === 13) {
         e.preventDefault();
-        toggleZoomImage();
-      } else if (e.key === "ArrowLeft") {
-        e.preventDefault();
-        navigateZoom(-1);
-      } else if (e.key === "ArrowRight") {
-        e.preventDefault();
-        navigateZoom(1);
-      } else if (e.key === "ArrowUp" || e.key === "ArrowDown") {
-        e.preventDefault();
-        closeZoomModal();
+        toggleZoomStep();
+      } else if (zoomLevel > 1.0) {
+        // NAVEGAÇÃO PAN (DESLOCAR IMAGEM DETALHADA QUANDO AMPLIADO EM 1.5x OU 2.0x)
+        if (e.key === "ArrowLeft") {
+          e.preventDefault();
+          panX += PAN_STEP;
+          applyZoomTransform();
+        } else if (e.key === "ArrowRight") {
+          e.preventDefault();
+          panX -= PAN_STEP;
+          applyZoomTransform();
+        } else if (e.key === "ArrowUp") {
+          e.preventDefault();
+          panY += PAN_STEP;
+          applyZoomTransform();
+        } else if (e.key === "ArrowDown") {
+          e.preventDefault();
+          panY -= PAN_STEP;
+          applyZoomTransform();
+        } else if (e.key === "Escape" || e.key === "Back" || e.keyCode === 10009 || e.keyCode === 27) {
+          e.preventDefault();
+          closeZoomModal();
+        }
+      } else {
+        // MODO TAMANHO NORMAL (1.0x): SETAS TROCAM A FOTO DA GALERIA
+        if (e.key === "ArrowLeft") {
+          e.preventDefault();
+          navigateZoom(-1);
+        } else if (e.key === "ArrowRight") {
+          e.preventDefault();
+          navigateZoom(1);
+        } else if (e.key === "ArrowUp" || e.key === "ArrowDown" || e.key === "Escape" || e.key === "Back" || e.keyCode === 10009 || e.keyCode === 27) {
+          e.preventDefault();
+          closeZoomModal();
+        }
       }
     } else {
       if (e.key === "Escape" || e.key === "Back" || e.keyCode === 10009 || e.keyCode === 27) {
