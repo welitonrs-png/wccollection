@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BeerCan Catalog - Universal SPA</title>
+  <title>WCCollection - Universal SPA</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; outline: none; }
     
@@ -149,19 +149,19 @@
 
     <nav class="sidebar-drawer" id="sidebarDrawer">
       <img src="logo.png" alt="Logo" class="sidebar-logo">
-      <button class="cat-btn" onclick="switchTab('home')" tabindex="0">HOME / CATÁLOGO</button>
+      <button class="cat-btn" id="menuBtnHome" onclick="switchTab('home')" tabindex="0">HOME / CATÁLOGO</button>
       
-      <button class="cat-btn" onclick="toggleSearchInline()" tabindex="0">PESQUISAR</button>
+      <button class="cat-btn" id="menuBtnSearch" onclick="toggleSearchInline()" tabindex="0">PESQUISAR</button>
       <div class="inline-panel-container" id="searchInlineContainer">
         <input type="text" id="menuSearchInput" class="menu-search-box" placeholder="DIGITE PARA BUSCAR..." readonly tabindex="-1">
         <div class="vk-container" id="vkContainer"></div>
       </div>
 
-      <button class="cat-btn" onclick="toggleBrandInline()" tabindex="0">MARCAS</button>
+      <button class="cat-btn" id="menuBtnBrands" onclick="toggleBrandInline()" tabindex="0">MARCAS</button>
       <div class="inline-panel-container" id="brandInlineList"></div>
 
-      <button class="cat-btn" onclick="switchTab('ococ')" tabindex="0">OCOC (PAÍSES)</button>
-      <button class="cat-btn" onclick="switchTab('sets')" tabindex="0">SETS & PACKS</button>
+      <button class="cat-btn" id="menuBtnOcoc" onclick="switchTab('ococ')" tabindex="0">OCOC (PAÍSES)</button>
+      <button class="cat-btn" id="menuBtnSets" onclick="switchTab('sets')" tabindex="0">SETS & PACKS</button>
     </nav>
 
     <main class="main-area" id="mainArea" onclick="handleMainAreaClick()">
@@ -251,7 +251,7 @@
         };
       });
 
-      setTimeout(resolve, 3500); // Limite de segurança (3.5s)
+      setTimeout(resolve, 3500);
     });
   }
 
@@ -270,7 +270,7 @@
       try {
         canCatalog = JSON.parse(cachedData);
         processTabChange();
-        hideLoadingScreen(); // Se já tem dados gravados, abre imediatamente!
+        hideLoadingScreen();
       } catch (e) {
         console.error("Erro ao ler cache local:", e);
       }
@@ -284,7 +284,6 @@
       canCatalog = freshData;
       processTabChange();
 
-      // Na primeira abertura (sem cache), pré-carrega fotos antes de fechar a splash screen
       if (!cachedData) {
         document.getElementById("loadingText").innerText = "PREPARANDO IMAGENS...";
         await preloadFirstImages(currentFiltered, cardsPerRow);
@@ -367,11 +366,22 @@
   function openMenu() {
     document.getElementById("sidebarDrawer").classList.add("open");
     document.getElementById("mainArea").classList.add("pushed");
+    
+    // CORREÇÃO: Garante que o foco vá para o último elemento utilizado ou para o botão de Marcas/Início de forma segura
+    const brandContainer = document.getElementById("brandInlineList");
+    if (brandContainer.classList.contains("active")) {
+      const firstBrand = brandContainer.querySelector(".brand-btn");
+      if (firstBrand) {
+        firstBrand.focus();
+        return;
+      }
+    }
+
     if (lastFocusedMenuElem && document.getElementById("sidebarDrawer").contains(lastFocusedMenuElem)) {
       lastFocusedMenuElem.focus();
     } else {
-      const firstBtn = document.getElementById("sidebarDrawer").querySelector(".cat-btn");
-      if (firstBtn) firstBtn.focus();
+      const brandBtn = document.getElementById("menuBtnBrands");
+      if (brandBtn) brandBtn.focus();
     }
   }
 
@@ -403,12 +413,20 @@
     document.getElementById("brandInlineList").classList.remove("active");
     const container = document.getElementById("searchInlineContainer");
     container.classList.toggle("active");
+    if(container.classList.contains("active")) {
+      const firstVk = document.getElementById("vkContainer").querySelector(".vk-key");
+      if(firstVk) firstVk.focus();
+    }
   }
 
   function toggleBrandInline() {
     document.getElementById("searchInlineContainer").classList.remove("active");
     const container = document.getElementById("brandInlineList");
     container.classList.toggle("active");
+    if(container.classList.contains("active")) {
+      const firstBrand = container.querySelector(".brand-btn");
+      if(firstBrand) firstBrand.focus();
+    }
   }
 
   function buildVirtualKeyboard() {
@@ -460,23 +478,41 @@
 
     const allBtn = document.createElement("button");
     allBtn.className = "brand-btn"; allBtn.tabIndex = 0; allBtn.innerText = defaultText;
+    
     allBtn.onclick = (e) => { 
       e.stopPropagation();
       filterCatalog(""); 
       document.getElementById("brandInlineList").classList.remove("active"); 
       focusCardSafely(0); 
     };
+
+    allBtn.onkeydown = (e) => {
+      if (e.key === "ArrowRight") {
+        e.preventDefault();
+        focusCardSafely(activeLocalIndex);
+      }
+    };
+
     brandContainer.appendChild(allBtn);
 
     brands.forEach(b => {
       const btn = document.createElement("button");
       btn.className = "brand-btn"; btn.tabIndex = 0; btn.innerText = b.toUpperCase();
+      
       btn.onclick = (e) => { 
         e.stopPropagation();
         filterCatalog(b); 
         document.getElementById("brandInlineList").classList.remove("active"); 
         focusCardSafely(0); 
       };
+
+      btn.onkeydown = (e) => {
+        if (e.key === "ArrowRight") {
+          e.preventDefault();
+          focusCardSafely(activeLocalIndex);
+        }
+      };
+
       brandContainer.appendChild(btn);
     });
   }
