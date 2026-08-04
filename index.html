@@ -133,6 +133,15 @@
     .zoom-modal.active { display: flex; }
     .zoom-modal img { max-width: 85vw; max-height: 85vh; object-fit: contain; border-radius: 6px; cursor: pointer; transition: transform 0.25s ease-in-out; }
     .zoom-modal img.zoomed { transform: scale(1.5); }
+
+    /* MODAL DE SAÍDA / CONFIRMAÇÃO */
+    .exit-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); z-index: 4000; display: none; justify-content: center; align-items: center; }
+    .exit-modal.active { display: flex; }
+    .exit-box { background: #161b26; border: 2px solid #333d52; padding: 30px 40px; border-radius: 12px; display: flex; flex-direction: column; align-items: center; gap: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
+    .exit-title { color: #f39c12; font-size: 1.3rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
+    .exit-buttons { display: flex; gap: 16px; }
+    .exit-btn { padding: 10px 24px; border-radius: 8px; font-weight: bold; font-size: 1rem; border: none; cursor: pointer; text-transform: uppercase; background: #2a3447; color: #a0aec0; transition: all 0.15s ease; }
+    .exit-btn:focus, .exit-btn:hover { background: #ffffff; color: #1a1f2c; box-shadow: 0 0 15px rgba(255,255,255,0.3); outline: none; }
   </style>
 </head>
 <body>
@@ -192,8 +201,20 @@
     </main>
   </div>
 
+  <!-- MODAL DE ZOOM -->
   <div class="zoom-modal" id="zoomModal" onclick="closeZoomModal()">
     <img id="zoomImage" src="" alt="Imagem ampliada" onclick="event.stopPropagation(); toggleZoomImage();">
+  </div>
+
+  <!-- MODAL DE SAÍDA -->
+  <div class="exit-modal" id="exitModal">
+    <div class="exit-box">
+      <div class="exit-title">TEM CERTEZA QUE QUER SAIR?</div>
+      <div class="exit-buttons">
+        <button class="exit-btn" id="exitBtnNo" onclick="closeExitModal()">NÃO</button>
+        <button class="exit-btn" id="exitBtnYes" onclick="confirmExit()">SIM</button>
+      </div>
+    </div>
   </div>
 
 <script>
@@ -208,7 +229,7 @@
   let currentPage = 0;
   let activeLocalIndex = 0;
   let lastSelectedMenuId = 'menuBtnHome'; 
-  let lastSelectedBrandElem = null; // Memoriza o botão da marca clicada
+  let lastSelectedBrandElem = null;
 
   const vkKeys = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','1','2','3','4','5','6','7','8','9','0','ESPAÇO','DEL','LIMPAR'];
 
@@ -301,7 +322,7 @@
 
   function switchTab(tabName) {
     currentTab = tabName;
-    lastSelectedBrandElem = null; // Limpa a memória de marca individual
+    lastSelectedBrandElem = null;
     
     if(tabName === 'home') lastSelectedMenuId = 'menuBtnHome';
     else if(tabName === 'ococ') lastSelectedMenuId = 'menuBtnOcoc';
@@ -380,7 +401,6 @@
     document.getElementById("sidebarDrawer").classList.add("open");
     document.getElementById("mainArea").classList.add("pushed");
     
-    // Se estivemos em MARCAS, mantém a lista aberta e foca na marca escolhida
     if (lastSelectedMenuId === 'menuBtnBrands') {
       const brandContainer = document.getElementById("brandInlineList");
       brandContainer.classList.add("active");
@@ -524,7 +544,7 @@
       btn.onclick = (e) => { 
         e.stopPropagation();
         lastSelectedMenuId = 'menuBtnBrands';
-        lastSelectedBrandElem = btn; // Memoriza a marca clicada
+        lastSelectedBrandElem = btn;
         filterCatalog(b); 
         focusCardSafely(0); 
       };
@@ -590,7 +610,7 @@
       };
 
       card.onfocus = () => {
-        if (document.getElementById("zoomModal").classList.contains("active")) return;
+        if (document.getElementById("zoomModal").classList.contains("active") || document.getElementById("exitModal").classList.contains("active")) return;
         document.querySelectorAll(".card").forEach(c => c.classList.remove("focused"));
         card.classList.add("focused");
         activeLocalIndex = localIndex;
@@ -603,7 +623,7 @@
       };
 
       card.onkeydown = (e) => {
-        if (document.getElementById("zoomModal").classList.contains("active")) return;
+        if (document.getElementById("zoomModal").classList.contains("active") || document.getElementById("exitModal").classList.contains("active")) return;
 
         if (e.key === "Enter" || e.key === " ") {
           e.preventDefault();
@@ -735,6 +755,27 @@
     const imgElem = document.getElementById("zoomImage");
     imgElem.classList.remove("zoomed");
     document.getElementById("zoomModal").classList.remove("active");
+    focusCardSafely(activeLocalIndex);
+  }
+
+  /* FUNÇÕES DO MODAL DE SAÍDA */
+  function openExitModal() {
+    closeMenu();
+    document.getElementById("exitModal").classList.add("active");
+    // Foca por padrão no botão "NÃO" para evitar fechar sem querer
+    document.getElementById("exitBtnNo").focus();
+  }
+
+  function closeExitModal() {
+    document.getElementById("exitModal").classList.remove("active");
+    focusCardSafely(activeLocalIndex);
+  }
+
+  function confirmExit() {
+    // Tenta fechar a janela/aplicativo
+    window.close();
+    // Fallback caso o navegador/TV bloqueie o window.close() direto
+    document.body.innerHTML = "<div style='display:flex;justify-content:center;align-items:center;height:100vh;background:#1a1e29;color:#f39c12;font-family:sans-serif;font-size:1.5rem;'>aplicativo fechado. pode fechar a janela.</div>";
   }
 
   /* DETECÇÃO DE GESTOS SWIPE (TOUCHSCREEN CELULAR / PC) */
@@ -814,6 +855,8 @@
 
   document.addEventListener("keydown", (e) => {
     const isZoomActive = document.getElementById("zoomModal").classList.contains("active");
+    const isExitActive = document.getElementById("exitModal").classList.contains("active");
+    const isMenuOpen = document.getElementById("sidebarDrawer").classList.contains("open");
 
     if (isZoomActive) {
       if (e.key === "Enter" || e.key === " " || e.keyCode === 13) {
@@ -829,10 +872,26 @@
         e.preventDefault();
         closeZoomModal();
       }
+    } else if (isExitActive) {
+      if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
+        e.preventDefault();
+        // Alterna o foco entre o botão NÃO e SIM no modal de saída
+        const active = document.activeElement;
+        const btnNo = document.getElementById("exitBtnNo");
+        const btnYes = document.getElementById("exitBtnYes");
+        if (active === btnNo) btnYes.focus();
+        else btnNo.focus();
+      }
     } else {
+      // Tecla Voltar (Escape, Back do Android, tecla 10009 da TV Samsung, etc.)
       if (e.key === "Escape" || e.key === "Back" || e.keyCode === 10009 || e.keyCode === 27) {
-        closeMenu();
-        focusCardSafely(activeLocalIndex);
+        e.preventDefault();
+        if (isMenuOpen) {
+          closeMenu();
+          focusCardSafely(activeLocalIndex);
+        } else {
+          openExitModal(); // Abre o modal de confirmação de saída
+        }
       }
 
       const activeElem = document.activeElement;
