@@ -207,7 +207,7 @@
   let cardsPerRow = 6;
   let currentPage = 0;
   let activeLocalIndex = 0;
-  let lastFocusedMenuElem = null;
+  let wasBrandMenuOpen = false; // Armazena se o menu de marcas estava aberto
 
   const vkKeys = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','1','2','3','4','5','6','7','8','9','0','ESPAÇO','DEL','LIMPAR'];
 
@@ -297,6 +297,7 @@
 
   function switchTab(tabName) {
     currentTab = tabName;
+    wasBrandMenuOpen = false;
     document.getElementById("menuSearchInput").value = "";
     document.getElementById("searchInlineContainer").classList.remove("active");
     document.getElementById("brandInlineList").classList.remove("active");
@@ -367,21 +368,25 @@
     document.getElementById("sidebarDrawer").classList.add("open");
     document.getElementById("mainArea").classList.add("pushed");
     
-    // REDIRECIONAMENTO DE FOCO SEGURO: Foca no botão "MARCAS" para evitar o travamento
+    const brandContainer = document.getElementById("brandInlineList");
     const brandBtn = document.getElementById("menuBtnBrands");
+
+    // Se as marcas estavam abertas ou se o usuário estava filtrando por marca, mantém visível
+    if (wasBrandMenuOpen) {
+      brandContainer.classList.add("active");
+      const firstBrand = brandContainer.querySelector(".brand-btn");
+      if (firstBrand) {
+        firstBrand.focus();
+        return;
+      }
+    }
+
     if (brandBtn) {
       brandBtn.focus();
-      lastFocusedMenuElem = brandBtn;
-    } else {
-      const homeBtn = document.getElementById("menuBtnHome");
-      if (homeBtn) homeBtn.focus();
     }
   }
 
   function closeMenu() {
-    if (document.activeElement && document.getElementById("sidebarDrawer").contains(document.activeElement)) {
-      lastFocusedMenuElem = document.activeElement;
-    }
     document.getElementById("sidebarDrawer").classList.remove("open");
     document.getElementById("mainArea").classList.remove("pushed");
   }
@@ -403,6 +408,7 @@
   }
 
   function toggleSearchInline() {
+    wasBrandMenuOpen = false;
     document.getElementById("brandInlineList").classList.remove("active");
     const container = document.getElementById("searchInlineContainer");
     container.classList.toggle("active");
@@ -413,9 +419,12 @@
   }
 
   function toggleBrandInline() {
-    document.getElementById("searchInlineContainer").classList.remove("active");
     const container = document.getElementById("brandInlineList");
+    document.getElementById("searchInlineContainer").classList.remove("active");
     container.classList.toggle("active");
+    
+    wasBrandMenuOpen = container.classList.contains("active");
+
     if(container.classList.contains("active")) {
       const firstBrand = container.querySelector(".brand-btn");
       if(firstBrand) firstBrand.focus();
@@ -475,6 +484,7 @@
     allBtn.onclick = (e) => { 
       e.stopPropagation();
       filterCatalog(""); 
+      wasBrandMenuOpen = false;
       document.getElementById("brandInlineList").classList.remove("active"); 
       focusCardSafely(0); 
     };
@@ -495,6 +505,7 @@
       btn.onclick = (e) => { 
         e.stopPropagation();
         filterCatalog(b); 
+        wasBrandMenuOpen = true; // Mantém marcado que estava filtrando por marcas
         document.getElementById("brandInlineList").classList.remove("active"); 
         focusCardSafely(0); 
       };
