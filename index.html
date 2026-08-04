@@ -207,7 +207,7 @@
   let cardsPerRow = 6;
   let currentPage = 0;
   let activeLocalIndex = 0;
-  let wasBrandMenuOpen = false; // Armazena se o menu de marcas estava aberto
+  let lastSelectedMenuId = 'menuBtnHome'; // Guarda o ID da última opção usada no menu
 
   const vkKeys = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','1','2','3','4','5','6','7','8','9','0','ESPAÇO','DEL','LIMPAR'];
 
@@ -271,6 +271,7 @@
         canCatalog = JSON.parse(cachedData);
         processTabChange();
         hideLoadingScreen();
+        focusCardSafely(0); // Garante foco automático na 1ª lata
       } catch (e) {
         console.error("Erro ao ler cache local:", e);
       }
@@ -288,16 +289,22 @@
         document.getElementById("loadingText").innerText = "PREPARANDO IMAGENS...";
         await preloadFirstImages(currentFiltered, cardsPerRow);
         hideLoadingScreen();
+        focusCardSafely(0); // Garante foco automático na 1ª lata
       }
     } catch (err) {
       console.error("Erro ao carregar catálogo da API:", err);
       hideLoadingScreen();
+      focusCardSafely(0);
     }
   }
 
   function switchTab(tabName) {
     currentTab = tabName;
-    wasBrandMenuOpen = false;
+    
+    if(tabName === 'home') lastSelectedMenuId = 'menuBtnHome';
+    else if(tabName === 'ococ') lastSelectedMenuId = 'menuBtnOcoc';
+    else if(tabName === 'sets') lastSelectedMenuId = 'menuBtnSets';
+
     document.getElementById("menuSearchInput").value = "";
     document.getElementById("searchInlineContainer").classList.remove("active");
     document.getElementById("brandInlineList").classList.remove("active");
@@ -355,34 +362,29 @@
   function focusCardSafely(targetIndex) {
     closeMenu();
     clearAllCardFocus();
-    const cards = document.querySelectorAll(".card");
-    if (cards.length > 0) {
-      const finalIdx = Math.min(targetIndex, cards.length - 1);
-      activeLocalIndex = finalIdx;
-      cards[finalIdx].classList.add("focused");
-      cards[finalIdx].focus();
-    }
+    
+    // Pequeno delay para garantir a renderização completa antes do foco
+    setTimeout(() => {
+      const cards = document.querySelectorAll(".card");
+      if (cards.length > 0) {
+        const finalIdx = Math.min(targetIndex, cards.length - 1);
+        activeLocalIndex = finalIdx;
+        cards[finalIdx].classList.add("focused");
+        cards[finalIdx].focus();
+      }
+    }, 50);
   }
 
   function openMenu() {
     document.getElementById("sidebarDrawer").classList.add("open");
     document.getElementById("mainArea").classList.add("pushed");
     
-    const brandContainer = document.getElementById("brandInlineList");
-    const brandBtn = document.getElementById("menuBtnBrands");
-
-    // Se as marcas estavam abertas ou se o usuário estava filtrando por marca, mantém visível
-    if (wasBrandMenuOpen) {
-      brandContainer.classList.add("active");
-      const firstBrand = brandContainer.querySelector(".brand-btn");
-      if (firstBrand) {
-        firstBrand.focus();
-        return;
-      }
-    }
-
-    if (brandBtn) {
-      brandBtn.focus();
+    // Foca na ÚLTIMA opção selecionada pelo usuário
+    const targetElem = document.getElementById(lastSelectedMenuId);
+    if (targetElem) {
+      targetElem.focus();
+    } else {
+      document.getElementById("menuBtnHome").focus();
     }
   }
 
@@ -408,7 +410,7 @@
   }
 
   function toggleSearchInline() {
-    wasBrandMenuOpen = false;
+    lastSelectedMenuId = 'menuBtnSearch';
     document.getElementById("brandInlineList").classList.remove("active");
     const container = document.getElementById("searchInlineContainer");
     container.classList.toggle("active");
@@ -419,12 +421,11 @@
   }
 
   function toggleBrandInline() {
+    lastSelectedMenuId = 'menuBtnBrands';
     const container = document.getElementById("brandInlineList");
     document.getElementById("searchInlineContainer").classList.remove("active");
     container.classList.toggle("active");
     
-    wasBrandMenuOpen = container.classList.contains("active");
-
     if(container.classList.contains("active")) {
       const firstBrand = container.querySelector(".brand-btn");
       if(firstBrand) firstBrand.focus();
@@ -484,7 +485,6 @@
     allBtn.onclick = (e) => { 
       e.stopPropagation();
       filterCatalog(""); 
-      wasBrandMenuOpen = false;
       document.getElementById("brandInlineList").classList.remove("active"); 
       focusCardSafely(0); 
     };
@@ -505,7 +505,6 @@
       btn.onclick = (e) => { 
         e.stopPropagation();
         filterCatalog(b); 
-        wasBrandMenuOpen = true; // Mantém marcado que estava filtrando por marcas
         document.getElementById("brandInlineList").classList.remove("active"); 
         focusCardSafely(0); 
       };
