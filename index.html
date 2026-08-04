@@ -367,21 +367,14 @@
     document.getElementById("sidebarDrawer").classList.add("open");
     document.getElementById("mainArea").classList.add("pushed");
     
-    // CORREÇÃO: Garante que o foco vá para o último elemento utilizado ou para o botão de Marcas/Início de forma segura
-    const brandContainer = document.getElementById("brandInlineList");
-    if (brandContainer.classList.contains("active")) {
-      const firstBrand = brandContainer.querySelector(".brand-btn");
-      if (firstBrand) {
-        firstBrand.focus();
-        return;
-      }
-    }
-
-    if (lastFocusedMenuElem && document.getElementById("sidebarDrawer").contains(lastFocusedMenuElem)) {
-      lastFocusedMenuElem.focus();
+    // REDIRECIONAMENTO DE FOCO SEGURO: Foca no botão "MARCAS" para evitar o travamento
+    const brandBtn = document.getElementById("menuBtnBrands");
+    if (brandBtn) {
+      brandBtn.focus();
+      lastFocusedMenuElem = brandBtn;
     } else {
-      const brandBtn = document.getElementById("menuBtnBrands");
-      if (brandBtn) brandBtn.focus();
+      const homeBtn = document.getElementById("menuBtnHome");
+      if (homeBtn) homeBtn.focus();
     }
   }
 
