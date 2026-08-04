@@ -75,19 +75,6 @@
       box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2); outline: none !important;
     }
 
-    /* BOTÃO DE SAÍDA NO MENU */
-    .cat-btn.exit-option {
-      margin-top: auto;
-      color: #e74c3c !important;
-      border: 1px solid rgba(231, 76, 60, 0.3);
-    }
-
-    .cat-btn.exit-option:focus, .cat-btn.exit-option:hover {
-      background: #e74c3c !important;
-      color: #ffffff !important;
-      box-shadow: 0 4px 15px rgba(231, 76, 60, 0.4);
-    }
-
     .inline-panel-container { display: none; flex-direction: column; gap: 4px; padding: 6px 0; }
     .inline-panel-container.active { display: flex; }
 
@@ -146,15 +133,6 @@
     .zoom-modal.active { display: flex; }
     .zoom-modal img { max-width: 85vw; max-height: 85vh; object-fit: contain; border-radius: 6px; cursor: pointer; transition: transform 0.25s ease-in-out; }
     .zoom-modal img.zoomed { transform: scale(1.5); }
-
-    /* MODAL DE SAÍDA */
-    .exit-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); z-index: 4000; display: none; justify-content: center; align-items: center; }
-    .exit-modal.active { display: flex; }
-    .exit-box { background: #161b26; border: 2px solid #333d52; padding: 30px 40px; border-radius: 12px; display: flex; flex-direction: column; align-items: center; gap: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
-    .exit-title { color: #f39c12; font-size: 1.3rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
-    .exit-buttons { display: flex; gap: 16px; }
-    .exit-btn { padding: 10px 24px; border-radius: 8px; font-weight: bold; font-size: 1rem; border: none; cursor: pointer; text-transform: uppercase; background: #2a3447; color: #a0aec0; transition: all 0.15s ease; }
-    .exit-btn:focus, .exit-btn:hover { background: #ffffff; color: #1a1f2c; box-shadow: 0 0 15px rgba(255,255,255,0.3); outline: none; }
   </style>
 </head>
 <body>
@@ -184,9 +162,6 @@
 
       <button class="cat-btn" id="menuBtnOcoc" onclick="switchTab('ococ')" tabindex="0">OCOC (PAÍSES)</button>
       <button class="cat-btn" id="menuBtnSets" onclick="switchTab('sets')" tabindex="0">SETS & PACKS</button>
-
-      <!-- NOVA OPÇÃO DE SAÍDA NO MENU -->
-      <button class="cat-btn exit-option" id="menuBtnExit" onclick="openExitModal()" tabindex="0">🚪 SAIR</button>
     </nav>
 
     <main class="main-area" id="mainArea" onclick="handleMainAreaClick()">
@@ -220,17 +195,6 @@
   <!-- MODAL DE ZOOM -->
   <div class="zoom-modal" id="zoomModal" onclick="closeZoomModal()">
     <img id="zoomImage" src="" alt="Imagem ampliada" onclick="event.stopPropagation(); toggleZoomImage();">
-  </div>
-
-  <!-- MODAL DE SAÍDA -->
-  <div class="exit-modal" id="exitModal">
-    <div class="exit-box">
-      <div class="exit-title">TEM CERTEZA QUE QUER SAIR?</div>
-      <div class="exit-buttons">
-        <button class="exit-btn" id="exitBtnNo" onclick="closeExitModal()">NÃO</button>
-        <button class="exit-btn" id="exitBtnYes" onclick="confirmExit()">SIM</button>
-      </div>
-    </div>
   </div>
 
 <script>
@@ -626,7 +590,7 @@
       };
 
       card.onfocus = () => {
-        if (document.getElementById("zoomModal").classList.contains("active") || document.getElementById("exitModal").classList.contains("active")) return;
+        if (document.getElementById("zoomModal").classList.contains("active")) return;
         document.querySelectorAll(".card").forEach(c => c.classList.remove("focused"));
         card.classList.add("focused");
         activeLocalIndex = localIndex;
@@ -639,7 +603,7 @@
       };
 
       card.onkeydown = (e) => {
-        if (document.getElementById("zoomModal").classList.contains("active") || document.getElementById("exitModal").classList.contains("active")) return;
+        if (document.getElementById("zoomModal").classList.contains("active")) return;
 
         if (e.key === "Enter" || e.key === " ") {
           e.preventDefault();
@@ -774,28 +738,6 @@
     focusCardSafely(activeLocalIndex);
   }
 
-  /* FUNÇÕES DO MODAL DE SAÍDA */
-  function openExitModal() {
-    closeMenu();
-    document.getElementById("exitModal").classList.add("active");
-    document.getElementById("exitBtnNo").focus();
-  }
-
-  function closeExitModal() {
-    document.getElementById("exitModal").classList.remove("active");
-    focusCardSafely(activeLocalIndex);
-  }
-
-  function confirmExit() {
-    if (window.navigator && window.navigator.app && window.navigator.app.exitApp) {
-      window.navigator.app.exitApp();
-    } else if (window.device && window.device.exitApp) {
-      window.device.exitApp();
-    } else {
-      window.close();
-    }
-  }
-
   /* DETECÇÃO DE GESTOS SWIPE (TOUCHSCREEN CELULAR / PC) */
   let touchStartX = 0;
   let touchStartY = 0;
@@ -871,10 +813,8 @@
     }
   }
 
-  /* TRATAMENTO DE TECLAS E BLOQUEIO DO BOTÃO VOLTAR */
   document.addEventListener("keydown", (e) => {
     const isZoomActive = document.getElementById("zoomModal").classList.contains("active");
-    const isExitActive = document.getElementById("exitModal").classList.contains("active");
     const isMenuOpen = document.getElementById("sidebarDrawer").classList.contains("open");
 
     if (isZoomActive) {
@@ -891,27 +831,13 @@
         e.preventDefault();
         closeZoomModal();
       }
-    } else if (isExitActive) {
-      if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
-        e.preventDefault();
-        const active = document.activeElement;
-        const btnNo = document.getElementById("exitBtnNo");
-        const btnYes = document.getElementById("exitBtnYes");
-        if (active === btnNo) btnYes.focus();
-        else btnNo.focus();
-      } else if (e.key === "Escape" || e.key === "Back" || e.keyCode === 10009 || e.keyCode === 27) {
-        e.preventDefault();
-        closeExitModal();
-      }
     } else {
-      // BLOQUEIO DO BOTÃO VOLTAR / BACK DA TV E CELULAR
       if (e.key === "Escape" || e.key === "Back" || e.keyCode === 10009 || e.keyCode === 27) {
-        e.preventDefault(); // Impede o fechamento acidental do aplicativo
         if (isMenuOpen) {
+          e.preventDefault();
           closeMenu();
           focusCardSafely(activeLocalIndex);
         }
-        // Se o menu estiver fechado, O APLICATIVO NÃO FAZ NADA (NÃO FECHA)
       }
 
       const activeElem = document.activeElement;
