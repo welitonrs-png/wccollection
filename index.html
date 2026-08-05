@@ -796,7 +796,7 @@
     focusCardSafely(activeLocalIndex);
   }
 
-  /* SISTEMA DE CONFIRMAÇÃO DE SAÍDA DO APP */
+/* SISTEMA DE CONFIRMAÇÃO DE SAÍDA DO APP */
   function openExitModal() {
     closeMenu();
     document.getElementById("exitModal").classList.add("active");
@@ -809,7 +809,9 @@
   }
 
   function confirmExit() {
-    if (window.navigator && window.navigator.app && window.navigator.app.exitApp) {
+    if (typeof PonteAndroid !== "undefined") {
+      PonteAndroid.fecharApp();
+    } else if (window.navigator && window.navigator.app && window.navigator.app.exitApp) {
       window.navigator.app.exitApp();
     } else if (window.device && window.device.exitApp) {
       window.device.exitApp();
