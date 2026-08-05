@@ -120,15 +120,38 @@
     .catalog-section { height: 175px; min-height: 175px; width: 100%; overflow: hidden; flex-shrink: 0; touch-action: none; }
     .card-row { display: flex; gap: 12px; height: 100%; width: 100%; justify-content: flex-start; align-items: center; }
 
-    .card {
-      background-color: #fff; border-radius: 8px; height: 100%; aspect-ratio: 3 / 4; flex-shrink: 0;
-      overflow: hidden; display: flex; justify-content: center; align-items: center; padding: 6px; cursor: pointer;
-      border: 4px solid transparent; box-sizing: border-box; transition: border-color 0.15s ease;
+.card {
+      background-color: #fff; 
+      border-radius: 8px; 
+      height: 100%; 
+      aspect-ratio: 3 / 4; 
+      flex-shrink: 0;
+      overflow: hidden; 
+      display: flex; 
+      justify-content: center; 
+      align-items: center; 
+      padding: 0; /* Zerado para a imagem ocupar 100% das bordas */
+      border: 2px solid transparent; /* Borda inicial de 2px 100% transparente */
+      box-sizing: border-box; 
+      transition: border-color 0.15s ease;
     }
+    
     .card.card-aspect-sets { aspect-ratio: 4 / 3; }
-    .card img { width: 100%; height: 100%; object-fit: contain; }
-    .card.focused, .card:hover { border-color: #f39c12 !important; box-shadow: none !important; outline: none !important; z-index: 10; }
 
+    .card img { 
+      width: 100%; 
+      height: 100%; 
+      object-fit: cover; /* Faz a imagem preencher 100% do card */
+      display: block;
+    }
+
+    .card.focused, .card:hover { 
+      border: 2px solid #f39c12 !important; /* Borda de 2px com a mesma cor ao focar ou passar o mouse */
+      box-shadow: none !important; 
+      outline: none !important; 
+      z-index: 10; 
+    }
+   
     /* MODAL DE ZOOM E NAVEGAÇÃO */
     .zoom-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.95); z-index: 3000; display: none; justify-content: center; align-items: center; padding: 16px; overflow: hidden; }
     .zoom-modal.active { display: flex; }
