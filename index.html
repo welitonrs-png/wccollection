@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>WCCollection</title>
+  <title>WCCollection - Universal SPA</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; outline: none; }
     
@@ -154,7 +154,7 @@
       object-fit: contain !important;
     }
 
-    /* BARRA COLORIDA REORGANIZADA COM FONTES HELVETICA */
+    /* BARRA COLORIDA REORGANIZADA */
     .card-bottom-bar {
       width: 100% !important;
       height: 48px !important;
@@ -165,18 +165,17 @@
       box-sizing: border-box !important;
     }
 
-    /* MARCAS: HELVETICA NOW BOLD E LIGEIRAMENTE DESLOCADA PARA BAIXO */
+    /* MARCAS: HELVETICA NOW BOLD */
     .card-bar-title {
       font-family: "Helvetica Now Display", "Helvetica Neue", Helvetica, Arial, sans-serif !important;
       font-size: 0.80rem !important;
-      font-weight: 700 !important;   /* Bold */
-      color: #ffffff !important;
+      font-weight: 700 !important;
       white-space: nowrap !important;
       overflow: hidden !important;
       text-overflow: ellipsis !important;
       text-transform: capitalize !important;
       line-height: 1.1 !important;
-      margin-top: 3px !important;    /* Desceu ligeiramente */
+      margin-top: 3px !important;
     }
 
     .card-bar-details {
@@ -187,15 +186,14 @@
       margin-bottom: 1px !important;
     }
 
-    /* PAÍS: HELVETICA (SEM BOLD) */
+    /* PAÍS: HELVETICA */
     .card-bar-country {
       font-family: Helvetica, Arial, sans-serif !important;
       display: flex !important;
       align-items: center !important;
       gap: 4px !important;
       font-size: 0.65rem !important;
-      font-weight: 400 !important;   /* Regular / Não Bold */
-      color: #ffffff !important;
+      font-weight: 400 !important;
       white-space: nowrap !important;
       overflow: hidden !important;
       text-transform: capitalize !important;
@@ -209,15 +207,13 @@
       flex-shrink: 0 !important;
     }
 
-    /* VOLUME: HELVETICA (SEM BOLD) */
+    /* VOLUME: HELVETICA */
     .card-bar-vol {
       font-family: Helvetica, Arial, sans-serif !important;
-      background: rgba(0, 0, 0, 0.3) !important;
-      color: #ffffff !important;
       padding: 1px 5px !important;
       border-radius: 4px !important;
       font-size: 0.58rem !important;
-      font-weight: 400 !important;   /* Regular / Não Bold */
+      font-weight: 400 !important;
       white-space: nowrap !important;
       flex-shrink: 0 !important;
     }
@@ -312,7 +308,7 @@
   <!-- MODAL DE SAÍDA DO APLICATIVO -->
   <div class="exit-modal" id="exitModal">
     <div class="exit-box">
-      <div class="exit-title">DESEJA MESMO SAIR?</div>
+      <div class="exit-title">TEM CERTEZA QUE QUER SAIR?</div>
       <div class="exit-buttons">
         <button class="exit-btn" id="exitBtnNo" onclick="closeExitModal()">NÃO</button>
         <button class="exit-btn" id="exitBtnYes" onclick="confirmExit()">SIM</button>
@@ -351,8 +347,9 @@
     'kronenbourg 1664': '#0f2042',
     'therezopolis': '#1b382b',
     'wienbier': '#33261d',
-    'faxe': '#FFFFFF',
-    'zlaten dab': '#b38b00'
+    'faxe': '#3a0000',
+    'zlaten dab': '#b38b00',
+    'skol': '#fca311'
   };
 
   let zoomLevel = 1.0; 
@@ -362,6 +359,28 @@
   const PAN_STEP = 60;
 
   const vkKeys = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','1','2','3','4','5','6','7','8','9','0','ESPAÇO','DEL','LIMPAR'];
+
+  /* FUNÇÃO AUTOMÁTICA DE CONTRASTE DE COR (TEXTO ESCURO OU CLARO) */
+  function getTextColorForBackground(hexColor) {
+    if (!hexColor) return { text: '#ffffff', pillBg: 'rgba(0, 0, 0, 0.3)' };
+    let hex = hexColor.replace('#', '');
+    if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
+    if (hex.length !== 6) return { text: '#ffffff', pillBg: 'rgba(0, 0, 0, 0.3)' };
+
+    const r = parseInt(hex.substr(0, 2), 16);
+    const g = parseInt(hex.substr(2, 2), 16);
+    const b = parseInt(hex.substr(4, 2), 16);
+    
+    // Fórmula padrão YIQ para calcular percepção visual de brilho
+    const yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
+    
+    // Se a cor for clara (yiq >= 128), texto escuro (#111111)
+    if (yiq >= 128) {
+      return { text: '#111111', pillBg: 'rgba(0, 0, 0, 0.15)' };
+    } else {
+      return { text: '#ffffff', pillBg: 'rgba(0, 0, 0, 0.3)' };
+    }
+  }
 
   function toTitleCase(str) {
     if (!str) return '';
@@ -768,7 +787,7 @@
     }
   }
 
-  /* RENDERIZAÇÃO DOS CARDS */
+  /* RENDERIZAÇÃO DOS CARDS COM COR DE TEXTO INTELIGENTE */
   function renderApp() {
     const row = document.getElementById("cardRow");
     row.innerHTML = "";
@@ -789,6 +808,9 @@
 
       const brandKey = String(can.brewery || can.Cervejaria || "").toLowerCase().trim();
       const cardColor = BRAND_COLORS[brandKey] || "#008234";
+
+      // DETECTA AUTOMATICAMENTE SE A COR É CLARA OU ESCURA
+      const colorTheme = getTextColorForBackground(cardColor);
 
       const card = document.createElement("div");
       card.className = `card ${currentTab === 'sets' ? 'card-aspect-sets' : ''}`;
@@ -861,14 +883,14 @@
         <div class="card-top-photo">
           <img src="${frontImg}" alt="${brandName}" loading="lazy">
         </div>
-        <div class="card-bottom-bar" style="background-color: ${cardColor};">
-          <div class="card-bar-title">${brandName}</div>
+        <div class="card-bottom-bar" style="background-color: ${cardColor}; color: ${colorTheme.text};">
+          <div class="card-bar-title" style="color: ${colorTheme.text};">${brandName}</div>
           <div class="card-bar-details">
-            <div class="card-bar-country">
+            <div class="card-bar-country" style="color: ${colorTheme.text};">
               ${flagUrl ? `<img src="${flagUrl}" class="card-bar-flag" alt="${countryName}">` : ''}
               <span>${countryName}</span>
             </div>
-            ${volumeText ? `<div class="card-bar-vol">${volumeText}</div>` : ''}
+            ${volumeText ? `<div class="card-bar-vol" style="color: ${colorTheme.text}; background: ${colorTheme.pillBg};">${volumeText}</div>` : ''}
           </div>
         </div>
       `;
