@@ -117,11 +117,11 @@
     .counter-bar { display: flex; justify-content: flex-end; align-items: center; padding: 0 4px; }
     .card-counter { font-size: 0.85rem; font-weight: 900; color: #f39c12; background: transparent; padding: 2px 8px; letter-spacing: 1px; }
 
-    /* SEÇÃO DO CATÁLOGO COM ALTURA GARANTIDA */
+    /* SEÇÃO DO CATÁLOGO COM ALTURA FIXA */
     .catalog-section { height: 230px; min-height: 230px; max-height: 230px; width: 100%; overflow: hidden; flex-shrink: 0; touch-action: none; padding-bottom: 4px; }
     .card-row { display: flex; gap: 12px; height: 100%; width: 100%; justify-content: flex-start; align-items: flex-end; }
 
-    /* NOVO CARD COM TAMANHOS RIGIDAMENTE FIXADOS */
+    /* CARD COM RODAPÉ FORÇADO E INSERIDO NA ESTRUTURA */
     .card {
       background-color: #ffffff !important; 
       border-radius: 10px !important; 
@@ -364,7 +364,6 @@
     'faxe': '#3a0000'
   };
 
-  /* VARIÁVEIS DE CONTROLE DO ZOOM (1.5x e 3.0x) E PAN */
   let zoomLevel = 1.0; 
   let zoomState = 0;   
   let panX = 0;
@@ -411,20 +410,51 @@
     return '';
   }
 
-  /* LEITOR UNIVERSAL DE CAMPOS DA PLANILHA */
-  function getItemProp(item, propName) {
+  /* LEITOR ULTRA UNIVERSAL DE PROPRIEDADES DO JSON */
+  function getItemPropUniversal(item, aliases) {
     if (!item) return '';
-    if (item[propName] !== undefined && item[propName] !== null) return item[propName];
-    
-    const lowerKey = Object.keys(item).find(k => k.toLowerCase() === propName.toLowerCase());
-    if (lowerKey) return item[lowerKey];
-    
+    for (let alias of aliases) {
+      if (item[alias] !== undefined && item[alias] !== null && String(item[alias]).trim() !== "") {
+        return item[alias];
+      }
+    }
+    // Tenta encontrar ignorando maiúsculas e minúsculas
+    const keys = Object.keys(item);
+    for (let alias of aliases) {
+      const foundKey = keys.find(k => k.toLowerCase() === alias.toLowerCase());
+      if (foundKey && item[foundKey] !== undefined && item[foundKey] !== null && String(item[foundKey]).trim() !== "") {
+        return item[foundKey];
+      }
+    }
     return '';
   }
 
-  function getItemImage(item, imgType) {
-    if (item.images && item.images[imgType]) return item.images[imgType];
-    return getItemProp(item, imgType);
+  function getBrewery(can) {
+    return getItemPropUniversal(can, ['brewery', 'breweryName', 'Cervejaria', 'cervejaria', 'Marca', 'marca', 'name', 'Nome', 'nome']) || "CERVEJA";
+  }
+
+  function getCountry(can) {
+    return getItemPropUniversal(can, ['country', 'countryName', 'Pais', 'pais', 'País', 'país', 'Origem', 'origem']);
+  }
+
+  function getVolume(can) {
+    return getItemPropUniversal(can, ['volume', 'Volume', 'vol', 'Vol']);
+  }
+
+  function getYear(can) {
+    return getItemPropUniversal(can, ['year', 'Year', 'Ano', 'ano']);
+  }
+
+  function getBarcode(can) {
+    return getItemPropUniversal(can, ['barcode', 'Barcode', 'cod', 'Cod']);
+  }
+
+  function getFrontImage(can) {
+    if (can.images) {
+      const imgFromImages = can.images.front || can.images.ImgFront || can.images.cover || can.images.ImgCover;
+      if (imgFromImages) return imgFromImages;
+    }
+    return getItemPropUniversal(can, ['front', 'ImgFront', 'cover', 'ImgCover', 'brandLogo', 'BRAND_LOGO']);
   }
 
   function preloadFirstImages(items, count = 6) {
@@ -439,7 +469,7 @@
       const totalToLoad = pageItems.length;
 
       pageItems.forEach((can) => {
-        const rawCover = getItemImage(can, 'ImgFront') || getItemImage(can, 'ImgCover') || getItemProp(can, 'BRAND_LOGO');
+        const rawCover = getFrontImage(can);
 
         if (!rawCover) {
           loadedCount++;
@@ -533,15 +563,15 @@
   function getBaseListForCurrentTab() {
     if (currentTab === 'home') {
       return canCatalog.filter(can => {
-        const val = getItemProp(can, 'isSet');
+        const val = can.isSet !== undefined ? can.isSet : getItemPropUniversal(can, ['isSet']);
         return !val || String(val).toLowerCase() === "false";
       });
     } else if (currentTab === 'ococ') {
       const countryMap = new Map();
       canCatalog.forEach(can => {
-        const countryVal = getItemProp(can, 'Pais');
-        const isOcocVal = getItemProp(can, 'isOcoc');
-        const isSetVal = getItemProp(can, 'isSet');
+        const countryVal = getCountry(can);
+        const isOcocVal = can.isOcoc !== undefined ? can.isOcoc : getItemPropUniversal(can, ['isOcoc']);
+        const isSetVal = can.isSet !== undefined ? can.isSet : getItemPropUniversal(can, ['isSet']);
 
         if ((!isSetVal || String(isSetVal).toLowerCase() === "false") && 
             (isOcocVal === true || String(isOcocVal).toLowerCase() === "true") && 
@@ -549,10 +579,10 @@
           countryMap.set(String(countryVal).toLowerCase(), can);
         }
       });
-      return Array.from(countryMap.values()).sort((a,b) => String(getItemProp(a, 'Pais')).localeCompare(String(getItemProp(b, 'Pais'))));
+      return Array.from(countryMap.values()).sort((a,b) => String(getCountry(a)).localeCompare(String(getCountry(b))));
     } else if (currentTab === 'sets') {
       return canCatalog.filter(can => {
-        const val = getItemProp(can, 'isSet');
+        const val = can.isSet !== undefined ? can.isSet : getItemPropUniversal(can, ['isSet']);
         return val === true || String(val).toLowerCase() === "true";
       });
     }
@@ -694,7 +724,7 @@
     const brandContainer = document.getElementById("brandInlineList");
     brandContainer.innerHTML = "";
     const baseList = getBaseListForCurrentTab();
-    const brands = [...new Set(baseList.map(c => getItemProp(c, 'Cervejaria')).filter(Boolean))].sort();
+    const brands = [...new Set(baseList.map(c => getBrewery(c)).filter(Boolean))].sort();
     
     let defaultText = "TODAS AS MARCAS";
     if (currentTab === 'ococ') defaultText = "TODOS OS PAÍSES";
@@ -750,12 +780,12 @@
     currentFiltered = baseList.filter(can => {
       if (!val) return true;
       return [
-        getItemProp(can, 'Nome'),
-        getItemProp(can, 'Cervejaria'),
-        getItemProp(can, 'Pais'),
-        getItemProp(can, 'Volume'),
-        getItemProp(can, 'Ano'),
-        getItemProp(can, 'Barcode')
+        getItemPropUniversal(can, ['name', 'Nome']),
+        getBrewery(can),
+        getCountry(can),
+        getVolume(can),
+        getYear(can),
+        getBarcode(can)
       ].map(v => String(v || "").toLowerCase()).join(" ").includes(val);
     });
 
@@ -772,7 +802,7 @@
     }
   }
 
-  /* RENDERIZAÇÃO COM MONTAGEM RIGOROSA DE FOTO (150px) E RODAPÉ (66px) */
+  /* RENDERIZAÇÃO DOS CARDS GARANTINDO O DESENHO DO RODAPÉ */
   function renderApp() {
     const row = document.getElementById("cardRow");
     row.innerHTML = "";
@@ -783,12 +813,10 @@
     pageItems.forEach((can, localIndex) => {
       const globalIndex = startIndex + localIndex;
 
-      const rawFront = getItemImage(can, 'ImgFront') || getItemImage(can, 'ImgCover') || getItemProp(can, 'BRAND_LOGO');
-      const frontImg = getOptimizedImageUrl(rawFront, 400);
-
-      const brandName = getItemProp(can, 'Cervejaria') || getItemProp(can, 'Nome') || "Cerveja";
-      const countryName = getItemProp(can, 'Pais') || "";
-      const volumeText = getItemProp(can, 'Volume') || "";
+      const frontImg = getOptimizedImageUrl(getFrontImage(can), 400);
+      const brandName = getBrewery(can);
+      const countryName = getCountry(can) || "BRASIL";
+      const volumeText = getVolume(can) || "350 ML";
       const flagUrl = getFlagUrlByCountry(countryName);
 
       const brandKey = String(brandName).toLowerCase().trim();
@@ -888,11 +916,11 @@
     if (currentTab === 'ococ') fallbackTitle = "SELECIONE UMA LATA (OCOC)";
     if (currentTab === 'sets') fallbackTitle = "SELECIONE UM SET";
 
-    const titleVal = getItemProp(can, 'Nome') || fallbackTitle;
-    const countryVal = getItemProp(can, 'Pais') || "-";
-    const volumeVal = getItemProp(can, 'Volume') || "-";
-    const yearVal = getItemProp(can, 'Ano') || "-";
-    const barcodeVal = getItemProp(can, 'Barcode') || "-";
+    const titleVal = getItemPropUniversal(can, ['name', 'Nome']) || fallbackTitle;
+    const countryVal = getCountry(can) || "-";
+    const volumeVal = getVolume(can) || "-";
+    const yearVal = getYear(can) || "-";
+    const barcodeVal = getBarcode(can) || "-";
 
     document.getElementById("heroTitle").innerText = String(titleVal).toUpperCase();
     document.getElementById("heroCountry").innerText = String(countryVal).toUpperCase();
@@ -901,7 +929,7 @@
     document.getElementById("heroBarcode").innerText = barcodeVal;
 
     const logoContainer = document.getElementById("heroBrandLogo");
-    const logoUrl = getItemProp(can, 'BRAND_LOGO');
+    const logoUrl = getItemPropUniversal(can, ['brandLogo', 'BRAND_LOGO']);
     if (logoUrl && String(logoUrl).trim() !== "") {
       logoContainer.innerHTML = `<img src="${getOptimizedImageUrl(logoUrl, 400)}" alt="LOGO DA CERVEJARIA">`;
     } else {
@@ -912,12 +940,18 @@
     const currentNum = total > 0 ? (index + 1) : 0;
     document.getElementById("cardCounter").innerText = `${currentNum}/${total}`;
 
-    const rawPhotos = [
-      getItemImage(can, 'ImgFront'), 
-      getItemImage(can, 'ImgLeft'), 
-      getItemImage(can, 'ImgBack'), 
-      getItemImage(can, 'ImgRight')
-    ].filter(url => url && String(url).trim() !== "");
+    let rawPhotos = [];
+    if (can.images) {
+      rawPhotos = [can.images.front, can.images.left, can.images.back, can.images.right].filter(Boolean);
+    }
+    if (rawPhotos.length === 0) {
+      rawPhotos = [
+        getItemPropUniversal(can, ['front', 'ImgFront']),
+        getItemPropUniversal(can, ['left', 'ImgLeft']),
+        getItemPropUniversal(can, ['back', 'ImgBack']),
+        getItemPropUniversal(can, ['right', 'ImgRight'])
+      ].filter(url => url && String(url).trim() !== "");
+    }
 
     if (rawPhotos.length === 0 && logoUrl) {
       rawPhotos.push(logoUrl);
@@ -1097,7 +1131,7 @@
         } else if (currentPage > 0) {
           currentPage--;
           renderApp();
-          focusCardSafely(cardsPerRow - 1);
+          cardsPerRow - 1;
         }
       }
     }
