@@ -120,7 +120,7 @@
     .catalog-section { height: 185px; min-height: 185px; width: 100%; overflow: hidden; flex-shrink: 0; touch-action: none; }
     .card-row { display: flex; gap: 12px; height: 100%; width: 100%; justify-content: flex-start; align-items: center; }
 
-    /* NOVO LAYOUT DO CARD PERSONALIZADO */
+    /* LAYOUT DO CARD PERSONALIZADO */
     .card {
       background-color: #ffffff; 
       border-radius: 10px; 
@@ -318,6 +318,26 @@
   let activeLocalIndex = 0;
   let lastSelectedMenuId = 'menuBtnHome'; 
   let lastSelectedBrandElem = null;
+
+  /* MAPA DE CORES AUTOMÁTICO DAS MARCAS (Edite ou adicione marcas/cores aqui) */
+  const BRAND_COLORS = {
+    'heineken': '#008234',
+    'budweiser': '#1d285a',
+    'brahma': '#e31b23',
+    'skol': '#fca311',
+    'stella artois': '#b81d24',
+    'corona': '#002b49',
+    'amstel': '#d32f2f',
+    'eisenbahn': '#3a2e2b',
+    'bohemia': '#8b1e0f',
+    'antarctica': '#0055a5',
+    'guinness': '#000000',
+    'carlsberg': '#005826',
+    'kronenbourg 1664': '#0f2042',
+    'therezopolis': '#1b382b',
+    'wienbier': '#33261d',
+    'faxe': '#3a0000'
+  };
 
   /* VARIÁVEIS DE CONTROLE DO ZOOM (1.5x e 3.0x) E PAN */
   let zoomLevel = 1.0; 
@@ -708,7 +728,7 @@
     }
   }
 
-  /* RENDERIZAÇÃO AUTOMÁTICA DOS CARDS COM RODAPÉ PERSONALIZADO */
+  /* RENDERIZAÇÃO AUTOMÁTICA DOS CARDS COM COR BASEADA NA MARCA */
   function renderApp() {
     const row = document.getElementById("cardRow");
     row.innerHTML = "";
@@ -731,8 +751,11 @@
       const volumeText = can.volume || "";
       const flagUrl = getFlagUrlByCountry(countryName);
 
-      // Lê a cor da coluna brandColor/color da planilha, se existir (Padrão: Verde #008234)
-      const cardColor = can.brandColor || can.color || "#008234";
+      // 1. Tenta pegar cor explícita se houver na planilha.
+      // 2. Senão, busca no dicionário BRAND_COLORS pelo nome da marca.
+      // 3. Se não encontrar, usa a cor padrão '#1a2235'.
+      const brandKey = brandName.toLowerCase().trim();
+      const cardColor = can.brandColor || can.color || BRAND_COLORS[brandKey] || "#1a2235";
 
       const card = document.createElement("div");
       card.className = `card ${currentTab === 'sets' ? 'card-aspect-sets' : ''}`;
