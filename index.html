@@ -92,7 +92,7 @@
 
     /* ÁREA PRINCIPAL */
     .main-area {
-      flex: 1; display: flex; flex-direction: column; height: 100vh; padding: 12px 20px; gap: 8px;
+      flex: 1; display: flex; flex-direction: column; height: 100vh; padding: 10px 16px; gap: 6px;
       overflow: hidden; background: #1a1e29; min-width: 0;
       transition: transform 0.25s cubic-bezier(0.1, 0.9, 0.2, 1);
     }
@@ -108,133 +108,110 @@
     .hero-photo-card { background: #ffffff; border-radius: 8px; padding: 4px; display: flex; justify-content: center; align-items: center; width: 100%; height: 100%; overflow: hidden; cursor: pointer; }
     .hero-photo-card img { width: 100%; height: 100%; object-fit: contain; }
 
-    .hero-right-info { flex: 1; height: 100%; display: flex; flex-direction: column; justify-content: flex-start; gap: 8px; color: #f39c12; text-transform: uppercase; font-style: italic; overflow-y: auto; padding-right: 200px; }
-    .hero-title { font-size: clamp(1.2rem, 2.1vw, 1.7rem); font-weight: 900; line-height: 1.1; color: #f39c12; margin-bottom: 2px; letter-spacing: 0.5px; }
+    .hero-right-info { flex: 1; height: 100%; display: flex; flex-direction: column; justify-content: flex-start; gap: 6px; color: #f39c12; text-transform: uppercase; font-style: italic; overflow-y: auto; padding-right: 180px; }
+    .hero-title { font-size: clamp(1.1rem, 1.9vw, 1.5rem); font-weight: 900; line-height: 1.1; color: #f39c12; margin-bottom: 2px; letter-spacing: 0.5px; }
     .info-block { display: flex; flex-direction: column; margin-bottom: 2px; }
-    .info-label { font-size: clamp(0.7rem, 1vw, 0.85rem); font-weight: 900; color: #f39c12; line-height: 1.1; letter-spacing: 0.5px; }
-    .info-val { font-size: clamp(0.95rem, 1.5vw, 1.3rem); font-weight: 900; color: #f39c12; line-height: 1.1; margin-top: 1px; }
+    .info-label { font-size: clamp(0.65rem, 0.9vw, 0.8rem); font-weight: 900; color: #f39c12; line-height: 1.1; letter-spacing: 0.5px; }
+    .info-val { font-size: clamp(0.9rem, 1.4vw, 1.2rem); font-weight: 900; color: #f39c12; line-height: 1.1; margin-top: 1px; }
 
     .counter-bar { display: flex; justify-content: flex-end; align-items: center; padding: 0 4px; }
     .card-counter { font-size: 0.85rem; font-weight: 900; color: #f39c12; background: transparent; padding: 2px 8px; letter-spacing: 1px; }
 
-    /* SEÇÃO DO CATÁLOGO COM ALTURA FIXA */
-    .catalog-section { height: 230px; min-height: 230px; max-height: 230px; width: 100%; overflow: hidden; flex-shrink: 0; touch-action: none; padding-bottom: 4px; }
+    /* SEÇÃO INFERIOR DO CATÁLOGO */
+    .catalog-section { height: 235px; min-height: 235px; width: 100%; overflow: hidden; flex-shrink: 0; touch-action: none; }
     .card-row { display: flex; gap: 12px; height: 100%; width: 100%; justify-content: flex-start; align-items: flex-end; }
 
-    /* CARD COM RODAPÉ FORÇADO E INSERIDO NA ESTRUTURA */
+    /* NOVO CARD COM ESTRUTURA BLINDADA */
     .card {
-      background-color: #ffffff !important; 
-      border-radius: 10px !important; 
-      height: 220px !important; 
-      min-height: 220px !important;
-      width: 155px !important;
-      min-width: 155px !important;
-      flex-shrink: 0 !important;
-      overflow: hidden !important; 
-      display: flex !important; 
+      width: 145px !important;
+      min-width: 145px !important;
+      height: 225px !important;
+      background: #ffffff !important;
+      border-radius: 10px !important;
+      overflow: hidden !important;
+      display: flex !important;
       flex-direction: column !important;
-      justify-content: space-between !important; 
-      align-items: stretch !important; 
-      padding: 0 !important; 
-      border: 2px solid transparent !important; 
-      box-sizing: border-box !important; 
-      transition: border-color 0.15s ease, transform 0.15s ease !important;
+      border: 2px solid transparent !important;
       cursor: pointer !important;
+      flex-shrink: 0 !important;
     }
 
-    .card.card-aspect-sets { width: 220px !important; min-width: 220px !important; }
+    .card.card-aspect-sets { width: 200px !important; min-width: 200px !important; }
 
-    .card-img-container {
-      height: 150px !important;
-      min-height: 150px !important;
-      max-height: 150px !important;
+    .card-top-photo {
       width: 100% !important;
+      height: 155px !important;
+      background: #ffffff !important;
       display: flex !important;
       justify-content: center !important;
       align-items: center !important;
-      padding: 6px !important;
-      overflow: hidden !important;
-      background: #ffffff !important;
-      box-sizing: border-box !important;
+      padding: 4px !important;
     }
 
-    .card-img-container img {
+    .card-top-photo img {
       max-width: 100% !important;
       max-height: 100% !important;
       object-fit: contain !important;
-      display: block !important;
     }
 
-    .card-footer {
-      height: 66px !important;
-      min-height: 66px !important;
-      max-height: 66px !important;
+    .card-bottom-bar {
       width: 100% !important;
+      height: 70px !important;
       padding: 6px 8px !important;
       display: flex !important;
       flex-direction: column !important;
       justify-content: space-between !important;
-      color: #ffffff !important;
-      text-align: left !important;
       box-sizing: border-box !important;
     }
 
-    .card-brand-name {
-      font-size: 0.85rem !important;
-      font-weight: 800 !important;
-      line-height: 1.1 !important;
+    .card-bar-title {
+      font-size: 0.8rem !important;
+      font-weight: 900 !important;
+      color: #ffffff !important;
       white-space: nowrap !important;
       overflow: hidden !important;
       text-overflow: ellipsis !important;
       text-transform: uppercase !important;
-      color: #ffffff !important;
     }
 
-    .card-bottom-row {
+    .card-bar-details {
       display: flex !important;
       justify-content: space-between !important;
       align-items: center !important;
       width: 100% !important;
     }
 
-    .card-country-info {
+    .card-bar-country {
       display: flex !important;
       align-items: center !important;
       gap: 4px !important;
-      font-size: 0.7rem !important;
+      font-size: 0.68rem !important;
       font-weight: 700 !important;
       color: #ffffff !important;
-      overflow: hidden !important;
       white-space: nowrap !important;
-    }
-
-    .card-country-info span {
       overflow: hidden !important;
-      text-overflow: ellipsis !important;
     }
 
-    .card-flag-img {
+    .card-bar-flag {
       width: 15px !important;
       height: 10px !important;
       object-fit: cover !important;
       border-radius: 2px !important;
-      flex-shrink: 0 !important;
     }
 
-    .card-volume-pill {
+    .card-bar-vol {
       background: rgba(0, 0, 0, 0.4) !important;
+      color: #ffffff !important;
       padding: 2px 6px !important;
       border-radius: 6px !important;
-      font-size: 0.65rem !important;
+      font-size: 0.62rem !important;
       font-weight: 800 !important;
-      color: #ffffff !important;
       white-space: nowrap !important;
-      flex-shrink: 0 !important;
     }
 
     .card.focused, .card:hover { 
       border: 2px solid #f39c12 !important; 
-      box-shadow: 0 4px 15px rgba(0,0,0,0.5) !important; 
+      box-shadow: 0 4px 15px rgba(0,0,0,0.6) !important; 
       outline: none !important; 
       z-index: 10 !important; 
     }
@@ -361,7 +338,8 @@
     'kronenbourg 1664': '#0f2042',
     'therezopolis': '#1b382b',
     'wienbier': '#33261d',
-    'faxe': '#3a0000'
+    'faxe': '#3a0000',
+    'zlaten dab': '#b38b00'
   };
 
   let zoomLevel = 1.0; 
@@ -390,6 +368,8 @@
       'brasil': 'br', 'brazil': 'br',
       'alemanha': 'de', 'germany': 'de',
       'eua': 'us', 'usa': 'us', 'estados unidos': 'us',
+      'suíça': 'ch', 'suica': 'ch', 'switzerland': 'ch',
+      'macedônia do norte': 'mk', 'macedonia': 'mk',
       'bélgica': 'be', 'belgium': 'be',
       'japão': 'jp', 'japan': 'jp',
       'méxico': 'mx', 'mexico': 'mx',
@@ -410,53 +390,6 @@
     return '';
   }
 
-  /* LEITOR ULTRA UNIVERSAL DE PROPRIEDADES DO JSON */
-  function getItemPropUniversal(item, aliases) {
-    if (!item) return '';
-    for (let alias of aliases) {
-      if (item[alias] !== undefined && item[alias] !== null && String(item[alias]).trim() !== "") {
-        return item[alias];
-      }
-    }
-    // Tenta encontrar ignorando maiúsculas e minúsculas
-    const keys = Object.keys(item);
-    for (let alias of aliases) {
-      const foundKey = keys.find(k => k.toLowerCase() === alias.toLowerCase());
-      if (foundKey && item[foundKey] !== undefined && item[foundKey] !== null && String(item[foundKey]).trim() !== "") {
-        return item[foundKey];
-      }
-    }
-    return '';
-  }
-
-  function getBrewery(can) {
-    return getItemPropUniversal(can, ['brewery', 'breweryName', 'Cervejaria', 'cervejaria', 'Marca', 'marca', 'name', 'Nome', 'nome']) || "CERVEJA";
-  }
-
-  function getCountry(can) {
-    return getItemPropUniversal(can, ['country', 'countryName', 'Pais', 'pais', 'País', 'país', 'Origem', 'origem']);
-  }
-
-  function getVolume(can) {
-    return getItemPropUniversal(can, ['volume', 'Volume', 'vol', 'Vol']);
-  }
-
-  function getYear(can) {
-    return getItemPropUniversal(can, ['year', 'Year', 'Ano', 'ano']);
-  }
-
-  function getBarcode(can) {
-    return getItemPropUniversal(can, ['barcode', 'Barcode', 'cod', 'Cod']);
-  }
-
-  function getFrontImage(can) {
-    if (can.images) {
-      const imgFromImages = can.images.front || can.images.ImgFront || can.images.cover || can.images.ImgCover;
-      if (imgFromImages) return imgFromImages;
-    }
-    return getItemPropUniversal(can, ['front', 'ImgFront', 'cover', 'ImgCover', 'brandLogo', 'BRAND_LOGO']);
-  }
-
   function preloadFirstImages(items, count = 6) {
     return new Promise((resolve) => {
       const pageItems = items.slice(0, count);
@@ -469,7 +402,7 @@
       const totalToLoad = pageItems.length;
 
       pageItems.forEach((can) => {
-        const rawCover = getFrontImage(can);
+        const rawCover = can.ImgFront || can.front || can.ImgCover || can.cover;
 
         if (!rawCover) {
           loadedCount++;
@@ -563,15 +496,15 @@
   function getBaseListForCurrentTab() {
     if (currentTab === 'home') {
       return canCatalog.filter(can => {
-        const val = can.isSet !== undefined ? can.isSet : getItemPropUniversal(can, ['isSet']);
+        const val = can.isSet !== undefined ? can.isSet : can.isSet;
         return !val || String(val).toLowerCase() === "false";
       });
     } else if (currentTab === 'ococ') {
       const countryMap = new Map();
       canCatalog.forEach(can => {
-        const countryVal = getCountry(can);
-        const isOcocVal = can.isOcoc !== undefined ? can.isOcoc : getItemPropUniversal(can, ['isOcoc']);
-        const isSetVal = can.isSet !== undefined ? can.isSet : getItemPropUniversal(can, ['isSet']);
+        const countryVal = can.brewery || can.Cervejaria;
+        const isOcocVal = can.isOcoc;
+        const isSetVal = can.isSet;
 
         if ((!isSetVal || String(isSetVal).toLowerCase() === "false") && 
             (isOcocVal === true || String(isOcocVal).toLowerCase() === "true") && 
@@ -579,10 +512,10 @@
           countryMap.set(String(countryVal).toLowerCase(), can);
         }
       });
-      return Array.from(countryMap.values()).sort((a,b) => String(getCountry(a)).localeCompare(String(getCountry(b))));
+      return Array.from(countryMap.values()).sort((a,b) => String(a.country || a.Pais).localeCompare(String(b.country || b.Pais)));
     } else if (currentTab === 'sets') {
       return canCatalog.filter(can => {
-        const val = can.isSet !== undefined ? can.isSet : getItemPropUniversal(can, ['isSet']);
+        const val = can.isSet;
         return val === true || String(val).toLowerCase() === "true";
       });
     }
@@ -724,7 +657,7 @@
     const brandContainer = document.getElementById("brandInlineList");
     brandContainer.innerHTML = "";
     const baseList = getBaseListForCurrentTab();
-    const brands = [...new Set(baseList.map(c => getBrewery(c)).filter(Boolean))].sort();
+    const brands = [...new Set(baseList.map(c => c.brewery || c.Cervejaria).filter(Boolean))].sort();
     
     let defaultText = "TODAS AS MARCAS";
     if (currentTab === 'ococ') defaultText = "TODOS OS PAÍSES";
@@ -780,12 +713,12 @@
     currentFiltered = baseList.filter(can => {
       if (!val) return true;
       return [
-        getItemPropUniversal(can, ['name', 'Nome']),
-        getBrewery(can),
-        getCountry(can),
-        getVolume(can),
-        getYear(can),
-        getBarcode(can)
+        can.name || can.Nome,
+        can.brewery || can.Cervejaria,
+        can.country || can.Pais,
+        can.volume || can.Volume,
+        can.year || can.Ano,
+        can.barcode || can.Barcode
       ].map(v => String(v || "").toLowerCase()).join(" ").includes(val);
     });
 
@@ -802,7 +735,7 @@
     }
   }
 
-  /* RENDERIZAÇÃO DOS CARDS GARANTINDO O DESENHO DO RODAPÉ */
+  /* RENDERIZAÇÃO DOS CARDS */
   function renderApp() {
     const row = document.getElementById("cardRow");
     row.innerHTML = "";
@@ -813,10 +746,14 @@
     pageItems.forEach((can, localIndex) => {
       const globalIndex = startIndex + localIndex;
 
-      const frontImg = getOptimizedImageUrl(getFrontImage(can), 400);
-      const brandName = getBrewery(can);
-      const countryName = getCountry(can) || "BRASIL";
-      const volumeText = getVolume(can) || "350 ML";
+      // Pega imagem frontal direta do JSON da API
+      const rawImg = can.ImgFront || can.front || can.ImgCover || can.cover || can.brandLogo;
+      const frontImg = getOptimizedImageUrl(rawImg, 400);
+
+      // Dados diretos do JSON da sua API
+      const brandName = can.brewery || can.Cervejaria || can.name || "CERVEJA";
+      const countryName = can.country || can.Pais || "";
+      const volumeText = can.volume || can.Volume || "";
       const flagUrl = getFlagUrlByCountry(countryName);
 
       const brandKey = String(brandName).toLowerCase().trim();
@@ -889,18 +826,19 @@
         }
       };
 
+      // HTML DO CARD COM RODAPÉ INDEPENDENTE
       card.innerHTML = `
-        <div class="card-img-container">
+        <div class="card-top-photo">
           <img src="${frontImg}" alt="${brandName}" loading="lazy">
         </div>
-        <div class="card-footer" style="background-color: ${cardColor};">
-          <div class="card-brand-name">${brandName}</div>
-          <div class="card-bottom-row">
-            <div class="card-country-info">
-              ${flagUrl ? `<img src="${flagUrl}" class="card-flag-img" alt="${countryName}">` : ''}
+        <div class="card-bottom-bar" style="background-color: ${cardColor};">
+          <div class="card-bar-title">${brandName}</div>
+          <div class="card-bar-details">
+            <div class="card-bar-country">
+              ${flagUrl ? `<img src="${flagUrl}" class="card-bar-flag" alt="${countryName}">` : ''}
               <span>${countryName}</span>
             </div>
-            ${volumeText ? `<div class="card-volume-pill">${volumeText}</div>` : ''}
+            ${volumeText ? `<div class="card-bar-vol">${volumeText}</div>` : ''}
           </div>
         </div>
       `;
@@ -916,11 +854,11 @@
     if (currentTab === 'ococ') fallbackTitle = "SELECIONE UMA LATA (OCOC)";
     if (currentTab === 'sets') fallbackTitle = "SELECIONE UM SET";
 
-    const titleVal = getItemPropUniversal(can, ['name', 'Nome']) || fallbackTitle;
-    const countryVal = getCountry(can) || "-";
-    const volumeVal = getVolume(can) || "-";
-    const yearVal = getYear(can) || "-";
-    const barcodeVal = getBarcode(can) || "-";
+    const titleVal = can.name || can.Nome || fallbackTitle;
+    const countryVal = can.country || can.Pais || "-";
+    const volumeVal = can.volume || can.Volume || "-";
+    const yearVal = can.year || can.Ano || "-";
+    const barcodeVal = can.barcode || can.Barcode || "-";
 
     document.getElementById("heroTitle").innerText = String(titleVal).toUpperCase();
     document.getElementById("heroCountry").innerText = String(countryVal).toUpperCase();
@@ -929,7 +867,7 @@
     document.getElementById("heroBarcode").innerText = barcodeVal;
 
     const logoContainer = document.getElementById("heroBrandLogo");
-    const logoUrl = getItemPropUniversal(can, ['brandLogo', 'BRAND_LOGO']);
+    const logoUrl = can.brandLogo || can.BRAND_LOGO;
     if (logoUrl && String(logoUrl).trim() !== "") {
       logoContainer.innerHTML = `<img src="${getOptimizedImageUrl(logoUrl, 400)}" alt="LOGO DA CERVEJARIA">`;
     } else {
@@ -945,12 +883,7 @@
       rawPhotos = [can.images.front, can.images.left, can.images.back, can.images.right].filter(Boolean);
     }
     if (rawPhotos.length === 0) {
-      rawPhotos = [
-        getItemPropUniversal(can, ['front', 'ImgFront']),
-        getItemPropUniversal(can, ['left', 'ImgLeft']),
-        getItemPropUniversal(can, ['back', 'ImgBack']),
-        getItemPropUniversal(can, ['right', 'ImgRight'])
-      ].filter(url => url && String(url).trim() !== "");
+      rawPhotos = [can.ImgFront, can.ImgLeft, can.ImgBack, can.ImgRight].filter(Boolean);
     }
 
     if (rawPhotos.length === 0 && logoUrl) {
