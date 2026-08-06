@@ -381,24 +381,39 @@
     const name = String(countryName).toLowerCase().trim();
     
     const countryCodes = {
-      'china': 'cn',
-      'holanda': 'nl', 'netherlands': 'nl',
+      // Américas
       'brasil': 'br', 'brazil': 'br',
-      'alemanha': 'de', 'germany': 'de',
+      'canadá': 'ca', 'canada': 'ca',
       'eua': 'us', 'usa': 'us', 'estados unidos': 'us',
-      'suíça': 'ch', 'suica': 'ch', 'switzerland': 'ch',
-      'macedônia do norte': 'mk', 'macedonia': 'mk',
-      'bélgica': 'be', 'belgium': 'be',
-      'japão': 'jp', 'japan': 'jp',
       'méxico': 'mx', 'mexico': 'mx',
+      'argentina': 'ar', 'chile': 'cl', 'uruguai': 'uy', 'uruguay': 'uy',
+      'colômbia': 'co', 'colombia': 'co', 'peru': 'pe',
+
+      // Europa
+      'croácia': 'hr', 'croacia': 'hr', 'croatia': 'hr',
+      'alemanha': 'de', 'germany': 'de',
+      'bélgica': 'be', 'belgium': 'be',
       'dinamarca': 'dk', 'denmark': 'dk',
-      'itália': 'it', 'italy': 'it',
       'espanha': 'es', 'spain': 'es',
-      'argentina': 'ar',
+      'frança': 'fr', 'france': 'fr',
+      'holanda': 'nl', 'netherlands': 'nl', 'países baixos': 'nl',
       'irlanda': 'ie', 'ireland': 'ie',
-      'reino unido': 'gb', 'uk': 'gb', 'inglaterra': 'gb',
+      'itália': 'it', 'italy': 'it',
+      'macedônia do norte': 'mk', 'macedonia': 'mk', 'north macedonia': 'mk',
       'portugal': 'pt',
-      'frança': 'fr', 'france': 'fr'
+      'reino unido': 'gb', 'uk': 'gb', 'inglaterra': 'gb', 'england': 'gb', 'escócia': 'gb-sct',
+      'suíça': 'ch', 'suica': 'ch', 'switzerland': 'ch',
+      'suécia': 'se', 'sweden': 'se', 'noruega': 'no', 'norway': 'no',
+      'áustria': 'at', 'austria': 'at', 'república tcheca': 'cz', 'czech republic': 'cz', 'czechia': 'cz',
+      'polônia': 'pl', 'poland': 'pl', 'rússia': 'ru', 'russia': 'ru',
+
+      // Ásia / Oceania / África
+      'china': 'cn',
+      'japão': 'jp', 'japan': 'jp',
+      'coréia do sul': 'kr', 'korea': 'kr', 'south korea': 'kr',
+      'tailândia': 'th', 'thailand': 'th', 'vietnã': 'vn', 'vietnam': 'vn',
+      'austrália': 'au', 'australia': 'au',
+      'maldivas': 'mv', 'maldives': 'mv', 'áfrica do sul': 'za', 'south africa': 'za'
     };
 
     const code = countryCodes[name];
