@@ -728,7 +728,7 @@
     }
   }
 
-  /* RENDERIZAÇÃO AUTOMÁTICA DOS CARDS COM COR BASEADA NA MARCA */
+/* RENDERIZAÇÃO AUTOMÁTICA DOS CARDS COM DADOS DA PLANILHA */
   function renderApp() {
     const row = document.getElementById("cardRow");
     row.innerHTML = "";
@@ -739,23 +739,22 @@
     pageItems.forEach((can, localIndex) => {
       const globalIndex = startIndex + localIndex;
 
-      // Pega a imagem da FRENTE enviada na planilha
+      // 1. Pega a foto da frente (testando várias propriedades possíveis do seu JSON)
       const rawFront = can.images 
-        ? (can.images.front || can.images.cover || can.images.left || can.images.back || can.images.right || can.brandLogo) 
-        : (can.brandLogo || "");
+        ? (can.images.front || can.images.frente || can.images.cover || can.images.capa || can.brandLogo) 
+        : (can.front || can.frente || can.cover || can.capa || can.brandLogo || "");
         
       const frontImg = getOptimizedImageUrl(rawFront, 400);
 
-      const brandName = can.brewery || can.name || "Cerveja";
-      const countryName = can.country || "";
-      const volumeText = can.volume || "";
+      // 2. Mapeamento flexível dos textos do rodapé
+      const brandName = can.brewery || can.marca || can.cervejaria || can.name || can.nome || "Cerveja";
+      const countryName = can.country || can.pais || can.país || can.origem || "";
+      const volumeText = can.volume || can.ml || can.conteudo || "";
       const flagUrl = getFlagUrlByCountry(countryName);
 
-      // 1. Tenta pegar cor explícita se houver na planilha.
-      // 2. Senão, busca no dicionário BRAND_COLORS pelo nome da marca.
-      // 3. Se não encontrar, usa a cor padrão '#1a2235'.
-      const brandKey = brandName.toLowerCase().trim();
-      const cardColor = can.brandColor || can.color || BRAND_COLORS[brandKey] || "#1a2235";
+      // 3. Define a cor do rodapé
+      const brandKey = String(brandName).toLowerCase().trim();
+      const cardColor = can.brandColor || can.color || can.cor || BRAND_COLORS[brandKey] || "#008234";
 
       const card = document.createElement("div");
       card.className = `card ${currentTab === 'sets' ? 'card-aspect-sets' : ''}`;
@@ -824,6 +823,26 @@
         }
       };
 
+      // Monta a foto + rodapé colorido exatamente como no layout enviado
+      card.innerHTML = `
+        <div class="card-img-container">
+          <img src="${frontImg}" alt="${brandName}" loading="lazy">
+        </div>
+        <div class="card-footer" style="background-color: ${cardColor};">
+          <div class="card-brand-name">${brandName}</div>
+          <div class="card-bottom-row">
+            <div class="card-country-info">
+              ${flagUrl ? `<img src="${flagUrl}" class="card-flag-img" alt="${countryName}">` : ''}
+              <span>${countryName}</span>
+            </div>
+            ${volumeText ? `<div class="card-volume-pill">${volumeText}</div>` : ''}
+          </div>
+        </div>
+      `;
+
+      row.appendChild(card);
+    });
+  }
       card.innerHTML = `
         <div class="card-img-container">
           <img src="${frontImg}" alt="${can.name}" loading="lazy">
