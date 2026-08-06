@@ -154,7 +154,7 @@
       object-fit: contain !important;
     }
 
-    /* BARRA COLORIDA REORGANIZADA (MARCA ACIMA E DADOS ABAIXO) */
+    /* BARRA COLORIDA REORGANIZADA COM FONTES HELVETICA */
     .card-bottom-bar {
       width: 100% !important;
       height: 48px !important;
@@ -165,16 +165,18 @@
       box-sizing: border-box !important;
     }
 
+    /* MARCAS: HELVETICA NOW BOLD E LIGEIRAMENTE DESLOCADA PARA BAIXO */
     .card-bar-title {
-      font-size: 0.82rem !important; /* Aumentado ligeiramente */
-      font-weight: 800 !important;   /* Em Negrito */
+      font-family: "Helvetica Now Display", "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+      font-size: 0.80rem !important;
+      font-weight: 700 !important;   /* Bold */
       color: #ffffff !important;
       white-space: nowrap !important;
       overflow: hidden !important;
       text-overflow: ellipsis !important;
       text-transform: capitalize !important;
       line-height: 1.1 !important;
-      margin-top: 1px !important;    /* Posicionamento mais elevado */
+      margin-top: 3px !important;    /* Desceu ligeiramente */
     }
 
     .card-bar-details {
@@ -182,15 +184,17 @@
       justify-content: space-between !important;
       align-items: center !important;
       width: 100% !important;
-      margin-bottom: 1px !important; /* Descido para a borda inferior */
+      margin-bottom: 1px !important;
     }
 
+    /* PAÍS: HELVETICA (SEM BOLD) */
     .card-bar-country {
+      font-family: Helvetica, Arial, sans-serif !important;
       display: flex !important;
       align-items: center !important;
       gap: 4px !important;
       font-size: 0.65rem !important;
-      font-weight: 400 !important;
+      font-weight: 400 !important;   /* Regular / Não Bold */
       color: #ffffff !important;
       white-space: nowrap !important;
       overflow: hidden !important;
@@ -205,13 +209,15 @@
       flex-shrink: 0 !important;
     }
 
+    /* VOLUME: HELVETICA (SEM BOLD) */
     .card-bar-vol {
+      font-family: Helvetica, Arial, sans-serif !important;
       background: rgba(0, 0, 0, 0.3) !important;
       color: #ffffff !important;
       padding: 1px 5px !important;
       border-radius: 4px !important;
       font-size: 0.58rem !important;
-      font-weight: 500 !important;
+      font-weight: 400 !important;   /* Regular / Não Bold */
       white-space: nowrap !important;
       flex-shrink: 0 !important;
     }
