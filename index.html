@@ -1,4 +1,772 @@
-/* RENDERIZAÇÃO AUTOMÁTICA DOS CARDS COM DADOS DA PLANILHA */
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WCCollection - Universal SPA</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; outline: none; }
+    
+    body { background-color: #1a1e29; color: #DDDDDD; height: 100vh; overflow: hidden; display: flex; user-select: none; touch-action: pan-y; }
+
+    ::-webkit-scrollbar { display: none !important; width: 0 !important; height: 0 !important; }
+    * { -ms-overflow-style: none !important; scrollbar-width: none !important; }
+
+    .app-container { display: flex; width: 100vw; height: 100vh; overflow: hidden; position: relative; background-color: #1a1e29; }
+
+    /* TELA DE CARREGAMENTO (SPLASH SCREEN) */
+    .loading-screen {
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      background-color: #1a1e29; z-index: 9999; display: flex;
+      flex-direction: column; justify-content: center; align-items: center; gap: 20px;
+      transition: opacity 0.5s ease, visibility 0.5s ease;
+    }
+
+    .loading-screen.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+
+    .loading-logo { width: 180px; height: auto; object-fit: contain; animation: pulse 1.5s infinite ease-in-out; }
+
+    .loading-text { color: #f39c12; font-size: 1.1rem; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; }
+
+    .spinner {
+      width: 40px; height: 40px;
+      border: 4px solid rgba(243, 156, 18, 0.2);
+      border-top: 4px solid #f39c12; border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.9; } 50% { transform: scale(1.05); opacity: 1; } }
+
+    /* BOTÃO HAMBÚRGUER (EXCLUSIVO PARA CELULAR) */
+    .mobile-menu-btn {
+      display: none; position: fixed; top: 12px; left: 12px; z-index: 2000;
+      background: rgba(26, 32, 46, 0.9); color: #f39c12; border: 1px solid #f39c12;
+      font-size: 1.5rem; padding: 6px 12px; border-radius: 8px; cursor: pointer;
+    }
+
+    @media (max-width: 768px) {
+      .mobile-menu-btn { display: block; }
+    }
+
+    /* MENU GAVETA DESLIZANTE */
+    .sidebar-drawer {
+      position: absolute; top: 0; left: -280px; width: 260px; height: 100vh;
+      background: rgba(22, 27, 38, 0.98); backdrop-filter: blur(10px);
+      display: flex; flex-direction: column; padding: 30px 16px; gap: 8px;
+      z-index: 1000; border-right: 1px solid rgba(255,255,255,0.08);
+      transition: left 0.25s cubic-bezier(0.1, 0.9, 0.2, 1); overflow-y: auto;
+      box-shadow: 10px 0 30px rgba(0,0,0,0.6);
+    }
+    
+    .sidebar-drawer.open { left: 0; }
+
+    .sidebar-logo { width: 100%; height: 50px; object-fit: contain; margin-bottom: 16px; text-align: center; }
+
+    /* BOTÕES DO MENU */
+    .cat-btn {
+      display: flex; align-items: center; width: 100%; padding: 12px 18px; border-radius: 12px;
+      background: transparent; color: #e2e8f0; font-size: 1.05rem; font-weight: 600; border: none;
+      text-align: left; cursor: pointer; transition: all 0.15s ease; text-transform: uppercase !important;
+    }
+
+    .cat-btn:focus, .cat-btn.focused, .cat-btn:hover {
+      background: #ffffff !important; color: #1a1f2c !important; font-weight: 700 !important;
+      box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2); outline: none !important;
+    }
+
+    .inline-panel-container { display: none; flex-direction: column; gap: 4px; padding: 6px 0; }
+    .inline-panel-container.active { display: flex; }
+
+    .brand-btn { 
+      font-size: 0.85rem; padding: 8px 12px; border-radius: 8px; background: transparent; color: #a0aec0; cursor: pointer; 
+      border: none !important; text-align: left; font-weight: 600; text-transform: uppercase !important; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .brand-btn:focus, .brand-btn:hover { color: #ffffff !important; background: rgba(255,255,255,0.1) !important; }
+
+    .menu-search-box { width: 100%; padding: 8px; background: #11141d; border: 1px solid #333d52; border-radius: 8px; color: #fff; font-size: 0.8rem; text-align: center; text-transform: uppercase; margin-bottom: 4px; pointer-events: none; }
+    .vk-container { display: grid; grid-template-columns: repeat(6, 1fr); gap: 2px; }
+    .vk-key { background: #11141d; border: 1px solid #2a3447; color: #a0aec0; padding: 8px 0; border-radius: 4px; font-size: 0.75rem; font-weight: bold; cursor: pointer; text-align: center; user-select: none; }
+    .vk-key:focus, .vk-key:hover { color: #fff; border-color: #fff; background: rgba(255,255,255,0.2); }
+    .vk-key-wide { grid-column: span 2; }
+
+    /* ÁREA PRINCIPAL */
+    .main-area {
+      flex: 1; display: flex; flex-direction: column; height: 100vh; padding: 16px 24px; gap: 12px;
+      overflow: hidden; background: #1a1e29; min-width: 0;
+      transition: transform 0.25s cubic-bezier(0.1, 0.9, 0.2, 1);
+    }
+    .main-area.pushed { transform: translateX(260px); }
+
+    .hero-panel { flex: 1; min-height: 0; background: transparent; border-radius: 12px; display: flex; padding: 12px; gap: 24px; align-items: center; position: relative; }
+    .hero-brand-logo-container { position: absolute; top: 12px; right: 24px; width: 200px; height: 90px; display: flex; justify-content: flex-end; align-items: flex-start; z-index: 20; pointer-events: none; }
+    .hero-brand-logo-container img { max-width: 100%; max-height: 100%; object-fit: contain; }
+
+    .hero-left-photos { height: 100%; aspect-ratio: 1 / 1; display: grid; grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(2, 1fr); gap: 8px; }
+    .hero-left-photos.aspect-sets { aspect-ratio: 4 / 3; }
+
+    .hero-photo-card { background: #ffffff; border-radius: 8px; padding: 4px; display: flex; justify-content: center; align-items: center; width: 100%; height: 100%; overflow: hidden; cursor: pointer; }
+    .hero-photo-card img { width: 100%; height: 100%; object-fit: contain; }
+
+    .hero-right-info { flex: 1; height: 100%; display: flex; flex-direction: column; justify-content: flex-start; gap: 10px; color: #f39c12; text-transform: uppercase; font-style: italic; overflow-y: auto; padding-right: 220px; }
+    .hero-title { font-size: clamp(1.3rem, 2.3vw, 1.9rem); font-weight: 900; line-height: 1.15; color: #f39c12; margin-bottom: 4px; letter-spacing: 0.5px; }
+    .info-block { display: flex; flex-direction: column; margin-bottom: 2px; }
+    .info-label { font-size: clamp(0.75rem, 1.1vw, 0.95rem); font-weight: 900; color: #f39c12; line-height: 1.1; letter-spacing: 0.5px; }
+    .info-val { font-size: clamp(1.05rem, 1.7vw, 1.45rem); font-weight: 900; color: #f39c12; line-height: 1.1; margin-top: 1px; }
+
+    .counter-bar { display: flex; justify-content: flex-end; align-items: center; padding: 0 4px; margin-bottom: -4px; }
+    .card-counter { font-size: 0.85rem; font-weight: 900; color: #f39c12; background: transparent; padding: 3px 10px; letter-spacing: 1px; }
+
+    .catalog-section { height: 185px; min-height: 185px; width: 100%; overflow: hidden; flex-shrink: 0; touch-action: none; }
+    .card-row { display: flex; gap: 12px; height: 100%; width: 100%; justify-content: flex-start; align-items: center; }
+
+    /* LAYOUT DO CARD PERSONALIZADO */
+    .card {
+      background-color: #ffffff; 
+      border-radius: 10px; 
+      height: 100%; 
+      aspect-ratio: 3 / 4; 
+      flex-shrink: 0;
+      overflow: hidden; 
+      display: flex !important; 
+      flex-direction: column !important;
+      justify-content: space-between !important; 
+      align-items: stretch !important; 
+      padding: 0 !important; 
+      border: 2px solid transparent; 
+      box-sizing: border-box; 
+      transition: border-color 0.15s ease, transform 0.15s ease;
+      cursor: pointer;
+    }
+
+    .card.card-aspect-sets { aspect-ratio: 4 / 3; }
+
+    .card-img-container {
+      flex: 1;
+      height: 68%;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 4px;
+      overflow: hidden;
+      background: #ffffff;
+    }
+
+    .card-img-container img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .card-footer {
+      height: 32%;
+      min-height: 48px;
+      padding: 6px 10px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 3px;
+      color: #ffffff;
+      text-align: left;
+      box-sizing: border-box;
+    }
+
+    .card-brand-name {
+      font-size: 0.85rem;
+      font-weight: 800;
+      line-height: 1.1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      text-transform: capitalize;
+    }
+
+    .card-bottom-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .card-country-info {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.7rem;
+      font-weight: 600;
+    }
+
+    .card-flag-img {
+      width: 16px;
+      height: 11px;
+      object-fit: cover;
+      border-radius: 2px;
+    }
+
+    .card-volume-pill {
+      background: rgba(0, 0, 0, 0.3);
+      padding: 1px 6px;
+      border-radius: 8px;
+      font-size: 0.65rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .card.focused, .card:hover { 
+      border: 2px solid #f39c12 !important; 
+      box-shadow: 0 4px 15px rgba(0,0,0,0.5) !important; 
+      outline: none !important; 
+      z-index: 10; 
+    }
+
+    /* MODAL DE ZOOM E NAVEGAÇÃO */
+    .zoom-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.95); z-index: 3000; display: none; justify-content: center; align-items: center; padding: 16px; overflow: hidden; }
+    .zoom-modal.active { display: flex; }
+    .zoom-modal img { 
+      max-width: 85vw; max-height: 85vh; object-fit: contain; border-radius: 6px; cursor: pointer; 
+      transition: transform 0.15s ease-out; transform-origin: center center; 
+    }
+
+    /* MODAL VISUAL DE SAÍDA NATIVO */
+    .exit-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); z-index: 4000; display: none; justify-content: center; align-items: center; }
+    .exit-modal.active { display: flex; }
+    .exit-box { background: #161b26; border: 2px solid #333d52; padding: 30px 40px; border-radius: 12px; display: flex; flex-direction: column; align-items: center; gap: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
+    .exit-title { color: #f39c12; font-size: 1.3rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
+    .exit-buttons { display: flex; gap: 16px; }
+    .exit-btn { padding: 10px 24px; border-radius: 8px; font-weight: bold; font-size: 1rem; border: none; cursor: pointer; text-transform: uppercase; background: #2a3447; color: #a0aec0; transition: all 0.15s ease; }
+    .exit-btn:focus, .exit-btn:hover { background: #ffffff; color: #1a1f2c; box-shadow: 0 0 15px rgba(255,255,255,0.3); outline: none; }
+  </style>
+</head>
+<body>
+
+  <!-- TELA DE CARREGAMENTO (SPLASH SCREEN) -->
+  <div class="loading-screen" id="loadingScreen">
+    <img src="logo.png" alt="Logo" class="loading-logo">
+    <div class="spinner"></div>
+    <div class="loading-text" id="loadingText">CARREGANDO CATÁLOGO...</div>
+  </div>
+
+  <div class="app-container">
+    <button class="mobile-menu-btn" onclick="toggleMenuMobile(event)">☰</button>
+
+    <nav class="sidebar-drawer" id="sidebarDrawer">
+      <img src="logo.png" alt="Logo" class="sidebar-logo">
+      <button class="cat-btn" id="menuBtnHome" onclick="switchTab('home')" tabindex="0">HOME / CATÁLOGO</button>
+      
+      <button class="cat-btn" id="menuBtnSearch" onclick="toggleSearchInline()" tabindex="0">PESQUISAR</button>
+      <div class="inline-panel-container" id="searchInlineContainer">
+        <input type="text" id="menuSearchInput" class="menu-search-box" placeholder="DIGITE PARA BUSCAR..." readonly tabindex="-1">
+        <div class="vk-container" id="vkContainer"></div>
+      </div>
+
+      <button class="cat-btn" id="menuBtnBrands" onclick="toggleBrandInline()" tabindex="0">MARCAS</button>
+      <div class="inline-panel-container" id="brandInlineList"></div>
+
+      <button class="cat-btn" id="menuBtnOcoc" onclick="switchTab('ococ')" tabindex="0">OCOC (PAÍSES)</button>
+      <button class="cat-btn" id="menuBtnSets" onclick="switchTab('sets')" tabindex="0">SETS & PACKS</button>
+    </nav>
+
+    <main class="main-area" id="mainArea" onclick="handleMainAreaClick()">
+      <section class="hero-panel" id="heroPanel">
+        <div class="hero-brand-logo-container" id="heroBrandLogo"></div>
+
+        <div class="hero-left-photos" id="heroPhotos">
+          <div class="hero-photo-card"><img src="" alt=""></div>
+          <div class="hero-photo-card"><img src="" alt=""></div>
+          <div class="hero-photo-card"><img src="" alt=""></div>
+          <div class="hero-photo-card"><img src="" alt=""></div>
+        </div>
+
+        <div class="hero-right-info">
+          <div class="hero-title" id="heroTitle">SELECIONE UMA LATA</div>
+          <div class="info-block"><span class="info-label" id="labelCountry">ORIGEM:</span><div class="info-val" id="heroCountry">-</div></div>
+          <div class="info-block"><span class="info-label">VOLUME:</span><div class="info-val" id="heroVolume">-</div></div>
+          <div class="info-block"><span class="info-label">ANO:</span><div class="info-val" id="heroYear">-</div></div>
+          <div class="info-block"><span class="info-label">CÓD. BARRAS:</span><div class="info-val" id="heroBarcode">-</div></div>
+        </div>
+      </section>
+
+      <div class="counter-bar"><div class="card-counter" id="cardCounter">0/0</div></div>
+
+      <section class="catalog-section" id="catalogSection">
+        <div class="card-row" id="cardRow"></div>
+      </section>
+    </main>
+  </div>
+
+  <!-- MODAL DE ZOOM -->
+  <div class="zoom-modal" id="zoomModal" onclick="closeZoomModal()">
+    <img id="zoomImage" src="" alt="Imagem ampliada" onclick="event.stopPropagation(); toggleZoomStep();">
+  </div>
+
+  <!-- MODAL DE SAÍDA DO APLICATIVO -->
+  <div class="exit-modal" id="exitModal">
+    <div class="exit-box">
+      <div class="exit-title">TEM CERTEZA QUE QUER SAIR?</div>
+      <div class="exit-buttons">
+        <button class="exit-btn" id="exitBtnNo" onclick="closeExitModal()">NÃO</button>
+        <button class="exit-btn" id="exitBtnYes" onclick="confirmExit()">SIM</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+  const API_URL = "https://script.google.com/macros/s/AKfycbwFIsSgEF2grkBpliyO_hSD0Lh2ULq6xHoJC6mDLYvjemTLYe67jF38MDNWP2ixITzE/exec";
+  let canCatalog = [];
+  let currentFiltered = [];
+  let zoomGallery = [];
+  let currentZoomIndex = 0;
+  
+  let currentTab = 'home';
+  let cardsPerRow = 6;
+  let currentPage = 0;
+  let activeLocalIndex = 0;
+  let lastSelectedMenuId = 'menuBtnHome'; 
+  let lastSelectedBrandElem = null;
+
+  /* MAPA DE CORES AUTOMÁTICO DAS MARCAS */
+  const BRAND_COLORS = {
+    'carlsberg': '#005826',
+    'heineken': '#008234',
+    'budweiser': '#1d285a',
+    'brahma': '#e31b23',
+    'skol': '#fca311',
+    'stella artois': '#b81d24',
+    'corona': '#002b49',
+    'amstel': '#d32f2f',
+    'eisenbahn': '#3a2e2b',
+    'bohemia': '#8b1e0f',
+    'antarctica': '#0055a5',
+    'guinness': '#000000',
+    'kronenbourg 1664': '#0f2042',
+    'therezopolis': '#1b382b',
+    'wienbier': '#33261d',
+    'faxe': '#3a0000'
+  };
+
+  /* VARIÁVEIS DE CONTROLE DO ZOOM (1.5x e 3.0x) E PAN */
+  let zoomLevel = 1.0; 
+  let zoomState = 0;   // 0: Normal (1.0x), 1: 1.5x, 2: 3.0x, 3: 1.5x
+  let panX = 0;
+  let panY = 0;
+  const PAN_STEP = 60;
+
+  const vkKeys = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','1','2','3','4','5','6','7','8','9','0','ESPAÇO','DEL','LIMPAR'];
+
+  function getOptimizedImageUrl(url, size = 300) {
+    if (!url) return '';
+    if (url.includes('googleusercontent.com')) {
+      return url.split('=')[0] + `=s${size}-rw`;
+    }
+    return url;
+  }
+
+  /* BUSCA A BANDEIRA AUTOMÁTICA PELO NOME DO PAÍS */
+  function getFlagUrlByCountry(countryName) {
+    if (!countryName) return '';
+    const name = String(countryName).toLowerCase().trim();
+    
+    const countryCodes = {
+      'china': 'cn',
+      'holanda': 'nl', 'netherlands': 'nl',
+      'brasil': 'br', 'brazil': 'br',
+      'alemanha': 'de', 'germany': 'de',
+      'eua': 'us', 'usa': 'us', 'estados unidos': 'us',
+      'bélgica': 'be', 'belgium': 'be',
+      'japão': 'jp', 'japan': 'jp',
+      'méxico': 'mx', 'mexico': 'mx',
+      'dinamarca': 'dk', 'denmark': 'dk',
+      'itália': 'it', 'italy': 'it',
+      'espanha': 'es', 'spain': 'es',
+      'argentina': 'ar',
+      'irlanda': 'ie', 'ireland': 'ie',
+      'reino unido': 'gb', 'uk': 'gb', 'inglaterra': 'gb',
+      'portugal': 'pt',
+      'frança': 'fr', 'france': 'fr'
+    };
+
+    const code = countryCodes[name];
+    if (code) {
+      return `https://flagcdn.com/w40/${code}.png`;
+    }
+    return '';
+  }
+
+  function getItemProp(item, propName) {
+    if (!item) return '';
+    if (item[propName] !== undefined && item[propName] !== null) return item[propName];
+    
+    const lowerKey = Object.keys(item).find(k => k.toLowerCase() === propName.toLowerCase());
+    if (lowerKey) return item[lowerKey];
+    
+    return '';
+  }
+
+  function getItemImage(item, imgType) {
+    if (item.images && item.images[imgType]) return item.images[imgType];
+    return getItemProp(item, imgType);
+  }
+
+  function preloadFirstImages(items, count = 6) {
+    return new Promise((resolve) => {
+      const pageItems = items.slice(0, count);
+      if (pageItems.length === 0) {
+        resolve();
+        return;
+      }
+
+      let loadedCount = 0;
+      const totalToLoad = pageItems.length;
+
+      pageItems.forEach((can) => {
+        const rawCover = getItemImage(can, 'ImgFront') || getItemImage(can, 'ImgCover') || getItemProp(can, 'BRAND_LOGO');
+
+        if (!rawCover) {
+          loadedCount++;
+          if (loadedCount >= totalToLoad) resolve();
+          return;
+        }
+
+        const img = new Image();
+        img.src = getOptimizedImageUrl(rawCover, 300);
+        img.onload = img.onerror = () => {
+          loadedCount++;
+          if (loadedCount >= totalToLoad) {
+            resolve();
+          }
+        };
+      });
+
+      setTimeout(resolve, 3500);
+    });
+  }
+
+  function hideLoadingScreen() {
+    const screen = document.getElementById("loadingScreen");
+    if (screen) {
+      screen.classList.add("hidden");
+    }
+  }
+
+  async function fetchCatalogFromSheet() {
+    if(!API_URL || API_URL.includes("COLE_AQUI")) return;
+
+    const cachedData = localStorage.getItem("beercan_catalog_cache");
+    if (cachedData) {
+      try {
+        canCatalog = JSON.parse(cachedData);
+        processTabChange();
+        hideLoadingScreen();
+        focusCardSafely(0);
+      } catch (e) {
+        console.error("Erro ao ler cache local:", e);
+      }
+    }
+
+    try {
+      const response = await fetch(API_URL);
+      const freshData = await response.json();
+      localStorage.setItem("beercan_catalog_cache", JSON.stringify(freshData));
+      
+      canCatalog = freshData;
+      processTabChange();
+
+      if (!cachedData) {
+        document.getElementById("loadingText").innerText = "PREPARANDO IMAGENS...";
+        await preloadFirstImages(currentFiltered, cardsPerRow);
+        hideLoadingScreen();
+        focusCardSafely(0);
+      }
+    } catch (err) {
+      console.error("Erro ao carregar catálogo da API:", err);
+      hideLoadingScreen();
+      focusCardSafely(0);
+    }
+  }
+
+  function switchTab(tabName) {
+    currentTab = tabName;
+    lastSelectedBrandElem = null;
+    
+    if(tabName === 'home') lastSelectedMenuId = 'menuBtnHome';
+    else if(tabName === 'ococ') lastSelectedMenuId = 'menuBtnOcoc';
+    else if(tabName === 'sets') lastSelectedMenuId = 'menuBtnSets';
+
+    document.getElementById("menuSearchInput").value = "";
+    document.getElementById("searchInlineContainer").classList.remove("active");
+    document.getElementById("brandInlineList").classList.remove("active");
+    
+    processTabChange();
+    focusCardSafely(0);
+  }
+
+  function processTabChange() {
+    const heroPhotos = document.getElementById("heroPhotos");
+    const labelCountry = document.getElementById("labelCountry");
+
+    if (currentTab === 'sets') {
+      cardsPerRow = 5;
+      heroPhotos.classList.add("aspect-sets");
+      labelCountry.innerText = "ORIGEM:";
+    } else if (currentTab === 'ococ') {
+      cardsPerRow = 6;
+      heroPhotos.classList.remove("aspect-sets");
+      labelCountry.innerText = "PAÍS / ORIGEM:";
+    } else {
+      cardsPerRow = 6;
+      heroPhotos.classList.remove("aspect-sets");
+      labelCountry.innerText = "ORIGEM:";
+    }
+
+    buildBrandList();
+    buildVirtualKeyboard();
+    filterCatalog(document.getElementById("menuSearchInput").value);
+  }
+
+  function getBaseListForCurrentTab() {
+    if (currentTab === 'home') {
+      return canCatalog.filter(can => {
+        const val = getItemProp(can, 'isSet');
+        return !val || String(val).toLowerCase() === "false";
+      });
+    } else if (currentTab === 'ococ') {
+      const countryMap = new Map();
+      canCatalog.forEach(can => {
+        const countryVal = getItemProp(can, 'Pais');
+        const isOcocVal = getItemProp(can, 'isOcoc');
+        const isSetVal = getItemProp(can, 'isSet');
+
+        if ((!isSetVal || String(isSetVal).toLowerCase() === "false") && 
+            (isOcocVal === true || String(isOcocVal).toLowerCase() === "true") && 
+            countryVal && !countryMap.has(String(countryVal).toLowerCase())) {
+          countryMap.set(String(countryVal).toLowerCase(), can);
+        }
+      });
+      return Array.from(countryMap.values()).sort((a,b) => String(getItemProp(a, 'Pais')).localeCompare(String(getItemProp(b, 'Pais'))));
+    } else if (currentTab === 'sets') {
+      return canCatalog.filter(can => {
+        const val = getItemProp(can, 'isSet');
+        return val === true || String(val).toLowerCase() === "true";
+      });
+    }
+    return [];
+  }
+
+  function clearAllCardFocus() {
+    document.querySelectorAll(".card").forEach(c => {
+      c.classList.remove("focused");
+    });
+  }
+
+  function focusCardSafely(targetIndex) {
+    closeMenu();
+    clearAllCardFocus();
+    
+    setTimeout(() => {
+      const cards = document.querySelectorAll(".card");
+      if (cards.length > 0) {
+        const finalIdx = Math.min(targetIndex, cards.length - 1);
+        activeLocalIndex = finalIdx;
+        cards[finalIdx].classList.add("focused");
+        cards[finalIdx].focus();
+      }
+    }, 50);
+  }
+
+  function openMenu() {
+    document.getElementById("sidebarDrawer").classList.add("open");
+    document.getElementById("mainArea").classList.add("pushed");
+    
+    if (lastSelectedMenuId === 'menuBtnBrands') {
+      const brandContainer = document.getElementById("brandInlineList");
+      brandContainer.classList.add("active");
+
+      if (lastSelectedBrandElem && brandContainer.contains(lastSelectedBrandElem)) {
+        lastSelectedBrandElem.focus();
+        return;
+      } else {
+        const firstBrand = brandContainer.querySelector(".brand-btn");
+        if (firstBrand) {
+          firstBrand.focus();
+          return;
+        }
+      }
+    }
+
+    const targetElem = document.getElementById(lastSelectedMenuId);
+    if (targetElem) {
+      targetElem.focus();
+    } else {
+      document.getElementById("menuBtnHome").focus();
+    }
+  }
+
+  function closeMenu() {
+    document.getElementById("sidebarDrawer").classList.remove("open");
+    document.getElementById("mainArea").classList.remove("pushed");
+  }
+
+  function toggleMenuMobile(e) {
+    if(e) e.stopPropagation();
+    const drawer = document.getElementById("sidebarDrawer");
+    if (drawer.classList.contains("open")) {
+      closeMenu();
+    } else {
+      openMenu();
+    }
+  }
+
+  function handleMainAreaClick() {
+    if (document.getElementById("sidebarDrawer").classList.contains("open")) {
+      closeMenu();
+    }
+  }
+
+  function toggleSearchInline() {
+    lastSelectedMenuId = 'menuBtnSearch';
+    lastSelectedBrandElem = null;
+    document.getElementById("brandInlineList").classList.remove("active");
+    const container = document.getElementById("searchInlineContainer");
+    container.classList.toggle("active");
+    if(container.classList.contains("active")) {
+      const firstVk = document.getElementById("vkContainer").querySelector(".vk-key");
+      if(firstVk) firstVk.focus();
+    }
+  }
+
+  function toggleBrandInline() {
+    lastSelectedMenuId = 'menuBtnBrands';
+    const container = document.getElementById("brandInlineList");
+    document.getElementById("searchInlineContainer").classList.remove("active");
+    container.classList.toggle("active");
+    
+    if(container.classList.contains("active")) {
+      const firstBrand = container.querySelector(".brand-btn");
+      if(firstBrand) firstBrand.focus();
+    }
+  }
+
+  function buildVirtualKeyboard() {
+    const container = document.getElementById("vkContainer");
+    container.innerHTML = "";
+    vkKeys.forEach((k, index) => {
+      const btn = document.createElement("button");
+      btn.className = `vk-key ${ (k === 'ESPAÇO' || k === 'DEL' || k === 'LIMPAR') ? 'vk-key-wide' : '' }`;
+      btn.tabIndex = 0; 
+      btn.innerText = k;
+      
+      btn.onclick = (e) => {
+        e.stopPropagation();
+        handleVkPress(k);
+      };
+
+      btn.onkeydown = (e) => {
+        if (e.key === "ArrowRight") {
+          const isLastInRow = (index + 1) % 6 === 0 || index === vkKeys.length - 1;
+          if (isLastInRow) {
+            e.preventDefault();
+            focusCardSafely(activeLocalIndex);
+          }
+        }
+      };
+
+      container.appendChild(btn);
+    });
+  }
+
+  function handleVkPress(key) {
+    const input = document.getElementById("menuSearchInput");
+    if (key === 'ESPAÇO') input.value += ' ';
+    else if (key === 'DEL') input.value = input.value.slice(0, -1);
+    else if (key === 'LIMPAR') input.value = '';
+    else input.value += key;
+    filterCatalog(input.value);
+  }
+
+  function buildBrandList() {
+    const brandContainer = document.getElementById("brandInlineList");
+    brandContainer.innerHTML = "";
+    const baseList = getBaseListForCurrentTab();
+    const brands = [...new Set(baseList.map(c => getItemProp(c, 'Cervejaria')).filter(Boolean))].sort();
+    
+    let defaultText = "TODAS AS MARCAS";
+    if (currentTab === 'ococ') defaultText = "TODOS OS PAÍSES";
+    if (currentTab === 'sets') defaultText = "TODOS OS SETS";
+
+    const allBtn = document.createElement("button");
+    allBtn.className = "brand-btn"; allBtn.tabIndex = 0; allBtn.innerText = defaultText;
+    
+    allBtn.onclick = (e) => { 
+      e.stopPropagation();
+      lastSelectedMenuId = 'menuBtnBrands';
+      lastSelectedBrandElem = allBtn;
+      filterCatalog(""); 
+      focusCardSafely(0); 
+    };
+
+    allBtn.onkeydown = (e) => {
+      if (e.key === "ArrowRight") {
+        e.preventDefault();
+        focusCardSafely(activeLocalIndex);
+      }
+    };
+
+    brandContainer.appendChild(allBtn);
+
+    brands.forEach(b => {
+      const btn = document.createElement("button");
+      btn.className = "brand-btn"; btn.tabIndex = 0; btn.innerText = String(b).toUpperCase();
+      
+      btn.onclick = (e) => { 
+        e.stopPropagation();
+        lastSelectedMenuId = 'menuBtnBrands';
+        lastSelectedBrandElem = btn;
+        filterCatalog(b); 
+        focusCardSafely(0); 
+      };
+
+      btn.onkeydown = (e) => {
+        if (e.key === "ArrowRight") {
+          e.preventDefault();
+          focusCardSafely(activeLocalIndex);
+        }
+      };
+
+      brandContainer.appendChild(btn);
+    });
+  }
+
+  function filterCatalog(query) {
+    const val = query.toLowerCase().trim();
+    const baseList = getBaseListForCurrentTab();
+
+    currentFiltered = baseList.filter(can => {
+      if (!val) return true;
+      return [
+        getItemProp(can, 'Nome'),
+        getItemProp(can, 'Cervejaria'),
+        getItemProp(can, 'Pais'),
+        getItemProp(can, 'Volume'),
+        getItemProp(can, 'Ano'),
+        getItemProp(can, 'Barcode')
+      ].map(v => String(v || "").toLowerCase()).join(" ").includes(val);
+    });
+
+    currentPage = 0;
+    activeLocalIndex = 0;
+    renderApp();
+
+    if (currentFiltered.length > 0) {
+      updateHeroPanel(currentFiltered[0], 0);
+    } else {
+      document.getElementById("cardCounter").innerText = "0/0";
+      document.getElementById("heroTitle").innerText = "NENHUMA LATA ENCONTRADA";
+      document.getElementById("heroPhotos").innerHTML = "";
+    }
+  }
+
+  /* RENDERIZAÇÃO AUTOMÁTICA DOS CARDS COM DADOS EXATOS DA PLANILHA */
   function renderApp() {
     const row = document.getElementById("cardRow");
     row.innerHTML = "";
@@ -9,22 +777,19 @@
     pageItems.forEach((can, localIndex) => {
       const globalIndex = startIndex + localIndex;
 
-      // 1. Pega a foto da frente (testando várias propriedades possíveis do seu JSON)
-      const rawFront = can.images 
-        ? (can.images.front || can.images.frente || can.images.cover || can.images.capa || can.brandLogo) 
-        : (can.front || can.frente || can.cover || can.capa || can.brandLogo || "");
-        
+      // Busca diretamente ImgFront, ImgCover ou BRAND_LOGO
+      const rawFront = getItemImage(can, 'ImgFront') || getItemImage(can, 'ImgCover') || getItemProp(can, 'BRAND_LOGO');
       const frontImg = getOptimizedImageUrl(rawFront, 400);
 
-      // 2. Mapeamento flexível dos textos do rodapé
-      const brandName = can.brewery || can.marca || can.cervejaria || can.name || can.nome || "Cerveja";
-      const countryName = can.country || can.pais || can.país || can.origem || "";
-      const volumeText = can.volume || can.ml || can.conteudo || "";
+      // Pega textos com os nomes das colunas da planilha
+      const brandName = getItemProp(can, 'Cervejaria') || getItemProp(can, 'Nome') || "Cerveja";
+      const countryName = getItemProp(can, 'Pais') || "";
+      const volumeText = getItemProp(can, 'Volume') || "";
       const flagUrl = getFlagUrlByCountry(countryName);
 
-      // 3. Define a cor do rodapé
+      // Define a cor
       const brandKey = String(brandName).toLowerCase().trim();
-      const cardColor = can.brandColor || can.color || can.cor || BRAND_COLORS[brandKey] || "#008234";
+      const cardColor = BRAND_COLORS[brandKey] || "#008234";
 
       const card = document.createElement("div");
       card.className = `card ${currentTab === 'sets' ? 'card-aspect-sets' : ''}`;
@@ -93,7 +858,6 @@
         }
       };
 
-      // Monta a foto + rodapé colorido exatamente como no layout enviado
       card.innerHTML = `
         <div class="card-img-container">
           <img src="${frontImg}" alt="${brandName}" loading="lazy">
@@ -113,3 +877,304 @@
       row.appendChild(card);
     });
   }
+
+  function updateHeroPanel(can, index = 0) {
+    if (!can) return;
+
+    let fallbackTitle = "SELECIONE UMA LATA";
+    if (currentTab === 'ococ') fallbackTitle = "SELECIONE UMA LATA (OCOC)";
+    if (currentTab === 'sets') fallbackTitle = "SELECIONE UM SET";
+
+    const titleVal = getItemProp(can, 'Nome') || fallbackTitle;
+    const countryVal = getItemProp(can, 'Pais') || "-";
+    const volumeVal = getItemProp(can, 'Volume') || "-";
+    const yearVal = getItemProp(can, 'Ano') || "-";
+    const barcodeVal = getItemProp(can, 'Barcode') || "-";
+
+    document.getElementById("heroTitle").innerText = String(titleVal).toUpperCase();
+    document.getElementById("heroCountry").innerText = String(countryVal).toUpperCase();
+    document.getElementById("heroVolume").innerText = String(volumeVal).toUpperCase();
+    document.getElementById("heroYear").innerText = yearVal;
+    document.getElementById("heroBarcode").innerText = barcodeVal;
+
+    const logoContainer = document.getElementById("heroBrandLogo");
+    const logoUrl = getItemProp(can, 'BRAND_LOGO');
+    if (logoUrl && String(logoUrl).trim() !== "") {
+      logoContainer.innerHTML = `<img src="${getOptimizedImageUrl(logoUrl, 400)}" alt="LOGO DA CERVEJARIA">`;
+    } else {
+      logoContainer.innerHTML = "";
+    }
+
+    const total = currentFiltered.length;
+    const currentNum = total > 0 ? (index + 1) : 0;
+    document.getElementById("cardCounter").innerText = `${currentNum}/${total}`;
+
+    const rawPhotos = [
+      getItemImage(can, 'ImgFront'), 
+      getItemImage(can, 'ImgLeft'), 
+      getItemImage(can, 'ImgBack'), 
+      getItemImage(can, 'ImgRight')
+    ].filter(url => url && String(url).trim() !== "");
+
+    if (rawPhotos.length === 0 && logoUrl) {
+      rawPhotos.push(logoUrl);
+    }
+
+    zoomGallery = rawPhotos;
+
+    const photosContainer = document.getElementById("heroPhotos");
+    photosContainer.innerHTML = "";
+
+    const displayPhotos = rawPhotos.slice(0, 4);
+
+    if (displayPhotos.length > 0) {
+      displayPhotos.forEach((url, idx) => {
+        const optimizedUrl = getOptimizedImageUrl(url, 1000);
+        const photoCard = document.createElement("div");
+        photoCard.className = "hero-photo-card";
+        photoCard.innerHTML = `<img src="${optimizedUrl}" alt="FOTO ${idx+1}" loading="lazy">`;
+        photoCard.onclick = (e) => {
+          e.stopPropagation();
+          openZoomModal(idx);
+        };
+        photosContainer.appendChild(photoCard);
+      });
+    } else {
+      photosContainer.innerHTML = `<div class="hero-photo-card" style="grid-column: span 2; grid-row: span 2; color:#aaa; font-size:0.8rem;">SEM FOTOS</div>`;
+    }
+  }
+
+  /* SISTEMA DE ZOOM CICLICO (1.5x -> 3.0x -> 1.5x -> Normal) E PAN */
+  function openZoomModal(index) {
+    if (!zoomGallery || zoomGallery.length === 0) return;
+    currentZoomIndex = index;
+    resetZoomTransform();
+    const imgElem = document.getElementById("zoomImage");
+    imgElem.src = getOptimizedImageUrl(zoomGallery[currentZoomIndex], 1200);
+    document.getElementById("zoomModal").classList.add("active");
+  }
+
+  function resetZoomTransform() {
+    zoomState = 0;
+    zoomLevel = 1.0;
+    panX = 0;
+    panY = 0;
+    applyZoomTransform();
+  }
+
+  function applyZoomTransform() {
+    const imgElem = document.getElementById("zoomImage");
+    if (imgElem) {
+      imgElem.style.transform = `translate(${panX}px, ${panY}px) scale(${zoomLevel})`;
+    }
+  }
+
+  function toggleZoomStep() {
+    zoomState = (zoomState + 1) % 4;
+
+    if (zoomState === 0) {
+      zoomLevel = 1.0;
+      panX = 0;
+      panY = 0;
+    } else if (zoomState === 1) {
+      zoomLevel = 1.5;
+    } else if (zoomState === 2) {
+      zoomLevel = 3.0;
+    } else if (zoomState === 3) {
+      zoomLevel = 1.5;
+    }
+
+    applyZoomTransform();
+  }
+
+  function navigateZoom(direction) {
+    if (!zoomGallery || zoomGallery.length === 0) return;
+    currentZoomIndex = (currentZoomIndex + direction + zoomGallery.length) % zoomGallery.length;
+    resetZoomTransform();
+    const imgElem = document.getElementById("zoomImage");
+    imgElem.src = getOptimizedImageUrl(zoomGallery[currentZoomIndex], 1200);
+  }
+
+  function closeZoomModal() {
+    resetZoomTransform();
+    document.getElementById("zoomModal").classList.remove("active");
+    focusCardSafely(activeLocalIndex);
+  }
+
+  /* SISTEMA DE CONFIRMAÇÃO DE SAÍDA DO APP VIA PONTE ANDROID */
+  function openExitModal() {
+    closeMenu();
+    document.getElementById("exitModal").classList.add("active");
+    document.getElementById("exitBtnNo").focus();
+  }
+
+  function closeExitModal() {
+    document.getElementById("exitModal").classList.remove("active");
+    focusCardSafely(activeLocalIndex);
+  }
+
+  function confirmExit() {
+    if (typeof PonteAndroid !== "undefined") {
+      PonteAndroid.fecharApp();
+    } else if (window.navigator && window.navigator.app && window.navigator.app.exitApp) {
+      window.navigator.app.exitApp();
+    } else if (window.device && window.device.exitApp) {
+      window.device.exitApp();
+    } else {
+      window.close();
+    }
+  }
+
+  /* DETECÇÃO DE GESTOS SWIPE (TOUCHSCREEN CELULAR / PC) */
+  let touchStartX = 0;
+  let touchStartY = 0;
+
+  const catalogSection = document.getElementById("catalogSection");
+
+  catalogSection.addEventListener("touchstart", (e) => {
+    touchStartX = e.changedTouches[0].screenX;
+    touchStartY = e.changedTouches[0].screenY;
+  }, { passive: true });
+
+  catalogSection.addEventListener("touchend", (e) => {
+    const touchEndX = e.changedTouches[0].screenX;
+    const touchEndY = e.changedTouches[0].screenY;
+    handleSwipe(touchStartX, touchStartY, touchEndX, touchEndY);
+  }, { passive: true });
+
+  /* NAVEGAÇÃO VIA SCROLL DO MOUSE (PC) */
+  catalogSection.addEventListener("wheel", (e) => {
+    if (e.deltaY > 0) {
+      if (((currentPage + 1) * cardsPerRow) < currentFiltered.length) {
+        currentPage++;
+        renderApp();
+        focusCardSafely(activeLocalIndex);
+      }
+    } else if (e.deltaY < 0) {
+      if (currentPage > 0) {
+        currentPage--;
+        renderApp();
+        focusCardSafely(activeLocalIndex);
+      }
+    }
+  }, { passive: true });
+
+  function handleSwipe(startX, startY, endX, endY) {
+    const diffX = endX - startX;
+    const diffY = endY - startY;
+    const threshold = 30;
+
+    if (Math.abs(diffY) > Math.abs(diffX)) {
+      if (diffY < -threshold) {
+        if (((currentPage + 1) * cardsPerRow) < currentFiltered.length) {
+          currentPage++;
+          renderApp();
+          focusCardSafely(activeLocalIndex);
+        }
+      } else if (diffY > threshold) {
+        if (currentPage > 0) {
+          currentPage--;
+          renderApp();
+          focusCardSafely(activeLocalIndex);
+        }
+      }
+    } else {
+      if (diffX < -threshold) {
+        const cards = document.querySelectorAll(".card");
+        if (activeLocalIndex < cards.length - 1) {
+          focusCardSafely(activeLocalIndex + 1);
+        } else if (((currentPage + 1) * cardsPerRow) < currentFiltered.length) {
+          currentPage++;
+          renderApp();
+          focusCardSafely(0);
+        }
+      } else if (diffX > threshold) {
+        if (activeLocalIndex > 0) {
+          focusCardSafely(activeLocalIndex - 1);
+        } else if (currentPage > 0) {
+          currentPage--;
+          renderApp();
+          focusCardSafely(cardsPerRow - 1);
+        }
+      }
+    }
+  }
+
+  /* NAVEGAÇÃO DO TECLADO E CONTROLE REMOTO */
+  document.addEventListener("keydown", (e) => {
+    const isZoomActive = document.getElementById("zoomModal").classList.contains("active");
+    const isExitActive = document.getElementById("exitModal").classList.contains("active");
+    const isMenuOpen = document.getElementById("sidebarDrawer").classList.contains("open");
+
+    if (isZoomActive) {
+      if (e.key === "Enter" || e.key === " " || e.keyCode === 13) {
+        e.preventDefault();
+        toggleZoomStep();
+      } else if (zoomLevel > 1.0) {
+        if (e.key === "ArrowLeft") {
+          e.preventDefault();
+          panX += PAN_STEP;
+          applyZoomTransform();
+        } else if (e.key === "ArrowRight") {
+          e.preventDefault();
+          panX -= PAN_STEP;
+          applyZoomTransform();
+        } else if (e.key === "ArrowUp") {
+          e.preventDefault();
+          panY += PAN_STEP;
+          applyZoomTransform();
+        } else if (e.key === "ArrowDown") {
+          e.preventDefault();
+          panY -= PAN_STEP;
+          applyZoomTransform();
+        } else if (e.key === "Escape" || e.key === "Back" || e.keyCode === 10009 || e.keyCode === 27) {
+          e.preventDefault();
+          closeZoomModal();
+        }
+      } else {
+        if (e.key === "ArrowLeft") {
+          e.preventDefault();
+          navigateZoom(-1);
+        } else if (e.key === "ArrowRight") {
+          e.preventDefault();
+          navigateZoom(1);
+        } else if (e.key === "ArrowUp" || e.key === "ArrowDown" || e.key === "Escape" || e.key === "Back" || e.keyCode === 10009 || e.keyCode === 27) {
+          e.preventDefault();
+          closeZoomModal();
+        }
+      }
+    } else if (isExitActive) {
+      if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
+        e.preventDefault();
+        const active = document.activeElement;
+        const btnNo = document.getElementById("exitBtnNo");
+        const btnYes = document.getElementById("exitBtnYes");
+        if (active === btnNo) btnYes.focus();
+        else btnNo.focus();
+      } else if (e.key === "Escape" || e.key === "Back" || e.keyCode === 10009 || e.keyCode === 27) {
+        e.preventDefault();
+        closeExitModal();
+      }
+    } else {
+      if (e.key === "Escape" || e.key === "Back" || e.keyCode === 10009 || e.keyCode === 27) {
+        e.preventDefault();
+        if (isMenuOpen) {
+          closeMenu();
+          focusCardSafely(activeLocalIndex);
+        } else {
+          openExitModal();
+        }
+      }
+
+      const activeElem = document.activeElement;
+      if (activeElem && (activeElem.classList.contains("cat-btn") || activeElem.classList.contains("brand-btn")) && e.key === "ArrowRight") {
+        e.preventDefault();
+        focusCardSafely(activeLocalIndex);
+      }
+    }
+  }, true);
+
+  window.onload = fetchCatalogFromSheet;
+</script>
+</body>
+</html>
