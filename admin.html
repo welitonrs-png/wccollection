@@ -6,7 +6,6 @@
   <title>Painel de Cadastro - WCCollection</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; outline: none; }
-    
     body { background-color: #1a1e29; color: #dddddd; padding: 30px; display: flex; justify-content: center; }
 
     .admin-card {
@@ -19,10 +18,9 @@
       box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     }
 
-    h1 { color: #f39c12; font-size: 1.8rem; font-weight: 900; text-transform: uppercase; margin-bottom: 6px; letter-spacing: 0.5px; }
+    h1 { color: #f39c12; font-size: 1.8rem; font-weight: 900; text-transform: uppercase; margin-bottom: 6px; }
     .subtitle { color: #a0aec0; font-size: 0.85rem; margin-bottom: 24px; }
 
-    /* GRID DE CAMPOS */
     .form-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -37,9 +35,9 @@
     .form-group { display: flex; flex-direction: column; gap: 6px; }
     .form-group.col-2 { grid-column: span 2; }
 
-    label { font-size: 0.75rem; font-weight: 900; color: #f39c12; text-transform: uppercase; letter-spacing: 0.5px; }
+    label { font-size: 0.75rem; font-weight: 900; color: #f39c12; text-transform: uppercase; }
 
-    input[type="text"], input[type="number"], select {
+    input[type="text"], input[type="number"] {
       width: 100%;
       padding: 12px;
       background: #11141d;
@@ -47,19 +45,11 @@
       border-radius: 8px;
       color: #ffffff;
       font-size: 0.9rem;
-      transition: border-color 0.2s;
     }
 
-    input[type="text"]:focus, input[type="number"]:focus {
-      border-color: #f39c12;
-    }
-
-    /* CHECKBOXES ESTILIZADOS */
     .checkbox-row { display: flex; gap: 24px; align-items: center; margin-bottom: 24px; }
     .checkbox-label { display: flex; align-items: center; gap: 8px; cursor: pointer; color: #ffffff; font-weight: bold; font-size: 0.85rem; }
-    .checkbox-label input { width: 16px; height: 16px; accent-color: #f39c12; cursor: pointer; }
 
-    /* SEÇÃO DE BOTÕES DE UPLOAD DE ARQUIVOS LOCAL (ESTILO ORIGINAL) */
     .section-title { font-size: 0.8rem; font-weight: 900; color: #f39c12; text-transform: uppercase; margin-bottom: 12px; }
 
     .file-upload-grid {
@@ -67,10 +57,6 @@
       grid-template-columns: repeat(3, 1fr);
       gap: 16px;
       margin-bottom: 24px;
-    }
-
-    @media (max-width: 768px) {
-      .file-upload-grid { grid-template-columns: 1fr; }
     }
 
     .file-box {
@@ -85,7 +71,6 @@
 
     .file-box-title { font-size: 0.75rem; font-weight: bold; color: #f39c12; text-transform: uppercase; text-align: center; }
 
-    /* BOTÃO ESTILIZADO DE ANEXAR */
     .btn-file-custom {
       display: flex;
       align-items: center;
@@ -100,17 +85,13 @@
       font-weight: bold;
       text-transform: uppercase;
       cursor: pointer;
-      transition: all 0.2s;
       text-align: center;
     }
 
-    .btn-file-custom:hover { background: #333d52; border-color: #f39c12; }
     .btn-file-custom.has-file { background: #1e3a29; color: #2ecc71; border-color: #2ecc71; }
-
     input[type="file"] { display: none; }
 
-    /* BOTÕES DE AÇÃO DO FORMULÁRIO */
-    .actions-row { display: flex; gap: 16px; margin-bottom: 30px; }
+    .actions-row { display: flex; gap: 16px; margin-bottom: 20px; }
 
     .btn-primary {
       background: #f39c12;
@@ -122,11 +103,7 @@
       border: none;
       cursor: pointer;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
-      transition: all 0.2s;
     }
-
-    .btn-primary:hover { background: #e67e22; box-shadow: 0 4px 15px rgba(243, 156, 18, 0.3); }
 
     .btn-secondary {
       background: #2a3447;
@@ -138,12 +115,8 @@
       border: none;
       cursor: pointer;
       text-transform: uppercase;
-      transition: all 0.2s;
     }
 
-    .btn-secondary:hover { background: #333d52; color: #ffffff; }
-
-    /* MENSAGEM DE STATUS DA API */
     .status-msg {
       padding: 14px;
       border-radius: 8px;
@@ -152,62 +125,64 @@
       font-weight: 800;
       display: none;
     }
+    .status-msg.error { background: rgba(231, 76, 60, 0.2); border: 1px solid #e74c3c; color: #e74c3c; display: block; }
+    .status-msg.success { background: rgba(46, 204, 113, 0.2); border: 1px solid #2ecc71; color: #2ecc71; display: block; }
 
-    .status-msg.error { background: rgba(231, 76, 60, 0.15); border: 1px solid #e74c3c; color: #e74c3c; display: block; }
-    .status-msg.success { background: rgba(46, 204, 113, 0.15); border: 1px solid #2ecc71; color: #2ecc71; display: block; }
+    .console-log {
+      background: #000;
+      color: #00ff00;
+      font-family: monospace;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 0.75rem;
+      max-height: 150px;
+      overflow-y: auto;
+      margin-bottom: 20px;
+      border: 1px solid #333;
+    }
 
-    /* TABELA DE ITENS CADASTRADOS */
     .table-container { margin-top: 30px; border-top: 1px solid #333d52; padding-top: 24px; overflow-x: auto; }
-    
     table { width: 100%; border-collapse: collapse; text-align: left; }
-    
-    th { background: #11141d; padding: 14px; font-size: 0.75rem; font-weight: 900; color: #f39c12; text-transform: uppercase; letter-spacing: 0.5px; }
-    td { padding: 14px; border-bottom: 1px solid #2a3447; font-size: 0.85rem; color: #dddddd; }
-
-    .badge { padding: 4px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: 900; text-transform: uppercase; display: inline-block; }
-    .badge-lata { background: #1d3557; color: #457b9d; border: 1px solid #457b9d; }
-    .badge-ococ { background: #1b4332; color: #2d6a4f; border: 1px solid #52b788; }
-    .badge-set { background: #3c096c; color: #7b2cbf; border: 1px solid #9d4edd; }
-
-    .btn-table { padding: 6px 14px; border-radius: 6px; font-size: 0.75rem; font-weight: bold; border: none; cursor: pointer; text-transform: uppercase; margin-right: 6px; }
-    .btn-table-edit { background: #f39c12; color: #1a1f2c; }
-    .btn-table-delete { background: #e74c3c; color: #ffffff; }
+    th { background: #11141d; padding: 14px; font-size: 0.75rem; font-weight: 900; color: #f39c12; text-transform: uppercase; }
+    td { padding: 14px; border-bottom: 1px solid #2a3447; font-size: 0.85rem; }
   </style>
 </head>
 <body>
 
   <div class="admin-card">
     <h1>Painel de Cadastro de Latas</h1>
-    <div class="subtitle">Gerencie o catálogo da coleção, cadastre novas edições e envie fotos direto para o Google Drive.</div>
+    <div class="subtitle">Gerencie o catálogo e envie fotos direto para o Google Drive.</div>
 
     <div id="statusMsg" class="status-msg"></div>
 
-    <form id="lataForm" onsubmit="handleFormSubmit(event)">
+    <div class="console-log" id="consoleLog">LOG DE DIAGNÓSTICO PRONTO...</div>
+
+    <form id="lataForm">
       <input type="hidden" id="editRowId" value="">
 
       <div class="form-grid">
         <div class="form-group col-2">
-          <label for="inputNome">Nome da Lata / Edição</label>
+          <label>Nome da Lata / Edição</label>
           <input type="text" id="inputNome" required placeholder="Ex: CARLSBERG LIGHT ARTIST EDITION">
         </div>
         <div class="form-group col-2">
-          <label for="inputCervejaria">Cervejaria / Marca</label>
+          <label>Cervejaria / Marca</label>
           <input type="text" id="inputCervejaria" required placeholder="Ex: CARLSBERG">
         </div>
         <div class="form-group col-2">
-          <label for="inputPais">País de Origem</label>
+          <label>País de Origem</label>
           <input type="text" id="inputPais" required placeholder="Ex: CHINA">
         </div>
         <div class="form-group">
-          <label for="inputVolume">Volume</label>
+          <label>Volume</label>
           <input type="text" id="inputVolume" placeholder="Ex: 500 ML">
         </div>
         <div class="form-group">
-          <label for="inputAno">Ano</label>
+          <label>Ano</label>
           <input type="number" id="inputAno" placeholder="Ex: 2024">
         </div>
         <div class="form-group col-2">
-          <label for="inputBarcode">Código de Barras</label>
+          <label>Código de Barras</label>
           <input type="text" id="inputBarcode" placeholder="Ex: 6901672913206">
         </div>
       </div>
@@ -224,27 +199,22 @@
           <div class="file-box-title">Logo da Marca</div>
           <label class="btn-file-custom" id="lblLogo">📁 ANEXAR ARQUIVO LOCAL<input type="file" id="fileLogo" accept="image/*" onchange="updateFileLabel('fileLogo', 'lblLogo')"></label>
         </div>
-        
         <div class="file-box">
           <div class="file-box-title">Foto da Capa (Cover)</div>
           <label class="btn-file-custom" id="lblCover">📁 ANEXAR ARQUIVO LOCAL<input type="file" id="fileCover" accept="image/*" onchange="updateFileLabel('fileCover', 'lblCover')"></label>
         </div>
-
         <div class="file-box">
           <div class="file-box-title">Foto Frente (Front)</div>
           <label class="btn-file-custom" id="lblFront">📁 ANEXAR ARQUIVO LOCAL<input type="file" id="fileFront" accept="image/*" onchange="updateFileLabel('fileFront', 'lblFront')"></label>
         </div>
-
         <div class="file-box">
           <div class="file-box-title">Foto Esquerda (Left)</div>
           <label class="btn-file-custom" id="lblLeft">📁 ANEXAR ARQUIVO LOCAL<input type="file" id="fileLeft" accept="image/*" onchange="updateFileLabel('fileLeft', 'lblLeft')"></label>
         </div>
-
         <div class="file-box">
           <div class="file-box-title">Foto Verso (Back)</div>
           <label class="btn-file-custom" id="lblBack">📁 ANEXAR ARQUIVO LOCAL<input type="file" id="fileBack" accept="image/*" onchange="updateFileLabel('fileBack', 'lblBack')"></label>
         </div>
-
         <div class="file-box">
           <div class="file-box-title">Foto Direita (Right)</div>
           <label class="btn-file-custom" id="lblRight">📁 ANEXAR ARQUIVO LOCAL<input type="file" id="fileRight" accept="image/*" onchange="updateFileLabel('fileRight', 'lblRight')"></label>
@@ -252,7 +222,7 @@
       </div>
 
       <div class="actions-row">
-        <button type="submit" class="btn-primary" id="btnSave">SALVAR ITEM</button>
+        <button type="button" class="btn-primary" id="btnSave" onclick="salvarFormulario()">SALVAR ITEM</button>
         <button type="button" class="btn-secondary" onclick="resetForm()">CANCELAR / LIMPAR</button>
       </div>
     </form>
@@ -263,105 +233,101 @@
         <thead>
           <tr>
             <th>ID</th>
-            <th>Tipo</th>
             <th>Nome</th>
             <th>Cervejaria</th>
             <th>País</th>
             <th>Volume</th>
-            <th>Ações</th>
           </tr>
         </thead>
         <tbody id="catalogTableBody">
-          <tr><td colspan="7" style="text-align:center;">Carregando itens do catálogo...</td></tr>
+          <tr><td colspan="5" style="text-align:center;">Carregando itens...</td></tr>
         </tbody>
       </table>
     </div>
   </div>
 
 <script>
-const API_URL = "https://script.google.com/macros/s/AKfycbwFIsSgEF2grkBpliyO_hSD0Lh2ULq6xHoJC6mDLYvjemTLYe67jF38MDNWP2ixITzE/exec";
-  let fullCatalog = [];
+  const API_URL = "https://script.google.com/macros/s/AKfycbwFIsSgEF2grkBpliyO_hSD0Lh2ULq6xHoJC6mDLYvjemTLYe67jF38MDNWP2ixITzE/exec";
+
+  function logMsg(msg) {
+    const el = document.getElementById("consoleLog");
+    el.innerHTML += "<br>> " + msg;
+    el.scrollTop = el.scrollHeight;
+  }
 
   function showStatus(msg, isSuccess) {
     const el = document.getElementById("statusMsg");
     el.innerText = msg;
     el.className = `status-msg ${isSuccess ? 'success' : 'error'}`;
-    setTimeout(() => { el.style.display = 'none'; }, 6000);
   }
 
   function updateFileLabel(inputId, lblId) {
     const input = document.getElementById(inputId);
     const lbl = document.getElementById(lblId);
     if (input.files && input.files.length > 0) {
-      lbl.innerHTML = `✓ ${input.files[0].name.substring(0, 18)}...`;
+      lbl.innerHTML = `✓ ${input.files[0].name.substring(0, 15)}...`;
       lbl.classList.add("has-file");
-    } else {
-      lbl.innerHTML = `📁 ANEXAR ARQUIVO LOCAL`;
-      lbl.classList.remove("has-file");
     }
   }
 
-// Compacta a foto no navegador antes de enviar ao Google Drive
-function fileToBase64(fileInput) {
+  function fileToBase64(fileInput) {
     return new Promise((resolve) => {
       if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
         resolve("");
         return;
       }
-      
       const file = fileInput.files[0];
       const reader = new FileReader();
-
       reader.onload = (e) => {
         const img = new Image();
         img.onload = () => {
           const canvas = document.createElement("canvas");
           let width = img.width;
           let height = img.height;
-          const maxDim = 1000; // Limita resolução em 1000px max para garantir upload leve
-
+          const maxDim = 800; // Reduz bastante para garantir um envio ultra leve
           if (width > height) {
-            if (width > maxDim) {
-              height = Math.round((height * maxDim) / width);
-              width = maxDim;
-            }
+            if (width > maxDim) { height = Math.round((height * maxDim) / width); width = maxDim; }
           } else {
-            if (height > maxDim) {
-              width = Math.round((width * maxDim) / height);
-              height = maxDim;
-            }
+            if (height > maxDim) { width = Math.round((width * maxDim) / height); height = maxDim; }
           }
-
           canvas.width = width;
           canvas.height = height;
           const ctx = canvas.getContext("2d");
           ctx.drawImage(img, 0, 0, width, height);
-          resolve(canvas.toDataURL("image/jpeg", 0.8));
+          resolve(canvas.toDataURL("image/jpeg", 0.7));
         };
         img.onerror = () => resolve(e.target.result);
         img.src = e.target.result;
       };
-
       reader.onerror = () => resolve("");
       reader.readAsDataURL(file);
     });
   }
-async function handleFormSubmit(e) {
-    e.preventDefault();
+
+  async function salvarFormulario() {
+    logMsg("Botão de Salvar Clicado!");
+
+    const nome = document.getElementById("inputNome").value;
+    const cervejaria = document.getElementById("inputCervejaria").value;
+    const pais = document.getElementById("inputPais").value;
+
+    if (!nome || !cervejaria || !pais) {
+      alert("Preencha Nome, Cervejaria e País!");
+      logMsg("ERRO: Campos obrigatórios em branco.");
+      return;
+    }
+
     const btnSave = document.getElementById("btnSave");
-    btnSave.innerText = "ENVIANDO FOTOS AO DRIVE...";
+    btnSave.innerText = "ENVIANDO...";
     btnSave.disabled = true;
 
     try {
-      const editRowId = document.getElementById("editRowId").value;
-      const action = editRowId ? "edit" : "save";
-
+      logMsg("Convertendo imagens em texto...");
       const payload = {
-        action: action,
-        _rowId: editRowId,
-        Nome: document.getElementById("inputNome").value,
-        Cervejaria: document.getElementById("inputCervejaria").value,
-        Pais: document.getElementById("inputPais").value,
+        action: "save",
+        Nome: nome,
+        Cervejaria: cervejaria,
+        Pais: pais,
         Volume: document.getElementById("inputVolume").value,
         Ano: document.getElementById("inputAno").value,
         Barcode: document.getElementById("inputBarcode").value,
@@ -376,7 +342,8 @@ async function handleFormSubmit(e) {
         ImgRight: await fileToBase64(document.getElementById("fileRight"))
       };
 
-      // Dispara o envio ignorando a trava de preflight CORS do Google
+      logMsg("Disparando requisição POST para a API Google Apps Script...");
+
       await fetch(API_URL, {
         method: "POST",
         mode: "no-cors",
@@ -384,121 +351,59 @@ async function handleFormSubmit(e) {
         body: JSON.stringify(payload)
       });
 
-      showStatus("Solicitação enviada com sucesso! Atualizando catálogo...", true);
-      
-      // Aguarda 3 segundos para o Apps Script concluir o upload e atualizar a planilha
+      logMsg("SINAL ENVIADO! Aguardando o Google processar e gravar no Drive (5 seg)...");
+      showStatus("Enviado com sucesso ao Google Drive! Atualizando em instantes...", true);
+
       setTimeout(() => {
         resetForm();
         loadCatalogTable();
-      }, 3000);
+        logMsg("Catálogo atualizado.");
+      }, 5000);
 
     } catch (err) {
-      console.error("Erro no envio:", err);
-      showStatus("Erro ao conectar com o servidor.", false);
+      logMsg("ERRO NO FETCH: " + err.toString());
+      showStatus("Erro de conexão.", false);
     } finally {
       btnSave.innerText = "SALVAR ITEM";
       btnSave.disabled = false;
     }
   }
+
   async function loadCatalogTable() {
     try {
       const response = await fetch(API_URL + "?nocache=" + new Date().getTime());
       const data = await response.json();
-      fullCatalog = Array.isArray(data) ? data : (data.data || []);
-      renderTable();
-    } catch (err) {
-      console.error(err);
-      document.getElementById("catalogTableBody").innerHTML = `<tr><td colspan="7" style="text-align:center; color:#e74c3c;">Erro ao carregar lista.</td></tr>`;
-    }
-  }
+      const catalog = Array.isArray(data) ? data : (data.data || []);
+      
+      const tbody = document.getElementById("catalogTableBody");
+      tbody.innerHTML = "";
 
-  function renderTable() {
-    const tbody = document.getElementById("catalogTableBody");
-    tbody.innerHTML = "";
-
-    if (fullCatalog.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;">Nenhum item cadastrado.</td></tr>`;
-      return;
-    }
-
-    fullCatalog.forEach((item) => {
-      const isSet = item.isSet || item.IsSet;
-      const isOcoc = item.isOcoc || item.IsOcoc;
-
-      let badge = '<span class="badge badge-lata">LATA</span>';
-      if (isSet && String(isSet).toLowerCase() === 'true') badge = '<span class="badge badge-set">SET</span>';
-      else if (isOcoc && String(isOcoc).toLowerCase() === 'true') badge = '<span class="badge badge-ococ">OCOC</span>';
-
-      const row = document.createElement("tr");
-      row.innerHTML = `
-        <td>${item.ID || item.id || item._rowId || '-'}</td>
-        <td>${badge}</td>
-        <td>${item.Nome || item.nome || item.name || '-'}</td>
-        <td>${item.Cervejaria || item.cervejaria || item.brewery || '-'}</td>
-        <td>${item.Pais || item.pais || item.country || '-'}</td>
-        <td>${item.Volume || item.volume || '-'}</td>
-        <td>
-          <button class="btn-table btn-table-edit" onclick="editItem(${item._rowId})">EDITAR</button>
-          <button class="btn-table btn-table-delete" onclick="deleteItem(${item._rowId})">EXCLUIR</button>
-        </td>
-      `;
-      tbody.appendChild(row);
-    });
-  }
-
-  function editItem(rowId) {
-    const item = fullCatalog.find(c => c._rowId == rowId);
-    if (!item) return;
-
-    document.getElementById("editRowId").value = item._rowId;
-    document.getElementById("inputNome").value = item.Nome || item.nome || item.name || "";
-    document.getElementById("inputCervejaria").value = item.Cervejaria || item.cervejaria || item.brewery || "";
-    document.getElementById("inputPais").value = item.Pais || item.pais || item.country || "";
-    document.getElementById("inputVolume").value = item.Volume || item.volume || "";
-    document.getElementById("inputAno").value = item.Ano || item.ano || "";
-    document.getElementById("inputBarcode").value = item.Barcode || item.barcode || "";
-
-    const isSet = item.isSet || item.IsSet;
-    const isOcoc = item.isOcoc || item.IsOcoc;
-    document.getElementById("checkOcoc").checked = isOcoc && String(isOcoc).toLowerCase() === 'true';
-    document.getElementById("checkSet").checked = isSet && String(isSet).toLowerCase() === 'true';
-
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-
-  async function deleteItem(rowId) {
-    if (!confirm("Tem certeza que deseja excluir esta lata?")) return;
-
-    try {
-      const response = await fetch(API_URL, {
-        method: "POST",
-        body: JSON.stringify({ action: "delete", _rowId: rowId })
-      });
-      const res = await response.json();
-      if (res.success) {
-        showStatus("Item excluído com sucesso!", true);
-        loadCatalogTable();
-      } else {
-        showStatus("Erro ao excluir item.", false);
+      if (catalog.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">Nenhum item cadastrado.</td></tr>`;
+        return;
       }
+
+      catalog.forEach((item) => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${item.ID || item.id || item._rowId || '-'}</td>
+          <td>${item.Nome || item.nome || item.name || '-'}</td>
+          <td>${item.Cervejaria || item.cervejaria || item.brewery || '-'}</td>
+          <td>${item.Pais || item.pais || item.country || '-'}</td>
+          <td>${item.Volume || item.volume || '-'}</td>
+        `;
+        tbody.appendChild(row);
+      });
     } catch (err) {
-      showStatus("Erro ao comunicar com o servidor.", false);
+      logMsg("Erro ao carregar lista: " + err.toString());
     }
   }
 
   function resetForm() {
-    document.getElementById("editRowId").value = "";
     document.getElementById("lataForm").reset();
-
-    const fileInputs = ['fileLogo', 'fileCover', 'fileFront', 'fileLeft', 'fileBack', 'fileRight'];
-    const labelIds = ['lblLogo', 'lblCover', 'lblFront', 'lblLeft', 'lblBack', 'lblRight'];
-
-    fileInputs.forEach((id, idx) => {
-      const lbl = document.getElementById(labelIds[idx]);
-      if (lbl) {
-        lbl.innerHTML = `📁 ANEXAR ARQUIVO LOCAL`;
-        lbl.classList.remove("has-file");
-      }
+    ['lblLogo', 'lblCover', 'lblFront', 'lblLeft', 'lblBack', 'lblRight'].forEach(id => {
+      const el = document.getElementById(id);
+      if(el) { el.innerHTML = "📁 ANEXAR ARQUIVO LOCAL"; el.classList.remove("has-file"); }
     });
   }
 
