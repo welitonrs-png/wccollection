@@ -98,7 +98,7 @@
     }
     .main-area.pushed { transform: translateX(260px); }
 
-    /* HERO PANEL COM FORMATÇÃO REENQUADRADA */
+    /* HERO PANEL REFORMATADO COM SUPORTE A LOGO */
     .hero-panel { 
       flex: 1; 
       min-height: 0; 
@@ -112,17 +112,23 @@
       overflow: hidden; 
     }
 
+    /* LOGO DA CERVEJARIA (TOPO DIREITO) */
     .hero-brand-logo-container { 
       position: absolute; 
-      top: 12px; 
-      right: 20px; 
-      width: 140px; 
-      height: 50px; 
+      top: 10px; 
+      right: 15px; 
+      width: 150px; 
+      height: 60px; 
+      background: rgba(22, 27, 38, 0.85);
+      border: 1px solid #333d52;
+      border-radius: 10px;
+      padding: 6px;
       display: flex; 
-      justify-content: flex-end; 
-      align-items: flex-start; 
+      justify-content: center; 
+      align-items: center; 
       z-index: 20; 
-      pointer-events: none; 
+      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+      backdrop-filter: blur(5px);
     }
 
     .hero-brand-logo-container img { 
@@ -174,25 +180,26 @@
       text-transform: uppercase; 
       font-style: italic; 
       overflow-y: auto; 
-      padding-right: 150px; 
+      padding-right: 170px; /* Evita que o texto encoste na logo */
     }
 
     .hero-title { 
-      font-size: clamp(1.1rem, 1.8vw, 1.4rem); 
+      font-size: clamp(1.2rem, 2vw, 1.6rem); 
       font-weight: 900; 
       line-height: 1.1; 
       color: #f39c12; 
-      margin-bottom: 6px; 
+      margin-bottom: 8px; 
       letter-spacing: 0.5px; 
       word-break: break-word; 
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
     }
 
     .info-block { display: flex; flex-direction: column; margin-bottom: 4px; }
-    .info-label { font-size: clamp(0.65rem, 0.85vw, 0.75rem); font-weight: 900; color: #f39c12; line-height: 1.1; letter-spacing: 0.5px; }
-    .info-val { font-size: clamp(0.85rem, 1.2vw, 1.1rem); font-weight: 900; color: #f39c12; line-height: 1.1; margin-top: 1px; }
+    .info-label { font-size: clamp(0.68rem, 0.85vw, 0.78rem); font-weight: 900; color: #e67e22; line-height: 1.1; letter-spacing: 0.5px; }
+    .info-val { font-size: clamp(0.9rem, 1.25vw, 1.15rem); font-weight: 900; color: #ffffff; line-height: 1.1; margin-top: 1px; }
 
     .counter-bar { display: flex; justify-content: flex-end; align-items: center; padding: 0 4px; }
-    .card-counter { font-size: 0.85rem; font-weight: 900; color: #f39c12; background: transparent; padding: 2px 8px; letter-spacing: 1px; }
+    .card-counter { font-size: 0.9rem; font-weight: 900; color: #f39c12; background: transparent; padding: 2px 8px; letter-spacing: 1px; }
 
     /* SEÇÃO INFERIOR DO CATÁLOGO */
     .catalog-section { height: 195px; min-height: 195px; width: 100%; overflow: hidden; flex-shrink: 0; touch-action: none; }
@@ -390,7 +397,7 @@
   </div>
 
 <script>
-  const API_URL = "https://script.google.com/macros/s/AKfycbwP4kTpSrGJllmlWjQp1YmD1Th5jiw1oUtX5cAJAZj9txy-eNi6_EYyLPG_Q0_coyT9/exec";
+  const API_URL = "https://script.google.com/macros/s/AKfycbwFIsSgEF2grkBpliyO_hSD0Lh2ULq6xHoJC6mDLYvjemTLYe67jF38MDNWP2ixITzE/exec";
   
   let currentFiltered = [];
   let totalServerItems = 0;
@@ -462,7 +469,7 @@
     return String(str).toLowerCase().replace(/(?:^|\s)\S/g, function(a) { return a.toUpperCase(); });
   }
 
-  function getOptimizedImageUrl(url, size = 300) {
+  function getOptimizedImageUrl(url, size = 400) {
     if (!url) return '';
     let str = String(url).trim();
     if (str === '') return '';
@@ -571,6 +578,7 @@
         document.getElementById("cardCounter").innerText = "0/0";
         document.getElementById("heroTitle").innerText = "NENHUMA LATA ENCONTRADA";
         document.getElementById("heroPhotos").innerHTML = "";
+        document.getElementById("heroBrandLogo").innerHTML = "";
       }
     } catch (err) {
       console.error("Erro ao carregar catálogo da API:", err);
@@ -952,10 +960,11 @@
     document.getElementById("heroYear").innerText = yearVal;
     document.getElementById("heroBarcode").innerText = barcodeVal;
 
+    // Atualiza a Logo da Cervejaria no Topo Direito
     const logoContainer = document.getElementById("heroBrandLogo");
     const logoUrl = can.BRAND_LOGO || can.brandLogo || can.logo;
     if (logoUrl && String(logoUrl).trim() !== "") {
-      logoContainer.innerHTML = `<img src="${getOptimizedImageUrl(logoUrl, 400)}" alt="LOGO DA CERVEJARIA">`;
+      logoContainer.innerHTML = `<img src="${getOptimizedImageUrl(logoUrl, 400)}" alt="LOGO DA CERVEJARIA" onerror="this.style.display='none'">`;
     } else {
       logoContainer.innerHTML = "";
     }
