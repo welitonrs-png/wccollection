@@ -279,7 +279,7 @@
   </div>
 
 <script>
-  const API_URL = "https://script.google.com/macros/s/AKfycbwFIsSgEF2grkBpliyO_hSD0Lh2ULq6xHoJC6mDLYvjemTLYe67jF38MDNWP2ixITzE/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbwFIsSgEF2grkBpliyO_hSD0Lh2ULq6xHoJC6mDLYvjemTLYe67jF38MDNWP2ixITzE/exec";
   let fullCatalog = [];
 
   function showStatus(msg, isSuccess) {
@@ -346,7 +346,7 @@ function fileToBase64(fileInput) {
       reader.readAsDataURL(file);
     });
   }
- async function handleFormSubmit(e) {
+async function handleFormSubmit(e) {
     e.preventDefault();
     const btnSave = document.getElementById("btnSave");
     btnSave.innerText = "ENVIANDO FOTOS AO DRIVE...";
@@ -356,7 +356,6 @@ function fileToBase64(fileInput) {
       const editRowId = document.getElementById("editRowId").value;
       const action = editRowId ? "edit" : "save";
 
-      // Converte as fotos reduzindo resolução para garantir envio rápido
       const payload = {
         action: action,
         _rowId: editRowId,
@@ -377,25 +376,25 @@ function fileToBase64(fileInput) {
         ImgRight: await fileToBase64(document.getElementById("fileRight"))
       };
 
-      // Envio formatado como text/plain para contornar a trava do Google Web App
-      const response = await fetch(API_URL, {
+      // Dispara o envio ignorando a trava de preflight CORS do Google
+      await fetch(API_URL, {
         method: "POST",
+        mode: "no-cors",
         headers: { "Content-Type": "text/plain;charset=utf-8" },
         body: JSON.stringify(payload)
       });
 
-      const res = await response.json();
-
-      if (res.success) {
-        showStatus(res.message || "Lata e fotos salvas com sucesso no Google Drive!", true);
+      showStatus("Solicitação enviada com sucesso! Atualizando catálogo...", true);
+      
+      // Aguarda 3 segundos para o Apps Script concluir o upload e atualizar a planilha
+      setTimeout(() => {
         resetForm();
         loadCatalogTable();
-      } else {
-        showStatus("Erro no servidor: " + (res.error || "Não foi possível salvar."), false);
-      }
+      }, 3000);
+
     } catch (err) {
-      console.error(err);
-      showStatus("Erro de envio. Verifique o console ou a URL do Apps Script.", false);
+      console.error("Erro no envio:", err);
+      showStatus("Erro ao conectar com o servidor.", false);
     } finally {
       btnSave.innerText = "SALVAR ITEM";
       btnSave.disabled = false;
