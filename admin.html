@@ -302,7 +302,7 @@
   }
 
 // Compacta a foto no navegador antes de enviar ao Google Drive
-  function fileToBase64(fileInput) {
+function fileToBase64(fileInput) {
     return new Promise((resolve) => {
       if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
         resolve("");
@@ -318,7 +318,7 @@
           const canvas = document.createElement("canvas");
           let width = img.width;
           let height = img.height;
-          const maxDim = 1200; // Tamanho ideal máximo para fotos de latas
+          const maxDim = 1000; // Limita resolução em 1000px max para garantir upload leve
 
           if (width > height) {
             if (width > maxDim) {
@@ -336,9 +336,7 @@
           canvas.height = height;
           const ctx = canvas.getContext("2d");
           ctx.drawImage(img, 0, 0, width, height);
-
-          // Exporta JPEG otimizado
-          resolve(canvas.toDataURL("image/jpeg", 0.82));
+          resolve(canvas.toDataURL("image/jpeg", 0.8));
         };
         img.onerror = () => resolve(e.target.result);
         img.src = e.target.result;
@@ -348,7 +346,6 @@
       reader.readAsDataURL(file);
     });
   }
-
  async function handleFormSubmit(e) {
     e.preventDefault();
     const btnSave = document.getElementById("btnSave");
