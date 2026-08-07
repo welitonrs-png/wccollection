@@ -386,19 +386,16 @@
     return String(str).toLowerCase().replace(/(?:^|\s)\S/g, function(a) { return a.toUpperCase(); });
   }
 
-  /* SOLUÇÃO 2: TRATAMENTO ROBUSTO DE IMAGENS DO GOOGLE DRIVE / LH3 */
   function getOptimizedImageUrl(url, size = 300) {
     if (!url) return '';
     let str = String(url).trim();
     if (str === '') return '';
 
-    // Se for URL do Googleusercontent (lh3.googleusercontent.com/d/ID)
     if (str.includes('googleusercontent.com')) {
       const baseUrl = str.split('=')[0];
       return `${baseUrl}=s${size}-rw`;
     }
     
-    // Suporte a links padrão de compartilhamento do Google Drive (/file/d/ID ou ?id=ID)
     const driveMatch = str.match(/\/d\/([a-zA-Z0-9_-]+)/) || str.match(/id=([a-zA-Z0-9_-]+)/);
     if (driveMatch && driveMatch[1]) {
       return `https://lh3.googleusercontent.com/d/${driveMatch[1]}=s${size}-rw`;
@@ -743,7 +740,7 @@
     });
   }
 
-function renderApp() {
+  function renderApp() {
     const row = document.getElementById("cardRow");
     row.innerHTML = "";
 
@@ -758,7 +755,7 @@ function renderApp() {
     pageItems.forEach((can, localIndex) => {
       const globalIndex = startIndex + localIndex;
 
-      // Pega a imagem da lata sem pegar a barra duplicada
+      // Pega a imagem da lata sem duplicar o rótulo do card
       const rawImg = can.ImgFront || can.imgfront || can.front || can.ImgCover || can.imgcover || can.cover;
       const frontImg = getOptimizedImageUrl(rawImg, 400);
 
@@ -1143,52 +1140,6 @@ function renderApp() {
           openExitModal();
         }
       }
-      // Função auxiliar para converter arquivo em String Base64
-function fileToBase64(fileInput) {
-  return new Promise((resolve) => {
-    if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
-      resolve("");
-      return;
-    }
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = () => resolve("");
-    reader.readAsDataURL(fileInput.files[0]);
-  });
-}
-
-// Exemplo de envio no salvar do Admin
-async function salvarLataAdmin() {
-  const payload = {
-    action: "save",
-    Nome: document.getElementById("inputNome").value,
-    Cervejaria: document.getElementById("inputCervejaria").value,
-    Pais: document.getElementById("inputPais").value,
-    Volume: document.getElementById("inputVolume").value,
-    Ano: document.getElementById("inputAno").value,
-    Barcode: document.getElementById("inputBarcode").value,
-    isOcoc: document.getElementById("checkOcoc").checked,
-    isSet: document.getElementById("checkSet").checked,
-    
-    // Converte os inputs de arquivo para Base64
-    BRAND_LOGO: await fileToBase64(document.getElementById("fileLogo")),
-    ImgCover: await fileToBase64(document.getElementById("fileCover")),
-    ImgFront: await fileToBase64(document.getElementById("fileFront")),
-    ImgLeft: await fileToBase64(document.getElementById("fileLeft")),
-    ImgBack: await fileToBase64(document.getElementById("fileBack")),
-    ImgRight: await fileToBase64(document.getElementById("fileRight"))
-  };
-
-  const response = await fetch(API_URL, {
-    method: "POST",
-    body: JSON.stringify(payload)
-  });
-
-  const res = await response.json();
-  if (res.success) {
-    alert("Lata e fotos salvas com sucesso no Google Drive!");
-  }
-}
 
       const activeElem = document.activeElement;
       if (activeElem && (activeElem.classList.contains("cat-btn") || activeElem.classList.contains("brand-btn")) && e.key === "ArrowRight") {
