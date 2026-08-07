@@ -743,7 +743,7 @@
     });
   }
 
-  function renderApp() {
+function renderApp() {
     const row = document.getElementById("cardRow");
     row.innerHTML = "";
 
@@ -758,8 +758,8 @@
     pageItems.forEach((can, localIndex) => {
       const globalIndex = startIndex + localIndex;
 
-      // Busca a imagem de capa em todas as variações das colunas
-      const rawImg = can.ImgCover || can.imgcover || can.ImgFront || can.imgfront || can.front || can.cover || can.BRAND_LOGO || can.brandLogo;
+      // Pega a imagem da lata sem pegar a barra duplicada
+      const rawImg = can.ImgFront || can.imgfront || can.front || can.ImgCover || can.imgcover || can.cover;
       const frontImg = getOptimizedImageUrl(rawImg, 400);
 
       const brandName = toTitleCase(can.brewery || can.Cervejaria || can.cervejaria || can.name || can.Nome || "Cerveja");
@@ -843,7 +843,7 @@
 
       card.innerHTML = `
         <div class="card-top-photo">
-          <img src="${frontImg}" alt="${brandName}" loading="lazy" decoding="async">
+          <img src="${frontImg}" alt="${brandName}" loading="lazy" decoding="async" onerror="this.src='logo.png'">
         </div>
         <div class="card-bottom-bar" style="background-color: ${cardColor}; color: ${colorTheme.text};">
           <div class="card-bar-title" style="color: ${colorTheme.text};">${brandName}</div>
