@@ -3,71 +3,200 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Painel do Admin - WCCollection</title>
+  <title>Painel de Cadastro - WCCollection</title>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-    body { background-color: #1a1e29; color: #dddddd; padding: 20px; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; outline: none; }
     
-    h1, h2 { color: #f39c12; margin-bottom: 15px; }
-    .container { max-width: 1000px; margin: 0 auto; background: #161b26; padding: 24px; border-radius: 12px; border: 1px solid #333d52; }
-    
-    .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 20px; }
+    body { background-color: #1a1e29; color: #dddddd; padding: 30px; display: flex; justify-content: center; }
+
+    .admin-card {
+      width: 100%;
+      max-width: 1100px;
+      background: #161b26;
+      border: 1px solid #333d52;
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+
+    h1 { color: #f39c12; font-size: 1.8rem; font-weight: 900; text-transform: uppercase; margin-bottom: 6px; letter-spacing: 0.5px; }
+    .subtitle { color: #a0aec0; font-size: 0.85rem; margin-bottom: 24px; }
+
+    /* GRID DE CAMPOS */
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    @media (max-width: 900px) {
+      .form-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
     .form-group { display: flex; flex-direction: column; gap: 6px; }
-    label { font-size: 0.85rem; font-weight: bold; color: #f39c12; text-transform: uppercase; }
-    input[type="text"], input[type="number"], select { padding: 10px; background: #11141d; border: 1px solid #333d52; border-radius: 6px; color: #fff; }
-    
-    .file-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 20px; }
-    .file-card { background: #11141d; border: 1px solid #333d52; padding: 10px; border-radius: 8px; text-align: center; }
-    .file-card input { margin-top: 8px; width: 100%; font-size: 0.8rem; color: #a0aec0; }
-    
-    .checkbox-group { display: flex; gap: 20px; align-items: center; margin-bottom: 20px; }
-    .checkbox-group label { display: flex; align-items: center; gap: 8px; cursor: pointer; color: #fff; }
+    .form-group.col-2 { grid-column: span 2; }
 
-    .btn-container { display: flex; gap: 12px; margin-bottom: 20px; }
-    button { padding: 12px 24px; border-radius: 8px; font-weight: bold; border: none; cursor: pointer; text-transform: uppercase; transition: all 0.2s; }
-    .btn-save { background: #f39c12; color: #1a1f2c; }
-    .btn-save:hover { background: #e67e22; }
-    .btn-cancel { background: #333d52; color: #fff; }
-    
-    .status-msg { padding: 12px; border-radius: 8px; margin-bottom: 20px; font-weight: bold; display: none; }
-    .status-msg.error { background: rgba(231, 76, 60, 0.2); border: 1px solid #e74c3c; color: #e74c3c; display: block; }
-    .status-msg.success { background: rgba(46, 204, 113, 0.2); border: 1px solid #2ecc71; color: #2ecc71; display: block; }
+    label { font-size: 0.75rem; font-weight: 900; color: #f39c12; text-transform: uppercase; letter-spacing: 0.5px; }
 
-    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-    th, td { padding: 12px; text-align: left; border-bottom: 1px solid #2a3447; font-size: 0.85rem; }
-    th { background: #11141d; color: #f39c12; text-transform: uppercase; }
-    .badge { padding: 3px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; }
-    .badge-lata { background: #2980b9; color: #fff; }
-    .badge-ococ { background: #27ae60; color: #fff; }
-    .badge-set { background: #8e44ad; color: #fff; }
+    input[type="text"], input[type="number"], select {
+      width: 100%;
+      padding: 12px;
+      background: #11141d;
+      border: 1px solid #333d52;
+      border-radius: 8px;
+      color: #ffffff;
+      font-size: 0.9rem;
+      transition: border-color 0.2s;
+    }
+
+    input[type="text"]:focus, input[type="number"]:focus {
+      border-color: #f39c12;
+    }
+
+    /* CHECKBOXES ESTILIZADOS */
+    .checkbox-row { display: flex; gap: 24px; align-items: center; margin-bottom: 24px; }
+    .checkbox-label { display: flex; align-items: center; gap: 8px; cursor: pointer; color: #ffffff; font-weight: bold; font-size: 0.85rem; }
+    .checkbox-label input { width: 16px; height: 16px; accent-color: #f39c12; cursor: pointer; }
+
+    /* SEÇÃO DE BOTÕES DE UPLOAD DE ARQUIVOS LOCAL (ESTILO ORIGINAL) */
+    .section-title { font-size: 0.8rem; font-weight: 900; color: #f39c12; text-transform: uppercase; margin-bottom: 12px; }
+
+    .file-upload-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    @media (max-width: 768px) {
+      .file-upload-grid { grid-template-columns: 1fr; }
+    }
+
+    .file-box {
+      background: #11141d;
+      border: 1px solid #2a3447;
+      border-radius: 8px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .file-box-title { font-size: 0.75rem; font-weight: bold; color: #f39c12; text-transform: uppercase; text-align: center; }
+
+    /* BOTÃO ESTILIZADO DE ANEXAR */
+    .btn-file-custom {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: #2a3447;
+      color: #f39c12;
+      border: 1px solid #333d52;
+      padding: 10px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: bold;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+    }
+
+    .btn-file-custom:hover { background: #333d52; border-color: #f39c12; }
+    .btn-file-custom.has-file { background: #1e3a29; color: #2ecc71; border-color: #2ecc71; }
+
+    input[type="file"] { display: none; }
+
+    /* BOTÕES DE AÇÃO DO FORMULÁRIO */
+    .actions-row { display: flex; gap: 16px; margin-bottom: 30px; }
+
+    .btn-primary {
+      background: #f39c12;
+      color: #1a1f2c;
+      padding: 14px 28px;
+      border-radius: 8px;
+      font-weight: 900;
+      font-size: 0.95rem;
+      border: none;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      transition: all 0.2s;
+    }
+
+    .btn-primary:hover { background: #e67e22; box-shadow: 0 4px 15px rgba(243, 156, 18, 0.3); }
+
+    .btn-secondary {
+      background: #2a3447;
+      color: #a0aec0;
+      padding: 14px 28px;
+      border-radius: 8px;
+      font-weight: 800;
+      font-size: 0.95rem;
+      border: none;
+      cursor: pointer;
+      text-transform: uppercase;
+      transition: all 0.2s;
+    }
+
+    .btn-secondary:hover { background: #333d52; color: #ffffff; }
+
+    /* MENSAGEM DE STATUS DA API */
+    .status-msg {
+      padding: 14px;
+      border-radius: 8px;
+      margin-bottom: 24px;
+      font-size: 0.85rem;
+      font-weight: 800;
+      display: none;
+    }
+
+    .status-msg.error { background: rgba(231, 76, 60, 0.15); border: 1px solid #e74c3c; color: #e74c3c; display: block; }
+    .status-msg.success { background: rgba(46, 204, 113, 0.15); border: 1px solid #2ecc71; color: #2ecc71; display: block; }
+
+    /* TABELA DE ITENS CADASTRADOS */
+    .table-container { margin-top: 30px; border-top: 1px solid #333d52; padding-top: 24px; overflow-x: auto; }
     
-    .btn-action { padding: 6px 12px; font-size: 0.75rem; margin-right: 4px; }
-    .btn-edit { background: #f39c12; color: #1a1f2c; }
-    .btn-delete { background: #e74c3c; color: #fff; }
+    table { width: 100%; border-collapse: collapse; text-align: left; }
+    
+    th { background: #11141d; padding: 14px; font-size: 0.75rem; font-weight: 900; color: #f39c12; text-transform: uppercase; letter-spacing: 0.5px; }
+    td { padding: 14px; border-bottom: 1px solid #2a3447; font-size: 0.85rem; color: #dddddd; }
+
+    .badge { padding: 4px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: 900; text-transform: uppercase; display: inline-block; }
+    .badge-lata { background: #1d3557; color: #457b9d; border: 1px solid #457b9d; }
+    .badge-ococ { background: #1b4332; color: #2d6a4f; border: 1px solid #52b788; }
+    .badge-set { background: #3c096c; color: #7b2cbf; border: 1px solid #9d4edd; }
+
+    .btn-table { padding: 6px 14px; border-radius: 6px; font-size: 0.75rem; font-weight: bold; border: none; cursor: pointer; text-transform: uppercase; margin-right: 6px; }
+    .btn-table-edit { background: #f39c12; color: #1a1f2c; }
+    .btn-table-delete { background: #e74c3c; color: #ffffff; }
   </style>
 </head>
 <body>
 
-  <div class="container">
-    <h1>PAINEL DE CADASTRO DE LATAS</h1>
-    
+  <div class="admin-card">
+    <h1>Painel de Cadastro de Latas</h1>
+    <div class="subtitle">Gerencie o catálogo da coleção, cadastre novas edições e envie fotos direto para o Google Drive.</div>
+
     <div id="statusMsg" class="status-msg"></div>
 
     <form id="lataForm" onsubmit="handleFormSubmit(event)">
       <input type="hidden" id="editRowId" value="">
 
       <div class="form-grid">
-        <div class="form-group">
+        <div class="form-group col-2">
           <label for="inputNome">Nome da Lata / Edição</label>
-          <input type="text" id="inputNome" required placeholder="Ex: Live Schmeckt's Am Besten">
+          <input type="text" id="inputNome" required placeholder="Ex: CARLSBERG LIGHT ARTIST EDITION">
         </div>
-        <div class="form-group">
+        <div class="form-group col-2">
           <label for="inputCervejaria">Cervejaria / Marca</label>
-          <input type="text" id="inputCervejaria" required placeholder="Ex: Heineken">
+          <input type="text" id="inputCervejaria" required placeholder="Ex: CARLSBERG">
         </div>
-        <div class="form-group">
+        <div class="form-group col-2">
           <label for="inputPais">País de Origem</label>
-          <input type="text" id="inputPais" required placeholder="Ex: Suíça">
+          <input type="text" id="inputPais" required placeholder="Ex: CHINA">
         </div>
         <div class="form-group">
           <label for="inputVolume">Volume</label>
@@ -77,50 +206,76 @@
           <label for="inputAno">Ano</label>
           <input type="number" id="inputAno" placeholder="Ex: 2024">
         </div>
-        <div class="form-group">
+        <div class="form-group col-2">
           <label for="inputBarcode">Código de Barras</label>
-          <input type="text" id="inputBarcode" placeholder="Ex: 7610055020750">
+          <input type="text" id="inputBarcode" placeholder="Ex: 6901672913206">
         </div>
       </div>
 
-      <div class="checkbox-group">
-        <label><input type="checkbox" id="checkOcoc"> É OCOC (Países)</label>
-        <label><input type="checkbox" id="checkSet"> É SET / PACK</label>
+      <div class="checkbox-row">
+        <label class="checkbox-label"><input type="checkbox" id="checkOcoc"> É OCOC (PAÍSES)</label>
+        <label class="checkbox-label"><input type="checkbox" id="checkSet"> É SET / PACK</label>
       </div>
 
-      <label>IMAGENS DO ITEM (ENVIO DIRETO PARA O GOOGLE DRIVE)</label>
-      <div class="file-grid">
-        <div class="file-card"><label>Logo da Marca</label><input type="file" id="fileLogo" accept="image/*"></div>
-        <div class="file-card"><label>Foto da Capa (Cover)</label><input type="file" id="fileCover" accept="image/*"></div>
-        <div class="file-card"><label>Foto Frente (Front)</label><input type="file" id="fileFront" accept="image/*"></div>
-        <div class="file-card"><label>Foto Esquerda (Left)</label><input type="file" id="fileLeft" accept="image/*"></div>
-        <div class="file-card"><label>Foto Verso (Back)</label><input type="file" id="fileBack" accept="image/*"></div>
-        <div class="file-card"><label>Foto Direita (Right)</label><input type="file" id="fileRight" accept="image/*"></div>
+      <div class="section-title">Imagens do Item (Upload Automático Google Drive)</div>
+      
+      <div class="file-upload-grid">
+        <div class="file-box">
+          <div class="file-box-title">Logo da Marca</div>
+          <label class="btn-file-custom" id="lblLogo">📁 ANEXAR ARQUIVO LOCAL<input type="file" id="fileLogo" accept="image/*" onchange="updateFileLabel('fileLogo', 'lblLogo')"></label>
+        </div>
+        
+        <div class="file-box">
+          <div class="file-box-title">Foto da Capa (Cover)</div>
+          <label class="btn-file-custom" id="lblCover">📁 ANEXAR ARQUIVO LOCAL<input type="file" id="fileCover" accept="image/*" onchange="updateFileLabel('fileCover', 'lblCover')"></label>
+        </div>
+
+        <div class="file-box">
+          <div class="file-box-title">Foto Frente (Front)</div>
+          <label class="btn-file-custom" id="lblFront">📁 ANEXAR ARQUIVO LOCAL<input type="file" id="fileFront" accept="image/*" onchange="updateFileLabel('fileFront', 'lblFront')"></label>
+        </div>
+
+        <div class="file-box">
+          <div class="file-box-title">Foto Esquerda (Left)</div>
+          <label class="btn-file-custom" id="lblLeft">📁 ANEXAR ARQUIVO LOCAL<input type="file" id="fileLeft" accept="image/*" onchange="updateFileLabel('fileLeft', 'lblLeft')"></label>
+        </div>
+
+        <div class="file-box">
+          <div class="file-box-title">Foto Verso (Back)</div>
+          <label class="btn-file-custom" id="lblBack">📁 ANEXAR ARQUIVO LOCAL<input type="file" id="fileBack" accept="image/*" onchange="updateFileLabel('fileBack', 'lblBack')"></label>
+        </div>
+
+        <div class="file-box">
+          <div class="file-box-title">Foto Direita (Right)</div>
+          <label class="btn-file-custom" id="lblRight">📁 ANEXAR ARQUIVO LOCAL<input type="file" id="fileRight" accept="image/*" onchange="updateFileLabel('fileRight', 'lblRight')"></label>
+        </div>
       </div>
 
-      <div class="btn-container">
-        <button type="submit" class="btn-save" id="btnSave">SALVAR ITEM</button>
-        <button type="button" class="btn-cancel" onclick="resetForm()">CANCELAR / LIMPAR</button>
+      <div class="actions-row">
+        <button type="submit" class="btn-primary" id="btnSave">SALVAR ITEM</button>
+        <button type="button" class="btn-secondary" onclick="resetForm()">CANCELAR / LIMPAR</button>
       </div>
     </form>
 
-    <h2>ITENS CADASTRADOS NO CATÁLOGO</h2>
-    <table>
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Tipo</th>
-          <th>Nome</th>
-          <th>Cervejaria</th>
-          <th>País</th>
-          <th>Volume</th>
-          <th>Ações</th>
-        </tr>
-      </thead>
-      <tbody id="catalogTableBody">
-        <tr><td colspan="7" style="text-align:center;">Carregando itens...</td></tr>
-      </tbody>
-    </table>
+    <div class="table-container">
+      <h2>Itens Cadastrados no Catálogo</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Tipo</th>
+            <th>Nome</th>
+            <th>Cervejaria</th>
+            <th>País</th>
+            <th>Volume</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody id="catalogTableBody">
+          <tr><td colspan="7" style="text-align:center;">Carregando itens do catálogo...</td></tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 
 <script>
@@ -132,6 +287,18 @@
     el.innerText = msg;
     el.className = `status-msg ${isSuccess ? 'success' : 'error'}`;
     setTimeout(() => { el.style.display = 'none'; }, 6000);
+  }
+
+  function updateFileLabel(inputId, lblId) {
+    const input = document.getElementById(inputId);
+    const lbl = document.getElementById(lblId);
+    if (input.files && input.files.length > 0) {
+      lbl.innerHTML = `✓ ${input.files[0].name.substring(0, 18)}...`;
+      lbl.classList.add("has-file");
+    } else {
+      lbl.innerHTML = `📁 ANEXAR ARQUIVO LOCAL`;
+      lbl.classList.remove("has-file");
+    }
   }
 
   function fileToBase64(fileInput) {
@@ -150,7 +317,7 @@
   async function handleFormSubmit(e) {
     e.preventDefault();
     const btnSave = document.getElementById("btnSave");
-    btnSave.innerText = "ENVIANDO IMAGENS...";
+    btnSave.innerText = "ENVIANDO FOTOS AO DRIVE...";
     btnSave.disabled = true;
 
     try {
@@ -169,7 +336,6 @@
         isOcoc: document.getElementById("checkOcoc").checked,
         isSet: document.getElementById("checkSet").checked,
 
-        // Converte as fotos em Base64 para envio seguro
         BRAND_LOGO: await fileToBase64(document.getElementById("fileLogo")),
         ImgCover: await fileToBase64(document.getElementById("fileCover")),
         ImgFront: await fileToBase64(document.getElementById("fileFront")),
@@ -186,7 +352,7 @@
       const res = await response.json();
 
       if (res.success) {
-        showStatus(res.message || "Item e fotos salvos com sucesso no Google Drive!", true);
+        showStatus(res.message || "Item salvo e fotos enviadas com sucesso ao Google Drive!", true);
         resetForm();
         loadCatalogTable();
       } else {
@@ -205,7 +371,6 @@
     try {
       const response = await fetch(API_URL + "?nocache=" + new Date().getTime());
       const data = await response.json();
-      
       fullCatalog = Array.isArray(data) ? data : (data.data || []);
       renderTable();
     } catch (err) {
@@ -240,8 +405,8 @@
         <td>${item.Pais || item.pais || item.country || '-'}</td>
         <td>${item.Volume || item.volume || '-'}</td>
         <td>
-          <button class="btn-action btn-edit" onclick="editItem(${item._rowId})">EDITAR</button>
-          <button class="btn-action btn-delete" onclick="deleteItem(${item._rowId})">EXCLUIR</button>
+          <button class="btn-table btn-table-edit" onclick="editItem(${item._rowId})">EDITAR</button>
+          <button class="btn-table btn-table-delete" onclick="deleteItem(${item._rowId})">EXCLUIR</button>
         </td>
       `;
       tbody.appendChild(row);
@@ -291,6 +456,17 @@
   function resetForm() {
     document.getElementById("editRowId").value = "";
     document.getElementById("lataForm").reset();
+
+    const fileInputs = ['fileLogo', 'fileCover', 'fileFront', 'fileLeft', 'fileBack', 'fileRight'];
+    const labelIds = ['lblLogo', 'lblCover', 'lblFront', 'lblLeft', 'lblBack', 'lblRight'];
+
+    fileInputs.forEach((id, idx) => {
+      const lbl = document.getElementById(labelIds[idx]);
+      if (lbl) {
+        lbl.innerHTML = `📁 ANEXAR ARQUIVO LOCAL`;
+        lbl.classList.remove("has-file");
+      }
+    });
   }
 
   window.onload = loadCatalogTable;
