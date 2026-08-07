@@ -320,7 +320,7 @@
   let totalServerItems = 0;
   let totalServerPages = 1;
   let currentServerPage = 1;
-  const SERVER_LIMIT = 60; // Tamanho ideal por página no servidor
+  const SERVER_LIMIT = 60;
 
   let zoomGallery = [];
   let currentZoomIndex = 0;
@@ -386,12 +386,25 @@
     return String(str).toLowerCase().replace(/(?:^|\s)\S/g, function(a) { return a.toUpperCase(); });
   }
 
+  /* SOLUÇÃO 2: TRATAMENTO ROBUSTO DE IMAGENS DO GOOGLE DRIVE / LH3 */
   function getOptimizedImageUrl(url, size = 300) {
     if (!url) return '';
-    if (url.includes('googleusercontent.com')) {
-      return url.split('=')[0] + `=s${size}-rw`;
+    let str = String(url).trim();
+    if (str === '') return '';
+
+    // Se for URL do Googleusercontent (lh3.googleusercontent.com/d/ID)
+    if (str.includes('googleusercontent.com')) {
+      const baseUrl = str.split('=')[0];
+      return `${baseUrl}=s${size}-rw`;
     }
-    return url;
+    
+    // Suporte a links padrão de compartilhamento do Google Drive (/file/d/ID ou ?id=ID)
+    const driveMatch = str.match(/\/d\/([a-zA-Z0-9_-]+)/) || str.match(/id=([a-zA-Z0-9_-]+)/);
+    if (driveMatch && driveMatch[1]) {
+      return `https://lh3.googleusercontent.com/d/${driveMatch[1]}=s${size}-rw`;
+    }
+
+    return str;
   }
 
   function getFlagUrlByCountry(countryName) {
@@ -442,7 +455,6 @@
     }
   }
 
-  /* REQUISIÇÃO PAGINADA NO SERVIDOR PARA MÁXIMA LEVEZA */
   async function fetchCatalogFromSheet(page = 1, append = false) {
     if(!API_URL || API_URL.includes("COLE_AQUI")) return;
 
@@ -502,7 +514,6 @@
     const maxLocalLoaded = currentFiltered.length;
     const currentLocalPosition = (currentPage * cardsPerRow) + activeLocalIndex;
 
-    // Quando estiver a 12 itens do final do carregamento atual, pede mais 60 ao servidor
     if (maxLocalLoaded - currentLocalPosition <= 12) {
       isLoadingMore = true;
       await fetchCatalogFromSheet(currentServerPage + 1, true);
@@ -683,7 +694,7 @@
     const brandContainer = document.getElementById("brandInlineList");
     brandContainer.innerHTML = "";
     
-    const brands = [...new Set(currentFiltered.map(c => c.brewery || c.Cervejaria).filter(Boolean))].sort();
+    const brands = [...new Set(currentFiltered.map(c => c.brewery || c.Cervejaria || c.CERVEJARIA).filter(Boolean))].sort();
     
     let defaultText = "TODAS AS MARCAS";
     if (currentTab === 'ococ') defaultText = "TODOS OS PAÍSES";
@@ -732,7 +743,6 @@
     });
   }
 
-  /* RENDERIZAÇÃO DOS CARDS COM COR DE TEXTO INTELIGENTE E VIRTUALIZAÇÃO */
   function renderApp() {
     const row = document.getElementById("cardRow");
     row.innerHTML = "";
@@ -748,15 +758,16 @@
     pageItems.forEach((can, localIndex) => {
       const globalIndex = startIndex + localIndex;
 
-      const rawImg = can.ImgFront || can.front || can.ImgCover || can.cover || can.brandLogo;
+      // Busca a imagem de capa em todas as variações das colunas
+      const rawImg = can.ImgCover || can.imgcover || can.ImgFront || can.imgfront || can.front || can.cover || can.BRAND_LOGO || can.brandLogo;
       const frontImg = getOptimizedImageUrl(rawImg, 400);
 
-      const brandName = toTitleCase(can.brewery || can.Cervejaria || can.name || "Cerveja");
-      const countryName = toTitleCase(can.country || can.Pais || "");
+      const brandName = toTitleCase(can.brewery || can.Cervejaria || can.cervejaria || can.name || can.Nome || "Cerveja");
+      const countryName = toTitleCase(can.country || can.Pais || can.pais || "");
       const volumeText = can.volume || can.Volume || "";
       const flagUrl = getFlagUrlByCountry(countryName);
 
-      const brandKey = String(can.brewery || can.Cervejaria || "").toLowerCase().trim();
+      const brandKey = String(can.brewery || can.Cervejaria || can.cervejaria || "").toLowerCase().trim();
       const cardColor = BRAND_COLORS[brandKey] || "#008234";
 
       const colorTheme = getTextColorForBackground(cardColor);
@@ -857,10 +868,10 @@
     if (currentTab === 'ococ') fallbackTitle = "SELECIONE UMA LATA (OCOC)";
     if (currentTab === 'sets') fallbackTitle = "SELECIONE UM SET";
 
-    const titleVal = can.name || can.Nome || fallbackTitle;
-    const countryVal = can.country || can.Pais || "-";
+    const titleVal = can.name || can.Nome || can.nome || fallbackTitle;
+    const countryVal = can.country || can.Pais || can.pais || "-";
     const volumeVal = can.volume || can.Volume || "-";
-    const yearVal = can.year || can.Ano || "-";
+    const yearVal = can.year || can.Ano || can.ano || "-";
     const barcodeVal = can.barcode || can.Barcode || "-";
 
     document.getElementById("heroTitle").innerText = String(titleVal).toUpperCase();
@@ -870,7 +881,7 @@
     document.getElementById("heroBarcode").innerText = barcodeVal;
 
     const logoContainer = document.getElementById("heroBrandLogo");
-    const logoUrl = can.brandLogo || can.BRAND_LOGO;
+    const logoUrl = can.BRAND_LOGO || can.brandLogo || can.logo;
     if (logoUrl && String(logoUrl).trim() !== "") {
       logoContainer.innerHTML = `<img src="${getOptimizedImageUrl(logoUrl, 400)}" alt="LOGO DA CERVEJARIA">`;
     } else {
@@ -881,13 +892,12 @@
     const currentNum = total > 0 ? (index + 1) : 0;
     document.getElementById("cardCounter").innerText = `${currentNum}/${total}`;
 
-    let rawPhotos = [];
-    if (can.images) {
-      rawPhotos = [can.images.front, can.images.left, can.images.back, can.images.right].filter(Boolean);
-    }
-    if (rawPhotos.length === 0) {
-      rawPhotos = [can.ImgFront, can.ImgLeft, can.ImgBack, can.ImgRight].filter(Boolean);
-    }
+    let rawPhotos = [
+      can.ImgFront || can.imgfront || can.front,
+      can.ImgLeft || can.imgleft || can.left,
+      can.ImgBack || can.imgback || can.back,
+      can.ImgRight || can.imgright || can.right
+    ].filter(Boolean);
 
     if (rawPhotos.length === 0 && logoUrl) {
       rawPhotos.push(logoUrl);
@@ -917,7 +927,6 @@
     }
   }
 
-  /* SISTEMA DE ZOOM CICLICO (1.5x -> 3.0x -> 1.5x -> Normal) E PAN */
   function openZoomModal(index) {
     if (!zoomGallery || zoomGallery.length === 0) return;
     currentZoomIndex = index;
@@ -974,7 +983,6 @@
     focusCardSafely(activeLocalIndex);
   }
 
-  /* SISTEMA DE CONFIRMAÇÃO DE SAÍDA DO APP VIA PONTE ANDROID */
   function openExitModal() {
     closeMenu();
     document.getElementById("exitModal").classList.add("active");
@@ -998,7 +1006,6 @@
     }
   }
 
-  /* DETECÇÃO DE GESTOS SWIPE */
   let touchStartX = 0;
   let touchStartY = 0;
 
@@ -1015,7 +1022,6 @@
     handleSwipe(touchStartX, touchStartY, touchEndX, touchEndY);
   }, { passive: true });
 
-  /* NAVEGAÇÃO VIA SCROLL DO MOUSE (PC) */
   catalogSection.addEventListener("wheel", (e) => {
     if (e.deltaY > 0) {
       if (((currentPage + 1) * cardsPerRow) < currentFiltered.length) {
@@ -1073,7 +1079,6 @@
     }
   }
 
-  /* NAVEGAÇÃO DO TECLADO E CONTROLE REMOTO */
   document.addEventListener("keydown", (e) => {
     const isZoomActive = document.getElementById("zoomModal").classList.contains("active");
     const isExitActive = document.getElementById("exitModal").classList.contains("active");
