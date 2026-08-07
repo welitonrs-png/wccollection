@@ -301,16 +301,51 @@
     }
   }
 
+// Compacta a foto no navegador antes de enviar ao Google Drive
   function fileToBase64(fileInput) {
     return new Promise((resolve) => {
       if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
         resolve("");
         return;
       }
+      
+      const file = fileInput.files[0];
       const reader = new FileReader();
-      reader.onload = () => resolve(reader.result);
+
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement("canvas");
+          let width = img.width;
+          let height = img.height;
+          const maxDim = 1200; // Tamanho ideal máximo para fotos de latas
+
+          if (width > height) {
+            if (width > maxDim) {
+              height = Math.round((height * maxDim) / width);
+              width = maxDim;
+            }
+          } else {
+            if (height > maxDim) {
+              width = Math.round((width * maxDim) / height);
+              height = maxDim;
+            }
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(img, 0, 0, width, height);
+
+          // Exporta JPEG otimizado
+          resolve(canvas.toDataURL("image/jpeg", 0.82));
+        };
+        img.onerror = () => resolve(e.target.result);
+        img.src = e.target.result;
+      };
+
       reader.onerror = () => resolve("");
-      reader.readAsDataURL(fileInput.files[0]);
+      reader.readAsDataURL(file);
     });
   }
 
