@@ -247,7 +247,7 @@
   </div>
 
 <script>
-  const API_URL = "https://script.google.com/macros/s/AKfycbwP4kTpSrGJllmlWjQp1YmD1Th5jiw1oUtX5cAJAZj9txy-eNi6_EYyLPG_Q0_coyT9/exec";
+  const API_URL = "https://script.google.com/macros/s/AKfycbwFIsSgEF2grkBpliyO_hSD0Lh2ULq6xHoJC6mDLYvjemTLYe67jF38MDNWP2ixITzE/exec";
 
   function logMsg(msg) {
     const el = document.getElementById("consoleLog");
@@ -284,7 +284,7 @@
           const canvas = document.createElement("canvas");
           let width = img.width;
           let height = img.height;
-          const maxDim = 800; // Reduz bastante para garantir um envio ultra leve
+          const maxDim = 800;
           if (width > height) {
             if (width > maxDim) { height = Math.round((height * maxDim) / width); width = maxDim; }
           } else {
@@ -304,25 +304,69 @@
     });
   }
 
-  async function salvarFormulario() {
-    logMsg("Botão de Salvar Clicado!");
+  // Faz o upload individual de cada foto para o Google Drive
+  async function uploadSinglePhotoToDrive(fileInput, photoType, itemName) {
+    const base64Data = await fileToBase64(fileInput);
+    if (!base64Data) return "";
 
-    const nome = document.getElementById("inputNome").value;
-    const cervejaria = document.getElementById("inputCervejaria").value;
-    const pais = document.getElementById("inputPais").value;
+    logMsg(`Enviando ${photoType} para o Google Drive...`);
+
+    try {
+      const payload = {
+        action: "upload_photo",
+        base64: base64Data,
+        fileName: `${itemName}_${photoType}.jpg`
+      };
+
+      const res = await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await res.json();
+      if (data && data.success && data.url) {
+        logMsg(`✓ ${photoType} salva com sucesso no Drive!`);
+        return data.url;
+      } else {
+        logMsg(`⚠️ Falha ao salvar ${photoType} no Drive.`);
+        return "";
+      }
+    } catch (err) {
+      logMsg(`⚠️ Erro ao enviar ${photoType}: ` + err.toString());
+      return "";
+    }
+  }
+
+  async function salvarFormulario() {
+    logMsg("Iniciando processo de cadastro...");
+
+    const nome = document.getElementById("inputNome").value.trim();
+    const cervejaria = document.getElementById("inputCervejaria").value.trim();
+    const pais = document.getElementById("inputPais").value.trim();
 
     if (!nome || !cervejaria || !pais) {
       alert("Preencha Nome, Cervejaria e País!");
-      logMsg("ERRO: Campos obrigatórios em branco.");
+      logMsg("ERRO: Campos obrigatórios não preenchidos.");
       return;
     }
 
     const btnSave = document.getElementById("btnSave");
-    btnSave.innerText = "ENVIANDO...";
+    btnSave.innerText = "ENVIANDO FOTOS...";
     btnSave.disabled = true;
 
     try {
-      logMsg("Convertendo imagens em texto...");
+      // 1. Upload de cada foto para o Google Drive
+      const logoUrl  = await uploadSinglePhotoToDrive(document.getElementById("fileLogo"), "logo", nome);
+      const coverUrl = await uploadSinglePhotoToDrive(document.getElementById("fileCover"), "cover", nome);
+      const frontUrl = await uploadSinglePhotoToDrive(document.getElementById("fileFront"), "front", nome);
+      const leftUrl  = await uploadSinglePhotoToDrive(document.getElementById("fileLeft"), "left", nome);
+      const backUrl  = await uploadSinglePhotoToDrive(document.getElementById("fileBack"), "back", nome);
+      const rightUrl = await uploadSinglePhotoToDrive(document.getElementById("fileRight"), "right", nome);
+
+      logMsg("Salvando registro final na planilha...");
+
+      // 2. Grava a linha na planilha com os links gerados
       const payload = {
         action: "save",
         Nome: nome,
@@ -334,35 +378,35 @@
         isOcoc: document.getElementById("checkOcoc").checked,
         isSet: document.getElementById("checkSet").checked,
 
-        BRAND_LOGO: await fileToBase64(document.getElementById("fileLogo")),
-        ImgCover: await fileToBase64(document.getElementById("fileCover")),
-        ImgFront: await fileToBase64(document.getElementById("fileFront")),
-        ImgLeft: await fileToBase64(document.getElementById("fileLeft")),
-        ImgBack: await fileToBase64(document.getElementById("fileBack")),
-        ImgRight: await fileToBase64(document.getElementById("fileRight"))
+        BRAND_LOGO: logoUrl,
+        ImgCover: coverUrl,
+        ImgFront: frontUrl,
+        ImgLeft: leftUrl,
+        ImgBack: backUrl,
+        ImgRight: rightUrl
       };
 
-      logMsg("Disparando requisição POST para a API Google Apps Script...");
-
-      await fetch(API_URL, {
+      const response = await fetch(API_URL, {
         method: "POST",
-        mode: "no-cors",
         headers: { "Content-Type": "text/plain;charset=utf-8" },
         body: JSON.stringify(payload)
       });
 
-      logMsg("SINAL ENVIADO! Aguardando o Google processar e gravar no Drive (5 seg)...");
-      showStatus("Enviado com sucesso ao Google Drive! Atualizando em instantes...", true);
+      const res = await response.json();
 
-      setTimeout(() => {
+      if (res && res.success) {
+        logMsg("SUCESSO! Item e fotos salvos com sucesso no Google Drive e na planilha!");
+        showStatus("Lata e fotos salvas com sucesso no Google Drive!", true);
         resetForm();
         loadCatalogTable();
-        logMsg("Catálogo atualizado.");
-      }, 5000);
+      } else {
+        logMsg("ERRO: " + (res.error || "Não foi possível gravar na planilha."));
+        showStatus("Erro ao gravar dados na planilha.", false);
+      }
 
     } catch (err) {
-      logMsg("ERRO NO FETCH: " + err.toString());
-      showStatus("Erro de conexão.", false);
+      logMsg("ERRO GERAL: " + err.toString());
+      showStatus("Erro no envio.", false);
     } finally {
       btnSave.innerText = "SALVAR ITEM";
       btnSave.disabled = false;
@@ -395,7 +439,7 @@
         tbody.appendChild(row);
       });
     } catch (err) {
-      logMsg("Erro ao carregar lista: " + err.toString());
+      logMsg("Erro ao carregar catálogo: " + err.toString());
     }
   }
 
