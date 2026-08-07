@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html><!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
@@ -54,11 +54,16 @@
 
     .section-title { font-size: 0.8rem; font-weight: 900; color: #f39c12; text-transform: uppercase; margin-bottom: 12px; }
 
+    /* SEÇÃO DE ARQUIVOS */
     .file-upload-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 16px;
       margin-bottom: 24px;
+    }
+
+    @media (max-width: 768px) {
+      .file-upload-grid { grid-template-columns: 1fr; }
     }
 
     .file-box {
@@ -88,9 +93,12 @@
       text-transform: uppercase;
       cursor: pointer;
       text-align: center;
+      transition: all 0.2s;
     }
 
+    .btn-file-custom:hover { background: #333d52; border-color: #f39c12; }
     .btn-file-custom.has-file { background: #1e3a29; color: #2ecc71; border-color: #2ecc71; }
+    .btn-file-custom.uploading { background: #3a2e1e; color: #f39c12; border-color: #f39c12; }
     input[type="file"] { display: none; }
 
     .actions-row { display: flex; gap: 16px; margin-bottom: 30px; }
@@ -149,7 +157,7 @@
 
   <div class="admin-card">
     <h1>Painel de Cadastro de Latas</h1>
-    <div class="subtitle">Gerencie o catálogo da coleção e edite seus registros.</div>
+    <div class="subtitle">Gerencie o catálogo da coleção, anexe arquivos locais ou cole links do Google Drive.</div>
 
     <div id="statusMsg" class="status-msg"></div>
 
@@ -188,32 +196,49 @@
         <label class="checkbox-label"><input type="checkbox" id="checkSet"> É SET / PACK</label>
       </div>
 
-      <div class="section-title">Imagens do Item (Cole os Links das Imagens do Google Drive)</div>
+      <div class="section-title">Imagens do Item (Upload de Arquivo Local ou Link)</div>
       
-      <div class="form-grid" style="margin-bottom: 24px;">
-        <div class="form-group col-2">
-          <label>Logo da Marca (URL)</label>
-          <input type="text" id="inputLogo" placeholder="https://lh3.googleusercontent.com/d/...">
+      <div class="file-upload-grid">
+        <!-- LOGO -->
+        <div class="file-box">
+          <div class="file-box-title">Logo da Marca</div>
+          <label class="btn-file-custom" id="lblLogo">📁 ANEXAR ARQUIVO LOCAL<input type="file" id="fileLogo" accept="image/*" onchange="uploadFileDirectly('fileLogo', 'lblLogo', 'inputLogo', 'logo')"></label>
+          <input type="text" id="inputLogo" placeholder="Ou cole a URL..." style="font-size: 0.75rem; padding: 6px;">
         </div>
-        <div class="form-group col-2">
-          <label>Foto da Capa - Cover (URL)</label>
-          <input type="text" id="inputCover" placeholder="https://lh3.googleusercontent.com/d/...">
+
+        <!-- COVER -->
+        <div class="file-box">
+          <div class="file-box-title">Foto da Capa (Cover)</div>
+          <label class="btn-file-custom" id="lblCover">📁 ANEXAR ARQUIVO LOCAL<input type="file" id="fileCover" accept="image/*" onchange="uploadFileDirectly('fileCover', 'lblCover', 'inputCover', 'cover')"></label>
+          <input type="text" id="inputCover" placeholder="Ou cole a URL..." style="font-size: 0.75rem; padding: 6px;">
         </div>
-        <div class="form-group col-2">
-          <label>Foto Frente - Front (URL)</label>
-          <input type="text" id="inputFront" placeholder="https://lh3.googleusercontent.com/d/...">
+
+        <!-- FRONT -->
+        <div class="file-box">
+          <div class="file-box-title">Foto Frente (Front)</div>
+          <label class="btn-file-custom" id="lblFront">📁 ANEXAR ARQUIVO LOCAL<input type="file" id="fileFront" accept="image/*" onchange="uploadFileDirectly('fileFront', 'lblFront', 'inputFront', 'front')"></label>
+          <input type="text" id="inputFront" placeholder="Ou cole a URL..." style="font-size: 0.75rem; padding: 6px;">
         </div>
-        <div class="form-group col-2">
-          <label>Foto Esquerda - Left (URL)</label>
-          <input type="text" id="inputLeft" placeholder="https://lh3.googleusercontent.com/d/...">
+
+        <!-- LEFT -->
+        <div class="file-box">
+          <div class="file-box-title">Foto Esquerda (Left)</div>
+          <label class="btn-file-custom" id="lblLeft">📁 ANEXAR ARQUIVO LOCAL<input type="file" id="fileLeft" accept="image/*" onchange="uploadFileDirectly('fileLeft', 'lblLeft', 'inputLeft', 'left')"></label>
+          <input type="text" id="inputLeft" placeholder="Ou cole a URL..." style="font-size: 0.75rem; padding: 6px;">
         </div>
-        <div class="form-group col-2">
-          <label>Foto Verso - Back (URL)</label>
-          <input type="text" id="inputBack" placeholder="https://lh3.googleusercontent.com/d/...">
+
+        <!-- BACK -->
+        <div class="file-box">
+          <div class="file-box-title">Foto Verso (Back)</div>
+          <label class="btn-file-custom" id="lblBack">📁 ANEXAR ARQUIVO LOCAL<input type="file" id="fileBack" accept="image/*" onchange="uploadFileDirectly('fileBack', 'lblBack', 'inputBack', 'back')"></label>
+          <input type="text" id="inputBack" placeholder="Ou cole a URL..." style="font-size: 0.75rem; padding: 6px;">
         </div>
-        <div class="form-group col-2">
-          <label>Foto Direita - Right (URL)</label>
-          <input type="text" id="inputRight" placeholder="https://lh3.googleusercontent.com/d/...">
+
+        <!-- RIGHT -->
+        <div class="file-box">
+          <div class="file-box-title">Foto Direita (Right)</div>
+          <label class="btn-file-custom" id="lblRight">📁 ANEXAR ARQUIVO LOCAL<input type="file" id="fileRight" accept="image/*" onchange="uploadFileDirectly('fileRight', 'lblRight', 'inputRight', 'right')"></label>
+          <input type="text" id="inputRight" placeholder="Ou cole a URL..." style="font-size: 0.75rem; padding: 6px;">
         </div>
       </div>
 
@@ -245,7 +270,7 @@
   </div>
 
 <script>
-  const API_URL = "https://script.google.com/macros/s/AKfycbwP4kTpSrGJllmlWjQp1YmD1Th5jiw1oUtX5cAJAZj9txy-eNi6_EYyLPG_Q0_coyT9/exec";
+  const API_URL = "https://script.google.com/macros/s/AKfycbwFIsSgEF2grkBpliyO_hSD0Lh2ULq6xHoJC6mDLYvjemTLYe67jF38MDNWP2ixITzE/exec";
   let fullCatalog = [];
 
   function showStatus(msg, isSuccess) {
@@ -253,6 +278,57 @@
     el.innerText = msg;
     el.className = `status-msg ${isSuccess ? 'success' : 'error'}`;
     setTimeout(() => { el.style.display = 'none'; }, 6000);
+  }
+
+  // Converte o arquivo do computador e envia para o Google Drive ao selecionar
+  async function uploadFileDirectly(inputId, lblId, targetInputId, photoType) {
+    const fileInput = document.getElementById(inputId);
+    const lbl = document.getElementById(lblId);
+    const targetInput = document.getElementById(targetInputId);
+
+    if (!fileInput.files || fileInput.files.length === 0) return;
+
+    const file = fileInput.files[0];
+    const itemName = document.getElementById("inputNome").value.trim() || "lata";
+
+    lbl.innerHTML = "⏳ ENVIANDO AO DRIVE...";
+    lbl.className = "btn-file-custom uploading";
+
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      try {
+        const payload = {
+          action: "upload_photo",
+          base64: e.target.result,
+          fileName: `${itemName}_${photoType}.jpg`
+        };
+
+        const res = await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+        if (data && data.success && data.url) {
+          targetInput.value = data.url;
+          lbl.innerHTML = `✓ ${file.name.substring(0, 12)}...`;
+          lbl.className = "btn-file-custom has-file";
+          showStatus(`Foto (${photoType}) salva no Google Drive!`, true);
+        } else {
+          lbl.innerHTML = "📁 FALHA NO UPLOAD";
+          lbl.className = "btn-file-custom";
+          showStatus("Erro ao salvar foto no Drive. Cole a URL manualmente.", false);
+        }
+      } catch (err) {
+        console.error(err);
+        lbl.innerHTML = "📁 ANEXAR ARQUIVO LOCAL";
+        lbl.className = "btn-file-custom";
+        showStatus("Erro ao conectar com o Google Drive.", false);
+      }
+    };
+
+    reader.readAsDataURL(file);
   }
 
   async function handleFormSubmit(e) {
@@ -406,6 +482,10 @@
   function resetForm() {
     document.getElementById("editRowId").value = "";
     document.getElementById("lataForm").reset();
+    ['lblLogo', 'lblCover', 'lblFront', 'lblLeft', 'lblBack', 'lblRight'].forEach(id => {
+      const el = document.getElementById(id);
+      if(el) { el.innerHTML = "📁 ANEXAR ARQUIVO LOCAL"; el.classList.remove("has-file"); }
+    });
   }
 
   window.onload = loadCatalogTable;
