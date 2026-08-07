@@ -349,7 +349,7 @@
     });
   }
 
-  async function handleFormSubmit(e) {
+ async function handleFormSubmit(e) {
     e.preventDefault();
     const btnSave = document.getElementById("btnSave");
     btnSave.innerText = "ENVIANDO FOTOS AO DRIVE...";
@@ -359,6 +359,7 @@
       const editRowId = document.getElementById("editRowId").value;
       const action = editRowId ? "edit" : "save";
 
+      // Converte as fotos reduzindo resolução para garantir envio rápido
       const payload = {
         action: action,
         _rowId: editRowId,
@@ -379,29 +380,30 @@
         ImgRight: await fileToBase64(document.getElementById("fileRight"))
       };
 
+      // Envio formatado como text/plain para contornar a trava do Google Web App
       const response = await fetch(API_URL, {
         method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
         body: JSON.stringify(payload)
       });
 
       const res = await response.json();
 
       if (res.success) {
-        showStatus(res.message || "Item salvo e fotos enviadas com sucesso ao Google Drive!", true);
+        showStatus(res.message || "Lata e fotos salvas com sucesso no Google Drive!", true);
         resetForm();
         loadCatalogTable();
       } else {
-        showStatus("Erro: " + (res.error || "Não foi possível salvar os dados."), false);
+        showStatus("Erro no servidor: " + (res.error || "Não foi possível salvar."), false);
       }
     } catch (err) {
       console.error(err);
-      showStatus("Erro ao comunicar com o servidor. Tente novamente.", false);
+      showStatus("Erro de envio. Verifique o console ou a URL do Apps Script.", false);
     } finally {
       btnSave.innerText = "SALVAR ITEM";
       btnSave.disabled = false;
     }
   }
-
   async function loadCatalogTable() {
     try {
       const response = await fetch(API_URL + "?nocache=" + new Date().getTime());
