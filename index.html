@@ -370,10 +370,9 @@
     const g = parseInt(hex.substr(2, 2), 16);
     const b = parseInt(hex.substr(4, 2), 16);
     
-    // Fórmula padrão YIQ para calcular percepção visual de brilho
+    // Fórmula YIQ para percepção visual de brilho
     const yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
     
-    // Se a cor for clara (yiq >= 128), texto escuro (#111111)
     if (yiq >= 128) {
       return { text: '#111111', pillBg: 'rgba(0, 0, 0, 0.15)' };
     } else {
@@ -786,13 +785,18 @@
     }
   }
 
-  /* RENDERIZAÇÃO DOS CARDS COM COR DE TEXTO INTELIGENTE */
+  /* RENDERIZAÇÃO DOS CARDS */
   function renderApp() {
     const row = document.getElementById("cardRow");
     row.innerHTML = "";
 
     const startIndex = currentPage * cardsPerRow;
     const pageItems = currentFiltered.slice(startIndex, startIndex + cardsPerRow);
+
+    if (pageItems.length === 0) {
+      document.getElementById("cardCounter").innerText = "0/0";
+      return;
+    }
 
     pageItems.forEach((can, localIndex) => {
       const globalIndex = startIndex + localIndex;
@@ -808,7 +812,6 @@
       const brandKey = String(can.brewery || can.Cervejaria || "").toLowerCase().trim();
       const cardColor = BRAND_COLORS[brandKey] || "#008234";
 
-      // DETECTA AUTOMATICAMENTE SE A COR É CLARA OU ESCURA
       const colorTheme = getTextColorForBackground(cardColor);
 
       const card = document.createElement("div");
