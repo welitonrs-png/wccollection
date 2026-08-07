@@ -1143,6 +1143,52 @@ function renderApp() {
           openExitModal();
         }
       }
+      // Função auxiliar para converter arquivo em String Base64
+function fileToBase64(fileInput) {
+  return new Promise((resolve) => {
+    if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
+      resolve("");
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = () => resolve("");
+    reader.readAsDataURL(fileInput.files[0]);
+  });
+}
+
+// Exemplo de envio no salvar do Admin
+async function salvarLataAdmin() {
+  const payload = {
+    action: "save",
+    Nome: document.getElementById("inputNome").value,
+    Cervejaria: document.getElementById("inputCervejaria").value,
+    Pais: document.getElementById("inputPais").value,
+    Volume: document.getElementById("inputVolume").value,
+    Ano: document.getElementById("inputAno").value,
+    Barcode: document.getElementById("inputBarcode").value,
+    isOcoc: document.getElementById("checkOcoc").checked,
+    isSet: document.getElementById("checkSet").checked,
+    
+    // Converte os inputs de arquivo para Base64
+    BRAND_LOGO: await fileToBase64(document.getElementById("fileLogo")),
+    ImgCover: await fileToBase64(document.getElementById("fileCover")),
+    ImgFront: await fileToBase64(document.getElementById("fileFront")),
+    ImgLeft: await fileToBase64(document.getElementById("fileLeft")),
+    ImgBack: await fileToBase64(document.getElementById("fileBack")),
+    ImgRight: await fileToBase64(document.getElementById("fileRight"))
+  };
+
+  const response = await fetch(API_URL, {
+    method: "POST",
+    body: JSON.stringify(payload)
+  });
+
+  const res = await response.json();
+  if (res.success) {
+    alert("Lata e fotos salvas com sucesso no Google Drive!");
+  }
+}
 
       const activeElem = document.activeElement;
       if (activeElem && (activeElem.classList.contains("cat-btn") || activeElem.classList.contains("brand-btn")) && e.key === "ArrowRight") {
