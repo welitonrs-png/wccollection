@@ -67,29 +67,26 @@
     }
 
     /* Bloco Central de Textos - Esticado do topo à base do Grid (MARCAÇÃO VERMELHA) */
-    .details-info-box {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between; /* Distribui o texto do topo do 1º card ao fim do 4º card */
-      height: 100%;
-      padding-right: 320px; /* Evita que o texto encoste no logo grande */
-      padding-top: 5px;
-      padding-bottom: 5px;
-    }
+    
+/* 1. CONTAINER DOS TEXTOS (Ocupa da foto do topo até a foto de baixo - LINHA VERMELHA) */
+.details-info-box, .info-container {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important; /* Estica o conteúdo do topo até o fim */
+  height: 100% !important; /* Garante altura total igual aos cards das fotos */
+  padding-right: 380px !important; /* Espaço para o logo grande não cobrir o texto */
+}
 
-    /* Título do Item */
-    .item-title-display {
-      color: var(--accent-color);
-      font-family: Impact, "Arial Black", sans-serif;
-      font-size: 3.2vw;
-      font-weight: 900;
-      font-style: italic;
-      text-transform: uppercase;
-      line-height: 1.05;
-      letter-spacing: 1px;
-    }
-
+/* Título Principal */
+.modal-main-title, .item-title-display {
+  color: #f39c12 !important;
+  font-family: Impact, "Arial Black", sans-serif !important;
+  font-size: 3rem !important; /* Aumenta a fonte do título */
+  font-weight: 900 !important;
+  font-style: italic !important;
+  text-transform: uppercase !important;
+  line-height: 1.05 !important;
+}
     /* Blocos de Cada Informação */
     .info-group {
       display: flex;
@@ -98,39 +95,36 @@
     }
 
     /* Rótulos: ORIGEM:, VOLUME:, ANO:, CÓD. BARRAS: */
-    .info-label-text {
-      color: var(--accent-color);
-      font-family: Impact, "Arial Black", sans-serif;
-      font-size: 1.6vw;
-      font-weight: 900;
-      font-style: italic;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
+    /* Rótulos (ORIGEM:, VOLUME:, ANO:, CÓD. BARRAS:) */
+.info-label, .info-label-text {
+  color: #f39c12 !important;
+  font-family: Impact, "Arial Black", sans-serif !important;
+  font-size: 1.6rem !important;
+  font-weight: 900 !important;
+  font-style: italic !important;
+  text-transform: uppercase !important;
+}
 
-    /* Valores: CHINA, 500ML, 2024, etc. */
-    .info-val-text {
-      color: var(--accent-color);
-      font-family: Impact, "Arial Black", sans-serif;
-      font-size: 2.6vw;
-      font-weight: 900;
-      font-style: italic;
-      text-transform: uppercase;
-      line-height: 1.1;
-      letter-spacing: 1px;
-    }
-
-    /* Logo da Marca no Canto Superior Direito (EXPANDIDO ATÉ A LINHA AMARELA) */
-    .brand-logo-top-right {
-      position: absolute;
-      top: 0;
-      right: 0;
-      max-height: 280px; /* Altura expandida para atingir a linha amarela */
-      max-width: 420px;  /* Largura proporcional */
-      object-fit: contain;
-      z-index: 10;
-      filter: drop-shadow(0 4px 12px rgba(0,0,0,0.5));
-    }
+/* Valores (CHINA, 500ML, 2024, etc.) */
+.info-val, .info-val-text {
+  color: #f39c12 !important;
+  font-family: Impact, "Arial Black", sans-serif !important;
+  font-size: 2.8rem !important; /* Aumenta a fonte dos valores */
+  font-weight: 900 !important;
+  font-style: italic !important;
+  text-transform: uppercase !important;
+  line-height: 1.1 !important;
+}
+/* 2. LOGO DA MARCA (EXPANDIDO ATÉ A LINHA AMARELA) */
+.brand-logo-top-right, .modal-brand-logo-top {
+  position: absolute !important;
+  top: 15px !important;
+  right: 30px !important;
+  max-height: 280px !important; /* Aumenta a altura para chegar à linha amarela */
+  max-width: 450px !important;  /* Aumenta a largura */
+  object-fit: contain !important;
+  z-index: 10 !important;
+}
 
     /* Contador 1/4 no canto inferior direito da área superior */
     .counter-display {
