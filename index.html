@@ -124,10 +124,13 @@
     /* ========================================================
        AJUSTE REFINADO DOS CARDS IGUAL À FOTO SUPERIOR
        ======================================================== */
+  /* ========================================================
+       AJUSTE PRECISO: CARD IDÊNTICO AO DA ESQUERDA
+       ======================================================== */
     .card {
-      width: 172px !important;
-      min-width: 172px !important;
-      height: 228px !important;
+      width: 165px !important;
+      min-width: 165px !important;
+      height: 230px !important;
       background: #ffffff !important;
       border-radius: 12px !important;
       overflow: hidden !important;
@@ -138,16 +141,17 @@
       flex-shrink: 0 !important;
     }
 
-    .card.card-aspect-sets { width: 220px !important; min-width: 220px !important; }
+    .card.card-aspect-sets { width: 210px !important; min-width: 210px !important; }
 
+    /* Área da Foto Superior (Comprimento idêntico) */
     .card-top-photo {
       width: 100% !important;
-      height: 168px !important;
+      height: 155px !important;
       background: #ffffff !important;
       display: flex !important;
       justify-content: center !important;
       align-items: center !important;
-      padding: 6px !important;
+      padding: 8px !important;
     }
 
     .card-top-photo img {
@@ -156,27 +160,30 @@
       object-fit: contain !important;
     }
 
+    /* Barra Verde Inferior Mais Alta (Igual da Esquerda) */
     .card-bottom-bar {
       width: 100% !important;
-      height: 60px !important;
-      padding: 6px 10px 8px 10px !important;
+      height: 75px !important; /* Altura exata para dar o respiro do modelo da esquerda */
+      padding: 10px 10px 10px 10px !important;
       display: flex !important;
       flex-direction: column !important;
       justify-content: space-between !important;
       box-sizing: border-box !important;
-      font-family: Arial, Helvetica, sans-serif !important;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
     }
 
-    /* Nome da Cervejaria: Negrito exato igual ao modelo desejado */
+    /* Nome da Marca: Peso médio/normal, sem esticar (Esquerda) */
     .card-bar-title {
-      font-family: Arial, Helvetica, sans-serif !important;
-      font-size: 1.05rem !important;
-      font-weight: 800 !important;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
+      font-size: 0.98rem !important;
+      font-weight: 600 !important; /* Corrigido de 800 para 600 (Sem achatamento) */
       color: #ffffff !important;
       white-space: nowrap !important;
       overflow: hidden !important;
       text-overflow: ellipsis !important;
-      line-height: 1.1 !important;
+      text-transform: capitalize !important;
+      line-height: 1.2 !important;
+      letter-spacing: 0px !important;
     }
 
     .card-bar-details {
@@ -186,16 +193,18 @@
       width: 100% !important;
     }
 
+    /* Nome do País e Bandeira */
     .card-bar-country {
       display: flex !important;
       align-items: center !important;
       gap: 6px !important;
-      font-family: Arial, Helvetica, sans-serif !important;
-      font-size: 0.85rem !important;
-      font-weight: 600 !important;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
+      font-size: 0.82rem !important;
+      font-weight: 500 !important;
       color: #ffffff !important;
       white-space: nowrap !important;
       overflow: hidden !important;
+      text-transform: capitalize !important;
     }
 
     .card-bar-flag {
@@ -205,20 +214,22 @@
       border-radius: 2px !important;
     }
 
+    /* Badge de Volume */
     .card-bar-vol {
       background: rgba(0, 0, 0, 0.45) !important;
       color: #ffffff !important;
-      font-family: Arial, Helvetica, sans-serif !important;
-      padding: 2px 7px !important;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
+      padding: 3px 7px !important;
       border-radius: 6px !important;
-      font-size: 0.78rem !important;
-      font-weight: 700 !important;
+      font-size: 0.72rem !important;
+      font-weight: 600 !important;
       white-space: nowrap !important;
     }
 
+    /* Borda Laranja de Seleção */
     .card.focused, .card:hover { 
       border: 2px solid #f39c12 !important; 
-      box-shadow: 0 0 10px rgba(243, 156, 18, 0.4) !important; 
+      box-shadow: 0 0 8px rgba(243, 156, 18, 0.4) !important; 
       outline: none !important; 
       z-index: 10 !important; 
     }
