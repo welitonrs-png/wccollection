@@ -121,9 +121,6 @@
     .catalog-section { height: 195px; min-height: 195px; width: 100%; overflow: hidden; flex-shrink: 0; touch-action: none; }
     .card-row { display: flex; gap: 12px; height: 100%; width: 100%; justify-content: flex-start; align-items: flex-end; }
 
-    /* ========================================================
-       AJUSTE REFINADO DOS CARDS IGUAL À FOTO SUPERIOR
-       ======================================================== */
     /* CARD COMPACTO */
     .card {
       width: 135px !important;
@@ -327,7 +324,7 @@
   let currentZoomIndex = 0;
   
   let currentTab = 'home';
-  let cardsPerRow = 5;
+  let cardsPerRow = 6;
   let currentPage = 0;
   let activeLocalIndex = 0;
   let lastSelectedMenuId = 'menuBtnHome'; 
@@ -495,7 +492,7 @@
   }
 
 
-  function preloadFirstImages(items, count = 5) {
+  function preloadFirstImages(items, count = 6) {
     return new Promise((resolve) => {
       const pageItems = items.slice(0, count);
       if (pageItems.length === 0) {
@@ -584,11 +581,11 @@
       heroPhotos.classList.add("aspect-sets");
       labelCountry.innerText = "ORIGEM:";
     } else if (currentTab === 'ococ') {
-      cardsPerRow = 5;
+      cardsPerRow = 6;
       heroPhotos.classList.remove("aspect-sets");
       labelCountry.innerText = "PAÍS / ORIGEM:";
     } else {
-      cardsPerRow = 5;
+      cardsPerRow = 6;
       heroPhotos.classList.remove("aspect-sets");
       labelCountry.innerText = "ORIGEM:";
     }
