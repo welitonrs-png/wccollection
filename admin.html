@@ -273,7 +273,6 @@
     setTimeout(() => { el.style.display = 'none'; }, 6000);
   }
 
-  // Redimensiona e comprime a foto no navegador antes do upload para evitar erro de limite
   function compressImage(file, maxDimension = 900, quality = 0.7) {
     return new Promise((resolve) => {
       const reader = new FileReader();
@@ -310,7 +309,6 @@
     });
   }
 
-  // Realiza o upload individual e otimizado da foto diretamente para o Google Drive
   async function uploadFileDirectly(inputId, lblId, targetInputId, photoType) {
     const fileInput = document.getElementById(inputId);
     const lbl = document.getElementById(lblId);
