@@ -220,7 +220,7 @@
     setTimeout(() => { el.style.display = 'none'; }, 6000);
   }
 
-  function compressImage(file, maxDimension = 600, quality = 0.5) {
+  function compressImage(file, maxDimension = 500, quality = 0.4) {
     return new Promise((resolve) => {
       const reader = new FileReader();
       reader.onload = (e) => {
@@ -266,48 +266,45 @@
     const file = fileInput.files[0];
     const itemName = document.getElementById("inputNome").value.trim() || "lata";
 
-    lbl.innerHTML = "⏳ PROCESSANDO...";
+    lbl.innerHTML = "⏳ ENVIANDO AO DRIVE...";
     lbl.className = "btn-file-custom uploading";
 
     try {
-      const base64Compressed = await compressImage(file, 600, 0.5);
+      const base64Compressed = await compressImage(file, 500, 0.4);
 
       if (!base64Compressed) {
-        lbl.innerHTML = "📁 FALHA AO COMPRIMIR";
+        lbl.innerHTML = "📁 ERRO NA IMAGEM";
         lbl.className = "btn-file-custom";
         return;
       }
 
-      lbl.innerHTML = "⏳ ENVIANDO AO DRIVE...";
-
-      const payload = {
-        action: "upload_photo",
-        base64: base64Compressed,
-        fileName: `${itemName}_${photoType}.jpg`
-      };
+      const params = new URLSearchParams();
+      params.append("action", "upload_photo");
+      params.append("base64", base64Compressed);
+      params.append("fileName", `${itemName}_${photoType}.jpg`);
 
       const res = await fetch(API_URL, {
         method: "POST",
-        headers: { "Content-Type": "text/plain;charset=utf-8" },
-        body: JSON.stringify(payload)
+        headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
+        body: params.toString()
       });
 
       const data = await res.json();
       if (data && data.success && data.url) {
         targetInput.value = data.url;
-        lbl.innerHTML = `✓ ${file.name.substring(0, 12)}...`;
+        lbl.innerHTML = `✓ ${file.name.substring(0, 10)}...`;
         lbl.className = "btn-file-custom has-file";
-        showStatus(`Foto (${photoType}) enviada ao Google Drive!`, true);
+        showStatus(`Foto (${photoType}) enviada com sucesso!`, true);
       } else {
-        lbl.innerHTML = "📁 COLE A URL MANUALMENTE";
+        lbl.innerHTML = "📁 RETENTAR OU COLE URL";
         lbl.className = "btn-file-custom";
-        showStatus("Não foi possível enviar ao Drive. Cole o link manualmente abaixo.", false);
+        showStatus("Erro ao salvar no Drive. Tente cole o link manualmente.", false);
       }
     } catch (err) {
       console.error(err);
-      lbl.innerHTML = "📁 COLE A URL MANUALMENTE";
+      lbl.innerHTML = "📁 RETENTAR OU COLE URL";
       lbl.className = "btn-file-custom";
-      showStatus("Erro na comunicação com o servidor. Use o campo de URL.", false);
+      showStatus("Erro de comunicação com o servidor.", false);
     }
   }
 
@@ -321,30 +318,29 @@
       const rowNum = document.getElementById("editRowNum").value;
       const action = rowNum ? "edit" : "save";
 
-      const payload = {
-        action: action,
-        _rowNum: rowNum,
-        Nome: document.getElementById("inputNome").value,
-        Cervejaria: document.getElementById("inputCervejaria").value,
-        Pais: document.getElementById("inputPais").value,
-        Volume: document.getElementById("inputVolume").value,
-        Ano: document.getElementById("inputAno").value,
-        Barcode: document.getElementById("inputBarcode").value,
-        isOcoc: document.getElementById("checkOcoc").checked,
-        isSet: document.getElementById("checkSet").checked,
+      const params = new URLSearchParams();
+      params.append("action", action);
+      params.append("_rowNum", rowNum);
+      params.append("Nome", document.getElementById("inputNome").value);
+      params.append("Cervejaria", document.getElementById("inputCervejaria").value);
+      params.append("Pais", document.getElementById("inputPais").value);
+      params.append("Volume", document.getElementById("inputVolume").value);
+      params.append("Ano", document.getElementById("inputAno").value);
+      params.append("Barcode", document.getElementById("inputBarcode").value);
+      params.append("isOcoc", document.getElementById("checkOcoc").checked);
+      params.append("isSet", document.getElementById("checkSet").checked);
 
-        BRAND_LOGO: document.getElementById("inputLogo").value,
-        ImgCover: document.getElementById("inputCover").value,
-        ImgFront: document.getElementById("inputFront").value,
-        ImgLeft: document.getElementById("inputLeft").value,
-        ImgBack: document.getElementById("inputBack").value,
-        ImgRight: document.getElementById("inputRight").value
-      };
+      params.append("BRAND_LOGO", document.getElementById("inputLogo").value);
+      params.append("ImgCover", document.getElementById("inputCover").value);
+      params.append("ImgFront", document.getElementById("inputFront").value);
+      params.append("ImgLeft", document.getElementById("inputLeft").value);
+      params.append("ImgBack", document.getElementById("inputBack").value);
+      params.append("ImgRight", document.getElementById("inputRight").value);
 
       const response = await fetch(API_URL, {
         method: "POST",
-        headers: { "Content-Type": "text/plain;charset=utf-8" },
-        body: JSON.stringify(payload)
+        headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
+        body: params.toString()
       });
 
       const res = await response.json();
@@ -454,10 +450,14 @@
     if (!confirm("Tem certeza que deseja excluir esta lata?")) return;
 
     try {
+      const params = new URLSearchParams();
+      params.append("action", "delete");
+      params.append("_rowNum", realRowNum);
+
       const response = await fetch(API_URL, {
         method: "POST",
-        headers: { "Content-Type": "text/plain;charset=utf-8" },
-        body: JSON.stringify({ action: "delete", _rowNum: realRowNum })
+        headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
+        body: params.toString()
       });
       const res = await response.json();
       if (res && res.success) {
