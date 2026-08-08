@@ -5,131 +5,402 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>WCCollection - Coleção de Latas</title>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-    body { background-color: #121620; color: #ffffff; min-height: 100vh; padding: 20px; }
-
-    header {
-      max-width: 1200px; margin: 0 auto 30px auto; display: flex;
-      flex-direction: column; gap: 16px; align-items: center; text-align: center;
+    :root {
+      --bg-color: #121620;
+      --card-bg: #1a202c;
+      --border-color: #2d3748;
+      --accent-color: #f39c12;
+      --text-main: #ffffff;
+      --text-sub: #a0aec0;
+      --badge-lata: #1d3557;
+      --badge-ococ: #1b4332;
+      --badge-set: #3c096c;
     }
 
-    h1 { color: #f39c12; font-size: 2.2rem; font-weight: 900; letter-spacing: 1px; text-transform: uppercase; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; outline: none; }
+    
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      min-height: 100vh;
+      padding: 30px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
 
-    /* Controles de Filtro e Busca */
-    .controls {
-      display: flex; flex-wrap: wrap; gap: 12px; width: 100%; max-width: 800px; justify-content: center;
+    header {
+      width: 100%;
+      max-width: 1300px;
+      margin-bottom: 35px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .brand-title {
+      font-size: 2.8rem;
+      font-weight: 900;
+      color: var(--accent-color);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      text-shadow: 0 4px 15px rgba(243, 156, 18, 0.3);
+    }
+
+    .controls-container {
+      width: 100%;
+      max-width: 900px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .search-box {
+      position: relative;
+      flex: 1;
+      min-width: 280px;
     }
 
     .search-input {
-      flex: 1; min-width: 250px; padding: 12px 18px; background: #1a202c; border: 1px solid #2d3748;
-      border-radius: 25px; color: #ffffff; font-size: 0.95rem; outline: none; transition: all 0.3s;
+      width: 100%;
+      padding: 14px 22px;
+      background: #1a202c;
+      border: 1px solid var(--border-color);
+      border-radius: 30px;
+      color: #fff;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.4);
     }
-    .search-input:focus { border-color: #f39c12; box-shadow: 0 0 10px rgba(243, 156, 18, 0.3); }
 
-    .filter-btn {
-      padding: 10px 20px; background: #1a202c; border: 1px solid #2d3748; border-radius: 20px;
-      color: #a0aec0; font-weight: bold; font-size: 0.85rem; cursor: pointer; transition: all 0.3s; text-transform: uppercase;
+    .search-input:focus {
+      border-color: var(--accent-color);
+      box-shadow: 0 0 12px rgba(243, 156, 18, 0.4);
     }
-    .filter-btn.active, .filter-btn:hover { background: #f39c12; color: #121620; border-color: #f39c12; }
+
+    .filter-tabs {
+      display: flex;
+      gap: 10px;
+      background: #161b26;
+      padding: 6px;
+      border-radius: 30px;
+      border: 1px solid var(--border-color);
+    }
+
+    .tab-btn {
+      padding: 10px 22px;
+      background: transparent;
+      border: none;
+      border-radius: 20px;
+      color: var(--text-sub);
+      font-weight: 800;
+      font-size: 0.85rem;
+      cursor: pointer;
+      text-transform: uppercase;
+      transition: all 0.3s ease;
+    }
+
+    .tab-btn.active, .tab-btn:hover {
+      background: var(--accent-color);
+      color: #121620;
+      box-shadow: 0 4px 12px rgba(243, 156, 18, 0.4);
+    }
 
     /* Grid do Catálogo */
     .catalog-grid {
-      display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: 20px; max-width: 1200px; margin: 0 auto;
+      width: 100%;
+      max-width: 1300px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 25px;
+      margin-bottom: 40px;
     }
 
     .can-card {
-      background: #1a202c; border: 1px solid #2d3748; border-radius: 12px; overflow: hidden;
-      display: flex; flex-direction: column; transition: transform 0.3s, box-shadow 0.3s; cursor: pointer;
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
       position: relative;
-    }
-    .can-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.4); border-color: #f39c12; }
-
-    .card-image-box {
-      width: 100%; height: 240px; background: #121620; display: flex;
-      align-items: center; justify-content: center; position: relative; padding: 10px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+      cursor: pointer;
     }
 
-    .card-image-box img.can-img {
-      max-width: 100%; max-height: 100%; object-fit: contain; filter: drop-shadow(0 5px 8px rgba(0,0,0,0.5));
+    .can-card:hover {
+      transform: translateY(-8px);
+      border-color: var(--accent-color);
+      box-shadow: 0 12px 25px rgba(0,0,0,0.6);
     }
 
-    /* Logo da cervejaria sobreposto com transparência */
-    .brand-logo-badge {
-      position: absolute; top: 10px; right: 10px; max-width: 50px; max-height: 35px; object-fit: contain;
-      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8));
+    .card-photo-wrapper {
+      width: 100%;
+      height: 260px;
+      background: radial-gradient(circle, #232a3b 0%, #121620 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      padding: 15px;
     }
 
-    .card-content { padding: 16px; display: flex; flex-direction: column; gap: 6px; flex: 1; }
-
-    .can-title { font-size: 0.95rem; font-weight: bold; color: #ffffff; line-height: 1.3; }
-    .can-subtitle { font-size: 0.8rem; color: #f39c12; font-weight: bold; text-transform: uppercase; }
-
-    .can-details {
-      display: flex; justify-content: space-between; font-size: 0.75rem; color: #a0aec0; margin-top: auto; padding-top: 8px; border-top: 1px solid #2d3748;
+    .card-photo-wrapper img.main-photo {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      filter: drop-shadow(0 8px 12px rgba(0,0,0,0.6));
+      transition: transform 0.3s ease;
     }
 
-    /* Modal / Detalhes da Lata */
+    .can-card:hover img.main-photo {
+      transform: scale(1.05);
+    }
+
+    .brand-logo-overlay {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      max-width: 55px;
+      max-height: 40px;
+      object-fit: contain;
+      filter: drop-shadow(0 2px 6px rgba(0,0,0,0.8));
+      z-index: 2;
+    }
+
+    .badge-type {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.65rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      z-index: 2;
+    }
+    .badge-lata { background: var(--badge-lata); color: #457b9d; border: 1px solid #457b9d; }
+    .badge-ococ { background: var(--badge-ococ); color: #52b788; border: 1px solid #52b788; }
+    .badge-set { background: var(--badge-set); color: #9d4edd; border: 1px solid #9d4edd; }
+
+    .card-info {
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      flex: 1;
+    }
+
+    .brewery-name {
+      font-size: 0.75rem;
+      font-weight: 900;
+      color: var(--accent-color);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .can-name {
+      font-size: 1rem;
+      font-weight: 800;
+      color: #ffffff;
+      line-height: 1.35;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .card-footer {
+      margin-top: auto;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.78rem;
+      color: var(--text-sub);
+      font-weight: 600;
+    }
+
+    /* Modal / Detalhes com Carrossel */
     .modal-overlay {
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85);
-      display: none; align-items: center; justify-content: center; z-index: 1000; padding: 20px;
-    }
-    .modal-overlay.active { display: flex; }
-
-    .modal-card {
-      background: #1a202c; border: 1px solid #f39c12; border-radius: 16px;
-      width: 100%; max-width: 600px; padding: 24px; display: flex; flex-direction: column; gap: 16px;
-      position: relative; max-height: 90vh; overflow-y: auto;
-    }
-
-    .close-modal {
-      position: absolute; top: 16px; right: 16px; background: none; border: none;
-      color: #a0aec0; font-size: 1.5rem; cursor: pointer; font-weight: bold;
-    }
-    .close-modal:hover { color: #f39c12; }
-
-    .modal-gallery {
-      display: flex; gap: 10px; overflow-x: auto; padding: 10px 0; scrollbar-width: thin;
-    }
-    .modal-gallery img {
-      height: 220px; object-fit: contain; background: #121620; border-radius: 8px; padding: 8px; border: 1px solid #2d3748;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.88);
+      backdrop-filter: blur(8px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      padding: 20px;
     }
 
-    .empty-msg { text-align: center; color: #a0aec0; grid-column: 1 / -1; padding: 40px; font-size: 1.1rem; }
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: #161b26;
+      border: 1px solid var(--accent-color);
+      border-radius: 20px;
+      width: 100%;
+      max-width: 750px;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 30px;
+      position: relative;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .btn-close-modal {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: #2a3447;
+      border: none;
+      color: #fff;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      font-size: 1.2rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+    }
+    .btn-close-modal:hover { background: var(--accent-color); color: #121620; }
+
+    .modal-header-info {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding-right: 40px;
+    }
+
+    .modal-title { font-size: 1.5rem; font-weight: 900; color: #fff; }
+    .modal-sub { font-size: 0.85rem; font-weight: 800; color: var(--accent-color); text-transform: uppercase; }
+
+    .carousel-container {
+      width: 100%;
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      padding: 10px 0;
+      scroll-snap-type: x mandatory;
+    }
+
+    .carousel-item {
+      scroll-snap-align: center;
+      flex: 0 0 220px;
+      height: 280px;
+      background: #11141d;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .carousel-item img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+
+    .modal-details-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      background: #11141d;
+      padding: 16px;
+      border-radius: 12px;
+      border: 1px solid var(--border-color);
+      font-size: 0.85rem;
+    }
+
+    .detail-item { display: flex; flex-direction: column; gap: 2px; }
+    .detail-label { color: var(--text-sub); font-size: 0.7rem; font-weight: 800; text-transform: uppercase; }
+    .detail-val { color: #fff; font-weight: 700; }
+
+    .empty-state {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-sub);
+      font-size: 1.1rem;
+    }
   </style>
 </head>
 <body>
 
   <header>
-    <h1>WCCollection</h1>
-    <div class="controls">
-      <input type="text" id="searchInput" class="search-input" placeholder="Pesquisar por nome, cervejaria ou país..." oninput="filterItems()">
-      <button class="filter-btn active" onclick="setCategory('all', this)">Todas</button>
-      <button class="filter-btn" onclick="setCategory('ococ', this)">OCOC (Países)</button>
-      <button class="filter-btn" onclick="setCategory('sets', this)">Sets / Packs</button>
+    <div class="brand-title">WCCollection</div>
+    
+    <div class="controls-container">
+      <div class="search-box">
+        <input type="text" id="searchInput" class="search-input" placeholder="Pesquisar por nome, cervejaria, país..." oninput="filterCatalog()">
+      </div>
+
+      <div class="filter-tabs">
+        <button class="tab-btn active" onclick="setFilter('all', this)">Todas</button>
+        <button class="tab-btn" onclick="setFilter('ococ', this)">OCOC (Países)</button>
+        <button class="tab-btn" onclick="setFilter('sets', this)">Sets / Packs</button>
+      </div>
     </div>
   </header>
 
   <main class="catalog-grid" id="catalogGrid">
-    <div class="empty-msg">Carregando catálogo...</div>
+    <div class="empty-state">Carregando catálogo completo...</div>
   </main>
 
-  <!-- Modal para ver fotos e detalhes estendidos -->
+  <!-- Modal Interativo de Detalhes -->
   <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
-    <div class="modal-card" onclick="event.stopPropagation()">
-      <button class="close-modal" onclick="closeModal()">&times;</button>
-      <h2 id="modalTitle" style="color: #f39c12; font-size: 1.3rem;"></h2>
-      <div id="modalSub" style="color: #a0aec0; font-size: 0.9rem; font-weight: bold; text-transform: uppercase;"></div>
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <button class="btn-close-modal" onclick="closeModal()">&times;</button>
       
-      <div class="modal-gallery" id="modalGallery"></div>
+      <div class="modal-header-info">
+        <div class="modal-sub" id="modalBrewery">---</div>
+        <div class="modal-title" id="modalTitle">---</div>
+      </div>
 
-      <div id="modalInfo" style="font-size: 0.85rem; line-height: 1.6; color: #dddddd; border-top: 1px solid #2d3748; padding-top: 12px;"></div>
+      <div class="carousel-container" id="modalCarousel"></div>
+
+      <div class="modal-details-grid">
+        <div class="detail-item">
+          <span class="detail-label">País de Origem</span>
+          <span class="detail-val" id="modalCountry">---</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Volume</span>
+          <span class="detail-val" id="modalVolume">---</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Ano de Lançamento</span>
+          <span class="detail-val" id="modalYear">---</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Código de Barras</span>
+          <span class="detail-val" id="modalBarcode">---</span>
+        </div>
+      </div>
     </div>
   </div>
 
 <script>
   const API_URL = "https://script.google.com/macros/s/AKfycbwP4kTpSrGJllmlWjQp1YmD1Th5jiw1oUtX5cAJAZj9txy-eNi6_EYyLPG_Q0_coyT9/exec";
-  let fullCatalog = [];
+  
+  let rawCatalog = [];
   let currentCategory = 'all';
 
   function getItemVal(item, keys) {
@@ -142,37 +413,37 @@
     return "";
   }
 
-  async function loadCatalog() {
+  async function fetchCatalogData() {
     try {
       const response = await fetch(API_URL + "?nocache=" + new Date().getTime());
       const data = await response.json();
-      fullCatalog = Array.isArray(data) ? data : (data.data || []);
-      filterItems();
+      rawCatalog = Array.isArray(data) ? data : (data.data || []);
+      filterCatalog();
     } catch (err) {
       console.error(err);
-      document.getElementById("catalogGrid").innerHTML = `<div class="empty-msg" style="color:#e74c3c;">Erro ao carregar o catálogo.</div>`;
+      document.getElementById("catalogGrid").innerHTML = `<div class="empty-state" style="color:#e74c3c;">Falha ao carregar os dados do servidor.</div>`;
     }
   }
 
-  function setCategory(cat, btn) {
+  function setFilter(cat, btn) {
     currentCategory = cat;
-    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
-    filterItems();
+    filterCatalog();
   }
 
-  function filterItems() {
-    const search = document.getElementById("searchInput").value.toLowerCase().trim();
+  function filterCatalog() {
+    const term = document.getElementById("searchInput").value.toLowerCase().trim();
 
-    const filtered = fullCatalog.filter(item => {
+    const filtered = rawCatalog.filter(item => {
       const isSet = getItemVal(item, ["isSet", "IsSet", "isset"]) === true || String(getItemVal(item, ["isSet", "IsSet", "isset"])).toLowerCase() === 'true';
       const isOcoc = getItemVal(item, ["isOcoc", "IsOcoc", "isococ"]) === true || String(getItemVal(item, ["isOcoc", "IsOcoc", "isococ"])).toLowerCase() === 'true';
 
       if (currentCategory === 'ococ' && !isOcoc) return false;
       if (currentCategory === 'sets' && !isSet) return false;
 
-      if (search) {
-        const matchString = [
+      if (term) {
+        const fullSearchString = [
           getItemVal(item, ["Nome", "nome", "name"]),
           getItemVal(item, ["Cervejaria", "cervejaria", "brewery"]),
           getItemVal(item, ["Pais", "pais", "country"]),
@@ -180,7 +451,7 @@
           getItemVal(item, ["Ano", "ano"])
         ].join(" ").toLowerCase();
 
-        if (matchString.indexOf(search) === -1) return false;
+        if (fullSearchString.indexOf(term) === -1) return false;
       }
 
       return true;
@@ -194,38 +465,45 @@
     grid.innerHTML = "";
 
     if (items.length === 0) {
-      grid.innerHTML = `<div class="empty-msg">Nenhuma lata encontrada.</div>`;
+      grid.innerHTML = `<div class="empty-state">Nenhuma lata encontrada para essa busca/filtro.</div>`;
       return;
     }
 
     items.forEach((item) => {
-      const nome = getItemVal(item, ["Nome", "nome", "name"]) || "Lata Sem Nome";
-      const cervejaria = getItemVal(item, ["Cervejaria", "cervejaria", "brewery"]);
-      const pais = getItemVal(item, ["Pais", "pais", "country"]);
+      const nome = getItemVal(item, ["Nome", "nome", "name"]) || "Lata sem título";
+      const cervejaria = getItemVal(item, ["Cervejaria", "cervejaria", "brewery"]) || "Marca Desconhecida";
+      const pais = getItemVal(item, ["Pais", "pais", "country"]) || "Desconhecido";
       const volume = getItemVal(item, ["Volume", "volume"]);
       const ano = getItemVal(item, ["Ano", "ano"]);
 
-      // Fotos
+      const isSet = getItemVal(item, ["isSet", "IsSet", "isset"]) === true || String(getItemVal(item, ["isSet", "IsSet", "isset"])).toLowerCase() === 'true';
+      const isOcoc = getItemVal(item, ["isOcoc", "IsOcoc", "isococ"]) === true || String(getItemVal(item, ["isOcoc", "IsOcoc", "isococ"])).toLowerCase() === 'true';
+
+      let badgeHtml = '<span class="badge-type badge-lata">LATA</span>';
+      if (isSet) badgeHtml = '<span class="badge-type badge-set">SET</span>';
+      else if (isOcoc) badgeHtml = '<span class="badge-type badge-ococ">OCOC</span>';
+
       const logo = getItemVal(item, ["BRAND_LOGO", "brand_logo", "logo"]);
       const cover = getItemVal(item, ["ImgCover", "imgcover", "cover"]);
       const front = getItemVal(item, ["ImgFront", "imgfront", "front"]);
-      
-      const mainImg = cover || front || logo || "https://via.placeholder.com/200x240/1a202c/a0aec0?text=Sem+Foto";
+
+      const mainImg = cover || front || logo || "https://via.placeholder.com/200x260/1a202c/a0aec0?text=Sem+Imagem";
 
       const card = document.createElement("div");
       card.className = "can-card";
       card.onclick = () => openModal(item);
 
       card.innerHTML = `
-        <div class="card-image-box">
-          <img src="${mainImg}" class="can-img" alt="${nome}" loading="lazy">
-          ${logo ? `<img src="${logo}" class="brand-logo-badge" alt="Logo">` : ''}
+        <div class="card-photo-wrapper">
+          ${badgeHtml}
+          ${logo ? `<img src="${logo}" class="brand-logo-overlay" alt="Logo">` : ''}
+          <img src="${mainImg}" class="main-photo" alt="${nome}" loading="lazy">
         </div>
-        <div class="card-content">
-          <div class="can-subtitle">${cervejaria || 'Cervejaria'}</div>
-          <div class="can-title">${nome}</div>
-          <div class="can-details">
-            <span>📍 ${pais || 'Global'}</span>
+        <div class="card-info">
+          <div class="brewery-name">${cervejaria}</div>
+          <div class="can-name">${nome}</div>
+          <div class="card-footer">
+            <span>📍 ${pais}</span>
             <span>${volume ? volume : ''} ${ano ? '• ' + ano : ''}</span>
           </div>
         </div>
@@ -243,14 +521,17 @@
     const ano = getItemVal(item, ["Ano", "ano"]);
     const barcode = getItemVal(item, ["Barcode", "barcode"]);
 
-    document.getElementById("modalTitle").innerText = nome;
-    document.getElementById("modalSub").innerText = `${cervejaria} | ${pais}`;
+    document.getElementById("modalTitle").innerText = nome || "Sem Nome";
+    document.getElementById("modalBrewery").innerText = cervejaria || "Cervejaria";
+    document.getElementById("modalCountry").innerText = pais || "Não informado";
+    document.getElementById("modalVolume").innerText = volume || "Não informado";
+    document.getElementById("modalYear").innerText = ano || "Não informado";
+    document.getElementById("modalBarcode").innerText = barcode || "Não informado";
 
-    // Monta a galeria com todas as fotos que existirem
-    const gallery = document.getElementById("modalGallery");
-    gallery.innerHTML = "";
+    const carousel = document.getElementById("modalCarousel");
+    carousel.innerHTML = "";
 
-    const photos = [
+    const allPhotos = [
       getItemVal(item, ["ImgFront", "imgfront", "front"]),
       getItemVal(item, ["ImgCover", "imgcover", "cover"]),
       getItemVal(item, ["ImgLeft", "imgleft", "left"]),
@@ -258,32 +539,27 @@
       getItemVal(item, ["ImgRight", "imgright", "right"])
     ].filter(p => p !== "");
 
-    if (photos.length === 0) {
-      gallery.innerHTML = `<p style="color:#a0aec0; font-size:0.8rem;">Sem fotos adicionais registradas.</p>`;
+    if (allPhotos.length === 0) {
+      carousel.innerHTML = `<div class="carousel-item"><span style="color:#a0aec0;">Sem fotos registradas</span></div>`;
     } else {
-      photos.forEach(url => {
-        const img = document.createElement("img");
-        img.src = url;
-        gallery.appendChild(img);
+      allPhotos.forEach(url => {
+        const div = document.createElement("div");
+        div.className = "carousel-item";
+        div.innerHTML = `<img src="${url}" alt="Foto da lata">`;
+        carousel.appendChild(div);
       });
     }
-
-    document.getElementById("modalInfo").innerHTML = `
-      <p><strong>Volume:</strong> ${volume || 'N/A'}</p>
-      <p><strong>Ano de Lançamento:</strong> ${ano || 'N/A'}</p>
-      ${barcode ? `<p><strong>Código de Barras:</strong> ${barcode}</p>` : ''}
-    `;
 
     document.getElementById("modalOverlay").classList.add("active");
   }
 
   function closeModal(e) {
-    if (!e || e.target.id === "modalOverlay" || e.target.className === "close-modal") {
+    if (!e || e.target.id === "modalOverlay" || e.target.className === "btn-close-modal") {
       document.getElementById("modalOverlay").classList.remove("active");
     }
   }
 
-  window.onload = loadCatalog;
+  window.onload = fetchCatalogData;
 </script>
 </body>
 </html>
