@@ -124,15 +124,13 @@
     /* ========================================================
        AJUSTE REFINADO DOS CARDS IGUAL À FOTO SUPERIOR
        ======================================================== */
-  /* ========================================================
-       AJUSTE PRECISO: CARD IDÊNTICO AO DA ESQUERDA
-       ======================================================== */
+    /* CARD COMPACTO */
     .card {
-      width: 165px !important;
-      min-width: 165px !important;
-      height: 230px !important;
+      width: 135px !important;
+      min-width: 135px !important;
+      height: 185px !important;
       background: #ffffff !important;
-      border-radius: 12px !important;
+      border-radius: 10px !important;
       overflow: hidden !important;
       display: flex !important;
       flex-direction: column !important;
@@ -141,17 +139,16 @@
       flex-shrink: 0 !important;
     }
 
-    .card.card-aspect-sets { width: 210px !important; min-width: 210px !important; }
+    .card.card-aspect-sets { width: 180px !important; min-width: 180px !important; }
 
-    /* Área da Foto Superior (Comprimento idêntico) */
     .card-top-photo {
       width: 100% !important;
-      height: 155px !important;
+      height: 137px !important;
       background: #ffffff !important;
       display: flex !important;
       justify-content: center !important;
       align-items: center !important;
-      padding: 8px !important;
+      padding: 4px !important;
     }
 
     .card-top-photo img {
@@ -160,30 +157,28 @@
       object-fit: contain !important;
     }
 
-    /* Barra Verde Inferior Mais Alta (Igual da Esquerda) */
+    /* BARRA COLORIDA REORGANIZADA */
     .card-bottom-bar {
       width: 100% !important;
-      height: 75px !important; /* Altura exata para dar o respiro do modelo da esquerda */
-      padding: 10px 10px 10px 10px !important;
+      height: 48px !important;
+      padding: 2px 6px 3px 6px !important;
       display: flex !important;
       flex-direction: column !important;
       justify-content: space-between !important;
       box-sizing: border-box !important;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
     }
 
-    /* Nome da Marca: Peso médio/normal, sem esticar (Esquerda) */
+    /* MARCAS: HELVETICA NOW BOLD */
     .card-bar-title {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
-      font-size: 0.98rem !important;
-      font-weight: 600 !important; /* Corrigido de 800 para 600 (Sem achatamento) */
-      color: #ffffff !important;
+      font-family: "Helvetica Now Display", "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+      font-size: 0.80rem !important;
+      font-weight: 700 !important;
       white-space: nowrap !important;
       overflow: hidden !important;
       text-overflow: ellipsis !important;
       text-transform: capitalize !important;
-      line-height: 1.2 !important;
-      letter-spacing: 0px !important;
+      line-height: 1.1 !important;
+      margin-top: 3px !important;
     }
 
     .card-bar-details {
@@ -191,45 +186,44 @@
       justify-content: space-between !important;
       align-items: center !important;
       width: 100% !important;
+      margin-bottom: 1px !important;
     }
 
-    /* Nome do País e Bandeira */
+    /* PAÍS: HELVETICA */
     .card-bar-country {
+      font-family: Helvetica, Arial, sans-serif !important;
       display: flex !important;
       align-items: center !important;
-      gap: 6px !important;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
-      font-size: 0.82rem !important;
-      font-weight: 500 !important;
-      color: #ffffff !important;
+      gap: 4px !important;
+      font-size: 0.65rem !important;
+      font-weight: 400 !important;
       white-space: nowrap !important;
       overflow: hidden !important;
       text-transform: capitalize !important;
     }
 
     .card-bar-flag {
-      width: 18px !important;
-      height: 12px !important;
+      width: 14px !important;
+      height: 9px !important;
       object-fit: cover !important;
       border-radius: 2px !important;
+      flex-shrink: 0 !important;
     }
 
-    /* Badge de Volume */
+    /* VOLUME: HELVETICA */
     .card-bar-vol {
-      background: rgba(0, 0, 0, 0.45) !important;
-      color: #ffffff !important;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
-      padding: 3px 7px !important;
-      border-radius: 6px !important;
-      font-size: 0.72rem !important;
-      font-weight: 600 !important;
+      font-family: Helvetica, Arial, sans-serif !important;
+      padding: 1px 5px !important;
+      border-radius: 4px !important;
+      font-size: 0.58rem !important;
+      font-weight: 400 !important;
       white-space: nowrap !important;
+      flex-shrink: 0 !important;
     }
 
-    /* Borda Laranja de Seleção */
     .card.focused, .card:hover { 
       border: 2px solid #f39c12 !important; 
-      box-shadow: 0 0 8px rgba(243, 156, 18, 0.4) !important; 
+      box-shadow: 0 4px 12px rgba(0,0,0,0.6) !important; 
       outline: none !important; 
       z-index: 10 !important; 
     }
