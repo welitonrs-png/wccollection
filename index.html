@@ -121,31 +121,35 @@
     .catalog-section { height: 235px; min-height: 235px; width: 100%; overflow: hidden; flex-shrink: 0; touch-action: none; }
     .card-row { display: flex; gap: 12px; height: 100%; width: 100%; justify-content: flex-start; align-items: flex-end; }
 
-    /* NOVO CARD COM ESTRUTURA BLINDADA */
+    /* ========================================================
+       AJUSTE ESPECÍFICO DOS CARDS (HELVETICA + BARRA MENOR)
+       ======================================================== */
     .card {
       width: 145px !important;
       min-width: 145px !important;
       height: 225px !important;
       background: #ffffff !important;
-      border-radius: 10px !important;
+      border-radius: 12px !important;
       overflow: hidden !important;
       display: flex !important;
       flex-direction: column !important;
       border: 2px solid transparent !important;
       cursor: pointer !important;
       flex-shrink: 0 !important;
+      transition: border 0.15s ease, box-shadow 0.15s ease !important;
     }
 
     .card.card-aspect-sets { width: 200px !important; min-width: 200px !important; }
 
+    /* Foto Superior Expandida */
     .card-top-photo {
       width: 100% !important;
-      height: 155px !important;
+      height: 173px !important; /* Aumentado para compensar a barra menor */
       background: #ffffff !important;
       display: flex !important;
       justify-content: center !important;
       align-items: center !important;
-      padding: 4px !important;
+      padding: 6px !important;
     }
 
     .card-top-photo img {
@@ -154,24 +158,31 @@
       object-fit: contain !important;
     }
 
+    /* Quadro Colorido Inferior Menor com Fonte Helvetica */
     .card-bottom-bar {
       width: 100% !important;
-      height: 70px !important;
-      padding: 6px 8px !important;
+      height: 52px !important; /* Altura menor conforme solicitado */
+      padding: 4px 8px 6px 8px !important;
       display: flex !important;
       flex-direction: column !important;
       justify-content: space-between !important;
       box-sizing: border-box !important;
+      font-family: Helvetica, Arial, sans-serif !important; /* Fonte Helvetica */
+      border-bottom-left-radius: 10px !important;
+      border-bottom-right-radius: 10px !important;
     }
 
+    /* Nome da Cervejaria */
     .card-bar-title {
-      font-size: 0.8rem !important;
+      font-family: Helvetica, Arial, sans-serif !important;
+      font-size: 0.82rem !important;
       font-weight: 900 !important;
       color: #ffffff !important;
       white-space: nowrap !important;
       overflow: hidden !important;
       text-overflow: ellipsis !important;
       text-transform: uppercase !important;
+      line-height: 1.1 !important;
     }
 
     .card-bar-details {
@@ -181,37 +192,43 @@
       width: 100% !important;
     }
 
+    /* Nome do País (Apenas Iniciais Maiúsculas) */
     .card-bar-country {
       display: flex !important;
       align-items: center !important;
-      gap: 4px !important;
-      font-size: 0.68rem !important;
+      gap: 5px !important;
+      font-family: Helvetica, Arial, sans-serif !important;
+      font-size: 0.72rem !important;
       font-weight: 700 !important;
       color: #ffffff !important;
       white-space: nowrap !important;
       overflow: hidden !important;
+      text-transform: capitalize !important; /* Força apenas iniciais maiúsculas */
     }
 
     .card-bar-flag {
-      width: 15px !important;
-      height: 10px !important;
+      width: 16px !important;
+      height: 11px !important;
       object-fit: cover !important;
       border-radius: 2px !important;
     }
 
+    /* Badge do Volume */
     .card-bar-vol {
-      background: rgba(0, 0, 0, 0.4) !important;
+      background: rgba(0, 0, 0, 0.45) !important;
       color: #ffffff !important;
+      font-family: Helvetica, Arial, sans-serif !important;
       padding: 2px 6px !important;
       border-radius: 6px !important;
-      font-size: 0.62rem !important;
+      font-size: 0.65rem !important;
       font-weight: 800 !important;
       white-space: nowrap !important;
+      text-transform: lowercase !important;
     }
 
     .card.focused, .card:hover { 
-      border: 2px solid #f39c12 !important; 
-      box-shadow: 0 4px 15px rgba(0,0,0,0.6) !important; 
+      border: 3px solid #f39c12 !important; 
+      box-shadow: 0 4px 18px rgba(243, 156, 18, 0.5) !important; 
       outline: none !important; 
       z-index: 10 !important; 
     }
@@ -308,7 +325,7 @@
   </div>
 
 <script>
-  const API_URL = "https://script.google.com/macros/s/AKfycbwFIsSgEF2grkBpliyO_hSD0Lh2ULq6xHoJC6mDLYvjemTLYe67jF38MDNWP2ixITzE/exec";
+  const API_URL = "https://script.google.com/macros/s/AKfycbwP4kTpSrGJllmlWjQp1YmD1Th5jiw1oUtX5cAJAZj9txy-eNi6_EYyLPG_Q0_coyT9/exec";
   let canCatalog = [];
   let currentFiltered = [];
   let zoomGallery = [];
@@ -356,6 +373,17 @@
       return url.split('=')[0] + `=s${size}-rw`;
     }
     return url;
+  }
+
+  /* Formata o texto do País para Primeira Letra Maiúscula (Capitalize) */
+  function formatCapitalizedCountry(str) {
+    if (!str) return '';
+    return String(str)
+      .toLowerCase()
+      .trim()
+      .split(' ')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
   }
 
   function getFlagUrlByCountry(countryName) {
@@ -746,15 +774,14 @@
     pageItems.forEach((can, localIndex) => {
       const globalIndex = startIndex + localIndex;
 
-      // Pega imagem frontal direta do JSON da API
       const rawImg = can.ImgFront || can.front || can.ImgCover || can.cover || can.brandLogo;
       const frontImg = getOptimizedImageUrl(rawImg, 400);
 
-      // Dados diretos do JSON da sua API
       const brandName = can.brewery || can.Cervejaria || can.name || "CERVEJA";
-      const countryName = can.country || can.Pais || "";
+      const countryRaw = can.country || can.Pais || "";
+      const countryFormatted = formatCapitalizedCountry(countryRaw);
       const volumeText = can.volume || can.Volume || "";
-      const flagUrl = getFlagUrlByCountry(countryName);
+      const flagUrl = getFlagUrlByCountry(countryRaw);
 
       const brandKey = String(brandName).toLowerCase().trim();
       const cardColor = BRAND_COLORS[brandKey] || "#008234";
@@ -826,7 +853,6 @@
         }
       };
 
-      // HTML DO CARD COM RODAPÉ INDEPENDENTE
       card.innerHTML = `
         <div class="card-top-photo">
           <img src="${frontImg}" alt="${brandName}" loading="lazy">
@@ -835,8 +861,8 @@
           <div class="card-bar-title">${brandName}</div>
           <div class="card-bar-details">
             <div class="card-bar-country">
-              ${flagUrl ? `<img src="${flagUrl}" class="card-bar-flag" alt="${countryName}">` : ''}
-              <span>${countryName}</span>
+              ${flagUrl ? `<img src="${flagUrl}" class="card-bar-flag" alt="${countryFormatted}">` : ''}
+              <span>${countryFormatted}</span>
             </div>
             ${volumeText ? `<div class="card-bar-vol">${volumeText}</div>` : ''}
           </div>
@@ -914,7 +940,7 @@
     }
   }
 
-  /* SISTEMA DE ZOOM CICLICO (1.5x -> 3.0x -> 1.5x -> Normal) E PAN */
+  /* SISTEMA DE ZOOM CICLICO E PAN */
   function openZoomModal(index) {
     if (!zoomGallery || zoomGallery.length === 0) return;
     currentZoomIndex = index;
@@ -971,7 +997,7 @@
     focusCardSafely(activeLocalIndex);
   }
 
-  /* SISTEMA DE CONFIRMAÇÃO DE SAÍDA DO APP VIA PONTE ANDROID */
+  /* CONFIRMAÇÃO DE SAÍDA */
   function openExitModal() {
     closeMenu();
     document.getElementById("exitModal").classList.add("active");
@@ -995,7 +1021,7 @@
     }
   }
 
-  /* DETECÇÃO DE GESTOS SWIPE */
+  /* GESTOS SWIPE */
   let touchStartX = 0;
   let touchStartY = 0;
 
@@ -1012,7 +1038,7 @@
     handleSwipe(touchStartX, touchStartY, touchEndX, touchEndY);
   }, { passive: true });
 
-  /* NAVEGAÇÃO VIA SCROLL DO MOUSE (PC) */
+  /* SCROLL DO MOUSE */
   catalogSection.addEventListener("wheel", (e) => {
     if (e.deltaY > 0) {
       if (((currentPage + 1) * cardsPerRow) < currentFiltered.length) {
@@ -1064,13 +1090,13 @@
         } else if (currentPage > 0) {
           currentPage--;
           renderApp();
-          cardsPerRow - 1;
+          focusCardSafely(cardsPerRow - 1);
         }
       }
     }
   }
 
-  /* NAVEGAÇÃO DO TECLADO E CONTROLE REMOTO */
+  /* TECLADO E CONTROLE REMOTO */
   document.addEventListener("keydown", (e) => {
     const isZoomActive = document.getElementById("zoomModal").classList.contains("active");
     const isExitActive = document.getElementById("exitModal").classList.contains("active");
