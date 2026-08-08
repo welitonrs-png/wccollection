@@ -93,7 +93,7 @@
 
   <div class="admin-card">
     <h1>Painel de Cadastro de Latas</h1>
-    <div class="subtitle">Gerencie o catálogo da coleção, anexe arquivos locais ou cole links do Google Drive.</div>
+    <div class="subtitle">Gerencie o catálogo da coleção, anexe arquivos locais em alta qualidade ou cole links.</div>
 
     <div id="statusMsg" class="status-msg"></div>
 
@@ -132,7 +132,7 @@
         <label class="checkbox-label"><input type="checkbox" id="checkSet"> É SET / PACK</label>
       </div>
 
-      <div class="section-title">Imagens do Item (Upload de Arquivo Local ou Link)</div>
+      <div class="section-title">Imagens do Item (Upload em Alta Qualidade ou Link)</div>
       
       <div class="file-upload-grid">
         <div class="file-box">
@@ -219,116 +219,69 @@
     el.className = `status-msg ${isSuccess ? 'success' : 'error'}`;
     setTimeout(() => { el.style.display = 'none'; }, 6000);
   }
-// Converte o arquivo para Base64 sem reduzir resolução ou compactar
-function getOriginalBase64(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = (e) => resolve(e.target.result);
-    reader.onerror = (err) => reject(err);
-    reader.readAsDataURL(file);
-  });
-}
 
-async function uploadFileDirectly(inputId, lblId, targetInputId, photoType) {
-  const fileInput = document.getElementById(inputId);
-  const lbl = document.getElementById(lblId);
-  const targetInput = document.getElementById(targetInputId);
-
-  if (!fileInput.files || fileInput.files.length === 0) return;
-
-  const file = fileInput.files[0];
-  const itemName = document.getElementById("inputNome").value.trim() || "lata";
-
-  lbl.innerHTML = "⏳ ENVIANDO AO DRIVE...";
-  lbl.className = "btn-file-custom uploading";
-
-  try {
-    // Pega a extensão real do arquivo (png, webp, jpg)
-    const ext = file.name.split('.').pop().toLowerCase() || 'png';
-
-    // Lê a imagem no formato e qualidade 100% originais
-    const base64Data = await getOriginalBase64(file);
-
-    if (!base64Data) {
-      lbl.innerHTML = "📁 ERRO NA IMAGEM";
-      lbl.className = "btn-file-custom";
-      return;
-    }
-
-    const params = new URLSearchParams();
-    params.append("action", "upload_photo");
-    params.append("base64", base64Data);
-    params.append("fileName", `${itemName}_${photoType}.${ext}`);
-
-    const res = await fetch(API_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
-      body: params.toString()
+  // Leitura Base64 mantendo 100% da resolução e qualidade do arquivo original
+  function getOriginalBase64(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (e) => resolve(e.target.result);
+      reader.onerror = (err) => reject(err);
+      reader.readAsDataURL(file);
     });
+  }
 
-    const data = await res.json();
-    if (data && data.success && data.url) {
-      targetInput.value = data.url;
-      lbl.innerHTML = `✓ ${file.name.substring(0, 10)}...`;
-      lbl.className = "btn-file-custom has-file";
-      showStatus(`Foto (${photoType}) enviada em alta qualidade!`, true);
-    } else {
+  async function uploadFileDirectly(inputId, lblId, targetInputId, photoType) {
+    const fileInput = document.getElementById(inputId);
+    const lbl = document.getElementById(lblId);
+    const targetInput = document.getElementById(targetInputId);
+
+    if (!fileInput.files || fileInput.files.length === 0) return;
+
+    const file = fileInput.files[0];
+    const itemName = document.getElementById("inputNome").value.trim() || "lata";
+
+    lbl.innerHTML = "⏳ ENVIANDO AO DRIVE...";
+    lbl.className = "btn-file-custom uploading";
+
+    try {
+      const ext = file.name.split('.').pop().toLowerCase() || 'png';
+      const base64Data = await getOriginalBase64(file);
+
+      if (!base64Data) {
+        lbl.innerHTML = "📁 ERRO NA IMAGEM";
+        lbl.className = "btn-file-custom";
+        return;
+      }
+
+      const params = new URLSearchParams();
+      params.append("action", "upload_photo");
+      params.append("base64", base64Data);
+      params.append("fileName", `${itemName}_${photoType}.${ext}`);
+
+      const res = await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
+        body: params.toString()
+      });
+
+      const data = await res.json();
+      if (data && data.success && data.url) {
+        targetInput.value = data.url;
+        lbl.innerHTML = `✓ ${file.name.substring(0, 10)}...`;
+        lbl.className = "btn-file-custom has-file";
+        showStatus(`Foto (${photoType}) enviada em alta qualidade!`, true);
+      } else {
+        lbl.innerHTML = "📁 RETENTAR OU COLE URL";
+        lbl.className = "btn-file-custom";
+        showStatus("Erro ao salvar no Drive. Tente cole o link manualmente.", false);
+      }
+    } catch (err) {
+      console.error(err);
       lbl.innerHTML = "📁 RETENTAR OU COLE URL";
       lbl.className = "btn-file-custom";
-      showStatus("Erro ao salvar no Drive. Se a foto for muito pesada, cole a URL.", false);
+      showStatus("Erro de comunicação com o servidor.", false);
     }
-  } catch (err) {
-    console.error(err);
-    lbl.innerHTML = "📁 RETENTAR OU COLE URL";
-    lbl.className = "btn-file-custom";
-    showStatus("Erro de comunicação com o servidor.", false);
   }
-}
-
-
-  try {
-    // 1. Pega a extensão original do arquivo (png, webp, jpg, etc)
-    const ext = file.name.split('.').pop().toLowerCase() || 'png';
-
-    // 2. Chama o compressImage atualizado (mantendo a transparência)
-    const base64Compressed = await compressImage(file, 600);
-
-    if (!base64Compressed) {
-      lbl.innerHTML = "📁 ERRO NA IMAGEM";
-      lbl.className = "btn-file-custom";
-      return;
-    }
-
-    const params = new URLSearchParams();
-    params.append("action", "upload_photo");
-    params.append("base64", base64Compressed);
-    // 3. Usa a extensão original em vez de fixar em .jpg
-    params.append("fileName", `${itemName}_${photoType}.${ext}`);
-
-    const res = await fetch(API_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
-      body: params.toString()
-    });
-
-    const data = await res.json();
-    if (data && data.success && data.url) {
-      targetInput.value = data.url;
-      lbl.innerHTML = `✓ ${file.name.substring(0, 10)}...`;
-      lbl.className = "btn-file-custom has-file";
-      showStatus(`Foto (${photoType}) enviada com sucesso!`, true);
-    } else {
-      lbl.innerHTML = "📁 RETENTAR OU COLE URL";
-      lbl.className = "btn-file-custom";
-      showStatus("Erro ao salvar no Drive. Tente colar o link manualmente.", false);
-    }
-  } catch (err) {
-    console.error(err);
-    lbl.innerHTML = "📁 RETENTAR OU COLE URL";
-    lbl.className = "btn-file-custom";
-    showStatus("Erro de comunicação com o servidor.", false);
-  }
-}
 
   async function handleFormSubmit(e) {
     e.preventDefault();
@@ -384,14 +337,25 @@ async function uploadFileDirectly(inputId, lblId, targetInputId, photoType) {
   }
 
   async function loadCatalogTable() {
+    const tbody = document.getElementById("catalogTableBody");
     try {
       const response = await fetch(API_URL + "?nocache=" + new Date().getTime());
       const data = await response.json();
-      fullCatalog = Array.isArray(data) ? data : (data.data || []);
+
+      if (Array.isArray(data)) {
+        fullCatalog = data;
+      } else if (data && Array.isArray(data.data)) {
+        fullCatalog = data.data;
+      } else {
+        fullCatalog = [];
+      }
+
       renderTable();
     } catch (err) {
       console.error(err);
-      document.getElementById("catalogTableBody").innerHTML = `<tr><td colspan="7" style="text-align:center; color:#e74c3c;">Erro ao carregar lista.</td></tr>`;
+      if (tbody) {
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:#e74c3c;">Erro ao carregar o catálogo do servidor.</td></tr>`;
+      }
     }
   }
 
