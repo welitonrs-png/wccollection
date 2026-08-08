@@ -203,6 +203,16 @@
   const API_URL = "https://script.google.com/macros/s/AKfycbwFIsSgEF2grkBpliyO_hSD0Lh2ULq6xHoJC6mDLYvjemTLYe67jF38MDNWP2ixITzE/exec";
   let fullCatalog = [];
 
+  function getItemVal(item, keys) {
+    if (!item) return "";
+    for (let k of keys) {
+      if (item[k] !== undefined && item[k] !== null && String(item[k]).trim() !== "") {
+        return item[k];
+      }
+    }
+    return "";
+  }
+
   function showStatus(msg, isSuccess) {
     const el = document.getElementById("statusMsg");
     el.innerText = msg;
@@ -369,21 +379,27 @@
     }
 
     fullCatalog.forEach((item) => {
-      const isSet = item.isSet || item.IsSet;
-      const isOcoc = item.isOcoc || item.IsOcoc;
+      const isSet = getItemVal(item, ["isSet", "IsSet", "isset"]);
+      const isOcoc = getItemVal(item, ["isOcoc", "IsOcoc", "isococ"]);
 
       let badge = '<span class="badge badge-lata">LATA</span>';
       if (isSet && String(isSet).toLowerCase() === 'true') badge = '<span class="badge badge-set">SET</span>';
       else if (isOcoc && String(isOcoc).toLowerCase() === 'true') badge = '<span class="badge badge-ococ">OCOC</span>';
 
+      const nomeVal = getItemVal(item, ["Nome", "nome", "name"]) || "-";
+      const cervejariaVal = getItemVal(item, ["Cervejaria", "cervejaria", "brewery"]) || "-";
+      const paisVal = getItemVal(item, ["Pais", "pais", "country"]) || "-";
+      const volumeVal = getItemVal(item, ["Volume", "volume"]) || "-";
+      const idVal = item.ID || item.id || item._rowId || '-';
+
       const row = document.createElement("tr");
       row.innerHTML = `
-        <td>${item.ID || item.id || item._rowId || '-'}</td>
+        <td>${idVal}</td>
         <td>${badge}</td>
-        <td>${item.Nome || item.nome || item.name || '-'}</td>
-        <td>${item.Cervejaria || item.cervejaria || item.brewery || '-'}</td>
-        <td>${item.Pais || item.pais || item.country || '-'}</td>
-        <td>${item.Volume || item.volume || '-'}</td>
+        <td>${nomeVal}</td>
+        <td>${cervejariaVal}</td>
+        <td>${paisVal}</td>
+        <td>${volumeVal}</td>
         <td>
           <button class="btn-table btn-table-edit" onclick="editItem(${item._rowId})">EDITAR</button>
           <button class="btn-table btn-table-delete" onclick="deleteItem(${item._rowId})">EXCLUIR</button>
@@ -398,22 +414,22 @@
     if (!item) return;
 
     document.getElementById("editRowId").value = item._rowId;
-    document.getElementById("inputNome").value = item.Nome || item.nome || item.name || "";
-    document.getElementById("inputCervejaria").value = item.Cervejaria || item.cervejaria || item.brewery || "";
-    document.getElementById("inputPais").value = item.Pais || item.pais || item.country || "";
-    document.getElementById("inputVolume").value = item.Volume || item.volume || "";
-    document.getElementById("inputAno").value = item.Ano || item.ano || "";
-    document.getElementById("inputBarcode").value = item.Barcode || item.barcode || "";
+    document.getElementById("inputNome").value = getItemVal(item, ["Nome", "nome", "name"]);
+    document.getElementById("inputCervejaria").value = getItemVal(item, ["Cervejaria", "cervejaria", "brewery"]);
+    document.getElementById("inputPais").value = getItemVal(item, ["Pais", "pais", "country"]);
+    document.getElementById("inputVolume").value = getItemVal(item, ["Volume", "volume"]);
+    document.getElementById("inputAno").value = getItemVal(item, ["Ano", "ano", "year"]);
+    document.getElementById("inputBarcode").value = getItemVal(item, ["Barcode", "barcode"]);
 
-    document.getElementById("inputLogo").value = item.BRAND_LOGO || item.brandLogo || "";
-    document.getElementById("inputCover").value = item.ImgCover || item.imgcover || "";
-    document.getElementById("inputFront").value = item.ImgFront || item.imgfront || "";
-    document.getElementById("inputLeft").value = item.ImgLeft || item.imgleft || "";
-    document.getElementById("inputBack").value = item.ImgBack || item.imgback || "";
-    document.getElementById("inputRight").value = item.ImgRight || item.imgright || "";
+    document.getElementById("inputLogo").value = getItemVal(item, ["BRAND_LOGO", "brand_logo", "logo"]);
+    document.getElementById("inputCover").value = getItemVal(item, ["ImgCover", "imgcover", "cover"]);
+    document.getElementById("inputFront").value = getItemVal(item, ["ImgFront", "imgfront", "front"]);
+    document.getElementById("inputLeft").value = getItemVal(item, ["ImgLeft", "imgleft", "left"]);
+    document.getElementById("inputBack").value = getItemVal(item, ["ImgBack", "imgback", "back"]);
+    document.getElementById("inputRight").value = getItemVal(item, ["ImgRight", "imgright", "right"]);
 
-    const isSet = item.isSet || item.IsSet;
-    const isOcoc = item.isOcoc || item.IsOcoc;
+    const isSet = getItemVal(item, ["isSet", "IsSet", "isset"]);
+    const isOcoc = getItemVal(item, ["isOcoc", "IsOcoc", "isococ"]);
     document.getElementById("checkOcoc").checked = isOcoc && String(isOcoc).toLowerCase() === 'true';
     document.getElementById("checkSet").checked = isSet && String(isSet).toLowerCase() === 'true';
 
