@@ -226,7 +226,7 @@
     }
 
     /* ========================================================
-       MODAL IDENTICO À SUA IMAGEM DE REFERÊNCIA
+       MODAL DE TELA CHEIA - AJUSTADO CONFORME REFERÊNCIA
        ======================================================== */
     .modal-overlay {
       position: fixed;
@@ -234,12 +234,12 @@
       left: 0;
       width: 100vw;
       height: 100vh;
-      background: #000000; /* Fundo Preto Absoluto */
+      background: #000000;
       display: none;
       z-index: 9999;
-      padding: 20px;
+      padding: 30px;
       overflow: hidden;
-      border-top: 6px solid var(--accent-color); /* Borda Laranja do Topo */
+      border-top: 6px solid var(--accent-color);
     }
 
     .modal-overlay.active {
@@ -253,8 +253,8 @@
       background: #1a202c;
       border: 1px solid var(--accent-color);
       color: #fff;
-      width: 40px;
-      height: 40px;
+      width: 42px;
+      height: 42px;
       border-radius: 50%;
       font-size: 1.4rem;
       cursor: pointer;
@@ -266,13 +266,13 @@
     }
     .btn-close-modal:hover { background: var(--accent-color); color: #000; }
 
-    /* Logo da Marca no canto superior direito */
+    /* Logo da Marca no Canto Superior Direito AUMENTADO (1,5x) */
     .modal-brand-logo-top {
       position: absolute;
       top: 25px;
-      right: 30px;
-      max-height: 100px;
-      max-width: 200px;
+      right: 35px;
+      max-height: 150px; /* Aumentado de 100px para 150px */
+      max-width: 300px;  /* Aumentado de 200px para 300px */
       object-fit: contain;
       z-index: 10;
     }
@@ -281,9 +281,9 @@
       width: 100%;
       height: 100%;
       display: grid;
-      grid-template-columns: 360px 1fr;
-      gap: 40px;
-      align-items: center;
+      grid-template-columns: 380px 1fr;
+      gap: 50px;
+      align-items: stretch; /* Estica ambos os lados para ocupar a mesma altura */
       padding-top: 10px;
     }
 
@@ -292,23 +292,24 @@
         grid-template-columns: 1fr;
         overflow-y: auto;
       }
-      .modal-brand-logo-top { max-height: 60px; top: 15px; right: 15px; }
+      .modal-brand-logo-top { max-height: 90px; top: 15px; right: 15px; }
     }
 
-    /* Coluna das Fotos com Borda Laranja Contornada */
+    /* Coluna Esquerda: Fotos */
     .gallery-container {
       display: flex;
       flex-direction: column;
       gap: 15px;
       height: 100%;
-      justify-content: center;
+      justify-content: space-between;
     }
 
     .main-photo-box {
       width: 100%;
-      height: 420px;
+      flex: 1; /* Ocupa todo o espaço vertical até as miniaturas */
+      min-height: 350px;
       background: #000000;
-      border: 4px solid var(--accent-color); /* Borda Laranja idêntica à imagem */
+      border: 4px solid var(--accent-color);
       border-radius: 16px;
       padding: 15px;
       display: flex;
@@ -327,11 +328,12 @@
       gap: 10px;
       justify-content: flex-start;
       overflow-x: auto;
+      height: 85px;
     }
 
     .thumb-strip img {
       width: 65px;
-      height: 75px;
+      height: 80px;
       object-fit: contain;
       background: #000000;
       border: 3px solid var(--accent-color);
@@ -347,24 +349,25 @@
       transform: scale(1.05);
     }
 
-    /* Coluna de Textos Laranjas em Itálico */
+    /* Coluna Direita: Ocupa toda a altura (do topo da foto até o fim das miniaturas) */
     .info-container {
       display: flex;
       flex-direction: column;
-      gap: 24px;
-      justify-content: center;
-      padding-right: 180px;
+      justify-content: space-between; /* Distribui os itens verticalmente de ponta a ponta */
+      height: 100%;
+      padding-right: 220px; /* Evita sobreposição com o logo maior */
+      padding-top: 10px;
+      padding-bottom: 10px;
     }
 
     .modal-main-title {
       color: var(--accent-color);
-      font-size: 2.6rem;
+      font-size: 3rem; /* Título bem grande em destaque */
       font-weight: 900;
       font-style: italic;
       text-transform: uppercase;
       line-height: 1.1;
       letter-spacing: 0.5px;
-      margin-bottom: 10px;
     }
 
     .info-block {
@@ -375,7 +378,7 @@
 
     .info-label {
       color: var(--accent-color);
-      font-size: 1.15rem;
+      font-size: 1.25rem;
       font-weight: 900;
       font-style: italic;
       text-transform: uppercase;
@@ -384,7 +387,7 @@
 
     .info-val {
       color: var(--accent-color);
-      font-size: 2.2rem;
+      font-size: 2.3rem;
       font-weight: 900;
       font-style: italic;
       text-transform: uppercase;
@@ -395,7 +398,7 @@
     .counter-badge {
       position: absolute;
       bottom: 25px;
-      right: 30px;
+      right: 35px;
       color: var(--accent-color);
       font-size: 1.3rem;
       font-weight: 900;
@@ -433,14 +436,15 @@
     <div class="empty-state">Carregando catálogo completo...</div>
   </main>
 
-  <!-- Modal Fiel à Imagem Enviada -->
+  <!-- Modal Tela Cheia -->
   <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
     <button class="btn-close-modal" onclick="closeModal()">&times;</button>
     
+    <!-- Logo Aumentado no Canto Superior Direito -->
     <img id="modalBrandLogo" class="modal-brand-logo-top" src="" alt="" style="display:none;">
 
     <div class="modal-fullscreen-grid" onclick="event.stopPropagation()">
-      <!-- Galeria de Fotos na Esquerda -->
+      <!-- Galeria de Fotos -->
       <div class="gallery-container">
         <div class="main-photo-box">
           <img id="modalMainPhoto" src="" alt="Foto Principal">
@@ -448,7 +452,7 @@
         <div class="thumb-strip" id="modalThumbStrip"></div>
       </div>
 
-      <!-- Informações Laranjas na Direita -->
+      <!-- Informações Ocupando Toda a Altura -->
       <div class="info-container">
         <div class="modal-main-title" id="modalTitle">---</div>
 
