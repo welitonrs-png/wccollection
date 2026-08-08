@@ -1,3 +1,26 @@
+Detalhes do item
+Logotipo do Apps do Gemini
+Apps do Gemini
+Consulta: muita coisa deixou de funcionar, melhor manter como estava, tudo no index.html, tem como mandar atualizado o arquivo e aí eu deleto os css e js.
+Detalhes
+event
+Hoje, 08:33
+apps
+Apps do Gemini
+
+https://gemini.google.com/app/d93e51c4fe61a9a2
+chat
+Compreendido perfeitamente! Voltar para a arquitetura de arquivo único (index.html) é a escolha ideal para garantir que nada quebre e que a navegação do controle remoto, os gestos de swipe, a busca com teclado virtual e as gavetas de menu funcionem sem falhas.
+
+Abaixo está o seu index.html completo, definitivo e atualizado. Ele já conta com:
+
+Contraste Automático de Texto: Se a cor da cervejaria for clara, o texto do rodapé fica preto automaticamente; se for escura, fica branco.
+Fontes Helvetica Personalizadas: Marca em Helvetica Now Bold (deslocada levemente para baixo) e país/volume em Helvetica regular.
+Bandeiras Expandidas: Suporte para Canadá, Croácia e dezenas de outros países.
+Layout Compacto: Cards e espaçamentos reduzidos para caber perfeitamente na tela.
+Código Completo (index.html)
+Pode deletar os arquivos styles.css e app.js do repositório/Vercel e substituir todo o conteúdo do seu index.html por este código:
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -98,108 +121,24 @@
     }
     .main-area.pushed { transform: translateX(260px); }
 
-    /* HERO PANEL REFORMATADO COM SUPORTE A LOGO */
-    .hero-panel { 
-      flex: 1; 
-      min-height: 0; 
-      background: transparent; 
-      border-radius: 12px; 
-      display: flex; 
-      padding: 12px; 
-      gap: 20px; 
-      align-items: center; 
-      position: relative; 
-      overflow: hidden; 
-    }
+    .hero-panel { flex: 1; min-height: 0; background: transparent; border-radius: 12px; display: flex; padding: 8px 12px; gap: 20px; align-items: center; position: relative; }
+    .hero-brand-logo-container { position: absolute; top: 8px; right: 20px; width: 180px; height: 80px; display: flex; justify-content: flex-end; align-items: flex-start; z-index: 20; pointer-events: none; }
+    .hero-brand-logo-container img { max-width: 100%; max-height: 100%; object-fit: contain; }
 
-    /* LOGO DA CERVEJARIA (TOPO DIREITO) */
-    .hero-brand-logo-container { 
-      position: absolute; 
-      top: 10px; 
-      right: 15px; 
-      width: 150px; 
-      height: 60px; 
-      background: rgba(22, 27, 38, 0.85);
-      border: 1px solid #333d52;
-      border-radius: 10px;
-      padding: 6px;
-      display: flex; 
-      justify-content: center; 
-      align-items: center; 
-      z-index: 20; 
-      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-      backdrop-filter: blur(5px);
-    }
-
-    .hero-brand-logo-container img { 
-      max-width: 100%; 
-      max-height: 100%; 
-      object-fit: contain; 
-    }
-
-    .hero-left-photos { 
-      height: 100%; 
-      max-height: 100%; 
-      aspect-ratio: 1 / 1; 
-      display: grid; 
-      grid-template-columns: repeat(2, 1fr); 
-      grid-template-rows: repeat(2, 1fr); 
-      gap: 8px; 
-      flex-shrink: 0; 
-    }
-
+    .hero-left-photos { height: 100%; aspect-ratio: 1 / 1; display: grid; grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(2, 1fr); gap: 8px; }
     .hero-left-photos.aspect-sets { aspect-ratio: 4 / 3; }
 
-    .hero-photo-card { 
-      background: #ffffff; 
-      border-radius: 8px; 
-      padding: 4px; 
-      display: flex; 
-      justify-content: center; 
-      align-items: center; 
-      width: 100%; 
-      height: 100%; 
-      overflow: hidden; 
-      cursor: pointer; 
-    }
+    .hero-photo-card { background: #ffffff; border-radius: 8px; padding: 4px; display: flex; justify-content: center; align-items: center; width: 100%; height: 100%; overflow: hidden; cursor: pointer; }
+    .hero-photo-card img { width: 100%; height: 100%; object-fit: contain; }
 
-    .hero-photo-card img { 
-      width: 100%; 
-      height: 100%; 
-      object-fit: contain; 
-    }
-
-    .hero-right-info { 
-      flex: 1; 
-      height: 100%; 
-      display: flex; 
-      flex-direction: column; 
-      justify-content: flex-start; 
-      gap: 6px; 
-      color: #f39c12; 
-      text-transform: uppercase; 
-      font-style: italic; 
-      overflow-y: auto; 
-      padding-right: 170px;
-    }
-
-    .hero-title { 
-      font-size: clamp(1.2rem, 2vw, 1.6rem); 
-      font-weight: 900; 
-      line-height: 1.1; 
-      color: #f39c12; 
-      margin-bottom: 8px; 
-      letter-spacing: 0.5px; 
-      word-break: break-word; 
-      text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-    }
-
-    .info-block { display: flex; flex-direction: column; margin-bottom: 4px; }
-    .info-label { font-size: clamp(0.68rem, 0.85vw, 0.78rem); font-weight: 900; color: #e67e22; line-height: 1.1; letter-spacing: 0.5px; }
-    .info-val { font-size: clamp(0.9rem, 1.25vw, 1.15rem); font-weight: 900; color: #ffffff; line-height: 1.1; margin-top: 1px; }
+    .hero-right-info { flex: 1; height: 100%; display: flex; flex-direction: column; justify-content: flex-start; gap: 6px; color: #f39c12; text-transform: uppercase; font-style: italic; overflow-y: auto; padding-right: 180px; }
+    .hero-title { font-size: clamp(1.1rem, 1.9vw, 1.5rem); font-weight: 900; line-height: 1.1; color: #f39c12; margin-bottom: 2px; letter-spacing: 0.5px; }
+    .info-block { display: flex; flex-direction: column; margin-bottom: 2px; }
+    .info-label { font-size: clamp(0.65rem, 0.9vw, 0.8rem); font-weight: 900; color: #f39c12; line-height: 1.1; letter-spacing: 0.5px; }
+    .info-val { font-size: clamp(0.9rem, 1.4vw, 1.2rem); font-weight: 900; color: #f39c12; line-height: 1.1; margin-top: 1px; }
 
     .counter-bar { display: flex; justify-content: flex-end; align-items: center; padding: 0 4px; }
-    .card-counter { font-size: 0.9rem; font-weight: 900; color: #f39c12; background: transparent; padding: 2px 8px; letter-spacing: 1px; }
+    .card-counter { font-size: 0.85rem; font-weight: 900; color: #f39c12; background: transparent; padding: 2px 8px; letter-spacing: 1px; }
 
     /* SEÇÃO INFERIOR DO CATÁLOGO */
     .catalog-section { height: 195px; min-height: 195px; width: 100%; overflow: hidden; flex-shrink: 0; touch-action: none; }
@@ -238,7 +177,7 @@
       object-fit: contain !important;
     }
 
-    /* BARRA COLORIDA DO CARD */
+    /* BARRA COLORIDA REORGANIZADA */
     .card-bottom-bar {
       width: 100% !important;
       height: 48px !important;
@@ -249,6 +188,7 @@
       box-sizing: border-box !important;
     }
 
+    /* MARCAS: HELVETICA NOW BOLD */
     .card-bar-title {
       font-family: "Helvetica Now Display", "Helvetica Neue", Helvetica, Arial, sans-serif !important;
       font-size: 0.80rem !important;
@@ -269,6 +209,7 @@
       margin-bottom: 1px !important;
     }
 
+    /* PAÍS: HELVETICA */
     .card-bar-country {
       font-family: Helvetica, Arial, sans-serif !important;
       display: flex !important;
@@ -289,6 +230,7 @@
       flex-shrink: 0 !important;
     }
 
+    /* VOLUME: HELVETICA */
     .card-bar-vol {
       font-family: Helvetica, Arial, sans-serif !important;
       padding: 1px 5px !important;
@@ -306,7 +248,7 @@
       z-index: 10 !important; 
     }
 
-    /* MODAIS */
+    /* MODAL DE ZOOM E NAVEGAÇÃO */
     .zoom-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.95); z-index: 3000; display: none; justify-content: center; align-items: center; padding: 16px; overflow: hidden; }
     .zoom-modal.active { display: flex; }
     .zoom-modal img { 
@@ -314,6 +256,7 @@
       transition: transform 0.15s ease-out; transform-origin: center center; 
     }
 
+    /* MODAL VISUAL DE SAÍDA NATIVO */
     .exit-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); z-index: 4000; display: none; justify-content: center; align-items: center; }
     .exit-modal.active { display: flex; }
     .exit-box { background: #161b26; border: 2px solid #333d52; padding: 30px 40px; border-radius: 12px; display: flex; flex-direction: column; align-items: center; gap: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
@@ -385,7 +328,7 @@
     <img id="zoomImage" src="" alt="Imagem ampliada" onclick="event.stopPropagation(); toggleZoomStep();">
   </div>
 
-  <!-- MODAL DE SAÍDA -->
+  <!-- MODAL DE SAÍDA DO APLICATIVO -->
   <div class="exit-modal" id="exitModal">
     <div class="exit-box">
       <div class="exit-title">TEM CERTEZA QUE QUER SAIR?</div>
@@ -398,13 +341,8 @@
 
 <script>
   const API_URL = "https://script.google.com/macros/s/AKfycbwFIsSgEF2grkBpliyO_hSD0Lh2ULq6xHoJC6mDLYvjemTLYe67jF38MDNWP2ixITzE/exec";
-  
+  let canCatalog = [];
   let currentFiltered = [];
-  let totalServerItems = 0;
-  let totalServerPages = 1;
-  let currentServerPage = 1;
-  const SERVER_LIMIT = 60;
-
   let zoomGallery = [];
   let currentZoomIndex = 0;
   
@@ -414,7 +352,6 @@
   let activeLocalIndex = 0;
   let lastSelectedMenuId = 'menuBtnHome'; 
   let lastSelectedBrandElem = null;
-  let isLoadingMore = false;
 
   /* MAPA DE CORES AUTOMÁTICO DAS MARCAS */
   const BRAND_COLORS = {
@@ -445,6 +382,7 @@
 
   const vkKeys = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','1','2','3','4','5','6','7','8','9','0','ESPAÇO','DEL','LIMPAR'];
 
+  /* FUNÇÃO AUTOMÁTICA DE CONTRASTE DE COR (TEXTO ESCURO OU CLARO) */
   function getTextColorForBackground(hexColor) {
     if (!hexColor) return { text: '#ffffff', pillBg: 'rgba(0, 0, 0, 0.3)' };
     let hex = hexColor.replace('#', '');
@@ -455,8 +393,10 @@
     const g = parseInt(hex.substr(2, 2), 16);
     const b = parseInt(hex.substr(4, 2), 16);
     
+    // Fórmula padrão YIQ para calcular percepção visual de brilho
     const yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
     
+    // Se a cor for clara (yiq >= 128), texto escuro (#111111)
     if (yiq >= 128) {
       return { text: '#111111', pillBg: 'rgba(0, 0, 0, 0.15)' };
     } else {
@@ -469,22 +409,12 @@
     return String(str).toLowerCase().replace(/(?:^|\s)\S/g, function(a) { return a.toUpperCase(); });
   }
 
-  function getOptimizedImageUrl(url, size = 400) {
+  function getOptimizedImageUrl(url, size = 300) {
     if (!url) return '';
-    let str = String(url).trim();
-    if (str === '') return '';
-
-    if (str.includes('googleusercontent.com')) {
-      const baseUrl = str.split('=')[0];
-      return `${baseUrl}=s${size}-rw`;
+    if (url.includes('googleusercontent.com')) {
+      return url.split('=')[0] + `=s${size}-rw`;
     }
-    
-    const driveMatch = str.match(/\/d\/([a-zA-Z0-9_-]+)/) || str.match(/id=([a-zA-Z0-9_-]+)/);
-    if (driveMatch && driveMatch[1]) {
-      return `https://lh3.googleusercontent.com/d/${driveMatch[1]}=s${size}-rw`;
-    }
-
-    return str;
+    return url;
   }
 
   function getFlagUrlByCountry(countryName) {
@@ -492,12 +422,15 @@
     const name = String(countryName).toLowerCase().trim();
     
     const countryCodes = {
+      // Américas
       'brasil': 'br', 'brazil': 'br',
       'canadá': 'ca', 'canada': 'ca',
       'eua': 'us', 'usa': 'us', 'estados unidos': 'us',
       'méxico': 'mx', 'mexico': 'mx',
       'argentina': 'ar', 'chile': 'cl', 'uruguai': 'uy', 'uruguay': 'uy',
       'colômbia': 'co', 'colombia': 'co', 'peru': 'pe',
+
+      // Europa
       'croácia': 'hr', 'croacia': 'hr', 'croatia': 'hr',
       'alemanha': 'de', 'germany': 'de',
       'bélgica': 'be', 'belgium': 'be',
@@ -514,7 +447,10 @@
       'suécia': 'se', 'sweden': 'se', 'noruega': 'no', 'norway': 'no',
       'áustria': 'at', 'austria': 'at', 'república tcheca': 'cz', 'czech republic': 'cz', 'czechia': 'cz',
       'polônia': 'pl', 'poland': 'pl', 'rússia': 'ru', 'russia': 'ru',
-      'china': 'cn', 'japão': 'jp', 'japan': 'jp',
+
+      // Ásia / Oceania / África
+      'china': 'cn',
+      'japão': 'jp', 'japan': 'jp',
       'coréia do sul': 'kr', 'korea': 'kr', 'south korea': 'kr',
       'tailândia': 'th', 'thailand': 'th', 'vietnã': 'vn', 'vietnam': 'vn',
       'austrália': 'au', 'australia': 'au',
@@ -528,6 +464,40 @@
     return '';
   }
 
+  function preloadFirstImages(items, count = 6) {
+    return new Promise((resolve) => {
+      const pageItems = items.slice(0, count);
+      if (pageItems.length === 0) {
+        resolve();
+        return;
+      }
+
+      let loadedCount = 0;
+      const totalToLoad = pageItems.length;
+
+      pageItems.forEach((can) => {
+        const rawCover = can.ImgFront || can.front || can.ImgCover || can.cover;
+
+        if (!rawCover) {
+          loadedCount++;
+          if (loadedCount >= totalToLoad) resolve();
+          return;
+        }
+
+        const img = new Image();
+        img.src = getOptimizedImageUrl(rawCover, 300);
+        img.onload = img.onerror = () => {
+          loadedCount++;
+          if (loadedCount >= totalToLoad) {
+            resolve();
+          }
+        };
+      });
+
+      setTimeout(resolve, 3500);
+    });
+  }
+
   function hideLoadingScreen() {
     const screen = document.getElementById("loadingScreen");
     if (screen) {
@@ -535,69 +505,26 @@
     }
   }
 
-  async function fetchCatalogFromSheet(page = 1, append = false) {
+  async function fetchCatalogFromSheet() {
     if(!API_URL || API_URL.includes("COLE_AQUI")) return;
 
-    const querySearch = encodeURIComponent(document.getElementById("menuSearchInput").value.trim());
-    const fetchUrl = `${API_URL}?page=${page}&limit=${SERVER_LIMIT}&category=${currentTab}&search=${querySearch}&nocache=${new Date().getTime()}`;
+    localStorage.removeItem("beercan_catalog_cache");
 
     try {
-      const response = await fetch(fetchUrl);
-      const resData = await response.json();
+      const response = await fetch(API_URL + "?nocache=" + new Date().getTime());
+      const freshData = await response.json();
+      
+      canCatalog = freshData;
+      processTabChange();
 
-      let items = [];
-      if (Array.isArray(resData)) {
-        items = resData;
-        totalServerItems = items.length;
-        totalServerPages = 1;
-      } else {
-        items = resData.data || [];
-        totalServerItems = resData.total || 0;
-        totalServerPages = resData.totalPages || 1;
-      }
-
-      currentServerPage = page;
-
-      if (append) {
-        currentFiltered = currentFiltered.concat(items);
-      } else {
-        currentFiltered = items;
-        currentPage = 0;
-        activeLocalIndex = 0;
-      }
-
-      renderApp();
+      document.getElementById("loadingText").innerText = "PREPARANDO IMAGENS...";
+      await preloadFirstImages(currentFiltered, cardsPerRow);
       hideLoadingScreen();
-
-      if (currentFiltered.length > 0) {
-        if (!append) {
-          updateHeroPanel(currentFiltered[0], 0);
-          focusCardSafely(0);
-        }
-      } else {
-        document.getElementById("cardCounter").innerText = "0/0";
-        document.getElementById("heroTitle").innerText = "NENHUMA LATA ENCONTRADA";
-        document.getElementById("heroPhotos").innerHTML = "";
-        document.getElementById("heroBrandLogo").innerHTML = "";
-      }
+      focusCardSafely(0);
     } catch (err) {
       console.error("Erro ao carregar catálogo da API:", err);
       hideLoadingScreen();
       focusCardSafely(0);
-    } finally {
-      isLoadingMore = false;
-    }
-  }
-
-  async function checkAndLoadMoreServerItems() {
-    if (isLoadingMore || currentServerPage >= totalServerPages) return;
-    
-    const maxLocalLoaded = currentFiltered.length;
-    const currentLocalPosition = (currentPage * cardsPerRow) + activeLocalIndex;
-
-    if (maxLocalLoaded - currentLocalPosition <= 12) {
-      isLoadingMore = true;
-      await fetchCatalogFromSheet(currentServerPage + 1, true);
     }
   }
 
@@ -614,6 +541,7 @@
     document.getElementById("brandInlineList").classList.remove("active");
     
     processTabChange();
+    focusCardSafely(0);
   }
 
   function processTabChange() {
@@ -634,8 +562,38 @@
       labelCountry.innerText = "ORIGEM:";
     }
 
+    buildBrandList();
     buildVirtualKeyboard();
-    fetchCatalogFromSheet(1, false);
+    filterCatalog(document.getElementById("menuSearchInput").value);
+  }
+
+  function getBaseListForCurrentTab() {
+    if (currentTab === 'home') {
+      return canCatalog.filter(can => {
+        const val = can.isSet !== undefined ? can.isSet : can.isSet;
+        return !val || String(val).toLowerCase() === "false";
+      });
+    } else if (currentTab === 'ococ') {
+      const countryMap = new Map();
+      canCatalog.forEach(can => {
+        const countryVal = can.brewery || can.Cervejaria;
+        const isOcocVal = can.isOcoc;
+        const isSetVal = can.isSet;
+
+        if ((!isSetVal || String(isSetVal).toLowerCase() === "false") && 
+            (isOcocVal === true || String(isOcocVal).toLowerCase() === "true") && 
+            countryVal && !countryMap.has(String(countryVal).toLowerCase())) {
+          countryMap.set(String(countryVal).toLowerCase(), can);
+        }
+      });
+      return Array.from(countryMap.values()).sort((a,b) => String(a.country || a.Pais).localeCompare(String(b.country || b.Pais)));
+    } else if (currentTab === 'sets') {
+      return canCatalog.filter(can => {
+        const val = can.isSet;
+        return val === true || String(val).toLowerCase() === "true";
+      });
+    }
+    return [];
   }
 
   function clearAllCardFocus() {
@@ -727,7 +685,6 @@
     container.classList.toggle("active");
     
     if(container.classList.contains("active")) {
-      buildBrandList();
       const firstBrand = container.querySelector(".brand-btn");
       if(firstBrand) firstBrand.focus();
     }
@@ -767,15 +724,14 @@
     else if (key === 'DEL') input.value = input.value.slice(0, -1);
     else if (key === 'LIMPAR') input.value = '';
     else input.value += key;
-    
-    fetchCatalogFromSheet(1, false);
+    filterCatalog(input.value);
   }
 
   function buildBrandList() {
     const brandContainer = document.getElementById("brandInlineList");
     brandContainer.innerHTML = "";
-    
-    const brands = [...new Set(currentFiltered.map(c => c.brewery || c.Cervejaria || c.CERVEJARIA).filter(Boolean))].sort();
+    const baseList = getBaseListForCurrentTab();
+    const brands = [...new Set(baseList.map(c => c.brewery || c.Cervejaria).filter(Boolean))].sort();
     
     let defaultText = "TODAS AS MARCAS";
     if (currentTab === 'ococ') defaultText = "TODOS OS PAÍSES";
@@ -788,8 +744,8 @@
       e.stopPropagation();
       lastSelectedMenuId = 'menuBtnBrands';
       lastSelectedBrandElem = allBtn;
-      document.getElementById("menuSearchInput").value = "";
-      fetchCatalogFromSheet(1, false);
+      filterCatalog(""); 
+      focusCardSafely(0); 
     };
 
     allBtn.onkeydown = (e) => {
@@ -809,8 +765,8 @@
         e.stopPropagation();
         lastSelectedMenuId = 'menuBtnBrands';
         lastSelectedBrandElem = btn;
-        document.getElementById("menuSearchInput").value = b;
-        fetchCatalogFromSheet(1, false);
+        filterCatalog(b); 
+        focusCardSafely(0); 
       };
 
       btn.onkeydown = (e) => {
@@ -824,6 +780,36 @@
     });
   }
 
+  function filterCatalog(query) {
+    const val = query.toLowerCase().trim();
+    const baseList = getBaseListForCurrentTab();
+
+    currentFiltered = baseList.filter(can => {
+      if (!val) return true;
+      return [
+        can.name || can.Nome,
+        can.brewery || can.Cervejaria,
+        can.country || can.Pais,
+        can.volume || can.Volume,
+        can.year || can.Ano,
+        can.barcode || can.Barcode
+      ].map(v => String(v || "").toLowerCase()).join(" ").includes(val);
+    });
+
+    currentPage = 0;
+    activeLocalIndex = 0;
+    renderApp();
+
+    if (currentFiltered.length > 0) {
+      updateHeroPanel(currentFiltered[0], 0);
+    } else {
+      document.getElementById("cardCounter").innerText = "0/0";
+      document.getElementById("heroTitle").innerText = "NENHUMA LATA ENCONTRADA";
+      document.getElementById("heroPhotos").innerHTML = "";
+    }
+  }
+
+  /* RENDERIZAÇÃO DOS CARDS COM COR DE TEXTO INTELIGENTE */
   function renderApp() {
     const row = document.getElementById("cardRow");
     row.innerHTML = "";
@@ -831,25 +817,21 @@
     const startIndex = currentPage * cardsPerRow;
     const pageItems = currentFiltered.slice(startIndex, startIndex + cardsPerRow);
 
-    if (pageItems.length === 0) {
-      document.getElementById("cardCounter").innerText = "0/0";
-      return;
-    }
-
     pageItems.forEach((can, localIndex) => {
       const globalIndex = startIndex + localIndex;
 
-      const rawImg = can.ImgFront || can.imgfront || can.front || can.ImgCover || can.imgcover || can.cover;
+      const rawImg = can.ImgFront || can.front || can.ImgCover || can.cover || can.brandLogo;
       const frontImg = getOptimizedImageUrl(rawImg, 400);
 
-      const brandName = toTitleCase(can.brewery || can.Cervejaria || can.cervejaria || can.name || can.Nome || "Cerveja");
-      const countryName = toTitleCase(can.country || can.Pais || can.pais || "");
+      const brandName = toTitleCase(can.brewery || can.Cervejaria || can.name || "Cerveja");
+      const countryName = toTitleCase(can.country || can.Pais || "");
       const volumeText = can.volume || can.Volume || "";
       const flagUrl = getFlagUrlByCountry(countryName);
 
-      const brandKey = String(can.brewery || can.Cervejaria || can.cervejaria || "").toLowerCase().trim();
+      const brandKey = String(can.brewery || can.Cervejaria || "").toLowerCase().trim();
       const cardColor = BRAND_COLORS[brandKey] || "#008234";
 
+      // DETECTA AUTOMATICAMENTE SE A COR É CLARA OU ESCURA
       const colorTheme = getTextColorForBackground(cardColor);
 
       const card = document.createElement("div");
@@ -862,7 +844,6 @@
         card.classList.add("focused");
         activeLocalIndex = localIndex;
         updateHeroPanel(can, globalIndex);
-        checkAndLoadMoreServerItems();
       };
 
       card.onfocus = () => {
@@ -871,7 +852,6 @@
         card.classList.add("focused");
         activeLocalIndex = localIndex;
         updateHeroPanel(can, globalIndex);
-        checkAndLoadMoreServerItems();
       };
       
       card.onclick = (e) => {
@@ -923,7 +903,7 @@
 
       card.innerHTML = `
         <div class="card-top-photo">
-          <img src="${frontImg}" alt="${brandName}" loading="lazy" decoding="async" onerror="this.src='logo.png'">
+          <img src="${frontImg}" alt="${brandName}" loading="lazy">
         </div>
         <div class="card-bottom-bar" style="background-color: ${cardColor}; color: ${colorTheme.text};">
           <div class="card-bar-title" style="color: ${colorTheme.text};">${brandName}</div>
@@ -948,10 +928,10 @@
     if (currentTab === 'ococ') fallbackTitle = "SELECIONE UMA LATA (OCOC)";
     if (currentTab === 'sets') fallbackTitle = "SELECIONE UM SET";
 
-    const titleVal = can.name || can.Nome || can.nome || fallbackTitle;
-    const countryVal = can.country || can.Pais || can.pais || "-";
+    const titleVal = can.name || can.Nome || fallbackTitle;
+    const countryVal = can.country || can.Pais || "-";
     const volumeVal = can.volume || can.Volume || "-";
-    const yearVal = can.year || can.Ano || can.ano || "-";
+    const yearVal = can.year || can.Ano || "-";
     const barcodeVal = can.barcode || can.Barcode || "-";
 
     document.getElementById("heroTitle").innerText = String(titleVal).toUpperCase();
@@ -961,23 +941,24 @@
     document.getElementById("heroBarcode").innerText = barcodeVal;
 
     const logoContainer = document.getElementById("heroBrandLogo");
-    const logoUrl = can.BRAND_LOGO || can.brandLogo || can.logo;
+    const logoUrl = can.brandLogo || can.BRAND_LOGO;
     if (logoUrl && String(logoUrl).trim() !== "") {
-      logoContainer.innerHTML = `<img src="${getOptimizedImageUrl(logoUrl, 400)}" alt="LOGO DA CERVEJARIA" onerror="this.style.display='none'">`;
+      logoContainer.innerHTML = `<img src="${getOptimizedImageUrl(logoUrl, 400)}" alt="LOGO DA CERVEJARIA">`;
     } else {
       logoContainer.innerHTML = "";
     }
 
-    const total = totalServerItems || currentFiltered.length;
+    const total = currentFiltered.length;
     const currentNum = total > 0 ? (index + 1) : 0;
     document.getElementById("cardCounter").innerText = `${currentNum}/${total}`;
 
-    let rawPhotos = [
-      can.ImgFront || can.imgfront || can.front,
-      can.ImgLeft || can.imgleft || can.left,
-      can.ImgBack || can.imgback || can.back,
-      can.ImgRight || can.imgright || can.right
-    ].filter(Boolean);
+    let rawPhotos = [];
+    if (can.images) {
+      rawPhotos = [can.images.front, can.images.left, can.images.back, can.images.right].filter(Boolean);
+    }
+    if (rawPhotos.length === 0) {
+      rawPhotos = [can.ImgFront, can.ImgLeft, can.ImgBack, can.ImgRight].filter(Boolean);
+    }
 
     if (rawPhotos.length === 0 && logoUrl) {
       rawPhotos.push(logoUrl);
@@ -995,7 +976,7 @@
         const optimizedUrl = getOptimizedImageUrl(url, 1000);
         const photoCard = document.createElement("div");
         photoCard.className = "hero-photo-card";
-        photoCard.innerHTML = `<img src="${optimizedUrl}" alt="FOTO ${idx+1}" loading="lazy" decoding="async">`;
+        photoCard.innerHTML = `<img src="${optimizedUrl}" alt="FOTO ${idx+1}" loading="lazy">`;
         photoCard.onclick = (e) => {
           e.stopPropagation();
           openZoomModal(idx);
@@ -1007,6 +988,7 @@
     }
   }
 
+  /* SISTEMA DE ZOOM CICLICO (1.5x -> 3.0x -> 1.5x -> Normal) E PAN */
   function openZoomModal(index) {
     if (!zoomGallery || zoomGallery.length === 0) return;
     currentZoomIndex = index;
@@ -1063,6 +1045,7 @@
     focusCardSafely(activeLocalIndex);
   }
 
+  /* SISTEMA DE CONFIRMAÇÃO DE SAÍDA DO APP VIA PONTE ANDROID */
   function openExitModal() {
     closeMenu();
     document.getElementById("exitModal").classList.add("active");
@@ -1086,6 +1069,7 @@
     }
   }
 
+  /* DETECÇÃO DE GESTOS SWIPE */
   let touchStartX = 0;
   let touchStartY = 0;
 
@@ -1102,6 +1086,7 @@
     handleSwipe(touchStartX, touchStartY, touchEndX, touchEndY);
   }, { passive: true });
 
+  /* NAVEGAÇÃO VIA SCROLL DO MOUSE (PC) */
   catalogSection.addEventListener("wheel", (e) => {
     if (e.deltaY > 0) {
       if (((currentPage + 1) * cardsPerRow) < currentFiltered.length) {
@@ -1159,6 +1144,7 @@
     }
   }
 
+  /* NAVEGAÇÃO DO TECLADO E CONTROLE REMOTO */
   document.addEventListener("keydown", (e) => {
     const isZoomActive = document.getElementById("zoomModal").classList.contains("active");
     const isExitActive = document.getElementById("exitModal").classList.contains("active");
@@ -1232,7 +1218,7 @@
     }
   }, true);
 
-  window.onload = () => fetchCatalogFromSheet(1, false);
+  window.onload = fetchCatalogFromSheet;
 </script>
 </body>
 </html>
