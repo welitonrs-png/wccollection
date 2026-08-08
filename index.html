@@ -119,36 +119,35 @@
 
     /* SEÇÃO INFERIOR DO CATÁLOGO */
     .catalog-section { height: 235px; min-height: 235px; width: 100%; overflow: hidden; flex-shrink: 0; touch-action: none; }
-    .card-row { display: flex; gap: 14px; height: 100%; width: 100%; justify-content: flex-start; align-items: flex-end; }
+    .card-row { display: flex; gap: 12px; height: 100%; width: 100%; justify-content: flex-start; align-items: flex-end; }
 
     /* ========================================================
-       AJUSTE EXATO DOS CARDS PARA A IMAGEM SUPERIOR (DESEJADA)
+       AJUSTE REFINADO DOS CARDS IGUAL À FOTO SUPERIOR
        ======================================================== */
     .card {
-      width: 172px !important;            /* Largura maior exatamente igual à 1ª foto */
+      width: 172px !important;
       min-width: 172px !important;
       height: 228px !important;
       background: #ffffff !important;
-      border-radius: 12px !important;     /* Bordas mais arredondadas */
+      border-radius: 12px !important;
       overflow: hidden !important;
       display: flex !important;
       flex-direction: column !important;
       border: 2px solid transparent !important;
       cursor: pointer !important;
       flex-shrink: 0 !important;
-      transition: border 0.15s ease, box-shadow 0.15s ease !important;
     }
 
     .card.card-aspect-sets { width: 220px !important; min-width: 220px !important; }
 
     .card-top-photo {
       width: 100% !important;
-      height: 160px !important;
+      height: 168px !important;
       background: #ffffff !important;
       display: flex !important;
       justify-content: center !important;
       align-items: center !important;
-      padding: 8px !important;
+      padding: 6px !important;
     }
 
     .card-top-photo img {
@@ -157,11 +156,10 @@
       object-fit: contain !important;
     }
 
-    /* Barra Colorida Inferior */
     .card-bottom-bar {
       width: 100% !important;
-      height: 68px !important;            /* Altura ideal para acomodar textos destacados */
-      padding: 8px 10px 10px 10px !important;
+      height: 60px !important;
+      padding: 6px 10px 8px 10px !important;
       display: flex !important;
       flex-direction: column !important;
       justify-content: space-between !important;
@@ -169,18 +167,16 @@
       font-family: Arial, Helvetica, sans-serif !important;
     }
 
-    /* Nome da Cervejaria: Negrito destacado e fonte visível */
+    /* Nome da Cervejaria: Negrito exato igual ao modelo desejado */
     .card-bar-title {
       font-family: Arial, Helvetica, sans-serif !important;
-      font-size: 1.05rem !important;      /* Fonte maior exatamente como no modelo desejado */
-      font-weight: 800 !important;        /* Negrito */
+      font-size: 1.05rem !important;
+      font-weight: 800 !important;
       color: #ffffff !important;
       white-space: nowrap !important;
       overflow: hidden !important;
       text-overflow: ellipsis !important;
-      text-transform: capitalize !important;
       line-height: 1.1 !important;
-      letter-spacing: -0.2px !important;
     }
 
     .card-bar-details {
@@ -190,18 +186,16 @@
       width: 100% !important;
     }
 
-    /* Nome do País: Alinhado e visível */
     .card-bar-country {
       display: flex !important;
       align-items: center !important;
       gap: 6px !important;
       font-family: Arial, Helvetica, sans-serif !important;
-      font-size: 0.85rem !important;      /* Aumentado para corresponder à 1ª imagem */
+      font-size: 0.85rem !important;
       font-weight: 600 !important;
       color: #ffffff !important;
       white-space: nowrap !important;
       overflow: hidden !important;
-      text-transform: capitalize !important;
     }
 
     .card-bar-flag {
@@ -211,19 +205,17 @@
       border-radius: 2px !important;
     }
 
-    /* Badge do Volume: Fundo escuro semitransparente */
     .card-bar-vol {
-      background: rgba(0, 0, 0, 0.5) !important;
+      background: rgba(0, 0, 0, 0.45) !important;
       color: #ffffff !important;
       font-family: Arial, Helvetica, sans-serif !important;
-      padding: 3px 7px !important;
+      padding: 2px 7px !important;
       border-radius: 6px !important;
       font-size: 0.78rem !important;
       font-weight: 700 !important;
       white-space: nowrap !important;
     }
 
-    /* Borda Laranja de Seleção idêntica à 1ª Imagem */
     .card.focused, .card:hover { 
       border: 2px solid #f39c12 !important; 
       box-shadow: 0 0 10px rgba(243, 156, 18, 0.4) !important; 
@@ -330,7 +322,7 @@
   let currentZoomIndex = 0;
   
   let currentTab = 'home';
-  let cardsPerRow = 5; /* Ajustado para 5 cards por linha dando mais largura visual */
+  let cardsPerRow = 5;
   let currentPage = 0;
   let activeLocalIndex = 0;
   let lastSelectedMenuId = 'menuBtnHome'; 
@@ -373,6 +365,7 @@
     return url;
   }
 
+  /* Função para capitalizar (Apenas 1ª letra maiúscula) */
   function formatCapitalizedText(str) {
     if (!str) return '';
     return String(str)
