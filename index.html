@@ -226,6 +226,7 @@
     }
 
     /* Modal / Detalhes com Carrossel */
+    /* Modal / Detalhes Lado a Lado */
     .modal-overlay {
       position: fixed;
       top: 0;
@@ -250,7 +251,7 @@
       border: 1px solid var(--accent-color);
       border-radius: 20px;
       width: 100%;
-      max-width: 750px;
+      max-width: 850px;
       max-height: 90vh;
       overflow-y: auto;
       padding: 30px;
@@ -277,6 +278,7 @@
       align-items: center;
       justify-content: center;
       transition: background 0.2s;
+      z-index: 10;
     }
     .btn-close-modal:hover { background: var(--accent-color); color: #121620; }
 
@@ -290,6 +292,21 @@
     .modal-title { font-size: 1.5rem; font-weight: 900; color: #fff; }
     .modal-sub { font-size: 0.85rem; font-weight: 800; color: var(--accent-color); text-transform: uppercase; }
 
+    /* Layout Lado a Lado (Fotos + Textos) */
+    .modal-body-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      align-items: start;
+    }
+
+    @media (max-width: 700px) {
+      .modal-body-layout {
+        grid-template-columns: 1fr; /* Em telas pequenas de celulares, volta a ficar um abaixo do outro */
+      }
+    }
+
+    /* Galeria com tamanho fixo e contido */
     .carousel-container {
       width: 100%;
       display: flex;
@@ -301,8 +318,8 @@
 
     .carousel-item {
       scroll-snap-align: center;
-      flex: 0 0 220px;
-      height: 280px;
+      flex: 0 0 100%;
+      height: 260px;
       background: #11141d;
       border: 1px solid var(--border-color);
       border-radius: 12px;
@@ -318,21 +335,30 @@
       object-fit: contain;
     }
 
+    /* Painel de Informações de Texto */
     .modal-details-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
       background: #11141d;
-      padding: 16px;
+      padding: 20px;
       border-radius: 12px;
       border: 1px solid var(--border-color);
-      font-size: 0.85rem;
+      height: 100%;
+      justify-content: center;
     }
 
-    .detail-item { display: flex; flex-direction: column; gap: 2px; }
-    .detail-label { color: var(--text-sub); font-size: 0.7rem; font-weight: 800; text-transform: uppercase; }
-    .detail-val { color: #fff; font-weight: 700; }
+    .detail-item { 
+      display: flex; 
+      flex-direction: column; 
+      gap: 3px; 
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      padding-bottom: 8px;
+    }
+    .detail-item:last-child { border-bottom: none; padding-bottom: 0; }
 
+    .detail-label { color: var(--text-sub); font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; }
+    .detail-val { color: #fff; font-size: 0.95rem; font-weight: 700; }
     .empty-state {
       grid-column: 1 / -1;
       text-align: center;
@@ -364,7 +390,7 @@
     <div class="empty-state">Carregando catálogo completo...</div>
   </main>
 
-  <!-- Modal Interativo de Detalhes -->
+<!-- Modal Interativo de Detalhes -->
   <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
     <div class="modal-content" onclick="event.stopPropagation()">
       <button class="btn-close-modal" onclick="closeModal()">&times;</button>
@@ -374,26 +400,36 @@
         <div class="modal-title" id="modalTitle">---</div>
       </div>
 
-      <div class="carousel-container" id="modalCarousel"></div>
+      <!-- Corpo do Modal em 2 Colunas Lado a Lado -->
+      <div class="modal-body-layout">
+        <!-- Coluna 1: Galeria de Fotos -->
+        <div class="modal-gallery-column">
+          <div class="carousel-container" id="modalCarousel"></div>
+        </div>
 
-      <div class="modal-details-grid">
-        <div class="detail-item">
-          <span class="detail-label">País de Origem</span>
-          <span class="detail-val" id="modalCountry">---</span>
-        </div>
-        <div class="detail-item">
-          <span class="detail-label">Volume</span>
-          <span class="detail-val" id="modalVolume">---</span>
-        </div>
-        <div class="detail-item">
-          <span class="detail-label">Ano de Lançamento</span>
-          <span class="detail-val" id="modalYear">---</span>
-        </div>
-        <div class="detail-item">
-          <span class="detail-label">Código de Barras</span>
-          <span class="detail-val" id="modalBarcode">---</span>
+        <!-- Coluna 2: Informações e Texto -->
+        <div class="modal-info-column">
+          <div class="modal-details-grid">
+            <div class="detail-item">
+              <span class="detail-label">País de Origem</span>
+              <span class="detail-val" id="modalCountry">---</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Volume</span>
+              <span class="detail-val" id="modalVolume">---</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Ano de Lançamento</span>
+              <span class="detail-val" id="modalYear">---</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Código de Barras</span>
+              <span class="detail-val" id="modalBarcode">---</span>
+            </div>
+          </div>
         </div>
       </div>
+
     </div>
   </div>
 
