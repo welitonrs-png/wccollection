@@ -369,7 +369,7 @@
     }
   }
 
-  function renderTable() {
+function renderTable() {
     const tbody = document.getElementById("catalogTableBody");
     tbody.innerHTML = "";
 
@@ -378,7 +378,10 @@
       return;
     }
 
-    fullCatalog.forEach((item) => {
+    fullCatalog.forEach((item, index) => {
+      // Garante o número real da linha no Google Sheets
+      const realRowNum = item._rowNum || (index + 2);
+
       const isSet = getItemVal(item, ["isSet", "IsSet", "isset"]);
       const isOcoc = getItemVal(item, ["isOcoc", "IsOcoc", "isococ"]);
 
@@ -390,7 +393,10 @@
       const cervejariaVal = getItemVal(item, ["Cervejaria", "cervejaria", "brewery"]) || "-";
       const paisVal = getItemVal(item, ["Pais", "pais", "country"]) || "-";
       const volumeVal = getItemVal(item, ["Volume", "volume"]) || "-";
-      const idVal = item.ID || item.id || "-";
+      const idVal = item.ID || item.id || (index + 1);
+
+      // Se for uma linha vazia na planilha, ignora a exibição na tabela
+      if (nomeVal === "-" && cervejariaVal === "-" && paisVal === "-") return;
 
       const row = document.createElement("tr");
       row.innerHTML = `
@@ -401,8 +407,8 @@
         <td>${paisVal}</td>
         <td>${volumeVal}</td>
         <td>
-          <button class="btn-table btn-table-edit" onclick="editItem(${item._rowNum})">EDITAR</button>
-          <button class="btn-table btn-table-delete" onclick="deleteItem(${item._rowNum})">EXCLUIR</button>
+          <button class="btn-table btn-table-edit" onclick="editItem(${realRowNum})">EDITAR</button>
+          <button class="btn-table btn-table-delete" onclick="deleteItem(${realRowNum})">EXCLUIR</button>
         </td>
       `;
       tbody.appendChild(row);
@@ -410,10 +416,13 @@
   }
 
   function editItem(rowNum) {
-    const item = fullCatalog.find(c => c._rowNum == rowNum);
+    // Procura o item pelo número da linha no Sheets
+    const item = fullCatalog.find(c => (c._rowNum == rowNum || c._rowId == rowNum));
     if (!item) return;
 
-    document.getElementById("editRowNum").value = item._rowNum;
+    // Define o campo oculto do formulário para o script saber que é uma EDIÇÃO
+    document.getElementById("editRowNum").value = item._rowNum || rowNum;
+
     document.getElementById("inputNome").value = getItemVal(item, ["Nome", "nome", "name"]);
     document.getElementById("inputCervejaria").value = getItemVal(item, ["Cervejaria", "cervejaria", "brewery"]);
     document.getElementById("inputPais").value = getItemVal(item, ["Pais", "pais", "country"]);
@@ -433,9 +442,9 @@
     document.getElementById("checkOcoc").checked = isOcoc && String(isOcoc).toLowerCase() === 'true';
     document.getElementById("checkSet").checked = isSet && String(isSet).toLowerCase() === 'true';
 
+    // Rola a página suavemente até o formulário no topo
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
-
   async function deleteItem(rowNum) {
     if (!confirm("Tem certeza que deseja excluir esta lata?")) return;
 
