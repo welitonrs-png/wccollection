@@ -225,147 +225,117 @@
       font-weight: 600;
     }
 
-    /* Modal / Detalhes Estruturados com Textos Grandes */
+    /* ========================================================
+       MODAL DE TELA CHEIA (IDENTICO À SUA IMAGEM)
+       ======================================================== */
     .modal-overlay {
       position: fixed;
       top: 0;
       left: 0;
       width: 100vw;
       height: 100vh;
-      background: rgba(0, 0, 0, 0.90);
-      backdrop-filter: blur(8px);
+      background: #181d28; /* Fundo escuro total do app */
       display: none;
-      align-items: center;
-      justify-content: center;
       z-index: 9999;
-      padding: 20px;
+      padding: 40px 50px;
+      overflow: hidden;
     }
 
     .modal-overlay.active {
       display: flex;
     }
 
-    .modal-content {
-      background: #161b26;
-      border: 1px solid var(--accent-color);
-      border-radius: 20px;
-      width: 100%;
-      max-width: 950px;
-      max-height: 90vh;
-      overflow-y: auto;
-      padding: 30px;
-      position: relative;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.8);
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
-
     .btn-close-modal {
       position: absolute;
-      top: 20px;
-      right: 20px;
+      top: 25px;
+      left: 25px;
       background: #2a3447;
       border: none;
       color: #fff;
-      width: 40px;
-      height: 40px;
+      width: 45px;
+      height: 45px;
       border-radius: 50%;
-      font-size: 1.4rem;
+      font-size: 1.5rem;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
+      z-index: 100;
       transition: background 0.2s;
-      z-index: 10;
     }
     .btn-close-modal:hover { background: var(--accent-color); color: #121620; }
 
-    .modal-header-container {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      padding-right: 50px;
-      border-bottom: 1px solid var(--border-color);
-      padding-bottom: 15px;
+    /* Logo no Canto Superior Direito bem maior */
+    .modal-brand-logo-top {
+      position: absolute;
+      top: 30px;
+      right: 50px;
+      max-height: 110px; /* Logo maior */
+      max-width: 220px;
+      object-fit: contain;
+      filter: drop-shadow(0 4px 10px rgba(0,0,0,0.5));
+      z-index: 10;
     }
 
-    .modal-title-box {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    /* TÍTULO DA LATA BEM GRANDE */
-    .modal-title { 
-      font-size: 2.1rem; 
-      font-weight: 900; 
-      color: var(--accent-color); 
-      font-style: italic; 
-      text-transform: uppercase; 
-      line-height: 1.2;
-    }
-    .modal-brand-logo { max-height: 55px; max-width: 120px; object-fit: contain; }
-
-    /* Layout do Corpo do Modal em 2 Colunas */
-    .modal-body-grid {
+    /* Grid da Tela Cheia: Fotos na esquerda e Informações na direita */
+    .modal-fullscreen-grid {
+      width: 100%;
+      height: 100%;
       display: grid;
-      grid-template-columns: 320px 1fr;
-      gap: 25px;
-      align-items: start;
+      grid-template-columns: 380px 1fr;
+      gap: 50px;
+      align-items: center;
     }
 
-    @media (max-width: 768px) {
-      .modal-body-grid {
+    @media (max-width: 900px) {
+      .modal-fullscreen-grid {
         grid-template-columns: 1fr;
+        overflow-y: auto;
       }
-      .modal-title { font-size: 1.5rem; }
+      .modal-brand-logo-top { max-height: 70px; top: 15px; right: 20px; }
     }
 
-    /* Galeria de Fotos no Modal */
-    .gallery-wrapper {
-      width: 100%;
+    /* Coluna Esquerda: Galeria de Fotos */
+    .gallery-container {
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 15px;
+      height: 100%;
+      justify-content: center;
     }
 
-    .main-photo-view {
+    .main-photo-box {
       width: 100%;
-      height: 320px;
-      background: #11141d;
-      border: 1px solid var(--border-color);
-      border-radius: 14px;
-      padding: 15px;
+      height: 480px;
+      background: transparent;
       display: flex;
       align-items: center;
       justify-content: center;
     }
 
-    .main-photo-view img {
+    .main-photo-box img {
       max-width: 100%;
       max-height: 100%;
       object-fit: contain;
-      filter: drop-shadow(0 6px 12px rgba(0,0,0,0.7));
+      filter: drop-shadow(0 10px 20px rgba(0,0,0,0.8));
     }
 
     .thumb-strip {
       display: flex;
-      gap: 10px;
-      overflow-x: auto;
-      padding-bottom: 5px;
+      gap: 12px;
+      justify-content: center;
     }
 
     .thumb-strip img {
-      width: 60px;
-      height: 70px;
+      width: 65px;
+      height: 80px;
       object-fit: contain;
       background: #11141d;
       border: 1px solid var(--border-color);
       border-radius: 8px;
-      padding: 4px;
+      padding: 5px;
       cursor: pointer;
-      opacity: 0.6;
+      opacity: 0.5;
       transition: all 0.2s;
     }
 
@@ -374,45 +344,58 @@
       border-color: var(--accent-color);
     }
 
-    /* Coluna de Textos Expandida e Aumentada */
-    .info-list {
+    /* Coluna Direita: Informações com Texto Laranja e em Itálico (Igual à Imagem) */
+    .info-container {
       display: flex;
       flex-direction: column;
-      gap: 20px;
-      background: #11141d;
-      padding: 25px;
-      border-radius: 14px;
-      border: 1px solid var(--border-color);
+      gap: 22px;
+      justify-content: center;
+      padding-right: 150px; /* Dá espaço para o logo da marca no topo */
     }
 
-    .info-row {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      border-bottom: 1px solid rgba(255,255,255,0.08);
-      padding-bottom: 12px;
-    }
-    .info-row:last-child { border-bottom: none; padding-bottom: 0; }
-
-    /* RÓTULO (ORIGEM, VOLUME, etc.) MAIOR */
-    .info-label {
-      color: #a0aec0;
-      font-size: 1.05rem;
-      font-weight: 900;
-      text-transform: uppercase;
-      font-style: italic;
-      letter-spacing: 0.5px;
-    }
-
-    /* VALOR (CHINA, 500ML, etc.) DESTACADO EM EM LARANJA E BEM GRANDE */
-    .info-value {
+    .modal-main-title {
       color: var(--accent-color);
-      font-size: 1.8rem;
+      font-size: 2.3rem;
+      font-weight: 900;
+      font-style: italic;
+      text-transform: uppercase;
+      line-height: 1.15;
+      letter-spacing: 0.5px;
+    }
+
+    .info-block {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .info-label {
+      color: var(--accent-color);
+      font-size: 1.1rem;
       font-weight: 900;
       font-style: italic;
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      line-height: 1.2;
+    }
+
+    .info-val {
+      color: var(--accent-color);
+      font-size: 2.2rem;
+      font-weight: 900;
+      font-style: italic;
+      text-transform: uppercase;
+      line-height: 1.1;
+      letter-spacing: 0.5px;
+    }
+
+    .counter-badge {
+      position: absolute;
+      bottom: 30px;
+      right: 50px;
+      color: var(--accent-color);
+      font-size: 1.2rem;
+      font-weight: 900;
+      font-style: italic;
     }
 
     .empty-state {
@@ -446,52 +429,49 @@
     <div class="empty-state">Carregando catálogo completo...</div>
   </main>
 
-  <!-- Modal Interativo com Fonte Expandida -->
+  <!-- Modal Tela Cheia Fiel à Imagem -->
   <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
-    <div class="modal-content" onclick="event.stopPropagation()">
-      <button class="btn-close-modal" onclick="closeModal()">&times;</button>
-      
-      <div class="modal-header-container">
-        <div class="modal-title-box">
-          <div class="modal-title" id="modalTitle">---</div>
+    <button class="btn-close-modal" onclick="closeModal()">&times;</button>
+    
+    <!-- Logo da Cervejaria Grande no Canto Superior Direito -->
+    <img id="modalBrandLogo" class="modal-brand-logo-top" src="" alt="" style="display:none;">
+
+    <div class="modal-fullscreen-grid" onclick="event.stopPropagation()">
+      <!-- Fotos na Esquerda -->
+      <div class="gallery-container">
+        <div class="main-photo-box">
+          <img id="modalMainPhoto" src="" alt="Foto Principal">
         </div>
-        <img id="modalBrandLogo" class="modal-brand-logo" src="" alt="" style="display:none;">
+        <div class="thumb-strip" id="modalThumbStrip"></div>
       </div>
 
-      <div class="modal-body-grid">
-        <!-- Coluna Esquerda: Galeria das Fotos -->
-        <div class="gallery-wrapper">
-          <div class="main-photo-view">
-            <img id="modalMainPhoto" src="" alt="Foto Principal">
-          </div>
-          <div class="thumb-strip" id="modalThumbStrip"></div>
+      <!-- Textos em Laranja e Itálico na Direita -->
+      <div class="info-container">
+        <div class="modal-main-title" id="modalTitle">---</div>
+
+        <div class="info-block">
+          <span class="info-label">ORIGEM:</span>
+          <span class="info-val" id="modalCountry">---</span>
         </div>
 
-        <!-- Coluna Direita: Textos Alinhados e Grandes -->
-        <div class="info-list">
-          <div class="info-row">
-            <span class="info-label">ORIGEM:</span>
-            <span class="info-value" id="modalCountry">---</span>
-          </div>
+        <div class="info-block">
+          <span class="info-label">VOLUME:</span>
+          <span class="info-val" id="modalVolume">---</span>
+        </div>
 
-          <div class="info-row">
-            <span class="info-label">VOLUME:</span>
-            <span class="info-value" id="modalVolume">---</span>
-          </div>
+        <div class="info-block">
+          <span class="info-label">ANO:</span>
+          <span class="info-val" id="modalYear">---</span>
+        </div>
 
-          <div class="info-row">
-            <span class="info-label">ANO:</span>
-            <span class="info-value" id="modalYear">---</span>
-          </div>
-
-          <div class="info-row">
-            <span class="info-label">CÓD. BARRAS:</span>
-            <span class="info-value" id="modalBarcode">---</span>
-          </div>
+        <div class="info-block">
+          <span class="info-label">CÓD. BARRAS:</span>
+          <span class="info-val" id="modalBarcode">---</span>
         </div>
       </div>
-
     </div>
+
+    <div class="counter-badge" id="modalCounter">1/1</div>
   </div>
 
 <script>
@@ -618,7 +598,7 @@
     const barcode = getItemVal(item, ["Barcode", "barcode"]);
     const logo = getItemVal(item, ["BRAND_LOGO", "brand_logo", "logo"]);
 
-    document.getElementById("modalTitle").innerText = nome || "Sem Nome";
+    document.getElementById("modalTitle").innerText = nome || "SEM NOME";
     document.getElementById("modalCountry").innerText = pais || "---";
     document.getElementById("modalVolume").innerText = volume || "---";
     document.getElementById("modalYear").innerText = ano || "---";
@@ -643,10 +623,12 @@
 
     const mainPhotoEl = document.getElementById("modalMainPhoto");
     const thumbStrip = document.getElementById("modalThumbStrip");
+    const counterEl = document.getElementById("modalCounter");
     thumbStrip.innerHTML = "";
 
     if (photos.length > 0) {
       mainPhotoEl.src = photos[0];
+      counterEl.innerText = `1/${photos.length}`;
 
       photos.forEach((url, idx) => {
         const img = document.createElement("img");
@@ -655,6 +637,7 @@
         
         img.onclick = () => {
           mainPhotoEl.src = url;
+          counterEl.innerText = `${idx + 1}/${photos.length}`;
           document.querySelectorAll("#modalThumbStrip img").forEach(t => t.classList.remove("active"));
           img.classList.add("active");
         };
@@ -662,7 +645,8 @@
         thumbStrip.appendChild(img);
       });
     } else {
-      mainPhotoEl.src = "https://via.placeholder.com/300x320/1a202c/a0aec0?text=Sem+Foto";
+      mainPhotoEl.src = "https://via.placeholder.com/300x400/1a202c/a0aec0?text=Sem+Foto";
+      counterEl.innerText = "0/0";
     }
 
     document.getElementById("modalOverlay").classList.add("active");
