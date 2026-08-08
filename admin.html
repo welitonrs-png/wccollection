@@ -98,7 +98,7 @@
     <div id="statusMsg" class="status-msg"></div>
 
     <form id="lataForm" onsubmit="handleFormSubmit(event)">
-      <input type="hidden" id="editRowId" value="">
+      <input type="hidden" id="editRowNum" value="">
 
       <div class="form-grid">
         <div class="form-group col-2">
@@ -310,12 +310,12 @@
     btnSave.disabled = true;
 
     try {
-      const editRowId = document.getElementById("editRowId").value;
-      const action = editRowId ? "edit" : "save";
+      const rowNum = document.getElementById("editRowNum").value;
+      const action = rowNum ? "edit" : "save";
 
       const payload = {
         action: action,
-        _rowId: editRowId,
+        _rowNum: rowNum,
         Nome: document.getElementById("inputNome").value,
         Cervejaria: document.getElementById("inputCervejaria").value,
         Pais: document.getElementById("inputPais").value,
@@ -390,7 +390,7 @@
       const cervejariaVal = getItemVal(item, ["Cervejaria", "cervejaria", "brewery"]) || "-";
       const paisVal = getItemVal(item, ["Pais", "pais", "country"]) || "-";
       const volumeVal = getItemVal(item, ["Volume", "volume"]) || "-";
-      const idVal = item.ID || item.id || item._rowId || '-';
+      const idVal = item.ID || item.id || "-";
 
       const row = document.createElement("tr");
       row.innerHTML = `
@@ -401,19 +401,19 @@
         <td>${paisVal}</td>
         <td>${volumeVal}</td>
         <td>
-          <button class="btn-table btn-table-edit" onclick="editItem(${item._rowId})">EDITAR</button>
-          <button class="btn-table btn-table-delete" onclick="deleteItem(${item._rowId})">EXCLUIR</button>
+          <button class="btn-table btn-table-edit" onclick="editItem(${item._rowNum})">EDITAR</button>
+          <button class="btn-table btn-table-delete" onclick="deleteItem(${item._rowNum})">EXCLUIR</button>
         </td>
       `;
       tbody.appendChild(row);
     });
   }
 
-  function editItem(rowId) {
-    const item = fullCatalog.find(c => c._rowId == rowId);
+  function editItem(rowNum) {
+    const item = fullCatalog.find(c => c._rowNum == rowNum);
     if (!item) return;
 
-    document.getElementById("editRowId").value = item._rowId;
+    document.getElementById("editRowNum").value = item._rowNum;
     document.getElementById("inputNome").value = getItemVal(item, ["Nome", "nome", "name"]);
     document.getElementById("inputCervejaria").value = getItemVal(item, ["Cervejaria", "cervejaria", "brewery"]);
     document.getElementById("inputPais").value = getItemVal(item, ["Pais", "pais", "country"]);
@@ -436,14 +436,14 @@
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  async function deleteItem(rowId) {
+  async function deleteItem(rowNum) {
     if (!confirm("Tem certeza que deseja excluir esta lata?")) return;
 
     try {
       const response = await fetch(API_URL, {
         method: "POST",
         headers: { "Content-Type": "text/plain;charset=utf-8" },
-        body: JSON.stringify({ action: "delete", _rowId: rowId })
+        body: JSON.stringify({ action: "delete", _rowNum: rowNum })
       });
       const res = await response.json();
       if (res && res.success) {
@@ -458,7 +458,7 @@
   }
 
   function resetForm() {
-    document.getElementById("editRowId").value = "";
+    document.getElementById("editRowNum").value = "";
     document.getElementById("lataForm").reset();
     ['lblLogo', 'lblCover', 'lblFront', 'lblLeft', 'lblBack', 'lblRight'].forEach(id => {
       const el = document.getElementById(id);
