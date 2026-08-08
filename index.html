@@ -266,16 +266,7 @@
     }
     .btn-close-modal:hover { background: var(--accent-color); color: #000; }
 
-    /* Logo da Marca no Canto Superior Direito AUMENTADO (1,5x) */
-    .modal-brand-logo-top {
-  position: absolute;
-  top: 25px;
-  right: 35px;
-  max-height: 300px; /* 1,5x maior que os 100px anteriores */
-  max-width: 600px;
-  object-fit: contain;
-  z-index: 10;
-}
+  
 
     .modal-fullscreen-grid {
       width: 100%;
@@ -349,20 +340,25 @@
       transform: scale(1.05);
     }
 
-    /* Coluna Direita: Ocupa toda a altura (do topo da foto até o fim das miniaturas) */
-    .info-container {
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between; /* Distribui os itens verticalmente de ponta a ponta */
-      height: 100%;
-      padding-right: 220px; /* Evita sobreposição com o logo maior */
-      padding-top: 10px;
-      padding-bottom: 10px;
-    }
+/* ========================================================
+   AJUSTE PARA A TELA DA TV (ALINHAMENTO COM CARDS E LOGO MAIOR)
+   ======================================================== */
+
+/* Container das Informações (Alinhado à direita dos cards de fotos) */
+.info-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Estica do topo do 1º card ao fim do 4º card */
+  height: 100%; /* Força a ocupar a altura total da grade de fotos */
+  padding-left: 20px;
+  padding-right: 320px; /* Garante espaço para o logo da marca crescer sem cobrir o texto */
+}
+
+/* Título Principal (CARLSBERG LIGHT ARTIST...) */
 .modal-main-title {
   color: #f39c12;
   font-family: Impact, "Arial Black", sans-serif;
-  font-size: 3.2rem; /* Tamanho expandido */
+  font-size: 2.8vw; /* Fonte proporcional à tela da TV */
   font-weight: 900;
   font-style: italic;
   text-transform: uppercase;
@@ -370,32 +366,47 @@
   letter-spacing: 1px;
 }
 
-    .info-block {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
+/* Bloco de cada detalhe (ORIGEM, VOLUME, ANO, CÓD. BARRAS) */
+.info-block {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
 
-    .info-label {
+/* Rótulos (ORIGEM:, VOLUME:, etc.) */
+.info-label {
   color: #f39c12;
   font-family: Impact, "Arial Black", sans-serif;
-  font-size: 1.4rem; /* Tamanho expandido */
+  font-size: 1.5vw; /* Aumentado proporcionalmente */
   font-weight: 900;
   font-style: italic;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 1px;
 }
 
-    .info-val {
+/* Valores (CHINA, 500ML, 2024, etc.) */
+.info-val {
   color: #f39c12;
   font-family: Impact, "Arial Black", sans-serif;
-  font-size: 2.5rem; /* Tamanho expandido */
+  font-size: 2.3vw; /* Aumentado proporcionalmente */
   font-weight: 900;
   font-style: italic;
   text-transform: uppercase;
   line-height: 1.1;
   letter-spacing: 1px;
 }
+
+/* LOGO DA MARCA (EXPANDIDO ATÉ A LINHA AMARELA) */
+.modal-brand-logo-top {
+  position: absolute;
+  top: 20px;
+  right: 40px;
+  max-height: 220px; /* Aumentado consideravelmente para chegar até a linha amarela */
+  max-width: 380px;  /* Largura ampliada */
+  object-fit: contain;
+  z-index: 10;
+}
+
 
     .counter-badge {
       position: absolute;
