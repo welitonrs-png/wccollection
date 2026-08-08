@@ -122,7 +122,7 @@
     .card-row { display: flex; gap: 12px; height: 100%; width: 100%; justify-content: flex-start; align-items: flex-end; }
 
     /* ========================================================
-       AJUSTE ESPECÍFICO DOS CARDS (HELVETICA + BARRA MENOR)
+       ESTILO DOS CARDS: HELVETICA NOW, CAPITALIZE, SEM NEGRITO
        ======================================================== */
     .card {
       width: 145px !important;
@@ -141,10 +141,9 @@
 
     .card.card-aspect-sets { width: 200px !important; min-width: 200px !important; }
 
-    /* Foto Superior Expandida */
     .card-top-photo {
       width: 100% !important;
-      height: 173px !important; /* Aumentado para compensar a barra menor */
+      height: 173px !important;
       background: #ffffff !important;
       display: flex !important;
       justify-content: center !important;
@@ -158,30 +157,29 @@
       object-fit: contain !important;
     }
 
-    /* Quadro Colorido Inferior Menor com Fonte Helvetica */
     .card-bottom-bar {
       width: 100% !important;
-      height: 52px !important; /* Altura menor conforme solicitado */
+      height: 52px !important;
       padding: 4px 8px 6px 8px !important;
       display: flex !important;
       flex-direction: column !important;
       justify-content: space-between !important;
       box-sizing: border-box !important;
-      font-family: Helvetica, Arial, sans-serif !important; /* Fonte Helvetica */
+      font-family: "Helvetica Now", "Helvetica Neue", Helvetica, Arial, sans-serif !important;
       border-bottom-left-radius: 10px !important;
       border-bottom-right-radius: 10px !important;
     }
 
-    /* Nome da Cervejaria */
+    /* Nome da Marca: Primeira letra maiúscula, sem negrito */
     .card-bar-title {
-      font-family: Helvetica, Arial, sans-serif !important;
-      font-size: 0.82rem !important;
-      font-weight: 900 !important;
+      font-family: "Helvetica Now", "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+      font-size: 0.85rem !important;
+      font-weight: 400 !important; /* Sem negrito (Regular) */
       color: #ffffff !important;
       white-space: nowrap !important;
       overflow: hidden !important;
       text-overflow: ellipsis !important;
-      text-transform: uppercase !important;
+      text-transform: capitalize !important; /* Apenas primeira letra maiúscula */
       line-height: 1.1 !important;
     }
 
@@ -192,18 +190,18 @@
       width: 100% !important;
     }
 
-    /* Nome do País (Apenas Iniciais Maiúsculas) */
+    /* Nome do País: Primeira letra maiúscula, sem negrito */
     .card-bar-country {
       display: flex !important;
       align-items: center !important;
       gap: 5px !important;
-      font-family: Helvetica, Arial, sans-serif !important;
+      font-family: "Helvetica Now", "Helvetica Neue", Helvetica, Arial, sans-serif !important;
       font-size: 0.72rem !important;
-      font-weight: 700 !important;
+      font-weight: 400 !important; /* Sem negrito (Regular) */
       color: #ffffff !important;
       white-space: nowrap !important;
       overflow: hidden !important;
-      text-transform: capitalize !important; /* Força apenas iniciais maiúsculas */
+      text-transform: capitalize !important; /* Apenas primeira letra maiúscula */
     }
 
     .card-bar-flag {
@@ -213,15 +211,14 @@
       border-radius: 2px !important;
     }
 
-    /* Badge do Volume */
     .card-bar-vol {
       background: rgba(0, 0, 0, 0.45) !important;
       color: #ffffff !important;
-      font-family: Helvetica, Arial, sans-serif !important;
+      font-family: "Helvetica Now", "Helvetica Neue", Helvetica, Arial, sans-serif !important;
       padding: 2px 6px !important;
       border-radius: 6px !important;
       font-size: 0.65rem !important;
-      font-weight: 800 !important;
+      font-weight: 400 !important; /* Sem negrito */
       white-space: nowrap !important;
       text-transform: lowercase !important;
     }
@@ -375,8 +372,8 @@
     return url;
   }
 
-  /* Formata o texto do País para Primeira Letra Maiúscula (Capitalize) */
-  function formatCapitalizedCountry(str) {
+  /* Formata o texto para Primeira Letra Maiúscula (Capitalize) */
+  function formatCapitalizedText(str) {
     if (!str) return '';
     return String(str)
       .toLowerCase()
@@ -763,7 +760,7 @@
     }
   }
 
-  /* RENDERIZAÇÃO DOS CARDS */
+  /* RENDERIZAÇÃO DOS CARDS COM FONTE HELVETICA NOW E SEM NEGRITO */
   function renderApp() {
     const row = document.getElementById("cardRow");
     row.innerHTML = "";
@@ -777,13 +774,16 @@
       const rawImg = can.ImgFront || can.front || can.ImgCover || can.cover || can.brandLogo;
       const frontImg = getOptimizedImageUrl(rawImg, 400);
 
-      const brandName = can.brewery || can.Cervejaria || can.name || "CERVEJA";
+      const brandRaw = can.brewery || can.Cervejaria || can.name || "Cerveja";
+      const brandFormatted = formatCapitalizedText(brandRaw); // Marca Capitalizada (ex: Carlsberg, Faxe)
+
       const countryRaw = can.country || can.Pais || "";
-      const countryFormatted = formatCapitalizedCountry(countryRaw);
+      const countryFormatted = formatCapitalizedText(countryRaw); // País Capitalizado (ex: China, Portugal)
+
       const volumeText = can.volume || can.Volume || "";
       const flagUrl = getFlagUrlByCountry(countryRaw);
 
-      const brandKey = String(brandName).toLowerCase().trim();
+      const brandKey = String(brandRaw).toLowerCase().trim();
       const cardColor = BRAND_COLORS[brandKey] || "#008234";
 
       const card = document.createElement("div");
@@ -855,10 +855,10 @@
 
       card.innerHTML = `
         <div class="card-top-photo">
-          <img src="${frontImg}" alt="${brandName}" loading="lazy">
+          <img src="${frontImg}" alt="${brandFormatted}" loading="lazy">
         </div>
         <div class="card-bottom-bar" style="background-color: ${cardColor};">
-          <div class="card-bar-title">${brandName}</div>
+          <div class="card-bar-title">${brandFormatted}</div>
           <div class="card-bar-details">
             <div class="card-bar-country">
               ${flagUrl ? `<img src="${flagUrl}" class="card-bar-flag" alt="${countryFormatted}">` : ''}
