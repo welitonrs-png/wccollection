@@ -220,7 +220,7 @@
     setTimeout(() => { el.style.display = 'none'; }, 6000);
   }
 
-  function compressImage(file, maxDimension = 800, quality = 0.6) {
+  function compressImage(file, maxDimension = 600, quality = 0.5) {
     return new Promise((resolve) => {
       const reader = new FileReader();
       reader.onload = (e) => {
@@ -248,7 +248,7 @@
           ctx.drawImage(img, 0, 0, width, height);
           resolve(canvas.toDataURL("image/jpeg", quality));
         };
-        img.onerror = () => resolve(e.target.result);
+        img.onerror = () => resolve("");
         img.src = e.target.result;
       };
       reader.onerror = () => resolve("");
@@ -266,11 +266,19 @@
     const file = fileInput.files[0];
     const itemName = document.getElementById("inputNome").value.trim() || "lata";
 
-    lbl.innerHTML = "⏳ ENVIANDO AO DRIVE...";
+    lbl.innerHTML = "⏳ PROCESSANDO...";
     lbl.className = "btn-file-custom uploading";
 
     try {
-      const base64Compressed = await compressImage(file, 800, 0.6);
+      const base64Compressed = await compressImage(file, 600, 0.5);
+
+      if (!base64Compressed) {
+        lbl.innerHTML = "📁 FALHA AO COMPRIMIR";
+        lbl.className = "btn-file-custom";
+        return;
+      }
+
+      lbl.innerHTML = "⏳ ENVIANDO AO DRIVE...";
 
       const payload = {
         action: "upload_photo",
@@ -289,17 +297,17 @@
         targetInput.value = data.url;
         lbl.innerHTML = `✓ ${file.name.substring(0, 12)}...`;
         lbl.className = "btn-file-custom has-file";
-        showStatus(`Foto (${photoType}) salva no Google Drive!`, true);
+        showStatus(`Foto (${photoType}) enviada ao Google Drive!`, true);
       } else {
-        lbl.innerHTML = "📁 FALHA NO UPLOAD";
+        lbl.innerHTML = "📁 COLE A URL MANUALMENTE";
         lbl.className = "btn-file-custom";
-        showStatus("Erro ao salvar foto no Drive. Cole a URL manualmente.", false);
+        showStatus("Não foi possível enviar ao Drive. Cole o link manualmente abaixo.", false);
       }
     } catch (err) {
       console.error(err);
-      lbl.innerHTML = "📁 ANEXAR ARQUIVO LOCAL";
+      lbl.innerHTML = "📁 COLE A URL MANUALMENTE";
       lbl.className = "btn-file-custom";
-      showStatus("Erro ao comunicar com o Google Drive.", false);
+      showStatus("Erro na comunicação com o servidor. Use o campo de URL.", false);
     }
   }
 
@@ -413,7 +421,6 @@
     const item = fullCatalog[index];
     if (!item) return;
 
-    // Define a linha real no Sheets (_rowNum do backend ou índice + 2)
     const realRowNum = item._rowNum || (index + 2);
     document.getElementById("editRowNum").value = realRowNum;
 
