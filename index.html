@@ -381,29 +381,110 @@
       .join(' ');
   }
 
-  function getFlagUrlByCountry(countryName) {
+    function getFlagUrlByCountry(countryName) {
     if (!countryName) return '';
-    const name = String(countryName).toLowerCase().trim();
+    
+    // Normaliza o texto removendo acentos, espaços extras e convertendo para minúsculas
+    const name = String(countryName)
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase()
+      .trim();
     
     const countryCodes = {
-      'china': 'cn',
-      'holanda': 'nl', 'netherlands': 'nl',
+      // América do Sul
       'brasil': 'br', 'brazil': 'br',
-      'alemanha': 'de', 'germany': 'de',
-      'eua': 'us', 'usa': 'us', 'estados unidos': 'us',
-      'suíça': 'ch', 'suica': 'ch', 'switzerland': 'ch',
-      'macedônia do norte': 'mk', 'macedonia': 'mk',
-      'bélgica': 'be', 'belgium': 'be',
-      'japão': 'jp', 'japan': 'jp',
+      'argentina': 'ar',
+      'uruguai': 'uy', 'uruguay': 'uy',
+      'paraguai': 'py', 'paraguay': 'py',
+      'chile': 'cl',
+      'colômbia': 'co', 'colombia': 'co',
+      'peru': 'pe',
+      'venezuela': 've',
+      'equador': 'ec', 'ecuador': 'ec',
+      'bolívia': 'bo', 'bolivia': 'bo',
+      'guiana': 'gy', 'guyana': 'gy',
+      'suriname': 'sr',
+
+      // América do Norte e Central
+      'eua': 'us', 'usa': 'us', 'estados unidos': 'us', 'united states': 'us',
+      'canadá': 'ca', 'canada': 'ca',
       'méxico': 'mx', 'mexico': 'mx',
-      'dinamarca': 'dk', 'denmark': 'dk',
+      'costa rica': 'cr',
+      'cuba': 'cu',
+      'jamaica': 'jm',
+      'panamá': 'pa', 'panama': 'pa',
+      'porto rico': 'pr', 'puerto rico': 'pr',
+      'república dominicana': 'do', 'dominican republic': 'do',
+
+      // Europa
+      'alemanha': 'de', 'germany': 'de',
+      'holanda': 'nl', 'paises baixos': 'nl', 'netherlands': 'nl',
+      'bélgica': 'be', 'belgium': 'be',
       'itália': 'it', 'italy': 'it',
       'espanha': 'es', 'spain': 'es',
-      'argentina': 'ar',
-      'irlanda': 'ie', 'ireland': 'ie',
-      'reino unido': 'gb', 'uk': 'gb', 'inglaterra': 'gb',
       'portugal': 'pt',
-      'frança': 'fr', 'france': 'fr'
+      'frança': 'fr', 'france': 'fr',
+      'reino unido': 'gb', 'uk': 'gb', 'inglaterra': 'gb', 'england': 'gb', 'scotland': 'gb', 'escócia': 'gb',
+      'irlanda': 'ie', 'ireland': 'ie',
+      'dinamarca': 'dk', 'denmark': 'dk',
+      'suécia': 'se', 'suecia': 'se', 'sweden': 'se',
+      'noruega': 'no', 'norway': 'no',
+      'finlândia': 'fi', 'finlandia': 'fi', 'finland': 'fi',
+      'suíça': 'ch', 'suica': 'ch', 'switzerland': 'ch',
+      'áustria': 'at', 'austria': 'at',
+      'polônia': 'pl', 'polonia': 'pl', 'poland': 'pl',
+      'república tcheca': 'cz', 'republica tcheca': 'cz', 'czech republic': 'cz', 'czechia': 'cz',
+      'grécia': 'gr', 'grecia': 'gr', 'greece': 'gr',
+      'rússia': 'ru', 'russia': 'ru',
+      'macedônia do norte': 'mk', 'macedonia do norte': 'mk', 'macedonia': 'mk', 'north macedonia': 'mk',
+      'croácia': 'hr', 'croacia': 'hr', 'croatia': 'hr',
+      'sérvia': 'rs', 'servia': 'rs', 'serbia': 'rs',
+      'ucrânia': 'ua', 'ucrania': 'ua', 'ukraine': 'ua',
+      'turquia': 'tr', 'turkey': 'tr', 'türkiye': 'tr',
+      'hungria': 'hu', 'hungary': 'hu',
+      'romênia': 'ro', 'romenia': 'ro', 'romania': 'ro',
+      'bulgária': 'bg', 'bulgaria': 'bg',
+      'eslováquia': 'sk', 'eslovaquia': 'sk', 'slovakia': 'sk',
+      'eslovênia': 'si', 'eslovenia': 'si', 'slovenia': 'si',
+      'estônia': 'ee', 'estonia': 'ee',
+      'letônia': 'lv', 'letonia': 'lv', 'latvia': 'lv',
+      'lituânia': 'lt', 'lituania': 'lt', 'lithuania': 'lt',
+      'islândia': 'is', 'islandia': 'is', 'iceland': 'is',
+      'luxemburgo': 'lu', 'luxembourg': 'lu',
+      'malta': 'mt',
+      'chipre': 'cy', 'cyprus': 'cy',
+
+      // Ásia e Oriente Médio
+      'china': 'cn',
+      'japão': 'jp', 'japao': 'jp', 'japan': 'jp',
+      'coréia do sul': 'kr', 'coreia do sul': 'kr', 'south korea': 'kr', 'korea': 'kr',
+      'tailândia': 'th', 'tailandia': 'th', 'thailand': 'th',
+      'vietnã': 'vn', 'vietna': 'vn', 'vietnam': 'vn',
+      'índia': 'in', 'india': 'in',
+      'indonésia': 'id', 'indonesia': 'id',
+      'filipinas': 'ph', 'philippines': 'ph',
+      'singapura': 'sg', 'singapore': 'sg',
+      'malásia': 'my', 'malasia': 'my', 'malaysia': 'my',
+      'taiwan': 'tw',
+      'hong kong': 'hk',
+      'laos': 'la',
+      'camboja': 'kh', 'cambodia': 'kh',
+      'israel': 'il',
+      'emirados árabes': 'ae', 'emirados arabes': 'ae', 'uae': 'ae',
+
+      // África
+      'álfrica do sul': 'za', 'africa do sul': 'za', 'south africa': 'za',
+      'egito': 'eg', 'egypt': 'eg',
+      'marrocos': 'ma', 'morocco': 'ma',
+      'nigéria': 'ng', 'nigeria': 'ng',
+      'quênia': 'ke', 'quenia': 'ke', 'kenya': 'ke',
+      'angola': 'ao',
+      'moçambique': 'mz', 'mocambique': 'mz',
+
+      // Oceania
+      'austrália': 'au', 'australia': 'au',
+      'nova zelândia': 'nz', 'nova zelandia': 'nz', 'new zealand': 'nz'
     };
 
     const code = countryCodes[name];
@@ -412,6 +493,7 @@
     }
     return '';
   }
+
 
   function preloadFirstImages(items, count = 5) {
     return new Promise((resolve) => {
