@@ -3,502 +3,280 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>WCCollection - Coleção de Latas</title>
+  <title>WCCollection - TV Display</title>
   <style>
     :root {
-      --bg-color: #121620;
-      --card-bg: #1a202c;
-      --border-color: #2d3748;
+      --bg-color: #0f131d;
+      --card-bg: #ffffff;
       --accent-color: #f39c12;
       --text-main: #ffffff;
-      --text-sub: #a0aec0;
-      --badge-lata: #1d3557;
-      --badge-ococ: #1b4332;
-      --badge-set: #3c096c;
+      --border-color: #2a3447;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; outline: none; }
-    
+
     body {
       background-color: var(--bg-color);
       color: var(--text-main);
-      min-height: 100vh;
-      padding: 30px 20px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    header {
-      width: 100%;
-      max-width: 1300px;
-      margin-bottom: 35px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 20px;
-    }
-
-    .brand-title {
-      font-size: 2.8rem;
-      font-weight: 900;
-      color: var(--accent-color);
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      text-shadow: 0 4px 15px rgba(243, 156, 18, 0.3);
-    }
-
-    .controls-container {
-      width: 100%;
-      max-width: 900px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 15px;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .search-box {
-      position: relative;
-      flex: 1;
-      min-width: 280px;
-    }
-
-    .search-input {
-      width: 100%;
-      padding: 14px 22px;
-      background: #1a202c;
-      border: 1px solid var(--border-color);
-      border-radius: 30px;
-      color: #fff;
-      font-size: 0.95rem;
-      transition: all 0.3s ease;
-      box-shadow: inset 0 2px 4px rgba(0,0,0,0.4);
-    }
-
-    .search-input:focus {
-      border-color: var(--accent-color);
-      box-shadow: 0 0 12px rgba(243, 156, 18, 0.4);
-    }
-
-    .filter-tabs {
-      display: flex;
-      gap: 10px;
-      background: #161b26;
-      padding: 6px;
-      border-radius: 30px;
-      border: 1px solid var(--border-color);
-    }
-
-    .tab-btn {
-      padding: 10px 22px;
-      background: transparent;
-      border: none;
-      border-radius: 20px;
-      color: var(--text-sub);
-      font-weight: 800;
-      font-size: 0.85rem;
-      cursor: pointer;
-      text-transform: uppercase;
-      transition: all 0.3s ease;
-    }
-
-    .tab-btn.active, .tab-btn:hover {
-      background: var(--accent-color);
-      color: #121620;
-      box-shadow: 0 4px 12px rgba(243, 156, 18, 0.4);
-    }
-
-    /* Grid do Catálogo */
-    .catalog-grid {
-      width: 100%;
-      max-width: 1300px;
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-      gap: 25px;
-      margin-bottom: 40px;
-    }
-
-    .can-card {
-      background: var(--card-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 16px;
+      height: 100vh;
+      width: 100vw;
       overflow: hidden;
       display: flex;
       flex-direction: column;
-      position: relative;
-      transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-      cursor: pointer;
-    }
-
-    .can-card:hover {
-      transform: translateY(-8px);
-      border-color: var(--accent-color);
-      box-shadow: 0 12px 25px rgba(0,0,0,0.6);
-    }
-
-    .card-photo-wrapper {
-      width: 100%;
-      height: 260px;
-      background: radial-gradient(circle, #232a3b 0%, #121620 100%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      padding: 15px;
-    }
-
-    .card-photo-wrapper img.main-photo {
-      max-width: 100%;
-      max-height: 100%;
-      object-fit: contain;
-      filter: drop-shadow(0 8px 12px rgba(0,0,0,0.6));
-      transition: transform 0.3s ease;
-    }
-
-    .can-card:hover img.main-photo {
-      transform: scale(1.05);
-    }
-
-    .brand-logo-overlay {
-      position: absolute;
-      top: 12px;
-      right: 12px;
-      max-width: 55px;
-      max-height: 40px;
-      object-fit: contain;
-      filter: drop-shadow(0 2px 6px rgba(0,0,0,0.8));
-      z-index: 2;
-    }
-
-    .badge-type {
-      position: absolute;
-      top: 12px;
-      left: 12px;
-      padding: 4px 10px;
-      border-radius: 6px;
-      font-size: 0.65rem;
-      font-weight: 900;
-      text-transform: uppercase;
-      z-index: 2;
-    }
-    .badge-lata { background: var(--badge-lata); color: #457b9d; border: 1px solid #457b9d; }
-    .badge-ococ { background: var(--badge-ococ); color: #52b788; border: 1px solid #52b788; }
-    .badge-set { background: var(--badge-set); color: #9d4edd; border: 1px solid #9d4edd; }
-
-    .card-info {
-      padding: 18px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      flex: 1;
-    }
-
-    .brewery-name {
-      font-size: 0.75rem;
-      font-weight: 900;
-      color: var(--accent-color);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    .can-name {
-      font-size: 1rem;
-      font-weight: 800;
-      color: #ffffff;
-      line-height: 1.35;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-
-    .card-footer {
-      margin-top: auto;
-      padding-top: 12px;
-      border-top: 1px solid rgba(255,255,255,0.08);
-      display: flex;
+      padding: 25px 35px;
       justify-content: space-between;
-      align-items: center;
-      font-size: 0.78rem;
-      color: var(--text-sub);
-      font-weight: 600;
     }
 
     /* ========================================================
-       MODAL DE TELA CHEIA - AJUSTADO CONFORME REFERÊNCIA
+       SEÇÃO SUPERIOR (FOTOS 2x2 + TEXTOS + LOGO DA MARCA)
        ======================================================== */
-    .modal-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: #000000;
-      display: none;
-      z-index: 9999;
-      padding: 30px;
-      overflow: hidden;
-      border-top: 6px solid var(--accent-color);
-    }
-
-    .modal-overlay.active {
+    .top-section {
       display: flex;
-    }
-
-    .btn-close-modal {
-      position: absolute;
-      top: 20px;
-      left: 20px;
-      background: #1a202c;
-      border: 1px solid var(--accent-color);
-      color: #fff;
-      width: 42px;
-      height: 42px;
-      border-radius: 50%;
-      font-size: 1.4rem;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 100;
-      transition: background 0.2s;
-    }
-    .btn-close-modal:hover { background: var(--accent-color); color: #000; }
-
-  
-
-    .modal-fullscreen-grid {
       width: 100%;
-      height: 100%;
+      height: 68vh; /* Ocupa a maior parte da tela superior */
+      gap: 40px;
+      position: relative;
+      align-items: stretch;
+    }
+
+    /* Grid 2x2 com os 4 Cards de Fotos Brancos na Esquerda */
+    .photos-grid-2x2 {
       display: grid;
-      grid-template-columns: 380px 1fr;
-      gap: 50px;
-      align-items: stretch; /* Estica ambos os lados para ocupar a mesma altura */
-      padding-top: 10px;
-    }
-
-    @media (max-width: 850px) {
-      .modal-fullscreen-grid {
-        grid-template-columns: 1fr;
-        overflow-y: auto;
-      }
-      .modal-brand-logo-top { max-height: 90px; top: 15px; right: 15px; }
-    }
-
-    /* Coluna Esquerda: Fotos */
-    .gallery-container {
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+      gap: 16px;
+      width: 38vw; /* Largura proporcional da área de fotos */
       height: 100%;
-      justify-content: space-between;
     }
 
-    .main-photo-box {
-      width: 100%;
-      flex: 1; /* Ocupa todo o espaço vertical até as miniaturas */
-      min-height: 350px;
-      background: #000000;
-      border: 4px solid var(--accent-color);
-      border-radius: 16px;
-      padding: 15px;
+    .photo-card {
+      background: #ffffff;
+      border-radius: 18px;
       display: flex;
       align-items: center;
       justify-content: center;
+      padding: 12px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.6);
+      overflow: hidden;
     }
 
-    .main-photo-box img {
+    .photo-card img {
       max-width: 100%;
       max-height: 100%;
       object-fit: contain;
     }
 
-    .thumb-strip {
+    /* Bloco Central de Textos - Esticado do topo à base do Grid (MARCAÇÃO VERMELHA) */
+    .details-info-box {
+      flex: 1;
       display: flex;
-      gap: 10px;
-      justify-content: flex-start;
-      overflow-x: auto;
-      height: 85px;
+      flex-direction: column;
+      justify-content: space-between; /* Distribui o texto do topo do 1º card ao fim do 4º card */
+      height: 100%;
+      padding-right: 320px; /* Evita que o texto encoste no logo grande */
+      padding-top: 5px;
+      padding-bottom: 5px;
     }
 
-    .thumb-strip img {
-      width: 65px;
-      height: 80px;
-      object-fit: contain;
-      background: #000000;
-      border: 3px solid var(--accent-color);
-      border-radius: 10px;
-      padding: 4px;
-      cursor: pointer;
-      opacity: 0.5;
-      transition: all 0.2s;
-    }
-
-    .thumb-strip img.active, .thumb-strip img:hover {
-      opacity: 1;
-      transform: scale(1.05);
-    }
-
-/* ========================================================
-   AJUSTE PARA A TELA DA TV (ALINHAMENTO COM CARDS E LOGO MAIOR)
-   ======================================================== */
-
-/* Container das Informações (Alinhado à direita dos cards de fotos) */
-.info-container {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between; /* Estica do topo do 1º card ao fim do 4º card */
-  height: 100%; /* Força a ocupar a altura total da grade de fotos */
-  padding-left: 20px;
-  padding-right: 320px; /* Garante espaço para o logo da marca crescer sem cobrir o texto */
-}
-
-/* Título Principal (CARLSBERG LIGHT ARTIST...) */
-.modal-main-title {
-  color: #f39c12;
-  font-family: Impact, "Arial Black", sans-serif;
-  font-size: 2.8vw; /* Fonte proporcional à tela da TV */
-  font-weight: 900;
-  font-style: italic;
-  text-transform: uppercase;
-  line-height: 1.1;
-  letter-spacing: 1px;
-}
-
-/* Bloco de cada detalhe (ORIGEM, VOLUME, ANO, CÓD. BARRAS) */
-.info-block {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-/* Rótulos (ORIGEM:, VOLUME:, etc.) */
-.info-label {
-  color: #f39c12;
-  font-family: Impact, "Arial Black", sans-serif;
-  font-size: 1.5vw; /* Aumentado proporcionalmente */
-  font-weight: 900;
-  font-style: italic;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}
-
-/* Valores (CHINA, 500ML, 2024, etc.) */
-.info-val {
-  color: #f39c12;
-  font-family: Impact, "Arial Black", sans-serif;
-  font-size: 2.3vw; /* Aumentado proporcionalmente */
-  font-weight: 900;
-  font-style: italic;
-  text-transform: uppercase;
-  line-height: 1.1;
-  letter-spacing: 1px;
-}
-
-/* LOGO DA MARCA (EXPANDIDO ATÉ A LINHA AMARELA) */
-.modal-brand-logo-top {
-  position: absolute;
-  top: 20px;
-  right: 40px;
-  max-height: 220px; /* Aumentado consideravelmente para chegar até a linha amarela */
-  max-width: 380px;  /* Largura ampliada */
-  object-fit: contain;
-  z-index: 10;
-}
-
-
-    .counter-badge {
-      position: absolute;
-      bottom: 25px;
-      right: 35px;
+    /* Título do Item */
+    .item-title-display {
       color: var(--accent-color);
-      font-size: 1.3rem;
+      font-family: Impact, "Arial Black", sans-serif;
+      font-size: 3.2vw;
       font-weight: 900;
       font-style: italic;
+      text-transform: uppercase;
+      line-height: 1.05;
+      letter-spacing: 1px;
+    }
+
+    /* Blocos de Cada Informação */
+    .info-group {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    /* Rótulos: ORIGEM:, VOLUME:, ANO:, CÓD. BARRAS: */
+    .info-label-text {
+      color: var(--accent-color);
+      font-family: Impact, "Arial Black", sans-serif;
+      font-size: 1.6vw;
+      font-weight: 900;
+      font-style: italic;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* Valores: CHINA, 500ML, 2024, etc. */
+    .info-val-text {
+      color: var(--accent-color);
+      font-family: Impact, "Arial Black", sans-serif;
+      font-size: 2.6vw;
+      font-weight: 900;
+      font-style: italic;
+      text-transform: uppercase;
+      line-height: 1.1;
+      letter-spacing: 1px;
+    }
+
+    /* Logo da Marca no Canto Superior Direito (EXPANDIDO ATÉ A LINHA AMARELA) */
+    .brand-logo-top-right {
+      position: absolute;
+      top: 0;
+      right: 0;
+      max-height: 280px; /* Altura expandida para atingir a linha amarela */
+      max-width: 420px;  /* Largura proporcional */
+      object-fit: contain;
+      z-index: 10;
+      filter: drop-shadow(0 4px 12px rgba(0,0,0,0.5));
+    }
+
+    /* Contador 1/4 no canto inferior direito da área superior */
+    .counter-display {
+      position: absolute;
+      bottom: 10px;
+      right: 0;
+      color: var(--accent-color);
+      font-family: Impact, "Arial Black", sans-serif;
+      font-size: 1.8vw;
+      font-style: italic;
+      font-weight: 900;
+    }
+
+    /* ========================================================
+       SEÇÃO INFERIOR (CARROSSEL / LISTA DE LATAS)
+       ======================================================== */
+    .bottom-section {
+      width: 100%;
+      height: 24vh;
+      display: flex;
+      gap: 20px;
+      overflow-x: auto;
+      align-items: center;
+      padding-bottom: 5px;
+    }
+
+    .carousel-card {
+      flex: 0 0 220px;
+      height: 100%;
+      background: #181f2e;
+      border: 2px solid transparent;
+      border-radius: 16px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .carousel-card.active {
+      border-color: var(--accent-color);
+      box-shadow: 0 0 20px rgba(243, 156, 18, 0.4);
+      transform: scale(1.03);
+    }
+
+    .carousel-card-photo {
+      background: #ffffff;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px;
+    }
+
+    .carousel-card-photo img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+
+    .carousel-card-info {
+      padding: 8px 12px;
+      background: #111520;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .carousel-card-title {
+      color: #fff;
+      font-weight: 800;
+      font-size: 0.85rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .carousel-card-meta {
+      display: flex;
+      justify-content: space-between;
+      color: #a0aec0;
+      font-size: 0.72rem;
+      font-weight: 700;
     }
 
     .empty-state {
-      grid-column: 1 / -1;
+      width: 100%;
       text-align: center;
-      padding: 60px 20px;
-      color: var(--text-sub);
-      font-size: 1.1rem;
+      color: #a0aec0;
+      font-size: 1.2rem;
     }
   </style>
 </head>
 <body>
 
-  <header>
-    <div class="brand-title">WCCollection</div>
-    
-    <div class="controls-container">
-      <div class="search-box">
-        <input type="text" id="searchInput" class="search-input" placeholder="Pesquisar por nome, cervejaria, país..." oninput="filterCatalog()">
-      </div>
-
-      <div class="filter-tabs">
-        <button class="tab-btn active" onclick="setFilter('all', this)">Todas</button>
-        <button class="tab-btn" onclick="setFilter('ococ', this)">OCOC (Países)</button>
-        <button class="tab-btn" onclick="setFilter('sets', this)">Sets / Packs</button>
-      </div>
+  <!-- ÁREA SUPERIOR (TV VIEW) -->
+  <section class="top-section">
+    <!-- Grid 2x2 com as 4 fotos -->
+    <div class="photos-grid-2x2">
+      <div class="photo-card"><img id="imgCard1" src="" alt=""></div>
+      <div class="photo-card"><img id="imgCard2" src="" alt=""></div>
+      <div class="photo-card"><img id="imgCard3" src="" alt=""></div>
+      <div class="photo-card"><img id="imgCard4" src="" alt=""></div>
     </div>
-  </header>
 
-  <main class="catalog-grid" id="catalogGrid">
-    <div class="empty-state">Carregando catálogo completo...</div>
-  </main>
+    <!-- Bloco dos Textos (Preenche do topo ao fim das fotos) -->
+    <div class="details-info-box">
+      <div class="item-title-display" id="displayTitle">---</div>
 
-  <!-- Modal Tela Cheia -->
-  <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
-    <button class="btn-close-modal" onclick="closeModal()">&times;</button>
-    
-    <!-- Logo Aumentado no Canto Superior Direito -->
-    <img id="modalBrandLogo" class="modal-brand-logo-top" src="" alt="" style="display:none;">
-
-    <div class="modal-fullscreen-grid" onclick="event.stopPropagation()">
-      <!-- Galeria de Fotos -->
-      <div class="gallery-container">
-        <div class="main-photo-box">
-          <img id="modalMainPhoto" src="" alt="Foto Principal">
-        </div>
-        <div class="thumb-strip" id="modalThumbStrip"></div>
+      <div class="info-group">
+        <span class="info-label-text">ORIGEM:</span>
+        <span class="info-val-text" id="displayCountry">---</span>
       </div>
 
-      <!-- Informações Ocupando Toda a Altura -->
-      <div class="info-container">
-        <div class="modal-main-title" id="modalTitle">---</div>
+      <div class="info-group">
+        <span class="info-label-text">VOLUME:</span>
+        <span class="info-val-text" id="displayVolume">---</span>
+      </div>
 
-        <div class="info-block">
-          <span class="info-label">ORIGEM:</span>
-          <span class="info-val" id="modalCountry">---</span>
-        </div>
+      <div class="info-group">
+        <span class="info-label-text">ANO:</span>
+        <span class="info-val-text" id="displayYear">---</span>
+      </div>
 
-        <div class="info-block">
-          <span class="info-label">VOLUME:</span>
-          <span class="info-val" id="modalVolume">---</span>
-        </div>
-
-        <div class="info-block">
-          <span class="info-label">ANO:</span>
-          <span class="info-val" id="modalYear">---</span>
-        </div>
-
-        <div class="info-block">
-          <span class="info-label">CÓD. BARRAS:</span>
-          <span class="info-val" id="modalBarcode">---</span>
-        </div>
+      <div class="info-group">
+        <span class="info-label-text">CÓD. BARRAS:</span>
+        <span class="info-val-text" id="displayBarcode">---</span>
       </div>
     </div>
 
-    <div class="counter-badge" id="modalCounter">1/1</div>
-  </div>
+    <!-- Logo no canto superior direito -->
+    <img id="displayBrandLogo" class="brand-logo-top-right" src="" alt="" style="display:none;">
+
+    <!-- Contador de imagens -->
+    <div class="counter-display" id="displayCounter">1/4</div>
+  </section>
+
+  <!-- ÁREA INFERIOR (CARROSSEL) -->
+  <section class="bottom-section" id="bottomCarousel">
+    <div class="empty-state">Carregando coleção...</div>
+  </section>
 
 <script>
   const API_URL = "https://script.google.com/macros/s/AKfycbwP4kTpSrGJllmlWjQp1YmD1Th5jiw1oUtX5cAJAZj9txy-eNi6_EYyLPG_Q0_coyT9/exec";
-  
-  let rawCatalog = [];
-  let currentCategory = 'all';
+  let catalogData = [];
+  let selectedIndex = 0;
 
   function getItemVal(item, keys) {
     if (!item) return "";
@@ -510,128 +288,88 @@
     return "";
   }
 
-  async function fetchCatalogData() {
+  async function fetchCatalog() {
     try {
       const response = await fetch(API_URL + "?nocache=" + new Date().getTime());
       const data = await response.json();
-      rawCatalog = Array.isArray(data) ? data : (data.data || []);
-      filterCatalog();
+      catalogData = Array.isArray(data) ? data : (data.data || []);
+
+      if (catalogData.length > 0) {
+        renderCarousel();
+        selectItem(0);
+      } else {
+        document.getElementById("bottomCarousel").innerHTML = `<div class="empty-state">Nenhum item encontrado.</div>`;
+      }
     } catch (err) {
       console.error(err);
-      document.getElementById("catalogGrid").innerHTML = `<div class="empty-state" style="color:#e74c3c;">Falha ao carregar os dados do servidor.</div>`;
+      document.getElementById("bottomCarousel").innerHTML = `<div class="empty-state" style="color:#e74c3c;">Erro ao carregar os dados.</div>`;
     }
   }
 
-  function setFilter(cat, btn) {
-    currentCategory = cat;
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    filterCatalog();
-  }
+  function renderCarousel() {
+    const carouselEl = document.getElementById("bottomCarousel");
+    carouselEl.innerHTML = "";
 
-  function filterCatalog() {
-    const term = document.getElementById("searchInput").value.toLowerCase().trim();
+    catalogData.forEach((item, idx) => {
+      const nome = getItemVal(item, ["Nome", "nome", "name"]) || "Sem Título";
+      const pais = getItemVal(item, ["Pais", "pais", "country"]) || "";
+      const volume = getItemVal(item, ["Volume", "volume"]) || "";
 
-    const filtered = rawCatalog.filter(item => {
-      const isSet = getItemVal(item, ["isSet", "IsSet", "isset"]) === true || String(getItemVal(item, ["isSet", "IsSet", "isset"])).toLowerCase() === 'true';
-      const isOcoc = getItemVal(item, ["isOcoc", "IsOcoc", "isococ"]) === true || String(getItemVal(item, ["isOcoc", "IsOcoc", "isococ"])).toLowerCase() === 'true';
-
-      if (currentCategory === 'ococ' && !isOcoc) return false;
-      if (currentCategory === 'sets' && !isSet) return false;
-
-      if (term) {
-        const fullSearchString = [
-          getItemVal(item, ["Nome", "nome", "name"]),
-          getItemVal(item, ["Cervejaria", "cervejaria", "brewery"]),
-          getItemVal(item, ["Pais", "pais", "country"]),
-          getItemVal(item, ["Volume", "volume"]),
-          getItemVal(item, ["Ano", "ano"])
-        ].join(" ").toLowerCase();
-
-        if (fullSearchString.indexOf(term) === -1) return false;
-      }
-
-      return true;
-    });
-
-    renderGrid(filtered);
-  }
-
-  function renderGrid(items) {
-    const grid = document.getElementById("catalogGrid");
-    grid.innerHTML = "";
-
-    if (items.length === 0) {
-      grid.innerHTML = `<div class="empty-state">Nenhuma lata encontrada.</div>`;
-      return;
-    }
-
-    items.forEach((item) => {
-      const nome = getItemVal(item, ["Nome", "nome", "name"]) || "Lata sem título";
-      const cervejaria = getItemVal(item, ["Cervejaria", "cervejaria", "brewery"]) || "Marca Desconhecida";
-      const pais = getItemVal(item, ["Pais", "pais", "country"]) || "Desconhecido";
-      const volume = getItemVal(item, ["Volume", "volume"]);
-      const ano = getItemVal(item, ["Ano", "ano"]);
-
-      const isSet = getItemVal(item, ["isSet", "IsSet", "isset"]) === true || String(getItemVal(item, ["isSet", "IsSet", "isset"])).toLowerCase() === 'true';
-      const isOcoc = getItemVal(item, ["isOcoc", "IsOcoc", "isococ"]) === true || String(getItemVal(item, ["isOcoc", "IsOcoc", "isococ"])).toLowerCase() === 'true';
-
-      let badgeHtml = '<span class="badge-type badge-lata">LATA</span>';
-      if (isSet) badgeHtml = '<span class="badge-type badge-set">SET</span>';
-      else if (isOcoc) badgeHtml = '<span class="badge-type badge-ococ">OCOC</span>';
-
-      const logo = getItemVal(item, ["BRAND_LOGO", "brand_logo", "logo"]);
       const cover = getItemVal(item, ["ImgCover", "imgcover", "cover"]);
       const front = getItemVal(item, ["ImgFront", "imgfront", "front"]);
-
-      const mainImg = cover || front || logo || "https://via.placeholder.com/200x260/1a202c/a0aec0?text=Sem+Imagem";
+      const mainImg = cover || front || "https://via.placeholder.com/200x260/ffffff/a0aec0?text=Sem+Foto";
 
       const card = document.createElement("div");
-      card.className = "can-card";
-      card.onclick = () => openModal(item);
+      card.className = `carousel-card ${idx === 0 ? 'active' : ''}`;
+      card.id = `card-item-${idx}`;
+      card.onclick = () => selectItem(idx);
 
       card.innerHTML = `
-        <div class="card-photo-wrapper">
-          ${badgeHtml}
-          ${logo ? `<img src="${logo}" class="brand-logo-overlay" alt="Logo">` : ''}
-          <img src="${mainImg}" class="main-photo" alt="${nome}" loading="lazy">
+        <div class="carousel-card-photo">
+          <img src="${mainImg}" alt="${nome}">
         </div>
-        <div class="card-info">
-          <div class="brewery-name">${cervejaria}</div>
-          <div class="can-name">${nome}</div>
-          <div class="card-footer">
+        <div class="carousel-card-info">
+          <div class="carousel-card-title">${nome}</div>
+          <div class="carousel-card-meta">
             <span>📍 ${pais}</span>
-            <span>${volume ? volume : ''} ${ano ? '• ' + ano : ''}</span>
+            <span>${volume}</span>
           </div>
         </div>
       `;
 
-      grid.appendChild(card);
+      carouselEl.appendChild(card);
     });
   }
 
-  function openModal(item) {
-    const nome = getItemVal(item, ["Nome", "nome", "name"]);
-    const pais = getItemVal(item, ["Pais", "pais", "country"]);
-    const volume = getItemVal(item, ["Volume", "volume"]);
-    const ano = getItemVal(item, ["Ano", "ano"]);
-    const barcode = getItemVal(item, ["Barcode", "barcode"]);
-    const logo = getItemVal(item, ["BRAND_LOGO", "brand_logo", "logo"]);
+  function selectItem(idx) {
+    if (!catalogData[idx]) return;
+    selectedIndex = idx;
 
-    document.getElementById("modalTitle").innerText = nome || "SEM NOME";
-    document.getElementById("modalCountry").innerText = pais || "---";
-    document.getElementById("modalVolume").innerText = volume || "---";
-    document.getElementById("modalYear").innerText = ano || "---";
-    document.getElementById("modalBarcode").innerText = barcode || "---";
+    // Atualiza seleção visual no carrossel
+    document.querySelectorAll(".carousel-card").forEach((c, i) => {
+      c.classList.toggle("active", i === idx);
+    });
 
-    const brandLogoEl = document.getElementById("modalBrandLogo");
-    if (logo) {
-      brandLogoEl.src = logo;
-      brandLogoEl.style.display = "block";
+    const item = catalogData[idx];
+
+    // Atualiza Textos
+    document.getElementById("displayTitle").innerText = getItemVal(item, ["Nome", "nome", "name"]) || "SEM NOME";
+    document.getElementById("displayCountry").innerText = getItemVal(item, ["Pais", "pais", "country"]) || "---";
+    document.getElementById("displayVolume").innerText = getItemVal(item, ["Volume", "volume"]) || "---";
+    document.getElementById("displayYear").innerText = getItemVal(item, ["Ano", "ano"]) || "---";
+    document.getElementById("displayBarcode").innerText = getItemVal(item, ["Barcode", "barcode"]) || "---";
+
+    // Atualiza Logo da Marca
+    const logoUrl = getItemVal(item, ["BRAND_LOGO", "brand_logo", "logo"]);
+    const logoEl = document.getElementById("displayBrandLogo");
+    if (logoUrl) {
+      logoEl.src = logoUrl;
+      logoEl.style.display = "block";
     } else {
-      brandLogoEl.style.display = "none";
+      logoEl.style.display = "none";
     }
 
+    // Atualiza os 4 Cards de Fotos (Grid 2x2)
     const photos = [
       getItemVal(item, ["ImgFront", "imgfront", "front"]),
       getItemVal(item, ["ImgCover", "imgcover", "cover"]),
@@ -640,44 +378,29 @@
       getItemVal(item, ["ImgRight", "imgright", "right"])
     ].filter(p => p !== "");
 
-    const mainPhotoEl = document.getElementById("modalMainPhoto");
-    const thumbStrip = document.getElementById("modalThumbStrip");
-    const counterEl = document.getElementById("modalCounter");
-    thumbStrip.innerHTML = "";
+    const imgEls = [
+      document.getElementById("imgCard1"),
+      document.getElementById("imgCard2"),
+      document.getElementById("imgCard3"),
+      document.getElementById("imgCard4")
+    ];
 
-    if (photos.length > 0) {
-      mainPhotoEl.src = photos[0];
-      counterEl.innerText = `1/${photos.length}`;
+    imgEls.forEach((img, i) => {
+      if (photos[i]) {
+        img.src = photos[i];
+        img.parentElement.style.display = "flex";
+      } else if (photos[0]) {
+        img.src = photos[0]; // Preenche com a foto principal caso tenha menos de 4
+        img.parentElement.style.display = "flex";
+      } else {
+        img.src = "https://via.placeholder.com/300?text=Sem+Foto";
+      }
+    });
 
-      photos.forEach((url, idx) => {
-        const img = document.createElement("img");
-        img.src = url;
-        if (idx === 0) img.className = "active";
-        
-        img.onclick = () => {
-          mainPhotoEl.src = url;
-          counterEl.innerText = `${idx + 1}/${photos.length}`;
-          document.querySelectorAll("#modalThumbStrip img").forEach(t => t.classList.remove("active"));
-          img.classList.add("active");
-        };
-
-        thumbStrip.appendChild(img);
-      });
-    } else {
-      mainPhotoEl.src = "https://via.placeholder.com/300x400/000000/a0aec0?text=Sem+Foto";
-      counterEl.innerText = "0/0";
-    }
-
-    document.getElementById("modalOverlay").classList.add("active");
+    document.getElementById("displayCounter").innerText = `1/${photos.length || 1}`;
   }
 
-  function closeModal(e) {
-    if (!e || e.target.id === "modalOverlay" || e.target.className === "btn-close-modal") {
-      document.getElementById("modalOverlay").classList.remove("active");
-    }
-  }
-
-  window.onload = fetchCatalogData;
+  window.onload = fetchCatalog;
 </script>
 </body>
 </html>
