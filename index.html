@@ -114,7 +114,9 @@
     .info-label { font-size: clamp(0.65rem, 0.9vw, 0.8rem); font-weight: 900; color: #f39c12; line-height: 1.1; letter-spacing: 0.5px; }
     .info-val { font-size: clamp(0.9rem, 1.4vw, 1.2rem); font-weight: 900; color: #f39c12; line-height: 1.1; margin-top: 1px; }
 
-    .counter-bar { display: flex; justify-content: flex-end; align-items: center; padding: 0 4px; }
+    .counter-bar { display: flex; justify-content: flex-end; align-items: center; padding: 0 4px; gap: 10px; }
+    .sort-btn { font-size: 0.75rem; font-weight: 800; color: #1a1e29; background: #f39c12; padding: 3px 10px; border-radius: 6px; border: none; cursor: pointer; text-transform: uppercase; transition: all 0.15s ease; }
+    .sort-btn:hover, .sort-btn:focus { background: #ffffff; color: #1a1e29; box-shadow: 0 0 10px rgba(255,255,255,0.4); }
     .card-counter { font-size: 0.85rem; font-weight: 900; color: #f39c12; background: transparent; padding: 2px 8px; letter-spacing: 1px; }
 
     /* SEÇÃO INFERIOR DO CATÁLOGO */
@@ -292,7 +294,10 @@
         </div>
       </section>
 
-      <div class="counter-bar"><div class="card-counter" id="cardCounter">0/0</div></div>
+      <div class="counter-bar">
+        <button class="sort-btn" id="sortOrderBtn" onclick="toggleSortOrder()">↓ MAIS NOVOS PRIMEIRO</button>
+        <div class="card-counter" id="cardCounter">0/0</div>
+      </div>
 
       <section class="catalog-section" id="catalogSection">
         <div class="card-row" id="cardRow"></div>
@@ -323,6 +328,7 @@
   let zoomGallery = [];
   let currentZoomIndex = 0;
   
+  let sortNewestFirst = true; // Por padrão, exibe os novos cadastros primeiro
   let currentTab = 'home';
   let cardsPerRow = 6;
   let currentPage = 0;
@@ -347,9 +353,8 @@
     'kronenbourg 1664': '#0f2042',
     'therezopolis': '#1b382b',
     'wienbier': '#33261d',
-    'faxe': '#daa520',
-    'zlaten dab': '#b38b00',
-    'quilmes': '#75AADB'
+    'faxe': '#3a0000',
+    'zlaten dab': '#b38b00'
   };
 
   let zoomLevel = 1.0; 
@@ -379,7 +384,7 @@
       .join(' ');
   }
 
-    function getFlagUrlByCountry(countryName) {
+  function getFlagUrlByCountry(countryName) {
     if (!countryName) return '';
     
     // Normaliza o texto removendo acentos, espaços extras e convertendo para minúsculas
@@ -492,7 +497,6 @@
     return '';
   }
 
-
   function preloadFirstImages(items, count = 6) {
     return new Promise((resolve) => {
       const pageItems = items.slice(0, count);
@@ -573,6 +577,18 @@
     focusCardSafely(0);
   }
 
+  function toggleSortOrder() {
+    sortNewestFirst = !sortNewestFirst;
+    const btn = document.getElementById("sortOrderBtn");
+    if (sortNewestFirst) {
+      btn.innerText = "↓ MAIS NOVOS PRIMEIRO";
+    } else {
+      btn.innerText = "↑ MAIS ANTIGOS PRIMEIRO";
+    }
+    filterCatalog(document.getElementById("menuSearchInput").value);
+    focusCardSafely(0);
+  }
+
   function processTabChange() {
     const heroPhotos = document.getElementById("heroPhotos");
     const labelCountry = document.getElementById("labelCountry");
@@ -597,8 +613,9 @@
   }
 
   function getBaseListForCurrentTab() {
+    let list = [];
     if (currentTab === 'home') {
-      return canCatalog.filter(can => {
+      list = canCatalog.filter(can => {
         const val = can.isSet !== undefined ? can.isSet : can.isSet;
         return !val || String(val).toLowerCase() === "false";
       });
@@ -615,14 +632,19 @@
           countryMap.set(String(countryVal).toLowerCase(), can);
         }
       });
-      return Array.from(countryMap.values()).sort((a,b) => String(a.country || a.Pais).localeCompare(String(b.country || b.Pais)));
+      list = Array.from(countryMap.values()).sort((a,b) => String(a.country || a.Pais).localeCompare(String(b.country || b.Pais)));
     } else if (currentTab === 'sets') {
-      return canCatalog.filter(can => {
+      list = canCatalog.filter(can => {
         const val = can.isSet;
         return val === true || String(val).toLowerCase() === "true";
       });
     }
-    return [];
+
+    // Aplica a inversão de ordem se sortNewestFirst for true
+    if (sortNewestFirst && currentTab !== 'ococ') {
+      return [...list].reverse();
+    }
+    return list;
   }
 
   function clearAllCardFocus() {
