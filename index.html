@@ -102,7 +102,6 @@
     .hero-brand-logo-container { position: absolute; top: 0; right: 0; width: 180px; height: 80px; display: flex; justify-content: flex-end; align-items: flex-start; z-index: 20; pointer-events: none; }
     .hero-brand-logo-container img { max-width: 100%; max-height: 100%; object-fit: contain; }
 
-    /* FOTOS SUPERIORES COM MESMO ALINHAMENTO DA ESQUERDA */
     .hero-left-photos { height: 100%; aspect-ratio: 1 / 1; display: grid; grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(2, 1fr); gap: 10px; }
     .hero-left-photos.aspect-sets { aspect-ratio: 4 / 3; }
 
@@ -115,27 +114,26 @@
     .info-label { font-size: clamp(0.65rem, 0.9vw, 0.8rem); font-weight: 900; color: #f39c12; line-height: 1.1; letter-spacing: 0.5px; }
     .info-val { font-size: clamp(0.9rem, 1.4vw, 1.2rem); font-weight: 900; color: #f39c12; line-height: 1.1; margin-top: 1px; }
 
-    /* BARRA DO MEIO COM CONTADOR E ORDENAÇÃO */
+    /* BARRA DO MEIO COM O BOTÃO TRIÂNGULO SEM BORDAS */
     .counter-bar { display: flex; justify-content: flex-end; align-items: center; padding: 0; gap: 14px; height: 20px; }
     
     .sort-icon-btn {
-      background: transparent; color: #a0aec0; border: none; font-size: 1.2rem;
+      background: transparent; color: #a0aec0; border: none; font-size: 1.1rem;
       cursor: pointer; padding: 0; display: flex; align-items: center;
       justify-content: center; transition: color 0.2s ease, transform 0.2s ease; outline: none;
     }
 
     .sort-icon-btn:hover, .sort-icon-btn:focus, .sort-icon-btn.focused {
       color: #f39c12 !important; background: transparent !important;
-      border: none !important; box-shadow: none !important; transform: scale(1.15);
+      border: none !important; box-shadow: none !important; transform: scale(1.2);
     }
 
     .card-counter { font-size: 0.85rem; font-weight: 900; color: #f39c12; background: transparent; padding: 0; letter-spacing: 1px; }
 
-    /* SEÇÃO INFERIOR COM ALINHAMENTO AUTOMÁTICO PERFECT MATCH (7 CARDS) */
+    /* SEÇÃO INFERIOR DO CATÁLOGO (7 CARDS POR LINHA) */
     .catalog-section { height: 185px; min-height: 185px; width: 100%; overflow: hidden; flex-shrink: 0; touch-action: none; display: flex; justify-content: center; }
     .card-row { display: flex; height: 100%; width: 100%; justify-content: space-between; align-items: flex-end; }
 
-    /* CARD COM 7 POR LINHA (~122px CADA) */
     .card {
       width: 122px !important;
       min-width: 122px !important;
@@ -168,7 +166,6 @@
       object-fit: contain !important;
     }
 
-    /* BARRA COLORIDA REORGANIZADA */
     .card-bottom-bar {
       width: 100% !important;
       height: 48px !important;
@@ -179,7 +176,6 @@
       box-sizing: border-box !important;
     }
 
-    /* MARCAS: HELVETICA NOW BOLD */
     .card-bar-title {
       font-family: "Helvetica Now Display", "Helvetica Neue", Helvetica, Arial, sans-serif !important;
       font-size: 0.75rem !important;
@@ -200,7 +196,6 @@
       margin-bottom: 1px !important;
     }
 
-    /* PAÍS: HELVETICA */
     .card-bar-country {
       font-family: Helvetica, Arial, sans-serif !important;
       display: flex !important;
@@ -221,7 +216,6 @@
       flex-shrink: 0 !important;
     }
 
-    /* VOLUME: HELVETICA */
     .card-bar-vol {
       font-family: Helvetica, Arial, sans-serif !important;
       padding: 1px 4px !important;
@@ -239,15 +233,11 @@
       z-index: 10 !important; 
     }
 
-    /* MODAL DE ZOOM E NAVEGAÇÃO */
+    /* MODAIS */
     .zoom-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.95); z-index: 3000; display: none; justify-content: center; align-items: center; padding: 16px; overflow: hidden; }
     .zoom-modal.active { display: flex; }
-    .zoom-modal img { 
-      max-width: 85vw; max-height: 85vh; object-fit: contain; border-radius: 6px; cursor: pointer; 
-      transition: transform 0.15s ease-out; transform-origin: center center; 
-    }
+    .zoom-modal img { max-width: 85vw; max-height: 85vh; object-fit: contain; border-radius: 6px; cursor: pointer; transition: transform 0.15s ease-out; transform-origin: center center; }
 
-    /* MODAL VISUAL DE SAÍDA NATIVO */
     .exit-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); z-index: 4000; display: none; justify-content: center; align-items: center; }
     .exit-modal.active { display: flex; }
     .exit-box { background: #161b26; border: 2px solid #333d52; padding: 30px 40px; border-radius: 12px; display: flex; flex-direction: column; align-items: center; gap: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
@@ -307,7 +297,8 @@
       </section>
 
       <div class="counter-bar">
-        <button class="sort-icon-btn" id="sortOrderBtn" onclick="toggleSortOrder()" tabindex="0" title="Alternar Ordenação">≡⇕</button>
+        <!-- BOTÃO COM TRIÂNGULOS (▼ = Maior para Menor / ▲ = Menor para Maior) -->
+        <button class="sort-icon-btn" id="sortOrderBtn" onclick="toggleSortOrder()" tabindex="0" title="Alternar Ordenação">▼</button>
         <div class="card-counter" id="cardCounter">0/0</div>
       </div>
 
@@ -340,7 +331,7 @@
   let zoomGallery = [];
   let currentZoomIndex = 0;
   
-  let sortNewestFirst = true;
+  let sortNewestFirst = true; // true = ▼ (Maior/Mais novos p/ Menor), false = ▲ (Menor/Mais antigos p/ Maior)
   let currentTab = 'home';
   let cardsPerRow = 7;
   let currentPage = 0;
@@ -348,7 +339,6 @@
   let lastSelectedMenuId = 'menuBtnHome'; 
   let lastSelectedBrandElem = null;
 
-  /* MAPA DE CORES AUTOMÁTICO DAS MARCAS */
   const BRAND_COLORS = {
     'carlsberg': '#005826',
     'heineken': '#008234',
@@ -520,8 +510,19 @@
     focusCardSafely(0);
   }
 
+  /* ALTERNÂNCIA DE ORDENAÇÃO COM ATUALIZAÇÃO DO ÍCONE (▼ ou ▲) */
   function toggleSortOrder() {
     sortNewestFirst = !sortNewestFirst;
+    
+    const sortBtn = document.getElementById("sortOrderBtn");
+    if (sortNewestFirst) {
+      sortBtn.innerText = "▼"; // Maior para Menor (Mais novos primeiro)
+      sortBtn.title = "Ordenação: Maior para Menor (Mais Novos)";
+    } else {
+      sortBtn.innerText = "▲"; // Menor para Maior (Mais antigos primeiro)
+      sortBtn.title = "Ordenação: Menor para Maior (Mais Antigos)";
+    }
+
     filterCatalog(document.getElementById("menuSearchInput").value);
     focusCardSafely(0);
   }
