@@ -98,23 +98,6 @@
     }
     .main-area.pushed { transform: translateX(260px); }
 
-    /* ÍCONE DE ORDENAÇÃO NO CANTO SUPERIOR DIREITO */
-    .top-right-controls {
-      position: absolute; top: 12px; right: 20px; z-index: 100;
-      display: flex; align-items: center; gap: 12px;
-    }
-
-    .top-sort-btn {
-      background: transparent; color: rgba(255, 255, 255, 0.75); border: 2px solid transparent;
-      font-size: 1.4rem; padding: 4px 8px; border-radius: 8px; cursor: pointer;
-      display: flex; align-items: center; justify-content: center; transition: all 0.2s ease;
-    }
-
-    .top-sort-btn:hover, .top-sort-btn:focus, .top-sort-btn.focused {
-      color: #f39c12 !important; background: rgba(255, 255, 255, 0.1) !important;
-      border-color: #f39c12 !important; box-shadow: 0 0 10px rgba(243, 156, 18, 0.5) !important;
-    }
-
     .hero-panel { flex: 1; min-height: 0; background: transparent; border-radius: 12px; display: flex; padding: 8px 12px; gap: 20px; align-items: center; position: relative; }
     .hero-brand-logo-container { position: absolute; top: 8px; right: 20px; width: 180px; height: 80px; display: flex; justify-content: flex-end; align-items: flex-start; z-index: 20; pointer-events: none; }
     .hero-brand-logo-container img { max-width: 100%; max-height: 100%; object-fit: contain; }
@@ -131,12 +114,25 @@
     .info-label { font-size: clamp(0.65rem, 0.9vw, 0.8rem); font-weight: 900; color: #f39c12; line-height: 1.1; letter-spacing: 0.5px; }
     .info-val { font-size: clamp(0.9rem, 1.4vw, 1.2rem); font-weight: 900; color: #f39c12; line-height: 1.1; margin-top: 1px; }
 
-    .counter-bar { display: flex; justify-content: flex-end; align-items: center; padding: 0 4px; }
-    .card-counter { font-size: 0.85rem; font-weight: 900; color: #f39c12; background: transparent; padding: 2px 8px; letter-spacing: 1px; }
+    /* BARRA DO MEIO COM O BOTÃO SEM BORDAS AO LADO DO CONTADOR */
+    .counter-bar { display: flex; justify-content: flex-end; align-items: center; padding: 0 4px; gap: 16px; }
+    
+    .sort-icon-btn {
+      background: transparent; color: #a0aec0; border: none; font-size: 1.3rem;
+      cursor: pointer; padding: 0 4px; display: flex; align-items: center;
+      justify-content: center; transition: color 0.2s ease, transform 0.2s ease; outline: none;
+    }
 
-    /* SEÇÃO INFERIOR DO CATÁLOGO - CENTRALIZADA HORIZONTALMENTE */
+    .sort-icon-btn:hover, .sort-icon-btn:focus, .sort-icon-btn.focused {
+      color: #f39c12 !important; background: transparent !important;
+      border: none !important; box-shadow: none !important; transform: scale(1.15);
+    }
+
+    .card-counter { font-size: 0.85rem; font-weight: 900; color: #f39c12; background: transparent; padding: 2px 0; letter-spacing: 1px; }
+
+    /* SEÇÃO INFERIOR DO CATÁLOGO - ALINHADA COM LARGURA TOTAL */
     .catalog-section { height: 195px; min-height: 195px; width: 100%; overflow: hidden; flex-shrink: 0; touch-action: none; display: flex; justify-content: center; }
-    .card-row { display: flex; gap: 12px; height: 100%; width: auto; justify-content: center; align-items: flex-end; margin: 0 auto; }
+    .card-row { display: flex; height: 100%; width: 100%; justify-content: space-between; align-items: flex-end; }
 
     /* CARD COMPACTO */
     .card {
@@ -290,13 +286,6 @@
     </nav>
 
     <main class="main-area" id="mainArea" onclick="handleMainAreaClick()">
-      <!-- BOTÃO DE ORDENAÇÃO NO CANTO SUPERIOR DIREITO -->
-      <div class="top-right-controls">
-        <button class="top-sort-btn" id="sortOrderBtn" onclick="toggleSortOrder()" tabindex="0" title="Alternar Ordenação">
-          ☰⇕
-        </button>
-      </div>
-
       <section class="hero-panel" id="heroPanel">
         <div class="hero-brand-logo-container" id="heroBrandLogo"></div>
 
@@ -317,6 +306,7 @@
       </section>
 
       <div class="counter-bar">
+        <button class="sort-icon-btn" id="sortOrderBtn" onclick="toggleSortOrder()" tabindex="0" title="Alternar Ordenação">≡⇕</button>
         <div class="card-counter" id="cardCounter">0/0</div>
       </div>
 
