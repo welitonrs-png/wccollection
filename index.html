@@ -90,9 +90,9 @@
     .vk-key:focus, .vk-key:hover { color: #fff; border-color: #fff; background: rgba(255,255,255,0.2); }
     .vk-key-wide { grid-column: span 2; }
 
-    /* ÁREA PRINCIPAL COM LARGURA REFORMULADA */
+    /* ÁREA PRINCIPAL */
     .main-area {
-      flex: 1; display: flex; flex-direction: column; height: 100vh; padding: 10px 24px; gap: 6px;
+      flex: 1; display: flex; flex-direction: column; height: 100vh; padding: 12px 18px; gap: 8px;
       overflow: hidden; background: #1a1e29; min-width: 0; position: relative;
       transition: transform 0.25s cubic-bezier(0.1, 0.9, 0.2, 1);
     }
@@ -102,7 +102,7 @@
     .hero-brand-logo-container { position: absolute; top: 0; right: 0; width: 180px; height: 80px; display: flex; justify-content: flex-end; align-items: flex-start; z-index: 20; pointer-events: none; }
     .hero-brand-logo-container img { max-width: 100%; max-height: 100%; object-fit: contain; }
 
-    /* FOTOS SUPERIORES COM ESPAÇAMENTO DE 10px */
+    /* FOTOS SUPERIORES COM MESMO ALINHAMENTO DA ESQUERDA */
     .hero-left-photos { height: 100%; aspect-ratio: 1 / 1; display: grid; grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(2, 1fr); gap: 10px; }
     .hero-left-photos.aspect-sets { aspect-ratio: 4 / 3; }
 
@@ -115,7 +115,7 @@
     .info-label { font-size: clamp(0.65rem, 0.9vw, 0.8rem); font-weight: 900; color: #f39c12; line-height: 1.1; letter-spacing: 0.5px; }
     .info-val { font-size: clamp(0.9rem, 1.4vw, 1.2rem); font-weight: 900; color: #f39c12; line-height: 1.1; margin-top: 1px; }
 
-    /* BARRA DO MEIO COM ALTURA REDUZIDA E ESPAÇO REDUZIDO (~10px) */
+    /* BARRA DO MEIO COM CONTADOR E ORDENAÇÃO */
     .counter-bar { display: flex; justify-content: flex-end; align-items: center; padding: 0; gap: 14px; height: 20px; }
     
     .sort-icon-btn {
@@ -131,14 +131,14 @@
 
     .card-counter { font-size: 0.85rem; font-weight: 900; color: #f39c12; background: transparent; padding: 0; letter-spacing: 1px; }
 
-    /* SEÇÃO INFERIOR DO CATÁLOGO - ESPAÇO FIXO DE 10px ENTRE CARDS */
+    /* SEÇÃO INFERIOR COM ALINHAMENTO AUTOMÁTICO PERFECT MATCH (7 CARDS) */
     .catalog-section { height: 185px; min-height: 185px; width: 100%; overflow: hidden; flex-shrink: 0; touch-action: none; display: flex; justify-content: center; }
-    .card-row { display: flex; height: 100%; width: 100%; justify-content: center; align-items: flex-end; gap: 10px; }
+    .card-row { display: flex; height: 100%; width: 100%; justify-content: space-between; align-items: flex-end; }
 
-    /* CARD COMPACTO */
+    /* CARD COM 7 POR LINHA (~122px CADA) */
     .card {
-      width: 135px !important;
-      min-width: 135px !important;
+      width: 122px !important;
+      min-width: 122px !important;
       height: 185px !important;
       background: #ffffff !important;
       border-radius: 10px !important;
@@ -150,7 +150,7 @@
       flex-shrink: 0 !important;
     }
 
-    .card.card-aspect-sets { width: 180px !important; min-width: 180px !important; }
+    .card.card-aspect-sets { width: 170px !important; min-width: 170px !important; }
 
     .card-top-photo {
       width: 100% !important;
@@ -172,7 +172,7 @@
     .card-bottom-bar {
       width: 100% !important;
       height: 48px !important;
-      padding: 2px 6px 3px 6px !important;
+      padding: 2px 5px 3px 5px !important;
       display: flex !important;
       flex-direction: column !important;
       justify-content: space-between !important;
@@ -182,7 +182,7 @@
     /* MARCAS: HELVETICA NOW BOLD */
     .card-bar-title {
       font-family: "Helvetica Now Display", "Helvetica Neue", Helvetica, Arial, sans-serif !important;
-      font-size: 0.80rem !important;
+      font-size: 0.75rem !important;
       font-weight: 700 !important;
       white-space: nowrap !important;
       overflow: hidden !important;
@@ -205,8 +205,8 @@
       font-family: Helvetica, Arial, sans-serif !important;
       display: flex !important;
       align-items: center !important;
-      gap: 4px !important;
-      font-size: 0.65rem !important;
+      gap: 3px !important;
+      font-size: 0.60rem !important;
       font-weight: 400 !important;
       white-space: nowrap !important;
       overflow: hidden !important;
@@ -214,8 +214,8 @@
     }
 
     .card-bar-flag {
-      width: 14px !important;
-      height: 9px !important;
+      width: 13px !important;
+      height: 8px !important;
       object-fit: cover !important;
       border-radius: 2px !important;
       flex-shrink: 0 !important;
@@ -224,9 +224,9 @@
     /* VOLUME: HELVETICA */
     .card-bar-vol {
       font-family: Helvetica, Arial, sans-serif !important;
-      padding: 1px 5px !important;
+      padding: 1px 4px !important;
       border-radius: 4px !important;
-      font-size: 0.58rem !important;
+      font-size: 0.55rem !important;
       font-weight: 400 !important;
       white-space: nowrap !important;
       flex-shrink: 0 !important;
@@ -342,7 +342,7 @@
   
   let sortNewestFirst = true;
   let currentTab = 'home';
-  let cardsPerRow = 6;
+  let cardsPerRow = 7;
   let currentPage = 0;
   let activeLocalIndex = 0;
   let lastSelectedMenuId = 'menuBtnHome'; 
@@ -440,7 +440,7 @@
     return '';
   }
 
-  function preloadFirstImages(items, count = 6) {
+  function preloadFirstImages(items, count = 7) {
     return new Promise((resolve) => {
       const pageItems = items.slice(0, count);
       if (pageItems.length === 0) {
@@ -550,11 +550,11 @@
       heroPhotos.classList.add("aspect-sets");
       labelCountry.innerText = "ORIGEM:";
     } else if (currentTab === 'ococ') {
-      cardsPerRow = 6;
+      cardsPerRow = 7;
       heroPhotos.classList.remove("aspect-sets");
       labelCountry.innerText = "PAÍS / ORIGEM:";
     } else {
-      cardsPerRow = 6;
+      cardsPerRow = 7;
       heroPhotos.classList.remove("aspect-sets");
       labelCountry.innerText = "ORIGEM:";
     }
