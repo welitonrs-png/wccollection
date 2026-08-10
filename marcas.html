@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>WCCollection - Universal SPA</title>
+  <title>WCCollection - Universal SPA (Marcas)</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; outline: none; }
     
@@ -98,7 +98,7 @@
     }
     .main-area.pushed { transform: translateX(260px); }
 
-    /* ÁREA SUPERIOR LIMPA */
+    /* ÁREA SUPERIOR LIMPA PARA NOVO LAYOUT */
     .hero-panel { flex: 1; min-height: 0; background: transparent; border-radius: 12px; display: flex; padding: 8px 12px; position: relative; }
 
     /* BARRA DO MEIO COM O BOTÃO TRIÂNGULO AO LADO DA CONTAGEM */
@@ -249,7 +249,7 @@
   <div class="loading-screen" id="loadingScreen">
     <img src="logo.png" alt="Logo" class="loading-logo">
     <div class="spinner"></div>
-    <div class="loading-text" id="loadingText">CARREGANDO CATÁLOGO...</div>
+    <div class="loading-text" id="loadingText">CARREGANDO MARCAS...</div>
   </div>
 
   <div class="app-container">
@@ -257,31 +257,25 @@
 
     <nav class="sidebar-drawer" id="sidebarDrawer">
       <img src="logo.png" alt="Logo" class="sidebar-logo">
-<button class="cat-btn" id="menuBtnHome" onclick="window.location.href='index.html'" tabindex="0">HOME / CATÁLOGO</button>
-
-     <button class="cat-btn" id="menuBtnByBrands" onclick="window.location.href='marcas.html'" tabindex="0">POR MARCAS</button>
-
+      
+      <!-- NAVEGAÇÃO DE VOLTA PARA INDEX -->
+      <button class="cat-btn" id="menuBtnHome" onclick="window.location.href='index.html'" tabindex="0">HOME / CATÁLOGO</button>
+      
       <button class="cat-btn" id="menuBtnSearch" onclick="toggleSearchInline()" tabindex="0">PESQUISAR</button>
-
       <div class="inline-panel-container" id="searchInlineContainer">
-
         <input type="text" id="menuSearchInput" class="menu-search-box" placeholder="DIGITE PARA BUSCAR..." readonly tabindex="-1">
-
         <div class="vk-container" id="vkContainer"></div>
-
       </div>
 
+      <button class="cat-btn" id="menuBtnBrands" onclick="toggleBrandInline()" tabindex="0">MARCAS</button>
+      <div class="inline-panel-container" id="brandInlineList"></div>
 
-
-
-
-
-
-      
+      <button class="cat-btn" id="menuBtnOcoc" onclick="switchTab('ococ')" tabindex="0">OCOC (PAÍSES)</button>
+      <button class="cat-btn" id="menuBtnSets" onclick="switchTab('sets')" tabindex="0">SETS & PACKS</button>
     </nav>
 
     <main class="main-area" id="mainArea" onclick="handleMainAreaClick()">
-      <!-- ÁREA SUPERIOR LIMPA PARA NOVO DESIGN -->
+      <!-- ÁREA SUPERIOR LIMPA -->
       <section class="hero-panel" id="heroPanel"></section>
 
       <div class="counter-bar">
@@ -508,38 +502,32 @@
   }
 
   function getBaseListForCurrentTab() {
-  let list = [];
-  if (currentTab === 'home') {
-    list = canCatalog.filter(can => {
-      const val = can.isSet !== undefined ? can.isSet : can.isSet;
-      return !val || String(val).toLowerCase() === "false";
-    });
-  } else if (currentTab === 'ococ') {
-    const countryMap = new Map();
-    canCatalog.forEach(can => {
-      const countryVal = can.brewery || can.Cervejaria;
-      const isOcocVal = can.isOcoc;
-      const isSetVal = can.isSet;
+    let list = [];
+    if (currentTab === 'home') {
+      list = canCatalog.filter(can => {
+        const val = can.isSet !== undefined ? can.isSet : can.isSet;
+        return !val || String(val).toLowerCase() === "false";
+      });
+    } else if (currentTab === 'ococ') {
+      const countryMap = new Map();
+      canCatalog.forEach(can => {
+        const countryVal = can.brewery || can.Cervejaria;
+        const isOcocVal = can.isOcoc;
+        const isSetVal = can.isSet;
 
-      if ((!isSetVal || String(isSetVal).toLowerCase() === "false") && 
-          (isOcocVal === true || String(isOcocVal).toLowerCase() === "true") && 
-          countryVal && !countryMap.has(String(countryVal).toLowerCase())) {
-        countryMap.set(String(countryVal).toLowerCase(), can);
-      }
-    });
-    list = Array.from(countryMap.values()).sort((a,b) => String(a.country || a.Pais).localeCompare(String(b.country || b.Pais)));
-  } else if (currentTab === 'sets') {
-    list = canCatalog.filter(can => {
-      const val = can.isSet;
-      return val === true || String(val).toLowerCase() === "true";
-    });
-  }
-
-  if (sortNewestFirst && currentTab !== 'ococ') {
-    return [...list].reverse();
-  }
-  return list;
-}
+        if ((!isSetVal || String(isSetVal).toLowerCase() === "false") && 
+            (isOcocVal === true || String(isOcocVal).toLowerCase() === "true") && 
+            countryVal && !countryMap.has(String(countryVal).toLowerCase())) {
+          countryMap.set(String(countryVal).toLowerCase(), can);
+        }
+      });
+      list = Array.from(countryMap.values()).sort((a,b) => String(a.country || a.Pais).localeCompare(String(b.country || b.Pais)));
+    } else if (currentTab === 'sets') {
+      list = canCatalog.filter(can => {
+        const val = can.isSet;
+        return val === true || String(val).toLowerCase() === "true";
+      });
+    }
 
     if (sortNewestFirst && currentTab !== 'ococ') {
       return [...list].reverse();
@@ -755,29 +743,29 @@
     updateCounter(0);
   }
 
-function updateCounter(localIndex) {
-  const total = currentFiltered.length;
-  const globalIndex = currentPage * cardsPerPage + localIndex;
-  const currentNum = total > 0 ? (globalIndex + 1) : 0;
-  
-  const counterElem = document.getElementById("cardCounter");
-  if (counterElem) {
-    counterElem.innerText = `${currentNum}/${total}`;
-  }
+  function updateCounter(localIndex) {
+    const total = currentFiltered.length;
+    const globalIndex = currentPage * cardsPerPage + localIndex;
+    const currentNum = total > 0 ? (globalIndex + 1) : 0;
+    
+    const counterElem = document.getElementById("cardCounter");
+    if (counterElem) {
+      counterElem.innerText = `${currentNum}/${total}`;
+    }
 
-  // Atualiza galeria para Zoom
-  const currentCan = currentFiltered[globalIndex];
-  if (currentCan) {
-    let rawPhotos = [];
-    if (currentCan.images) rawPhotos = [currentCan.images.front, currentCan.images.left, currentCan.images.back, currentCan.images.right].filter(Boolean);
-    if (rawPhotos.length === 0) rawPhotos = [currentCan.ImgFront, currentCan.ImgLeft, currentCan.ImgBack, currentCan.ImgRight].filter(Boolean);
-    const logoUrl = currentCan.brandLogo || currentCan.BRAND_LOGO;
-    if (rawPhotos.length === 0 && logoUrl) rawPhotos.push(logoUrl);
-    zoomGallery = rawPhotos;
-  } else {
-    zoomGallery = [];
+    // Atualiza galeria para Zoom
+    const currentCan = currentFiltered[globalIndex];
+    if (currentCan) {
+      let rawPhotos = [];
+      if (currentCan.images) rawPhotos = [currentCan.images.front, currentCan.images.left, currentCan.images.back, currentCan.images.right].filter(Boolean);
+      if (rawPhotos.length === 0) rawPhotos = [currentCan.ImgFront, currentCan.ImgLeft, currentCan.ImgBack, currentCan.ImgRight].filter(Boolean);
+      const logoUrl = currentCan.brandLogo || currentCan.BRAND_LOGO;
+      if (rawPhotos.length === 0 && logoUrl) rawPhotos.push(logoUrl);
+      zoomGallery = rawPhotos;
+    } else {
+      zoomGallery = [];
+    }
   }
-}
 
   /* RENDERIZAÇÃO DOS CARDS (2 LINHAS DE 7) */
   function renderApp() {
