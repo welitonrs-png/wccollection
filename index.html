@@ -114,18 +114,26 @@
     .info-label { font-size: clamp(0.65rem, 0.9vw, 0.8rem); font-weight: 900; color: #f39c12; line-height: 1.1; letter-spacing: 0.5px; }
     .info-val { font-size: clamp(0.9rem, 1.4vw, 1.2rem); font-weight: 900; color: #f39c12; line-height: 1.1; margin-top: 1px; }
 
-    .counter-bar { display: flex; justify-content: flex-end; align-items: center; padding: 0 4px; }
-    .card-counter { font-size: 0.85rem; font-weight: 900; color: #f39c12; background: transparent; padding: 2px 8px; letter-spacing: 1px; }
+    /* BARRA DO MEIO COM O BOTÃO TRIÂNGULO AO LADO DA CONTAGEM */
+    .counter-bar { display: flex; justify-content: flex-end; align-items: center; padding: 0 4px; gap: 8px; height: 20px; }
+    
+    .sort-icon-btn {
+      background: transparent; color: #a0aec0; border: none; font-size: 0.9rem;
+      cursor: pointer; padding: 0; display: flex; align-items: center;
+      justify-content: center; transition: color 0.2s ease, transform 0.2s ease; outline: none;
+    }
+    
+    .sort-icon-btn:hover, .sort-icon-btn:focus, .sort-icon-btn.focused {
+      color: #f39c12 !important; background: transparent !important;
+      border: none !important; box-shadow: none !important; transform: scale(1.25);
+    }
+
+    .card-counter { font-size: 0.85rem; font-weight: 900; color: #f39c12; background: transparent; padding: 0; letter-spacing: 1px; }
 
     /* SEÇÃO INFERIOR DO CATÁLOGO */
     .catalog-section { height: 185px; min-height: 185px; width: 100%; overflow: hidden; flex-shrink: 0; touch-action: none; }
-    
-    /* ALTERAÇÃO AQUI: Alinhamento à esquerda com gap de 12px entre os cards */
     .card-row { display: flex; height: 100%; width: 100%; justify-content: flex-start; align-items: flex-end; gap: 12px; }
 
-    /* ========================================================
-       AJUSTE DE DIMENSÕES: 7 CARDS PROPORCIONAIS DENTRO DA TELA
-       ======================================================== */
     .card {
       width: 122px !important;
       min-width: 122px !important;
@@ -142,7 +150,6 @@
 
     .card.card-aspect-sets { width: 170px !important; min-width: 170px !important; }
 
-    /* Área da Foto Superior */
     .card-top-photo {
       width: 100% !important;
       height: 137px !important;
@@ -159,7 +166,6 @@
       object-fit: contain !important;
     }
 
-    /* Barra Colorida Inferior */
     .card-bottom-bar {
       width: 100% !important;
       height: 48px !important;
@@ -171,7 +177,6 @@
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
     }
 
-    /* Nome da Marca */
     .card-bar-title {
       font-family: "Helvetica Now Display", "Helvetica Neue", Helvetica, Arial, sans-serif !important;
       font-size: 0.75rem !important;
@@ -193,7 +198,6 @@
       margin-bottom: 1px !important;
     }
 
-    /* Nome do País e Bandeira */
     .card-bar-country {
       display: flex !important;
       align-items: center !important;
@@ -215,7 +219,6 @@
       flex-shrink: 0 !important;
     }
 
-    /* Badge de Volume */
     .card-bar-vol {
       background: rgba(0, 0, 0, 0.45) !important;
       color: #ffffff !important;
@@ -228,7 +231,6 @@
       flex-shrink: 0 !important;
     }
 
-    /* Borda Laranja de Seleção */
     .card.focused, .card:hover { 
       border: 2px solid #f39c12 !important; 
       box-shadow: 0 0 8px rgba(243, 156, 18, 0.4) !important; 
@@ -303,7 +305,10 @@
         </div>
       </section>
 
-      <div class="counter-bar"><div class="card-counter" id="cardCounter">0/0</div></div>
+      <div class="counter-bar">
+        <button class="sort-icon-btn" id="sortOrderBtn" onclick="toggleSortOrder()" tabindex="0" title="Alternar Ordenação">▼</button>
+        <div class="card-counter" id="cardCounter">0/0</div>
+      </div>
 
       <section class="catalog-section" id="catalogSection">
         <div class="card-row" id="cardRow"></div>
@@ -333,6 +338,7 @@
   let currentFiltered = [];
   let zoomGallery = [];
   let currentZoomIndex = 0;
+  let sortNewestFirst = true; // Define se é do maior para o menor
   
   let currentTab = 'home';
   let cardsPerRow = 7;
@@ -359,8 +365,7 @@
     'therezopolis': '#1b382b',
     'wienbier': '#33261d',
     'faxe': '#3a0000',
-    'zlaten dab': '#b38b00',
-    'quilmes': '#4A80B5'
+    'zlaten dab': '#b38b00'
   };
 
   let zoomLevel = 1.0; 
@@ -379,7 +384,6 @@
     return url;
   }
 
-  /* Função para capitalizar (Apenas 1ª letra maiúscula) */
   function formatCapitalizedText(str) {
     if (!str) return '';
     return String(str)
@@ -502,6 +506,22 @@
     focusCardSafely(0);
   }
 
+  /* FUNÇÃO DE INVERTER ORDENAÇÃO */
+  function toggleSortOrder() {
+    sortNewestFirst = !sortNewestFirst;
+    const sortBtn = document.getElementById("sortOrderBtn");
+    if (sortNewestFirst) {
+      sortBtn.innerText = "▼";
+      sortBtn.title = "Ordenação: Maior para Menor (Mais Novos)";
+    } else {
+      sortBtn.innerText = "▲";
+      sortBtn.title = "Ordenação: Menor para Maior (Mais Antigos)";
+    }
+
+    filterCatalog(document.getElementById("menuSearchInput").value);
+    focusCardSafely(0);
+  }
+
   function processTabChange() {
     const heroPhotos = document.getElementById("heroPhotos");
     const labelCountry = document.getElementById("labelCountry");
@@ -526,8 +546,9 @@
   }
 
   function getBaseListForCurrentTab() {
+    let list = [];
     if (currentTab === 'home') {
-      return canCatalog.filter(can => {
+      list = canCatalog.filter(can => {
         const val = can.isSet !== undefined ? can.isSet : can.isSet;
         return !val || String(val).toLowerCase() === "false";
       });
@@ -544,20 +565,25 @@
           countryMap.set(String(countryVal).toLowerCase(), can);
         }
       });
-      return Array.from(countryMap.values()).sort((a,b) => String(a.country || a.Pais).localeCompare(String(b.country || b.Pais)));
+      list = Array.from(countryMap.values()).sort((a,b) => String(a.country || a.Pais).localeCompare(String(b.country || b.Pais)));
     } else if (currentTab === 'sets') {
-      return canCatalog.filter(can => {
+      list = canCatalog.filter(can => {
         const val = can.isSet;
         return val === true || String(val).toLowerCase() === "true";
       });
     }
-    return [];
+
+    if (sortNewestFirst && currentTab !== 'ococ') {
+      return [...list].reverse();
+    }
+    return list;
   }
 
   function clearAllCardFocus() {
     document.querySelectorAll(".card").forEach(c => {
       c.classList.remove("focused");
     });
+    document.getElementById("sortOrderBtn").classList.remove("focused");
   }
 
   function focusCardSafely(targetIndex) {
@@ -799,7 +825,7 @@
       card.dataset.globalIndex = globalIndex;
       
       card.onmouseenter = () => {
-        document.querySelectorAll(".card").forEach(c => c.classList.remove("focused"));
+        clearAllCardFocus();
         card.classList.add("focused");
         activeLocalIndex = localIndex;
         updateHeroPanel(can, globalIndex);
@@ -807,7 +833,7 @@
 
       card.onfocus = () => {
         if (document.getElementById("zoomModal").classList.contains("active") || document.getElementById("exitModal").classList.contains("active")) return;
-        document.querySelectorAll(".card").forEach(c => c.classList.remove("focused"));
+        clearAllCardFocus();
         card.classList.add("focused");
         activeLocalIndex = localIndex;
         updateHeroPanel(can, globalIndex);
@@ -852,11 +878,10 @@
           }
         } else if (e.key === "ArrowUp") {
           e.preventDefault();
-          if (currentPage > 0) {
-            currentPage--;
-            renderApp();
-            focusCardSafely(activeLocalIndex);
-          }
+          clearAllCardFocus();
+          const sortBtn = document.getElementById("sortOrderBtn");
+          sortBtn.classList.add("focused");
+          sortBtn.focus();
         }
       };
 
@@ -1102,6 +1127,21 @@
       }
     }
   }
+
+  /* NAVEGAÇÃO DO BOTÃO DE ORDENAÇÃO VIA TECLADO */
+  const sortBtnElem = document.getElementById("sortOrderBtn");
+  sortBtnElem.onkeydown = (e) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      toggleSortOrder();
+    } else if (e.key === "ArrowDown") {
+      e.preventDefault();
+      focusCardSafely(0);
+    } else if (e.key === "ArrowLeft") {
+      e.preventDefault();
+      openMenu();
+    }
+  };
 
   /* TECLADO E CONTROLE REMOTO */
   document.addEventListener("keydown", (e) => {
