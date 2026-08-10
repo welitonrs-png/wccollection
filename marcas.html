@@ -508,32 +508,38 @@
   }
 
   function getBaseListForCurrentTab() {
-    let list = [];
-    if (currentTab === 'home') {
-      list = canCatalog.filter(can => {
-        const val = can.isSet !== undefined ? can.isSet : can.isSet;
-        return !val || String(val).toLowerCase() === "false";
-      });
-    } else if (currentTab === 'ococ') {
-      const countryMap = new Map();
-      canCatalog.forEach(can => {
-        const countryVal = can.brewery || can.Cervejaria;
-        const isOcocVal = can.isOcoc;
-        const isSetVal = can.isSet;
+  let list = [];
+  if (currentTab === 'home') {
+    list = canCatalog.filter(can => {
+      const val = can.isSet !== undefined ? can.isSet : can.isSet;
+      return !val || String(val).toLowerCase() === "false";
+    });
+  } else if (currentTab === 'ococ') {
+    const countryMap = new Map();
+    canCatalog.forEach(can => {
+      const countryVal = can.brewery || can.Cervejaria;
+      const isOcocVal = can.isOcoc;
+      const isSetVal = can.isSet;
 
-        if ((!isSetVal || String(isSetVal).toLowerCase() === "false") && 
-            (isOcocVal === true || String(isOcocVal).toLowerCase() === "true") && 
-            countryVal && !countryMap.has(String(countryVal).toLowerCase())) {
-          countryMap.set(String(countryVal).toLowerCase(), can);
-        }
-      });
-      list = Array.from(countryMap.values()).sort((a,b) => String(a.country || a.Pais).localeCompare(String(b.country || b.Pais)));
-    } else if (currentTab === 'sets') {
-      list = canCatalog.filter(can => {
-        const val = can.isSet;
-        return val === true || String(val).toLowerCase() === "true";
-      });
-    }
+      if ((!isSetVal || String(isSetVal).toLowerCase() === "false") && 
+          (isOcocVal === true || String(isOcocVal).toLowerCase() === "true") && 
+          countryVal && !countryMap.has(String(countryVal).toLowerCase())) {
+        countryMap.set(String(countryVal).toLowerCase(), can);
+      }
+    });
+    list = Array.from(countryMap.values()).sort((a,b) => String(a.country || a.Pais).localeCompare(String(b.country || b.Pais)));
+  } else if (currentTab === 'sets') {
+    list = canCatalog.filter(can => {
+      const val = can.isSet;
+      return val === true || String(val).toLowerCase() === "true";
+    });
+  }
+
+  if (sortNewestFirst && currentTab !== 'ococ') {
+    return [...list].reverse();
+  }
+  return list;
+}
 
     if (sortNewestFirst && currentTab !== 'ococ') {
       return [...list].reverse();
@@ -749,25 +755,29 @@
     updateCounter(0);
   }
 
-  function updateCounter(localIndex) {
-    const total = currentFiltered.length;
-    const globalIndex = currentPage * cardsPerPage + localIndex;
-    const currentNum = total > 0 ? (globalIndex + 1) : 0;
-    document.getElementById("cardCounter").innerText = `${currentNum}/${total}`;
-
-    // Atualiza galeria para Zoom
-    const currentCan = currentFiltered[globalIndex];
-    if (currentCan) {
-      let rawPhotos = [];
-      if (currentCan.images) rawPhotos = [currentCan.images.front, currentCan.images.left, currentCan.images.back, currentCan.images.right].filter(Boolean);
-      if (rawPhotos.length === 0) rawPhotos = [currentCan.ImgFront, currentCan.ImgLeft, currentCan.ImgBack, currentCan.ImgRight].filter(Boolean);
-      const logoUrl = currentCan.brandLogo || currentCan.BRAND_LOGO;
-      if (rawPhotos.length === 0 && logoUrl) rawPhotos.push(logoUrl);
-      zoomGallery = rawPhotos;
-    } else {
-      zoomGallery = [];
-    }
+function updateCounter(localIndex) {
+  const total = currentFiltered.length;
+  const globalIndex = currentPage * cardsPerPage + localIndex;
+  const currentNum = total > 0 ? (globalIndex + 1) : 0;
+  
+  const counterElem = document.getElementById("cardCounter");
+  if (counterElem) {
+    counterElem.innerText = `${currentNum}/${total}`;
   }
+
+  // Atualiza galeria para Zoom
+  const currentCan = currentFiltered[globalIndex];
+  if (currentCan) {
+    let rawPhotos = [];
+    if (currentCan.images) rawPhotos = [currentCan.images.front, currentCan.images.left, currentCan.images.back, currentCan.images.right].filter(Boolean);
+    if (rawPhotos.length === 0) rawPhotos = [currentCan.ImgFront, currentCan.ImgLeft, currentCan.ImgBack, currentCan.ImgRight].filter(Boolean);
+    const logoUrl = currentCan.brandLogo || currentCan.BRAND_LOGO;
+    if (rawPhotos.length === 0 && logoUrl) rawPhotos.push(logoUrl);
+    zoomGallery = rawPhotos;
+  } else {
+    zoomGallery = [];
+  }
+}
 
   /* RENDERIZAÇÃO DOS CARDS (2 LINHAS DE 7) */
   function renderApp() {
