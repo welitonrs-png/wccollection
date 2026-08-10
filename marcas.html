@@ -69,9 +69,9 @@
     }
     .main-area.pushed { transform: translateX(260px); }
 
-    /* PAINEL SUPERIOR: CAMPO DE BUSCA + FOTO DA MARCA NO CANTO SUPERIOR DIREITO */
+    /* PAINEL SUPERIOR */
     .hero-panel {
-      height: 185px; /* Altura exata de 1 card */
+      height: 185px;
       min-height: 185px;
       width: 100%;
       display: flex;
@@ -80,7 +80,7 @@
       gap: 20px;
     }
 
-    /* CAMPO DE BUSCA */
+    /* CAMPO DE BUSCA DA MARCA */
     .search-box-area {
       flex: 1;
       position: relative;
@@ -108,7 +108,7 @@
       box-shadow: 0 0 12px rgba(243, 156, 18, 0.5);
     }
 
-    /* SUGESTÕES DA BUSCA COLADAS ABAIXO */
+    /* LISTA DE SUGESTÕES DA BUSCA */
     .suggestions-list {
       position: absolute;
       top: 100%;
@@ -145,9 +145,9 @@
       font-weight: bold;
     }
 
-    /* FOTO DA MARCA NO CANTO SUPERIOR DIREITO (ALTURA DE 1 CARD E LARGURA PROPORCIONAL) */
+    /* LOGO DA MARCA SELECIONADA NO CANTO DIREITO */
     .hero-brand-logo-container {
-      height: 185px; /* Altura exata de 1 card */
+      height: 185px;
       width: auto;
       display: flex;
       justify-content: flex-end;
@@ -162,11 +162,11 @@
       filter: drop-shadow(0 4px 10px rgba(0,0,0,0.5));
     }
 
-    /* BARRA DE CONTADOR */
+    /* BARRA DE CONTADOR DE LATAS */
     .counter-bar { display: flex; justify-content: flex-end; align-items: center; padding: 0; gap: 14px; height: 20px; }
     .card-counter { font-size: 0.85rem; font-weight: 900; color: #f39c12; background: transparent; padding: 0; letter-spacing: 1px; }
 
-    /* SEÇÃO INFERIOR DO CATÁLOGO (2 LINHAS DE CARDS) */
+    /* SEÇÃO INFERIOR DO CATÁLOGO (2 LINHAS DE CARDS ALINHAS À ESQUERDA) */
     .catalog-section { 
       height: 382px; 
       min-height: 382px; 
@@ -175,31 +175,33 @@
       flex-shrink: 0; 
       touch-action: none; 
       display: flex; 
-      justify-content: center; 
+      justify-content: flex-start; 
     }
     
     .card-row { 
+      display: grid; 
+      grid-template-columns: repeat(7, 122px);
+      grid-template-rows: repeat(2, 185px);
+      gap: 12px;
+      height: 100%; 
+      width: 100%; 
+      justify-content: flex-start; 
+      align-content: space-between;
+    }
 
-/* SEÇÃO INFERIOR DO CATÁLOGO */
-.catalog-section { 
-  height: 185px; 
-  min-height: 185px; 
-  width: 100%; 
-  overflow: hidden; 
-  flex-shrink: 0; 
-  touch-action: none; 
-  display: flex; 
-  justify-content: flex-start; /* Alinha a linha inteira à esquerda */
-}
-
-.card-row { 
-  display: flex; 
-  height: 100%; 
-  width: 100%; 
-  justify-content: flex-start; /* Força os cards a ficarem colados/juntos à esquerda */
-  align-items: flex-end; 
-  gap: 12px; /* Mantém um espaçamento padronizado e fixo entre os cards */
-}
+    .card {
+      width: 122px !important;
+      min-width: 122px !important;
+      height: 185px !important;
+      background: #ffffff !important;
+      border-radius: 10px !important;
+      overflow: hidden !important;
+      display: flex !important;
+      flex-direction: column !important;
+      border: 2px solid transparent !important;
+      cursor: pointer !important;
+      flex-shrink: 0 !important;
+    }
 
     .card-top-photo {
       width: 100% !important;
@@ -261,7 +263,7 @@
       z-index: 10 !important; 
     }
 
-    /* MODAL DE ZOOM LIGHTBOX */
+    /* MODAL DE ZOOM */
     .zoom-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.95); z-index: 3000; display: none; justify-content: center; align-items: center; padding: 16px; overflow: hidden; }
     .zoom-modal.active { display: flex; }
     .zoom-modal img { max-width: 85vw; max-height: 85vh; object-fit: contain; border-radius: 6px; cursor: pointer; transition: transform 0.15s ease-out; transform-origin: center center; }
@@ -295,7 +297,6 @@
     </nav>
 
     <main class="main-area" id="mainArea" onclick="handleMainAreaClick()">
-      <!-- TOPO COM CAMPO DE BUSCA E FOTO DA MARCA NO CANTO DIREITO -->
       <section class="hero-panel">
         <div class="search-box-area">
           <input type="text" id="brandSearchInput" class="brand-search-input" placeholder="DIGITE A MARCA..." autocomplete="off">
@@ -343,7 +344,7 @@
 
   const COLS_PER_ROW = 7;
   const ROWS_PER_PAGE = 2;
-  const cardsPerPage = COLS_PER_ROW * ROWS_PER_PAGE; // 14 cards por página
+  const cardsPerPage = COLS_PER_ROW * ROWS_PER_PAGE;
 
   let currentPage = 0;
   let activeLocalIndex = 0;
@@ -400,15 +401,12 @@
     });
   }
 
-  /* CARREGA DADOS DA API */
   async function fetchCatalogFromSheet() {
     try {
       const response = await fetch(API_URL + "?nocache=" + new Date().getTime());
       canCatalog = await response.json();
-      
       buildBrandLogoMap(canCatalog);
       allBrands = [...new Set(canCatalog.map(c => c.brewery || c.Cervejaria).filter(Boolean))].sort();
-      
       hideLoadingScreen();
       document.getElementById("brandSearchInput").focus();
     } catch (err) {
@@ -417,7 +415,6 @@
     }
   }
 
-  /* PESQUISA AUTOMÁTICA DA MARCA */
   const searchInput = document.getElementById("brandSearchInput");
   const suggestionsList = document.getElementById("suggestionsList");
 
@@ -452,14 +449,12 @@
     suggestionsList.classList.remove("active");
     
     currentFiltered = canCatalog.filter(c => String(c.brewery || c.Cervejaria).toLowerCase().trim() === brandName.toLowerCase().trim());
-    
     currentPage = 0;
     activeLocalIndex = 0;
     renderApp();
     if (currentFiltered.length > 0) focusCardSafely(0);
   }
 
-  /* TECLADO / CONTROLE NA BUSCA */
   searchInput.addEventListener("keydown", (e) => {
     const items = suggestionsList.querySelectorAll(".suggestion-item");
 
@@ -494,22 +489,15 @@
     }
   }
 
-  /* RENDERIZA OS CARDS NO GRID */
   function renderApp() {
     const row = document.getElementById("cardRow");
     row.innerHTML = "";
 
-    // Atualiza a Logo no Canto Superior Direito
     const logoContainer = document.getElementById("heroBrandLogo");
     if (currentFiltered.length > 0) {
       const brandKey = String(currentFiltered[0].brewery || currentFiltered[0].Cervejaria || "").toLowerCase().trim();
       const logoUrl = currentFiltered[0].brandLogo || currentFiltered[0].BRAND_LOGO || brandLogoMap.get(brandKey);
-      
-      if (logoUrl) {
-        logoContainer.innerHTML = `<img src="${getOptimizedImageUrl(logoUrl, 600)}" alt="LOGO DA MARCA">`;
-      } else {
-        logoContainer.innerHTML = "";
-      }
+      logoContainer.innerHTML = logoUrl ? `<img src="${getOptimizedImageUrl(logoUrl, 600)}" alt="LOGO DA MARCA">` : "";
     } else {
       logoContainer.innerHTML = "";
     }
@@ -520,13 +508,11 @@
 
     pageItems.forEach((can, localIndex) => {
       const globalIndex = startIndex + localIndex;
-
       const rawImg = can.ImgCover || can.cover || can.ImgFront || can.front;
       const frontImg = getOptimizedImageUrl(rawImg, 400);
 
       const brandRaw = can.brewery || can.Cervejaria || can.name || "Cerveja";
       const brandFormatted = formatCapitalizedText(brandRaw);
-
       const countryRaw = can.country || can.Pais || "";
       const countryFormatted = formatCapitalizedText(countryRaw);
       const volumeText = can.volume || can.Volume || "";
@@ -607,7 +593,6 @@
     }, 50);
   }
 
-  /* MENU LATERAL */
   function openMenu() {
     document.getElementById("sidebarDrawer").classList.add("open");
     document.getElementById("mainArea").classList.add("pushed");
@@ -617,20 +602,12 @@
     document.getElementById("sidebarDrawer").classList.remove("open");
     document.getElementById("mainArea").classList.remove("pushed");
   }
-  function toggleMenuMobile(e) {
-    if(e) e.stopPropagation();
-    const drawer = document.getElementById("sidebarDrawer");
-    drawer.classList.contains("open") ? closeMenu() : openMenu();
-  }
-  function handleMainAreaClick() {
-    if (document.getElementById("sidebarDrawer").classList.contains("open")) closeMenu();
-  }
+  function toggleMenuMobile(e) { if(e) e.stopPropagation(); const drawer = document.getElementById("sidebarDrawer"); drawer.classList.contains("open") ? closeMenu() : openMenu(); }
+  function handleMainAreaClick() { if (document.getElementById("sidebarDrawer").classList.contains("open")) closeMenu(); }
 
-  /* LIGHTBOX ZOOM */
   function openZoomModal(can) {
     let photos = [can.ImgFront, can.ImgLeft, can.ImgBack, can.ImgRight].filter(Boolean);
     if (photos.length === 0) return;
-    
     zoomGallery = photos;
     currentZoomIndex = 0;
     resetZoomTransform();
@@ -639,20 +616,9 @@
   }
 
   function resetZoomTransform() { zoomState = 0; zoomLevel = 1.0; panX = 0; panY = 0; applyZoomTransform(); }
-  function applyZoomTransform() {
-    const imgElem = document.getElementById("zoomImage");
-    if (imgElem) imgElem.style.transform = `translate(${panX}px, ${panY}px) scale(${zoomLevel})`;
-  }
-  function toggleZoomStep() {
-    zoomState = (zoomState + 1) % 4;
-    zoomLevel = zoomState === 0 ? 1.0 : (zoomState === 2 ? 3.0 : 1.5);
-    applyZoomTransform();
-  }
-  function closeZoomModal() {
-    resetZoomTransform();
-    document.getElementById("zoomModal").classList.remove("active");
-    focusCardSafely(activeLocalIndex);
-  }
+  function applyZoomTransform() { const imgElem = document.getElementById("zoomImage"); if (imgElem) imgElem.style.transform = `translate(${panX}px, ${panY}px) scale(${zoomLevel})`; }
+  function toggleZoomStep() { zoomState = (zoomState + 1) % 4; zoomLevel = zoomState === 0 ? 1.0 : (zoomState === 2 ? 3.0 : 1.5); applyZoomTransform(); }
+  function closeZoomModal() { resetZoomTransform(); document.getElementById("zoomModal").classList.remove("active"); focusCardSafely(activeLocalIndex); }
 
   function openExitModal() { closeMenu(); document.getElementById("exitModal").classList.add("active"); document.getElementById("exitBtnNo").focus(); }
   function closeExitModal() { document.getElementById("exitModal").classList.remove("active"); focusCardSafely(activeLocalIndex); }
