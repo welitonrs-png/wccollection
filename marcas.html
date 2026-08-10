@@ -257,19 +257,7 @@
 
     <nav class="sidebar-drawer" id="sidebarDrawer">
       <img src="logo.png" alt="Logo" class="sidebar-logo">
-      <button class="cat-btn" id="menuBtnHome" onclick="switchTab('home')" tabindex="0">HOME / CATÁLOGO</button>
-      
-      <button class="cat-btn" id="menuBtnSearch" onclick="toggleSearchInline()" tabindex="0">PESQUISAR</button>
-      <div class="inline-panel-container" id="searchInlineContainer">
-        <input type="text" id="menuSearchInput" class="menu-search-box" placeholder="DIGITE PARA BUSCAR..." readonly tabindex="-1">
-        <div class="vk-container" id="vkContainer"></div>
-      </div>
-
-      <button class="cat-btn" id="menuBtnBrands" onclick="toggleBrandInline()" tabindex="0">MARCAS</button>
-      <div class="inline-panel-container" id="brandInlineList"></div>
-
-      <button class="cat-btn" id="menuBtnOcoc" onclick="switchTab('ococ')" tabindex="0">OCOC (PAÍSES)</button>
-      <button class="cat-btn" id="menuBtnSets" onclick="switchTab('sets')" tabindex="0">SETS & PACKS</button>
+<button class="cat-btn" id="menuBtnHome" onclick="window.location.href='index.html'" tabindex="0">HOME / CATÁLOGO</button>
     </nav>
 
     <main class="main-area" id="mainArea" onclick="handleMainAreaClick()">
