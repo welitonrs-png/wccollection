@@ -98,8 +98,79 @@
     }
     .main-area.pushed { transform: translateX(260px); }
 
-    /* ÁREA SUPERIOR LIMPA PARA NOVO LAYOUT */
-    .hero-panel { flex: 1; min-height: 0; background: transparent; border-radius: 12px; display: flex; padding: 8px 12px; position: relative; }
+    /* ÁREA SUPERIOR COM BUSCA E LOGO */
+    .hero-panel { 
+      flex: 1; min-height: 0; background: transparent; border-radius: 12px; 
+      display: flex; padding: 8px 12px; position: relative; align-items: flex-start; justify-content: flex-start;
+    }
+
+    .brand-search-wrapper {
+      position: relative;
+      width: 320px;
+      max-width: 60%;
+      z-index: 30;
+    }
+
+    .brand-search-input {
+      width: 100%;
+      padding: 10px 16px;
+      background: #11141d;
+      border: 2px solid #333d52;
+      border-radius: 8px;
+      color: #f39c12;
+      font-size: 0.95rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .brand-search-input:focus, .brand-search-input.focused {
+      border-color: #f39c12;
+      box-shadow: 0 0 10px rgba(243, 156, 18, 0.3);
+      outline: none;
+    }
+
+    .autocomplete-dropdown {
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      width: 100%;
+      max-height: 180px;
+      background: rgba(17, 20, 29, 0.98);
+      border: 1px solid #333d52;
+      border-radius: 8px;
+      overflow-y: auto;
+      display: none;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+      z-index: 100;
+    }
+
+    .autocomplete-dropdown.active {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .autocomplete-item {
+      padding: 10px 14px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #a0aec0;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background 0.15s ease, color 0.15s ease;
+    }
+
+    .autocomplete-item:hover, .autocomplete-item.active {
+      background: #f39c12;
+      color: #1a1e29;
+    }
+
+    .hero-brand-logo-container {
+      position: absolute; top: 8px; right: 20px; width: 180px; height: 80px;
+      display: flex; justify-content: flex-end; align-items: flex-start; z-index: 20; pointer-events: none;
+    }
+    .hero-brand-logo-container img { max-width: 100%; max-height: 100%; object-fit: contain; }
 
     /* BARRA DO MEIO COM O BOTÃO TRIÂNGULO AO LADO DA CONTAGEM */
     .counter-bar { display: flex; justify-content: flex-end; align-items: center; padding: 0 4px; gap: 8px; height: 20px; }
@@ -267,12 +338,22 @@
         <div class="vk-container" id="vkContainer"></div>
       </div>
 
+      <button class="cat-btn" id="menuBtnBrands" onclick="toggleBrandInline()" tabindex="0">MARCAS</button>
+      <div class="inline-panel-container" id="brandInlineList"></div>
 
+      <button class="cat-btn" id="menuBtnOcoc" onclick="switchTab('ococ')" tabindex="0">OCOC (PAÍSES)</button>
+      <button class="cat-btn" id="menuBtnSets" onclick="switchTab('sets')" tabindex="0">SETS & PACKS</button>
     </nav>
 
     <main class="main-area" id="mainArea" onclick="handleMainAreaClick()">
-      <!-- ÁREA SUPERIOR LIMPA -->
-      <section class="hero-panel" id="heroPanel"></section>
+      <!-- ÁREA SUPERIOR COM CAMPO DE BUSCA DE MARCAS E LOGO DEDICADO -->
+      <section class="hero-panel" id="heroPanel">
+        <div class="brand-search-wrapper">
+          <input type="text" id="topBrandInput" class="brand-search-input" placeholder="BUSCAR MARCA..." autocomplete="off">
+          <div class="autocomplete-dropdown" id="brandAutocompleteList"></div>
+        </div>
+        <div class="hero-brand-logo-container" id="heroBrandLogo"></div>
+      </section>
 
       <div class="counter-bar">
         <button class="sort-icon-btn" id="sortOrderBtn" onclick="toggleSortOrder()" tabindex="0" title="Alternar Ordenação">▼</button>
@@ -316,6 +397,10 @@
   let activeLocalIndex = 0;
   let lastSelectedMenuId = 'menuBtnHome'; 
   let lastSelectedBrandElem = null;
+
+  /* AUTOCOMPLETE VARIÁVEIS */
+  let registeredBrands = [];
+  let activeAutocompleteIndex = -1;
 
   /* MAPA DE CORES AUTOMÁTICO DAS MARCAS */
   const BRAND_COLORS = {
@@ -447,6 +532,7 @@
       const freshData = await response.json();
       
       canCatalog = freshData;
+      extractRegisteredBrands();
       processTabChange();
 
       document.getElementById("loadingText").innerText = "PREPARANDO IMAGENS...";
@@ -458,6 +544,18 @@
       hideLoadingScreen();
       focusCardSafely(0);
     }
+  }
+
+  /* EXTRAI MARCAS ÚNICAS DO CATÁLOGO */
+  function extractRegisteredBrands() {
+    const brandSet = new Set();
+    canCatalog.forEach(can => {
+      const b = can.brewery || can.Cervejaria;
+      if (b && String(b).trim() !== "") {
+        brandSet.add(String(b).trim());
+      }
+    });
+    registeredBrands = Array.from(brandSet).sort((a, b) => a.localeCompare(b));
   }
 
   function switchTab(tabName) {
@@ -487,14 +585,16 @@
       sortBtn.title = "Ordenação: Menor para Maior (Mais Antigos)";
     }
 
-    filterCatalog(document.getElementById("menuSearchInput").value);
+    const currentSearchVal = document.getElementById("topBrandInput").value;
+    filterCatalogByBrand(currentSearchVal);
     focusCardSafely(0);
   }
 
   function processTabChange() {
     buildBrandList();
     buildVirtualKeyboard();
-    filterCatalog(document.getElementById("menuSearchInput").value);
+    const currentSearchVal = document.getElementById("topBrandInput").value;
+    filterCatalogByBrand(currentSearchVal);
   }
 
   function getBaseListForCurrentTab() {
@@ -601,6 +701,7 @@
     if (document.getElementById("sidebarDrawer").classList.contains("open")) {
       closeMenu();
     }
+    closeAutocomplete();
   }
 
   function toggleSearchInline() {
@@ -661,7 +762,7 @@
     else if (key === 'DEL') input.value = input.value.slice(0, -1);
     else if (key === 'LIMPAR') input.value = '';
     else input.value += key;
-    filterCatalog(input.value);
+    filterCatalogByBrand(input.value);
   }
 
   function buildBrandList() {
@@ -681,7 +782,8 @@
       e.stopPropagation();
       lastSelectedMenuId = 'menuBtnBrands';
       lastSelectedBrandElem = allBtn;
-      filterCatalog(""); 
+      document.getElementById("topBrandInput").value = "";
+      filterCatalogByBrand(""); 
       focusCardSafely(0); 
     };
 
@@ -702,7 +804,8 @@
         e.stopPropagation();
         lastSelectedMenuId = 'menuBtnBrands';
         lastSelectedBrandElem = btn;
-        filterCatalog(b); 
+        document.getElementById("topBrandInput").value = b;
+        filterCatalogByBrand(b); 
         focusCardSafely(0); 
       };
 
@@ -717,26 +820,140 @@
     });
   }
 
-  function filterCatalog(query) {
+  /* FILTRA CATÁLOGO SOMENTE PELA MARCA E ATUALIZA LOGO */
+  function filterCatalogByBrand(query) {
     const val = query.toLowerCase().trim();
     const baseList = getBaseListForCurrentTab();
 
     currentFiltered = baseList.filter(can => {
       if (!val) return true;
-      return [
-        can.name || can.Nome,
-        can.brewery || can.Cervejaria,
-        can.country || can.Pais,
-        can.volume || can.Volume,
-        can.year || can.Ano,
-        can.barcode || can.Barcode
-      ].map(v => String(v || "").toLowerCase()).join(" ").includes(val);
+      const b = String(can.brewery || can.Cervejaria || "").toLowerCase();
+      return b.includes(val);
     });
 
     currentPage = 0;
     activeLocalIndex = 0;
     renderApp();
     updateCounter(0);
+    updateBrandLogoHeader(query);
+  }
+
+  /* ATUALIZA O LOGO DA MARCA NO CANTO SUPERIOR DIREITO */
+  function updateBrandLogoHeader(brandQuery) {
+    const logoContainer = document.getElementById("heroBrandLogo");
+    if (!brandQuery || String(brandQuery).trim() === "") {
+      logoContainer.innerHTML = "";
+      return;
+    }
+
+    const queryLower = String(brandQuery).toLowerCase().trim();
+    const matchCan = canCatalog.find(c => {
+      const b = String(c.brewery || c.Cervejaria || "").toLowerCase().trim();
+      return b === queryLower || b.includes(queryLower);
+    });
+
+    if (matchCan) {
+      const logoUrl = matchCan.brandLogo || matchCan.BRAND_LOGO;
+      if (logoUrl && String(logoUrl).trim() !== "") {
+        logoContainer.innerHTML = `<img src="${getOptimizedImageUrl(logoUrl, 400)}" alt="LOGO DA MARCA">`;
+        return;
+      }
+    }
+    logoContainer.innerHTML = "";
+  }
+
+  /* LÓGICA DE AUTOCOMPLETE DO CAMPO SUPERIOR */
+  const topBrandInput = document.getElementById("topBrandInput");
+  const brandAutocompleteList = document.getElementById("brandAutocompleteList");
+
+  topBrandInput.addEventListener("input", (e) => {
+    const val = e.target.value.toLowerCase().trim();
+    activeAutocompleteIndex = -1;
+
+    if (!val) {
+      closeAutocomplete();
+      filterCatalogByBrand("");
+      return;
+    }
+
+    const matches = registeredBrands.filter(b => b.toLowerCase().includes(val));
+    renderAutocompleteDropdown(matches);
+    filterCatalogByBrand(val);
+  });
+
+  topBrandInput.addEventListener("keydown", (e) => {
+    const items = brandAutocompleteList.querySelectorAll(".autocomplete-item");
+
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      if (items.length > 0) {
+        activeAutocompleteIndex = (activeAutocompleteIndex + 1) % items.length;
+        updateAutocompleteFocus(items);
+      } else {
+        focusCardSafely(0);
+      }
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      if (items.length > 0 && activeAutocompleteIndex > 0) {
+        activeAutocompleteIndex--;
+        updateAutocompleteFocus(items);
+      }
+    } else if (e.key === "Enter") {
+      e.preventDefault();
+      if (activeAutocompleteIndex >= 0 && items[activeAutocompleteIndex]) {
+        selectBrandFromAutocomplete(items[activeAutocompleteIndex].innerText);
+      } else {
+        closeAutocomplete();
+        focusCardSafely(0);
+      }
+    } else if (e.key === "Escape") {
+      closeAutocomplete();
+    }
+  });
+
+  function renderAutocompleteDropdown(matches) {
+    brandAutocompleteList.innerHTML = "";
+    if (matches.length === 0) {
+      closeAutocomplete();
+      return;
+    }
+
+    matches.forEach((brand, idx) => {
+      const item = document.createElement("div");
+      item.className = "autocomplete-item";
+      item.innerText = brand.toUpperCase();
+      item.onclick = (e) => {
+        e.stopPropagation();
+        selectBrandFromAutocomplete(brand);
+      };
+      brandAutocompleteList.appendChild(item);
+    });
+
+    brandAutocompleteList.classList.add("active");
+  }
+
+  function updateAutocompleteFocus(items) {
+    items.forEach((item, idx) => {
+      if (idx === activeAutocompleteIndex) {
+        item.classList.add("active");
+        item.scrollIntoView({ block: "nearest" });
+      } else {
+        item.classList.remove("active");
+      }
+    });
+  }
+
+  function selectBrandFromAutocomplete(brandName) {
+    topBrandInput.value = brandName.toUpperCase();
+    closeAutocomplete();
+    filterCatalogByBrand(brandName);
+    focusCardSafely(0);
+  }
+
+  function closeAutocomplete() {
+    brandAutocompleteList.innerHTML = "";
+    brandAutocompleteList.classList.remove("active");
+    activeAutocompleteIndex = -1;
   }
 
   function updateCounter(localIndex) {
@@ -758,6 +975,11 @@
       const logoUrl = currentCan.brandLogo || currentCan.BRAND_LOGO;
       if (rawPhotos.length === 0 && logoUrl) rawPhotos.push(logoUrl);
       zoomGallery = rawPhotos;
+
+      // Se a busca do topo estiver vazia, exibe o logo do card em destaque
+      if (!topBrandInput.value.trim() && logoUrl) {
+        document.getElementById("heroBrandLogo").innerHTML = `<img src="${getOptimizedImageUrl(logoUrl, 400)}" alt="LOGO DA MARCA">`;
+      }
     } else {
       zoomGallery = [];
     }
@@ -867,11 +1089,10 @@
             const target = cardsPerRow + localIndex;
             focusCardSafely(target);
           } else {
-            // Topo da primeira página -> vai para o botão de ordenação
+            // Topo da primeira página -> vai para o campo de busca
             clearAllCardFocus();
-            const sortBtn = document.getElementById("sortOrderBtn");
-            sortBtn.classList.add("focused");
-            sortBtn.focus();
+            topBrandInput.focus();
+            topBrandInput.classList.add("focused");
           }
         }
       };
