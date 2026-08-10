@@ -134,19 +134,26 @@
     .catalog-section { height: 185px; min-height: 185px; width: 100%; overflow: hidden; flex-shrink: 0; touch-action: none; display: flex; justify-content: center; }
     .card-row { display: flex; height: 100%; width: 100%; justify-content: space-between; align-items: flex-end; }
 
-    .card {
-      width: 122px !important;
-      min-width: 122px !important;
-      height: 185px !important;
-      background: #ffffff !important;
-      border-radius: 10px !important;
-      overflow: hidden !important;
-      display: flex !important;
-      flex-direction: column !important;
-      border: 2px solid transparent !important;
-      cursor: pointer !important;
-      flex-shrink: 0 !important;
-    }
+/* SEÇÃO INFERIOR DO CATÁLOGO */
+.catalog-section { 
+  height: 185px; 
+  min-height: 185px; 
+  width: 100%; 
+  overflow: hidden; 
+  flex-shrink: 0; 
+  touch-action: none; 
+  display: flex; 
+  justify-content: flex-start; /* Alinha a linha inteira à esquerda */
+}
+
+.card-row { 
+  display: flex; 
+  height: 100%; 
+  width: 100%; 
+  justify-content: flex-start; /* Força os cards a ficarem colados/juntos à esquerda */
+  align-items: flex-end; 
+  gap: 12px; /* Mantém um espaçamento padronizado e fixo entre os cards */
+}
 
     .card.card-aspect-sets { width: 170px !important; min-width: 170px !important; }
 
