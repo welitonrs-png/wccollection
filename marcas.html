@@ -31,7 +31,7 @@
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.9; } 50% { transform: scale(1.05); opacity: 1; } }
 
-    /* ESTRUTURA DO GRID CONFORME O DESENHO */
+    /* ESTRUTURA DO GRID */
     .main-grid {
       display: grid;
       grid-template-columns: repeat(7, 1fr);
@@ -42,32 +42,34 @@
       overflow-y: auto;
     }
 
-    /* CAMPO DIGITE A MARCA (VERDE DO ESQUEMA) */
+    /* AREA DA CAMPO DE BUSCA (COR DE FUNDO PADRÃO) */
     .search-box-area {
       grid-column: span 3;
-      position: relative;
+      position: relative; /* Mantém as sugestões coladas diretamente nele */
+      height: 50px;
     }
 
     .brand-search-input {
       width: 100%;
+      height: 100%;
       padding: 10px 16px;
-      background: #a6f77b; /* Cor Verde conforme desenho */
-      border: 2px solid #82d656;
-      border-radius: 12px;
-      color: #1a1f2c;
+      background: #11141d;
+      border: 2px solid #333d52;
+      border-radius: 10px;
+      color: #ffffff;
       font-size: 1.1rem;
-      font-weight: 900;
+      font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 1px;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
     }
 
     .brand-search-input:focus {
-      background: #ffffff;
       border-color: #f39c12;
-      box-shadow: 0 0 12px rgba(243, 156, 18, 0.6);
+      box-shadow: 0 0 10px rgba(243, 156, 18, 0.4);
     }
 
-    /* LISTA DE SUGESTÕES DA BUSCA */
+    /* LISTA DE SUGESTÕES COLADA LOGO ABAIXO DA BUSCA */
     .suggestions-list {
       position: absolute;
       top: 100%;
@@ -75,33 +77,41 @@
       width: 100%;
       background: #161b26;
       border: 2px solid #f39c12;
-      border-radius: 0 0 10px 10px;
-      max-height: 220px;
+      border-top: none;
+      border-bottom-left-radius: 10px;
+      border-bottom-right-radius: 10px;
+      max-height: 200px;
       overflow-y: auto;
       display: none;
       z-index: 1000;
       box-shadow: 0 10px 25px rgba(0,0,0,0.8);
+      margin-top: 2px;
     }
+
     .suggestions-list.active { display: block; }
+
     .suggestion-item {
-      padding: 10px 16px;
+      padding: 12px 16px;
       color: #dddddd;
       font-size: 0.95rem;
       font-weight: 600;
       text-transform: uppercase;
       cursor: pointer;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
     }
+
     .suggestion-item.focused, .suggestion-item:hover {
       background: #f39c12;
       color: #1a1f2c;
       font-weight: bold;
     }
 
-    /* QUADRO FOTO DA MARCA (VERMELHO DO ESQUEMA) */
+    /* QUADRO DO LOGO DA MARCA (COR DE FUNDO ESCURA DO TEMA) */
     .brand-hero-display {
       grid-column: span 4;
       grid-row: span 2;
-      background: #ff3b30; /* Cor Vermelha conforme desenho */
+      background: #11141d;
+      border: 1px solid #2a3447;
       border-radius: 12px;
       display: flex;
       justify-content: center;
@@ -114,20 +124,22 @@
       max-width: 100%;
       max-height: 100%;
       object-fit: contain;
-      filter: drop-shadow(0 6px 12px rgba(0,0,0,0.4));
+      filter: drop-shadow(0 4px 10px rgba(0,0,0,0.5));
     }
 
     .brand-hero-placeholder {
-      color: #ffffff;
-      font-size: 1.5rem;
-      font-weight: 900;
+      color: #4a5568;
+      font-size: 1.2rem;
+      font-weight: 800;
       text-transform: uppercase;
       letter-spacing: 2px;
     }
 
-    /* ESTILO DOS CARDS DAS LATAS (ESTILO DA ESQUERDA MANTIDO) */
+    /* ESTILO DOS CARDS DAS LATAS (EXATAMENTE IGUAL AO INDEX) */
     .card {
-      height: 220px;
+      width: 165px !important;
+      min-width: 165px !important;
+      height: 230px !important;
       background: #ffffff !important;
       border-radius: 12px !important;
       overflow: hidden !important;
@@ -135,16 +147,17 @@
       flex-direction: column !important;
       border: 2px solid transparent !important;
       cursor: pointer !important;
+      flex-shrink: 0 !important;
     }
 
     .card-top-photo {
       width: 100% !important;
-      height: 145px !important;
+      height: 155px !important;
       background: #ffffff !important;
       display: flex !important;
       justify-content: center !important;
       align-items: center !important;
-      padding: 6px !important;
+      padding: 8px !important;
     }
 
     .card-top-photo img {
@@ -156,7 +169,7 @@
     .card-bottom-bar {
       width: 100% !important;
       height: 75px !important;
-      padding: 8px 10px !important;
+      padding: 10px 10px 10px 10px !important;
       display: flex !important;
       flex-direction: column !important;
       justify-content: space-between !important;
@@ -166,7 +179,7 @@
 
     .card-bar-title {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
-      font-size: 0.95rem !important;
+      font-size: 0.98rem !important;
       font-weight: 600 !important;
       color: #ffffff !important;
       white-space: nowrap !important;
@@ -181,7 +194,7 @@
     .card-bar-country {
       display: flex !important; align-items: center !important; gap: 6px !important;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
-      font-size: 0.8rem !important; font-weight: 500 !important; color: #ffffff !important;
+      font-size: 0.82rem !important; font-weight: 500 !important; color: #ffffff !important;
       white-space: nowrap !important; overflow: hidden !important; text-transform: capitalize !important;
     }
 
@@ -190,12 +203,17 @@
     .card-bar-vol {
       background: rgba(0, 0, 0, 0.45) !important; color: #ffffff !important;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
-      padding: 2px 6px !important; border-radius: 6px !important; font-size: 0.7rem !important; font-weight: 600 !important; white-space: nowrap !important;
+      padding: 3px 7px !important; border-radius: 6px !important; font-size: 0.72rem !important; font-weight: 600 !important; white-space: nowrap !important;
     }
 
-    .card.focused, .card:hover { border: 2px solid #f39c12 !important; box-shadow: 0 0 10px rgba(243, 156, 18, 0.5) !important; outline: none !important; z-index: 10 !important; }
+    .card.focused, .card:hover { 
+      border: 2px solid #f39c12 !important; 
+      box-shadow: 0 0 8px rgba(243, 156, 18, 0.4) !important; 
+      outline: none !important; 
+      z-index: 10 !important; 
+    }
 
-    /* MODAL ZOOM LIGHTBOX */
+    /* MODAL LIGHTBOX DE ZOOM */
     .zoom-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.95); z-index: 3000; display: none; justify-content: center; align-items: center; padding: 16px; overflow: hidden; }
     .zoom-modal.active { display: flex; }
     .zoom-modal img { max-width: 85vw; max-height: 85vh; object-fit: contain; border-radius: 6px; cursor: pointer; transition: transform 0.15s ease-out; }
@@ -213,15 +231,15 @@
   <div class="app-container">
     <div class="main-grid" id="mainGrid">
       
-      <!-- ESQUEMA VERDE: BUSCA -->
+      <!-- BUSCA COM LISTA ANEXADA DIRETA -->
       <div class="search-box-area">
         <input type="text" id="brandSearchInput" class="brand-search-input" placeholder="DIGITE A MARCA..." autocomplete="off">
         <div class="suggestions-list" id="suggestionsList"></div>
       </div>
 
-      <!-- ESQUEMA VERMELHO: FOTO DA MARCA -->
+      <!-- FOTO/LOGO DA MARCA SELECIONADA -->
       <div class="brand-hero-display" id="brandHeroDisplay">
-        <div class="brand-hero-placeholder" id="heroPlaceholder">FOTO DA MARCA</div>
+        <div class="brand-hero-placeholder" id="heroPlaceholder">SELECIONE UMA MARCA</div>
       </div>
 
       <!-- CARDS SERÃO INSERIDOS AQUI DINAMICAMENTE -->
@@ -229,7 +247,7 @@
     </div>
   </div>
 
-  <!-- MODAL ZOOM COM AS 4 FOTOS -->
+  <!-- MODAL ZOOM LIGHTBOX -->
   <div class="zoom-modal" id="zoomModal" onclick="closeZoomModal()">
     <img id="zoomImage" src="" alt="Imagem ampliada" onclick="event.stopPropagation(); toggleZoomStep();">
   </div>
@@ -279,6 +297,7 @@
       const response = await fetch(API_URL + "?nocache=" + new Date().getTime());
       canCatalog = await response.json();
       
+      // Lista única de marcas cadastradas no catálogo
       allBrands = [...new Set(canCatalog.map(c => c.brewery || c.Cervejaria).filter(Boolean))].sort();
       
       document.getElementById("loadingScreen").classList.add("hidden");
@@ -332,7 +351,7 @@
     renderBrandGrid();
   }
 
-  /* NAVEGAÇÃO NO CAMPO DE BUSCA */
+  /* NAVEGAÇÃO NO CAMPO DE BUSCA VIA D-PAD / TECLADO */
   searchInput.addEventListener("keydown", (e) => {
     const items = suggestionsList.querySelectorAll(".suggestion-item");
 
@@ -368,15 +387,15 @@
     }
   }
 
-  /* RENDERIZA OS CARDS SEGUINDO A ESTRUTURA DO WIREFRAME */
+  /* RENDERIZA OS CARDS NO GRID */
   function renderBrandGrid() {
     const mainGrid = document.getElementById("mainGrid");
     
-    // Remove os cards antigos mantendo o topo (Busca e Display Vermelho)
+    // Limpa cards antigos
     const existingCards = mainGrid.querySelectorAll(".card");
     existingCards.forEach(c => c.remove());
 
-    // Atualiza a Foto/Logo da Marca no Destaque Vermelho
+    // Atualiza a Foto/Logo da Marca no Destaque do Topo
     const heroDisplay = document.getElementById("brandHeroDisplay");
     if (currentFiltered.length > 0) {
       const logoUrl = currentFiltered[0].brandLogo || currentFiltered[0].BRAND_LOGO;
@@ -387,7 +406,7 @@
       }
     }
 
-    // Renderiza cada card de lata no grid
+    // Renderiza os cards das latas da marca selecionada
     currentFiltered.forEach((can, idx) => {
       const rawImg = can.ImgFront || can.front || can.ImgCover || can.cover;
       const frontImg = getOptimizedImageUrl(rawImg, 400);
@@ -437,7 +456,7 @@
     });
   }
 
-  /* MODAL LIGHTBOX DE ZOOM (4 IMAGENS DA LATA SELECIONADA) */
+  /* LIGHTBOX DE ZOOM COM AS FOTOS DA LATA SELECIONADA */
   function openZoomModal(can) {
     let photos = [can.ImgFront, can.ImgLeft, can.ImgBack, can.ImgRight].filter(Boolean);
     if (photos.length === 0) return;
