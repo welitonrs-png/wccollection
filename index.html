@@ -98,21 +98,8 @@
     }
     .main-area.pushed { transform: translateX(260px); }
 
-    .hero-panel { flex: 1; min-height: 0; background: transparent; border-radius: 12px; display: flex; padding: 8px 12px; gap: 20px; align-items: center; position: relative; }
-    .hero-brand-logo-container { position: absolute; top: 8px; right: 20px; width: 180px; height: 80px; display: flex; justify-content: flex-end; align-items: flex-start; z-index: 20; pointer-events: none; }
-    .hero-brand-logo-container img { max-width: 100%; max-height: 100%; object-fit: contain; }
-
-    .hero-left-photos { height: 100%; aspect-ratio: 1 / 1; display: grid; grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(2, 1fr); gap: 8px; }
-    .hero-left-photos.aspect-sets { aspect-ratio: 4 / 3; }
-
-    .hero-photo-card { background: #ffffff; border-radius: 8px; padding: 4px; display: flex; justify-content: center; align-items: center; width: 100%; height: 100%; overflow: hidden; cursor: pointer; }
-    .hero-photo-card img { width: 100%; height: 100%; object-fit: contain; }
-
-    .hero-right-info { flex: 1; height: 100%; display: flex; flex-direction: column; justify-content: flex-start; gap: 6px; color: #f39c12; text-transform: uppercase; font-style: italic; overflow-y: auto; padding-right: 180px; }
-    .hero-title { font-size: clamp(1.1rem, 1.9vw, 1.5rem); font-weight: 900; line-height: 1.1; color: #f39c12; margin-bottom: 2px; letter-spacing: 0.5px; }
-    .info-block { display: flex; flex-direction: column; margin-bottom: 2px; }
-    .info-label { font-size: clamp(0.65rem, 0.9vw, 0.8rem); font-weight: 900; color: #f39c12; line-height: 1.1; letter-spacing: 0.5px; }
-    .info-val { font-size: clamp(0.9rem, 1.4vw, 1.2rem); font-weight: 900; color: #f39c12; line-height: 1.1; margin-top: 1px; }
+    /* ÁREA SUPERIOR LIMPA */
+    .hero-panel { flex: 1; min-height: 0; background: transparent; border-radius: 12px; display: flex; padding: 8px 12px; position: relative; }
 
     /* BARRA DO MEIO COM O BOTÃO TRIÂNGULO AO LADO DA CONTAGEM */
     .counter-bar { display: flex; justify-content: flex-end; align-items: center; padding: 0 4px; gap: 8px; height: 20px; }
@@ -130,9 +117,9 @@
 
     .card-counter { font-size: 0.85rem; font-weight: 900; color: #f39c12; background: transparent; padding: 0; letter-spacing: 1px; }
 
-    /* SEÇÃO INFERIOR DO CATÁLOGO */
-    .catalog-section { height: 185px; min-height: 185px; width: 100%; overflow: hidden; flex-shrink: 0; touch-action: none; }
-    .card-row { display: flex; height: 100%; width: 100%; justify-content: flex-start; align-items: flex-end; gap: 12px; }
+    /* SEÇÃO INFERIOR DO CATÁLOGO - 2 LINHAS */
+    .catalog-section { height: 380px; min-height: 380px; width: 100%; overflow: hidden; flex-shrink: 0; touch-action: none; }
+    .card-row { display: grid; grid-template-columns: repeat(7, 122px); grid-template-rows: repeat(2, 185px); gap: 10px 12px; width: 100%; height: 100%; justify-content: start; align-content: start; }
 
     .card {
       width: 122px !important;
@@ -272,6 +259,9 @@
       <img src="logo.png" alt="Logo" class="sidebar-logo">
       <button class="cat-btn" id="menuBtnHome" onclick="switchTab('home')" tabindex="0">HOME / CATÁLOGO</button>
       
+      <!-- INCLUÍDO A OPÇÃO POR MARCAS -->
+      <button class="cat-btn" id="menuBtnByBrands" onclick="toggleBrandInline()" tabindex="0">POR MARCAS</button>
+
       <button class="cat-btn" id="menuBtnSearch" onclick="toggleSearchInline()" tabindex="0">PESQUISAR</button>
       <div class="inline-panel-container" id="searchInlineContainer">
         <input type="text" id="menuSearchInput" class="menu-search-box" placeholder="DIGITE PARA BUSCAR..." readonly tabindex="-1">
@@ -286,24 +276,8 @@
     </nav>
 
     <main class="main-area" id="mainArea" onclick="handleMainAreaClick()">
-      <section class="hero-panel" id="heroPanel">
-        <div class="hero-brand-logo-container" id="heroBrandLogo"></div>
-
-        <div class="hero-left-photos" id="heroPhotos">
-          <div class="hero-photo-card"><img src="" alt=""></div>
-          <div class="hero-photo-card"><img src="" alt=""></div>
-          <div class="hero-photo-card"><img src="" alt=""></div>
-          <div class="hero-photo-card"><img src="" alt=""></div>
-        </div>
-
-        <div class="hero-right-info">
-          <div class="hero-title" id="heroTitle">SELECIONE UMA LATA</div>
-          <div class="info-block"><span class="info-label" id="labelCountry">ORIGEM:</span><div class="info-val" id="heroCountry">-</div></div>
-          <div class="info-block"><span class="info-label">VOLUME:</span><div class="info-val" id="heroVolume">-</div></div>
-          <div class="info-block"><span class="info-label">ANO:</span><div class="info-val" id="heroYear">-</div></div>
-          <div class="info-block"><span class="info-label">CÓD. BARRAS:</span><div class="info-val" id="heroBarcode">-</div></div>
-        </div>
-      </section>
+      <!-- ÁREA SUPERIOR LIMPA PARA NOVO DESIGN -->
+      <section class="hero-panel" id="heroPanel"></section>
 
       <div class="counter-bar">
         <button class="sort-icon-btn" id="sortOrderBtn" onclick="toggleSortOrder()" tabindex="0" title="Alternar Ordenação">▼</button>
@@ -338,10 +312,11 @@
   let currentFiltered = [];
   let zoomGallery = [];
   let currentZoomIndex = 0;
-  let sortNewestFirst = true; // Define se é do maior para o menor
+  let sortNewestFirst = true;
   
   let currentTab = 'home';
   let cardsPerRow = 7;
+  let cardsPerPage = 14; // 2 linhas de 7 cards
   let currentPage = 0;
   let activeLocalIndex = 0;
   let lastSelectedMenuId = 'menuBtnHome'; 
@@ -426,7 +401,7 @@
     return '';
   }
 
-  function preloadFirstImages(items, count = 7) {
+  function preloadFirstImages(items, count = 14) {
     return new Promise((resolve) => {
       const pageItems = items.slice(0, count);
       if (pageItems.length === 0) {
@@ -480,7 +455,7 @@
       processTabChange();
 
       document.getElementById("loadingText").innerText = "PREPARANDO IMAGENS...";
-      await preloadFirstImages(currentFiltered, cardsPerRow);
+      await preloadFirstImages(currentFiltered, cardsPerPage);
       hideLoadingScreen();
       focusCardSafely(0);
     } catch (err) {
@@ -506,7 +481,6 @@
     focusCardSafely(0);
   }
 
-  /* FUNÇÃO DE INVERTER ORDENAÇÃO */
   function toggleSortOrder() {
     sortNewestFirst = !sortNewestFirst;
     const sortBtn = document.getElementById("sortOrderBtn");
@@ -523,23 +497,6 @@
   }
 
   function processTabChange() {
-    const heroPhotos = document.getElementById("heroPhotos");
-    const labelCountry = document.getElementById("labelCountry");
-
-    if (currentTab === 'sets') {
-      cardsPerRow = 7;
-      heroPhotos.classList.add("aspect-sets");
-      labelCountry.innerText = "ORIGEM:";
-    } else if (currentTab === 'ococ') {
-      cardsPerRow = 7;
-      heroPhotos.classList.remove("aspect-sets");
-      labelCountry.innerText = "PAÍS / ORIGEM:";
-    } else {
-      cardsPerRow = 7;
-      heroPhotos.classList.remove("aspect-sets");
-      labelCountry.innerText = "ORIGEM:";
-    }
-
     buildBrandList();
     buildVirtualKeyboard();
     filterCatalog(document.getElementById("menuSearchInput").value);
@@ -597,6 +554,7 @@
         activeLocalIndex = finalIdx;
         cards[finalIdx].classList.add("focused");
         cards[finalIdx].focus();
+        updateCounter(finalIdx);
       }
     }, 50);
   }
@@ -605,7 +563,7 @@
     document.getElementById("sidebarDrawer").classList.add("open");
     document.getElementById("mainArea").classList.add("pushed");
     
-    if (lastSelectedMenuId === 'menuBtnBrands') {
+    if (lastSelectedMenuId === 'menuBtnBrands' || lastSelectedMenuId === 'menuBtnByBrands') {
       const brandContainer = document.getElementById("brandInlineList");
       brandContainer.classList.add("active");
 
@@ -663,7 +621,7 @@
   }
 
   function toggleBrandInline() {
-    lastSelectedMenuId = 'menuBtnBrands';
+    lastSelectedMenuId = 'menuBtnByBrands';
     const container = document.getElementById("brandInlineList");
     document.getElementById("searchInlineContainer").classList.remove("active");
     container.classList.toggle("active");
@@ -726,7 +684,7 @@
     
     allBtn.onclick = (e) => { 
       e.stopPropagation();
-      lastSelectedMenuId = 'menuBtnBrands';
+      lastSelectedMenuId = 'menuBtnByBrands';
       lastSelectedBrandElem = allBtn;
       filterCatalog(""); 
       focusCardSafely(0); 
@@ -747,7 +705,7 @@
       
       btn.onclick = (e) => { 
         e.stopPropagation();
-        lastSelectedMenuId = 'menuBtnBrands';
+        lastSelectedMenuId = 'menuBtnByBrands';
         lastSelectedBrandElem = btn;
         filterCatalog(b); 
         focusCardSafely(0); 
@@ -783,23 +741,36 @@
     currentPage = 0;
     activeLocalIndex = 0;
     renderApp();
+    updateCounter(0);
+  }
 
-    if (currentFiltered.length > 0) {
-      updateHeroPanel(currentFiltered[0], 0);
+  function updateCounter(localIndex) {
+    const total = currentFiltered.length;
+    const globalIndex = currentPage * cardsPerPage + localIndex;
+    const currentNum = total > 0 ? (globalIndex + 1) : 0;
+    document.getElementById("cardCounter").innerText = `${currentNum}/${total}`;
+
+    // Atualiza galeria para Zoom
+    const currentCan = currentFiltered[globalIndex];
+    if (currentCan) {
+      let rawPhotos = [];
+      if (currentCan.images) rawPhotos = [currentCan.images.front, currentCan.images.left, currentCan.images.back, currentCan.images.right].filter(Boolean);
+      if (rawPhotos.length === 0) rawPhotos = [currentCan.ImgFront, currentCan.ImgLeft, currentCan.ImgBack, currentCan.ImgRight].filter(Boolean);
+      const logoUrl = currentCan.brandLogo || currentCan.BRAND_LOGO;
+      if (rawPhotos.length === 0 && logoUrl) rawPhotos.push(logoUrl);
+      zoomGallery = rawPhotos;
     } else {
-      document.getElementById("cardCounter").innerText = "0/0";
-      document.getElementById("heroTitle").innerText = "NENHUMA LATA ENCONTRADA";
-      document.getElementById("heroPhotos").innerHTML = "";
+      zoomGallery = [];
     }
   }
 
-  /* RENDERIZAÇÃO DOS CARDS */
+  /* RENDERIZAÇÃO DOS CARDS (2 LINHAS DE 7) */
   function renderApp() {
     const row = document.getElementById("cardRow");
     row.innerHTML = "";
 
-    const startIndex = currentPage * cardsPerRow;
-    const pageItems = currentFiltered.slice(startIndex, startIndex + cardsPerRow);
+    const startIndex = currentPage * cardsPerPage;
+    const pageItems = currentFiltered.slice(startIndex, startIndex + cardsPerPage);
 
     pageItems.forEach((can, localIndex) => {
       const globalIndex = startIndex + localIndex;
@@ -828,7 +799,7 @@
         clearAllCardFocus();
         card.classList.add("focused");
         activeLocalIndex = localIndex;
-        updateHeroPanel(can, globalIndex);
+        updateCounter(localIndex);
       };
 
       card.onfocus = () => {
@@ -836,7 +807,7 @@
         clearAllCardFocus();
         card.classList.add("focused");
         activeLocalIndex = localIndex;
-        updateHeroPanel(can, globalIndex);
+        updateCounter(localIndex);
       };
       
       card.onclick = (e) => {
@@ -844,6 +815,7 @@
         openZoomModal(0);
       };
 
+      /* NAVEGAÇÃO EM GRID (2 LINHAS X 7 COLUNAS) */
       card.onkeydown = (e) => {
         if (document.getElementById("zoomModal").classList.contains("active") || document.getElementById("exitModal").classList.contains("active")) return;
 
@@ -851,37 +823,57 @@
           e.preventDefault();
           openZoomModal(0);
         } else if (e.key === "ArrowRight") {
-          if (localIndex === pageItems.length - 1 && (startIndex + cardsPerRow) < currentFiltered.length) {
-            e.preventDefault();
+          e.preventDefault();
+          if (localIndex < pageItems.length - 1) {
+            focusCardSafely(localIndex + 1);
+          } else if ((startIndex + cardsPerPage) < currentFiltered.length) {
             currentPage++;
             renderApp();
             focusCardSafely(0);
           }
         } else if (e.key === "ArrowLeft") {
-          if (localIndex === 0) {
-            e.preventDefault();
-            if (currentPage > 0) {
-              currentPage--;
-              renderApp();
-              focusCardSafely(cardsPerRow - 1);
-            } else {
-              clearAllCardFocus();
-              openMenu();
-            }
+          e.preventDefault();
+          if (localIndex > 0) {
+            focusCardSafely(localIndex - 1);
+          } else if (currentPage > 0) {
+            currentPage--;
+            renderApp();
+            focusCardSafely(cardsPerPage - 1);
+          } else {
+            clearAllCardFocus();
+            openMenu();
           }
         } else if (e.key === "ArrowDown") {
           e.preventDefault();
-          if ((startIndex + cardsPerRow) < currentFiltered.length) {
+          if (localIndex < cardsPerRow) {
+            // Estava na 1ª linha, vai para a 2ª
+            if (localIndex + cardsPerRow < pageItems.length) {
+              focusCardSafely(localIndex + cardsPerRow);
+            }
+          } else if ((startIndex + cardsPerPage) < currentFiltered.length) {
+            // Estava na 2ª linha, avança para a próxima página mantendo a coluna
             currentPage++;
             renderApp();
-            focusCardSafely(activeLocalIndex);
+            focusCardSafely(localIndex % cardsPerRow);
           }
         } else if (e.key === "ArrowUp") {
           e.preventDefault();
-          clearAllCardFocus();
-          const sortBtn = document.getElementById("sortOrderBtn");
-          sortBtn.classList.add("focused");
-          sortBtn.focus();
+          if (localIndex >= cardsPerRow) {
+            // Estava na 2ª linha, sobe para a 1ª
+            focusCardSafely(localIndex - cardsPerRow);
+          } else if (currentPage > 0) {
+            // Estava na 1ª linha da pág atual, sobe para a 2ª linha da pág anterior
+            currentPage--;
+            renderApp();
+            const target = cardsPerRow + localIndex;
+            focusCardSafely(target);
+          } else {
+            // Topo da primeira página -> vai para o botão de ordenação
+            clearAllCardFocus();
+            const sortBtn = document.getElementById("sortOrderBtn");
+            sortBtn.classList.add("focused");
+            sortBtn.focus();
+          }
         }
       };
 
@@ -903,73 +895,6 @@
 
       row.appendChild(card);
     });
-  }
-
-  function updateHeroPanel(can, index = 0) {
-    if (!can) return;
-
-    let fallbackTitle = "SELECIONE UMA LATA";
-    if (currentTab === 'ococ') fallbackTitle = "SELECIONE UMA LATA (OCOC)";
-    if (currentTab === 'sets') fallbackTitle = "SELECIONE UM SET";
-
-    const titleVal = can.name || can.Nome || fallbackTitle;
-    const countryVal = can.country || can.Pais || "-";
-    const volumeVal = can.volume || can.Volume || "-";
-    const yearVal = can.year || can.Ano || "-";
-    const barcodeVal = can.barcode || can.Barcode || "-";
-
-    document.getElementById("heroTitle").innerText = String(titleVal).toUpperCase();
-    document.getElementById("heroCountry").innerText = String(countryVal).toUpperCase();
-    document.getElementById("heroVolume").innerText = String(volumeVal).toUpperCase();
-    document.getElementById("heroYear").innerText = yearVal;
-    document.getElementById("heroBarcode").innerText = barcodeVal;
-
-    const logoContainer = document.getElementById("heroBrandLogo");
-    const logoUrl = can.brandLogo || can.BRAND_LOGO;
-    if (logoUrl && String(logoUrl).trim() !== "") {
-      logoContainer.innerHTML = `<img src="${getOptimizedImageUrl(logoUrl, 400)}" alt="LOGO DA CERVEJARIA">`;
-    } else {
-      logoContainer.innerHTML = "";
-    }
-
-    const total = currentFiltered.length;
-    const currentNum = total > 0 ? (index + 1) : 0;
-    document.getElementById("cardCounter").innerText = `${currentNum}/${total}`;
-
-    let rawPhotos = [];
-    if (can.images) {
-      rawPhotos = [can.images.front, can.images.left, can.images.back, can.images.right].filter(Boolean);
-    }
-    if (rawPhotos.length === 0) {
-      rawPhotos = [can.ImgFront, can.ImgLeft, can.ImgBack, can.ImgRight].filter(Boolean);
-    }
-
-    if (rawPhotos.length === 0 && logoUrl) {
-      rawPhotos.push(logoUrl);
-    }
-
-    zoomGallery = rawPhotos;
-
-    const photosContainer = document.getElementById("heroPhotos");
-    photosContainer.innerHTML = "";
-
-    const displayPhotos = rawPhotos.slice(0, 4);
-
-    if (displayPhotos.length > 0) {
-      displayPhotos.forEach((url, idx) => {
-        const optimizedUrl = getOptimizedImageUrl(url, 1000);
-        const photoCard = document.createElement("div");
-        photoCard.className = "hero-photo-card";
-        photoCard.innerHTML = `<img src="${optimizedUrl}" alt="FOTO ${idx+1}" loading="lazy">`;
-        photoCard.onclick = (e) => {
-          e.stopPropagation();
-          openZoomModal(idx);
-        };
-        photosContainer.appendChild(photoCard);
-      });
-    } else {
-      photosContainer.innerHTML = `<div class="hero-photo-card" style="grid-column: span 2; grid-row: span 2; color:#aaa; font-size:0.8rem;">SEM FOTOS</div>`;
-    }
   }
 
   /* SISTEMA DE ZOOM CICLICO E PAN */
@@ -1073,7 +998,7 @@
   /* SCROLL DO MOUSE */
   catalogSection.addEventListener("wheel", (e) => {
     if (e.deltaY > 0) {
-      if (((currentPage + 1) * cardsPerRow) < currentFiltered.length) {
+      if (((currentPage + 1) * cardsPerPage) < currentFiltered.length) {
         currentPage++;
         renderApp();
         focusCardSafely(activeLocalIndex);
@@ -1094,7 +1019,7 @@
 
     if (Math.abs(diffY) > Math.abs(diffX)) {
       if (diffY < -threshold) {
-        if (((currentPage + 1) * cardsPerRow) < currentFiltered.length) {
+        if (((currentPage + 1) * cardsPerPage) < currentFiltered.length) {
           currentPage++;
           renderApp();
           focusCardSafely(activeLocalIndex);
@@ -1111,7 +1036,7 @@
         const cards = document.querySelectorAll(".card");
         if (activeLocalIndex < cards.length - 1) {
           focusCardSafely(activeLocalIndex + 1);
-        } else if (((currentPage + 1) * cardsPerRow) < currentFiltered.length) {
+        } else if (((currentPage + 1) * cardsPerPage) < currentFiltered.length) {
           currentPage++;
           renderApp();
           focusCardSafely(0);
@@ -1122,7 +1047,7 @@
         } else if (currentPage > 0) {
           currentPage--;
           renderApp();
-          focusCardSafely(cardsPerRow - 1);
+          focusCardSafely(cardsPerPage - 1);
         }
       }
     }
