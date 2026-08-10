@@ -31,7 +31,7 @@
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.9; } 50% { transform: scale(1.05); opacity: 1; } }
 
-    /* ESTRUTURA DO GRID */
+    /* ESTRUTURA DO GRID (7 COLUNAS TOTAIS) */
     .main-grid {
       display: grid;
       grid-template-columns: repeat(7, 1fr);
@@ -42,10 +42,10 @@
       overflow-y: auto;
     }
 
-    /* AREA DA CAMPO DE BUSCA (COR DE FUNDO PADRÃO) */
+    /* ÁREA DO CAMPO DE BUSCA (AGORA COM LARGURA PARA 4 CARDS) */
     .search-box-area {
-      grid-column: span 3;
-      position: relative; /* Mantém as sugestões coladas diretamente nele */
+      grid-column: span 4;
+      position: relative;
       height: 50px;
     }
 
@@ -106,17 +106,17 @@
       font-weight: bold;
     }
 
-    /* QUADRO DO LOGO DA MARCA (COR DE FUNDO ESCURA DO TEMA) */
+    /* DISPLAY DA MARCA (COR DE FUNDO IDÊNTICA AO FUNDO PRINCIPAL DO APP) */
     .brand-hero-display {
-      grid-column: span 4;
+      grid-column: span 3;
       grid-row: span 2;
-      background: #11141d;
-      border: 1px solid #2a3447;
+      background: #1a1e29; /* Mesma cor do fundo */
+      border: none;
       border-radius: 12px;
       display: flex;
       justify-content: center;
       align-items: center;
-      padding: 16px;
+      padding: 12px;
       overflow: hidden;
     }
 
@@ -129,13 +129,13 @@
 
     .brand-hero-placeholder {
       color: #4a5568;
-      font-size: 1.2rem;
+      font-size: 1.1rem;
       font-weight: 800;
       text-transform: uppercase;
       letter-spacing: 2px;
     }
 
-    /* ESTILO DOS CARDS DAS LATAS (EXATAMENTE IGUAL AO INDEX) */
+    /* ESTILO DOS CARDS DAS LATAS (TAMANHO IDÊNTICO AO INDEX) */
     .card {
       width: 165px !important;
       min-width: 165px !important;
@@ -231,13 +231,13 @@
   <div class="app-container">
     <div class="main-grid" id="mainGrid">
       
-      <!-- BUSCA COM LISTA ANEXADA DIRETA -->
+      <!-- CAMPO DE BUSCA (4 COLUNAS) -->
       <div class="search-box-area">
         <input type="text" id="brandSearchInput" class="brand-search-input" placeholder="DIGITE A MARCA..." autocomplete="off">
         <div class="suggestions-list" id="suggestionsList"></div>
       </div>
 
-      <!-- FOTO/LOGO DA MARCA SELECIONADA -->
+      <!-- FOTO/LOGO DA MARCA SELECIONADA (3 COLUNAS - FUNDO INTEGRADO) -->
       <div class="brand-hero-display" id="brandHeroDisplay">
         <div class="brand-hero-placeholder" id="heroPlaceholder">SELECIONE UMA MARCA</div>
       </div>
@@ -297,7 +297,6 @@
       const response = await fetch(API_URL + "?nocache=" + new Date().getTime());
       canCatalog = await response.json();
       
-      // Lista única de marcas cadastradas no catálogo
       allBrands = [...new Set(canCatalog.map(c => c.brewery || c.Cervejaria).filter(Boolean))].sort();
       
       document.getElementById("loadingScreen").classList.add("hidden");
@@ -430,7 +429,7 @@
         if (e.key === "Enter" || e.key === " ") {
           e.preventDefault();
           openZoomModal(can);
-        } else if (e.key === "ArrowUp" && idx < 3) {
+        } else if (e.key === "ArrowUp" && idx < 4) { // Pressionar para cima nos 4 primeiros cards volta para a busca
           e.preventDefault();
           searchInput.focus();
         }
