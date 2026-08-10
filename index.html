@@ -297,7 +297,6 @@
       </section>
 
       <div class="counter-bar">
-        <!-- BOTÃO COM TRIÂNGULOS (▼ = Maior para Menor / ▲ = Menor para Maior) -->
         <button class="sort-icon-btn" id="sortOrderBtn" onclick="toggleSortOrder()" tabindex="0" title="Alternar Ordenação">▼</button>
         <div class="card-counter" id="cardCounter">0/0</div>
       </div>
@@ -329,9 +328,10 @@
   let canCatalog = [];
   let currentFiltered = [];
   let zoomGallery = [];
+  let brandLogoMap = new Map(); // Mapeamento automático de logos das marcas
   let currentZoomIndex = 0;
   
-  let sortNewestFirst = true; // true = ▼ (Maior/Mais novos p/ Menor), false = ▲ (Menor/Mais antigos p/ Maior)
+  let sortNewestFirst = true;
   let currentTab = 'home';
   let cardsPerRow = 7;
   let currentPage = 0;
@@ -442,7 +442,8 @@
       const totalToLoad = pageItems.length;
 
       pageItems.forEach((can) => {
-        const rawCover = can.ImgFront || can.front || can.ImgCover || can.cover;
+        // Prioridade no Preload: Foto Capa > Foto Frente > Outras
+        const rawCover = can.ImgCover || can.cover || can.ImgFront || can.front;
 
         if (!rawCover) {
           loadedCount++;
@@ -471,6 +472,18 @@
     }
   }
 
+  /* REGISTRO AUTOMÁTICO DAS LOGOS DE MARCAS */
+  function buildBrandLogoMap(catalog) {
+    brandLogoMap.clear();
+    catalog.forEach(can => {
+      const brandKey = String(can.brewery || can.Cervejaria || "").toLowerCase().trim();
+      const logoUrl = can.brandLogo || can.BRAND_LOGO;
+      if (brandKey && logoUrl && String(logoUrl).trim() !== "" && !brandLogoMap.has(brandKey)) {
+        brandLogoMap.set(brandKey, String(logoUrl).trim());
+      }
+    });
+  }
+
   async function fetchCatalogFromSheet() {
     if(!API_URL || API_URL.includes("COLE_AQUI")) return;
 
@@ -481,6 +494,7 @@
       const freshData = await response.json();
       
       canCatalog = freshData;
+      buildBrandLogoMap(canCatalog); // Mapeia as logos encontradas
       processTabChange();
 
       document.getElementById("loadingText").innerText = "PREPARANDO IMAGENS...";
@@ -510,16 +524,15 @@
     focusCardSafely(0);
   }
 
-  /* ALTERNÂNCIA DE ORDENAÇÃO COM ATUALIZAÇÃO DO ÍCONE (▼ ou ▲) */
   function toggleSortOrder() {
     sortNewestFirst = !sortNewestFirst;
     
     const sortBtn = document.getElementById("sortOrderBtn");
     if (sortNewestFirst) {
-      sortBtn.innerText = "▼"; // Maior para Menor (Mais novos primeiro)
+      sortBtn.innerText = "▼";
       sortBtn.title = "Ordenação: Maior para Menor (Mais Novos)";
     } else {
-      sortBtn.innerText = "▲"; // Menor para Maior (Mais antigos primeiro)
+      sortBtn.innerText = "▲";
       sortBtn.title = "Ordenação: Menor para Maior (Mais Antigos)";
     }
 
@@ -527,7 +540,6 @@
     focusCardSafely(0);
   }
 
-  /* Configuração do botão de ordenação para TV */
   const sortBtnElem = document.getElementById("sortOrderBtn");
   sortBtnElem.onkeydown = (e) => {
     if (e.key === "Enter" || e.key === " ") {
@@ -813,7 +825,7 @@
     }
   }
 
-  /* RENDERIZAÇÃO DOS CARDS */
+  /* RENDERIZAÇÃO DOS CARDS (COM PRIORIDADE FOTO CAPA) */
   function renderApp() {
     const row = document.getElementById("cardRow");
     row.innerHTML = "";
@@ -824,7 +836,8 @@
     pageItems.forEach((can, localIndex) => {
       const globalIndex = startIndex + localIndex;
 
-      const rawImg = can.ImgFront || can.front || can.ImgCover || can.cover || can.brandLogo;
+      // Prioridade: Foto Capa > Foto Frente > Logo
+      const rawImg = can.ImgCover || can.cover || can.ImgFront || can.front || can.brandLogo;
       const frontImg = getOptimizedImageUrl(rawImg, 400);
 
       const brandRaw = can.brewery || can.Cervejaria || can.name || "Cerveja";
@@ -925,6 +938,7 @@
     });
   }
 
+  /* ATUALIZAÇÃO DO PAINEL PRINCIPAL (COM BUSCA AUTOMÁTICA DA LOGO DA MARCA) */
   function updateHeroPanel(can, index = 0) {
     if (!can) return;
 
@@ -944,8 +958,11 @@
     document.getElementById("heroYear").innerText = yearVal;
     document.getElementById("heroBarcode").innerText = barcodeVal;
 
+    // Busca o Logo da própria lata ou do mapa de logos da marca
+    const brandKey = String(can.brewery || can.Cervejaria || "").toLowerCase().trim();
+    const logoUrl = can.brandLogo || can.BRAND_LOGO || brandLogoMap.get(brandKey);
+
     const logoContainer = document.getElementById("heroBrandLogo");
-    const logoUrl = can.brandLogo || can.BRAND_LOGO;
     if (logoUrl && String(logoUrl).trim() !== "") {
       logoContainer.innerHTML = `<img src="${getOptimizedImageUrl(logoUrl, 400)}" alt="LOGO DA CERVEJARIA">`;
     } else {
