@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>WCCollection - Universal SPA</title>
+  <title>WCCollection - Latas por Marcas</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; outline: none; }
     
@@ -38,7 +38,7 @@
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.9; } 50% { transform: scale(1.05); opacity: 1; } }
 
-    /* BOTÃO HAMBÚRGUER (EXCLUSIVO PARA CELULAR) */
+    /* BOTÃO HAMBÚRGUER (CELULAR) */
     .mobile-menu-btn {
       display: none; position: fixed; top: 12px; left: 12px; z-index: 2000;
       background: rgba(26, 32, 46, 0.9); color: #f39c12; border: 1px solid #f39c12;
@@ -98,23 +98,18 @@
     }
     .main-area.pushed { transform: translateX(260px); }
 
+    /* PAINEL SUPERIOR SEM AS 4 FOTOS */
     .hero-panel { flex: 1; min-height: 0; background: transparent; border-radius: 12px; display: flex; padding: 0; gap: 20px; align-items: center; position: relative; }
     .hero-brand-logo-container { position: absolute; top: 0; right: 0; width: 180px; height: 80px; display: flex; justify-content: flex-end; align-items: flex-start; z-index: 20; pointer-events: none; }
     .hero-brand-logo-container img { max-width: 100%; max-height: 100%; object-fit: contain; }
 
-    .hero-left-photos { height: 100%; aspect-ratio: 1 / 1; display: grid; grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(2, 1fr); gap: 10px; }
-    .hero-left-photos.aspect-sets { aspect-ratio: 4 / 3; }
+    .hero-right-info { flex: 1; height: 100%; display: flex; flex-direction: column; justify-content: center; gap: 6px; color: #f39c12; text-transform: uppercase; font-style: italic; overflow-y: auto; padding-right: 180px; }
+    .hero-title { font-size: clamp(1.2rem, 2.2vw, 1.8rem); font-weight: 900; line-height: 1.1; color: #f39c12; margin-bottom: 4px; letter-spacing: 0.5px; }
+    .info-block { display: flex; flex-direction: row; gap: 8px; align-items: center; margin-bottom: 2px; }
+    .info-label { font-size: clamp(0.7rem, 1vw, 0.85rem); font-weight: 900; color: #f39c12; letter-spacing: 0.5px; }
+    .info-val { font-size: clamp(0.95rem, 1.5vw, 1.3rem); font-weight: 900; color: #ffffff; }
 
-    .hero-photo-card { background: #ffffff; border-radius: 10px; padding: 6px; display: flex; justify-content: center; align-items: center; width: 100%; height: 100%; overflow: hidden; cursor: pointer; }
-    .hero-photo-card img { width: 100%; height: 100%; object-fit: contain; }
-
-    .hero-right-info { flex: 1; height: 100%; display: flex; flex-direction: column; justify-content: flex-start; gap: 6px; color: #f39c12; text-transform: uppercase; font-style: italic; overflow-y: auto; padding-right: 180px; }
-    .hero-title { font-size: clamp(1.1rem, 1.9vw, 1.5rem); font-weight: 900; line-height: 1.1; color: #f39c12; margin-bottom: 2px; letter-spacing: 0.5px; }
-    .info-block { display: flex; flex-direction: column; margin-bottom: 2px; }
-    .info-label { font-size: clamp(0.65rem, 0.9vw, 0.8rem); font-weight: 900; color: #f39c12; line-height: 1.1; letter-spacing: 0.5px; }
-    .info-val { font-size: clamp(0.9rem, 1.4vw, 1.2rem); font-weight: 900; color: #f39c12; line-height: 1.1; margin-top: 1px; }
-
-    /* BARRA DO MEIO COM O BOTÃO TRIÂNGULO SEM BORDAS */
+    /* BARRA DO MEIO */
     .counter-bar { display: flex; justify-content: flex-end; align-items: center; padding: 0; gap: 14px; height: 20px; }
     
     .sort-icon-btn {
@@ -130,9 +125,28 @@
 
     .card-counter { font-size: 0.85rem; font-weight: 900; color: #f39c12; background: transparent; padding: 0; letter-spacing: 1px; }
 
-    /* SEÇÃO INFERIOR DO CATÁLOGO (7 CARDS POR LINHA) */
-    .catalog-section { height: 185px; min-height: 185px; width: 100%; overflow: hidden; flex-shrink: 0; touch-action: none; display: flex; justify-content: center; }
-    .card-row { display: flex; height: 100%; width: 100%; justify-content: space-between; align-items: flex-end; }
+    /* SEÇÃO INFERIOR DO CATÁLOGO - DUAL ROW (2 LINHAS) */
+    .catalog-section { 
+      height: 382px; 
+      min-height: 382px; 
+      width: 100%; 
+      overflow: hidden; 
+      flex-shrink: 0; 
+      touch-action: none; 
+      display: flex; 
+      justify-content: center; 
+    }
+    
+    .card-row { 
+      display: grid; 
+      grid-template-columns: repeat(7, 122px);
+      grid-template-rows: repeat(2, 185px);
+      gap: 12px;
+      height: 100%; 
+      width: 100%; 
+      justify-content: space-between; 
+      align-content: space-between;
+    }
 
     .card {
       width: 122px !important;
@@ -147,8 +161,6 @@
       cursor: pointer !important;
       flex-shrink: 0 !important;
     }
-
-    .card.card-aspect-sets { width: 170px !important; min-width: 170px !important; }
 
     .card-top-photo {
       width: 100% !important;
@@ -261,7 +273,7 @@
 
     <nav class="sidebar-drawer" id="sidebarDrawer">
       <img src="logo.png" alt="Logo" class="sidebar-logo">
-      <button class="cat-btn" id="menuBtnHome" onclick="switchTab('home')" tabindex="0">HOME / CATÁLOGO</button>
+      <button class="cat-btn" id="menuBtnHome" onclick="window.location.href='index.html'" tabindex="0">HOME / CATÁLOGO</button>
       
       <button class="cat-btn" id="menuBtnSearch" onclick="toggleSearchInline()" tabindex="0">PESQUISAR</button>
       <div class="inline-panel-container" id="searchInlineContainer">
@@ -271,22 +283,16 @@
 
       <button class="cat-btn" id="menuBtnBrands" onclick="toggleBrandInline()" tabindex="0">MARCAS</button>
       <div class="inline-panel-container" id="brandInlineList"></div>
-      <button class="cat-btn" onclick="window.location.href='marcas.html'" tabindex="0">LATAS POR MARCAS</button>
+      <button class="cat-btn focused" onclick="window.location.href='marcas.html'" tabindex="0">LATAS POR MARCAS</button>
 
       <button class="cat-btn" id="menuBtnOcoc" onclick="switchTab('ococ')" tabindex="0">OCOC (PAÍSES)</button>
       <button class="cat-btn" id="menuBtnSets" onclick="switchTab('sets')" tabindex="0">SETS & PACKS</button>
     </nav>
 
     <main class="main-area" id="mainArea" onclick="handleMainAreaClick()">
+      <!-- PAINEL SUPERIOR LIMPO (SEM O BLOCO DAS 4 FOTOS) -->
       <section class="hero-panel" id="heroPanel">
         <div class="hero-brand-logo-container" id="heroBrandLogo"></div>
-
-        <div class="hero-left-photos" id="heroPhotos">
-          <div class="hero-photo-card"><img src="" alt=""></div>
-          <div class="hero-photo-card"><img src="" alt=""></div>
-          <div class="hero-photo-card"><img src="" alt=""></div>
-          <div class="hero-photo-card"><img src="" alt=""></div>
-        </div>
 
         <div class="hero-right-info">
           <div class="hero-title" id="heroTitle">SELECIONE UMA LATA</div>
@@ -329,12 +335,17 @@
   let canCatalog = [];
   let currentFiltered = [];
   let zoomGallery = [];
-  let brandLogoMap = new Map(); // Mapeamento automático de logos das marcas
+  let brandLogoMap = new Map();
   let currentZoomIndex = 0;
   
   let sortNewestFirst = true;
   let currentTab = 'home';
-  let cardsPerRow = 7;
+  
+  /* CONFIGURAÇÃO PARA 2 LINHAS FIXAS (7 COLUNAS X 2 LINHAS = 14 CARDS POR PÁGINA) */
+  const COLS_PER_ROW = 7;
+  const ROWS_PER_PAGE = 2;
+  const cardsPerPage = COLS_PER_ROW * ROWS_PER_PAGE; 
+
   let currentPage = 0;
   let activeLocalIndex = 0;
   let lastSelectedMenuId = 'menuBtnHome'; 
@@ -431,7 +442,7 @@
     return '';
   }
 
-  function preloadFirstImages(items, count = 7) {
+  function preloadFirstImages(items, count = 14) {
     return new Promise((resolve) => {
       const pageItems = items.slice(0, count);
       if (pageItems.length === 0) {
@@ -443,7 +454,6 @@
       const totalToLoad = pageItems.length;
 
       pageItems.forEach((can) => {
-        // Prioridade no Preload: Foto Capa > Foto Frente > Outras
         const rawCover = can.ImgCover || can.cover || can.ImgFront || can.front;
 
         if (!rawCover) {
@@ -473,7 +483,6 @@
     }
   }
 
-  /* REGISTRO AUTOMÁTICO DAS LOGOS DE MARCAS */
   function buildBrandLogoMap(catalog) {
     brandLogoMap.clear();
     catalog.forEach(can => {
@@ -495,11 +504,11 @@
       const freshData = await response.json();
       
       canCatalog = freshData;
-      buildBrandLogoMap(canCatalog); // Mapeia as logos encontradas
+      buildBrandLogoMap(canCatalog);
       processTabChange();
 
       document.getElementById("loadingText").innerText = "PREPARANDO IMAGENS...";
-      await preloadFirstImages(currentFiltered, cardsPerRow);
+      await preloadFirstImages(currentFiltered, cardsPerPage);
       hideLoadingScreen();
       focusCardSafely(0);
     } catch (err) {
@@ -556,20 +565,13 @@
   };
 
   function processTabChange() {
-    const heroPhotos = document.getElementById("heroPhotos");
     const labelCountry = document.getElementById("labelCountry");
 
     if (currentTab === 'sets') {
-      cardsPerRow = 5;
-      heroPhotos.classList.add("aspect-sets");
       labelCountry.innerText = "ORIGEM:";
     } else if (currentTab === 'ococ') {
-      cardsPerRow = 7;
-      heroPhotos.classList.remove("aspect-sets");
       labelCountry.innerText = "PAÍS / ORIGEM:";
     } else {
-      cardsPerRow = 7;
-      heroPhotos.classList.remove("aspect-sets");
       labelCountry.innerText = "ORIGEM:";
     }
 
@@ -822,22 +824,20 @@
     } else {
       document.getElementById("cardCounter").innerText = "0/0";
       document.getElementById("heroTitle").innerText = "NENHUMA LATA ENCONTRADA";
-      document.getElementById("heroPhotos").innerHTML = "";
     }
   }
 
-  /* RENDERIZAÇÃO DOS CARDS (COM PRIORIDADE FOTO CAPA) */
+  /* RENDERIZAÇÃO DOS CARDS EM 2 LINHAS */
   function renderApp() {
     const row = document.getElementById("cardRow");
     row.innerHTML = "";
 
-    const startIndex = currentPage * cardsPerRow;
-    const pageItems = currentFiltered.slice(startIndex, startIndex + cardsPerRow);
+    const startIndex = currentPage * cardsPerPage;
+    const pageItems = currentFiltered.slice(startIndex, startIndex + cardsPerPage);
 
     pageItems.forEach((can, localIndex) => {
       const globalIndex = startIndex + localIndex;
 
-      // Prioridade: Foto Capa > Foto Frente > Logo
       const rawImg = can.ImgCover || can.cover || can.ImgFront || can.front || can.brandLogo;
       const frontImg = getOptimizedImageUrl(rawImg, 400);
 
@@ -854,7 +854,7 @@
       const cardColor = BRAND_COLORS[brandKey] || "#008234";
 
       const card = document.createElement("div");
-      card.className = `card ${currentTab === 'sets' ? 'card-aspect-sets' : ''}`;
+      card.className = "card";
       card.tabIndex = 0;
       card.dataset.globalIndex = globalIndex;
       
@@ -878,6 +878,7 @@
         openZoomModal(0);
       };
 
+      /* CONTROLE NAVEGAÇÃO ENTRE LINHAS / PÁGINAS */
       card.onkeydown = (e) => {
         if (document.getElementById("zoomModal").classList.contains("active") || document.getElementById("exitModal").classList.contains("active")) return;
 
@@ -885,19 +886,19 @@
           e.preventDefault();
           openZoomModal(0);
         } else if (e.key === "ArrowRight") {
-          if (localIndex === pageItems.length - 1 && (startIndex + cardsPerRow) < currentFiltered.length) {
+          if (localIndex === pageItems.length - 1 && (startIndex + cardsPerPage) < currentFiltered.length) {
             e.preventDefault();
             currentPage++;
             renderApp();
             focusCardSafely(0);
           }
         } else if (e.key === "ArrowLeft") {
-          if (localIndex === 0) {
+          if (localIndex === 0 || localIndex === COLS_PER_ROW) {
             e.preventDefault();
-            if (currentPage > 0) {
+            if (currentPage > 0 && localIndex === 0) {
               currentPage--;
               renderApp();
-              focusCardSafely(cardsPerRow - 1);
+              focusCardSafely(cardsPerPage - 1);
             } else {
               clearAllCardFocus();
               openMenu();
@@ -905,17 +906,23 @@
           }
         } else if (e.key === "ArrowDown") {
           e.preventDefault();
-          if ((startIndex + cardsPerRow) < currentFiltered.length) {
+          if (localIndex < COLS_PER_ROW && (localIndex + COLS_PER_ROW) < pageItems.length) {
+            focusCardSafely(localIndex + COLS_PER_ROW);
+          } else if ((startIndex + cardsPerPage) < currentFiltered.length) {
             currentPage++;
             renderApp();
-            focusCardSafely(activeLocalIndex);
+            focusCardSafely(localIndex % COLS_PER_ROW);
           }
         } else if (e.key === "ArrowUp") {
           e.preventDefault();
-          clearAllCardFocus();
-          const sortBtn = document.getElementById("sortOrderBtn");
-          sortBtn.classList.add("focused");
-          sortBtn.focus();
+          if (localIndex >= COLS_PER_ROW) {
+            focusCardSafely(localIndex - COLS_PER_ROW);
+          } else {
+            clearAllCardFocus();
+            const sortBtn = document.getElementById("sortOrderBtn");
+            sortBtn.classList.add("focused");
+            sortBtn.focus();
+          }
         }
       };
 
@@ -939,7 +946,7 @@
     });
   }
 
-  /* ATUALIZAÇÃO DO PAINEL PRINCIPAL (COM BUSCA AUTOMÁTICA DA LOGO DA MARCA) */
+  /* ATUALIZA PAINEL SUPERIOR */
   function updateHeroPanel(can, index = 0) {
     if (!can) return;
 
@@ -959,7 +966,6 @@
     document.getElementById("heroYear").innerText = yearVal;
     document.getElementById("heroBarcode").innerText = barcodeVal;
 
-    // Busca o Logo da própria lata ou do mapa de logos da marca
     const brandKey = String(can.brewery || can.Cervejaria || "").toLowerCase().trim();
     const logoUrl = can.brandLogo || can.BRAND_LOGO || brandLogoMap.get(brandKey);
 
@@ -981,36 +987,14 @@
     if (rawPhotos.length === 0) {
       rawPhotos = [can.ImgFront, can.ImgLeft, can.ImgBack, can.ImgRight].filter(Boolean);
     }
-
     if (rawPhotos.length === 0 && logoUrl) {
       rawPhotos.push(logoUrl);
     }
 
     zoomGallery = rawPhotos;
-
-    const photosContainer = document.getElementById("heroPhotos");
-    photosContainer.innerHTML = "";
-
-    const displayPhotos = rawPhotos.slice(0, 4);
-
-    if (displayPhotos.length > 0) {
-      displayPhotos.forEach((url, idx) => {
-        const optimizedUrl = getOptimizedImageUrl(url, 1000);
-        const photoCard = document.createElement("div");
-        photoCard.className = "hero-photo-card";
-        photoCard.innerHTML = `<img src="${optimizedUrl}" alt="FOTO ${idx+1}" loading="lazy">`;
-        photoCard.onclick = (e) => {
-          e.stopPropagation();
-          openZoomModal(idx);
-        };
-        photosContainer.appendChild(photoCard);
-      });
-    } else {
-      photosContainer.innerHTML = `<div class="hero-photo-card" style="grid-column: span 2; grid-row: span 2; color:#aaa; font-size:0.8rem;">SEM FOTOS</div>`;
-    }
   }
 
-  /* SISTEMA DE ZOOM CICLICO E PAN */
+  /* MODAL ZOOM */
   function openZoomModal(index) {
     if (!zoomGallery || zoomGallery.length === 0) return;
     currentZoomIndex = index;
@@ -1091,27 +1075,11 @@
     }
   }
 
-  /* GESTOS SWIPE */
-  let touchStartX = 0;
-  let touchStartY = 0;
-
+  /* MOUSE SCROLL */
   const catalogSection = document.getElementById("catalogSection");
-
-  catalogSection.addEventListener("touchstart", (e) => {
-    touchStartX = e.changedTouches[0].screenX;
-    touchStartY = e.changedTouches[0].screenY;
-  }, { passive: true });
-
-  catalogSection.addEventListener("touchend", (e) => {
-    const touchEndX = e.changedTouches[0].screenX;
-    const touchEndY = e.changedTouches[0].screenY;
-    handleSwipe(touchStartX, touchStartY, touchEndX, touchEndY);
-  }, { passive: true });
-
-  /* SCROLL DO MOUSE */
   catalogSection.addEventListener("wheel", (e) => {
     if (e.deltaY > 0) {
-      if (((currentPage + 1) * cardsPerRow) < currentFiltered.length) {
+      if (((currentPage + 1) * cardsPerPage) < currentFiltered.length) {
         currentPage++;
         renderApp();
         focusCardSafely(activeLocalIndex);
@@ -1125,48 +1093,7 @@
     }
   }, { passive: true });
 
-  function handleSwipe(startX, startY, endX, endY) {
-    const diffX = endX - startX;
-    const diffY = endY - startY;
-    const threshold = 30;
-
-    if (Math.abs(diffY) > Math.abs(diffX)) {
-      if (diffY < -threshold) {
-        if (((currentPage + 1) * cardsPerRow) < currentFiltered.length) {
-          currentPage++;
-          renderApp();
-          focusCardSafely(activeLocalIndex);
-        }
-      } else if (diffY > threshold) {
-        if (currentPage > 0) {
-          currentPage--;
-          renderApp();
-          focusCardSafely(activeLocalIndex);
-        }
-      }
-    } else {
-      if (diffX < -threshold) {
-        const cards = document.querySelectorAll(".card");
-        if (activeLocalIndex < cards.length - 1) {
-          focusCardSafely(activeLocalIndex + 1);
-        } else if (((currentPage + 1) * cardsPerRow) < currentFiltered.length) {
-          currentPage++;
-          renderApp();
-          focusCardSafely(0);
-        }
-      } else if (diffX > threshold) {
-        if (activeLocalIndex > 0) {
-          focusCardSafely(activeLocalIndex - 1);
-        } else if (currentPage > 0) {
-          currentPage--;
-          renderApp();
-          focusCardSafely(cardsPerRow - 1);
-        }
-      }
-    }
-  }
-
-  /* TECLADO E CONTROLE REMOTO */
+  /* NAVEGAÇÃO DE TECLADO / CONTROLE */
   document.addEventListener("keydown", (e) => {
     const isZoomActive = document.getElementById("zoomModal").classList.contains("active");
     const isExitActive = document.getElementById("exitModal").classList.contains("active");
@@ -1177,37 +1104,15 @@
         e.preventDefault();
         toggleZoomStep();
       } else if (zoomLevel > 1.0) {
-        if (e.key === "ArrowLeft") {
-          e.preventDefault();
-          panX += PAN_STEP;
-          applyZoomTransform();
-        } else if (e.key === "ArrowRight") {
-          e.preventDefault();
-          panX -= PAN_STEP;
-          applyZoomTransform();
-        } else if (e.key === "ArrowUp") {
-          e.preventDefault();
-          panY += PAN_STEP;
-          applyZoomTransform();
-        } else if (e.key === "ArrowDown") {
-          e.preventDefault();
-          panY -= PAN_STEP;
-          applyZoomTransform();
-        } else if (e.key === "Escape" || e.key === "Back" || e.keyCode === 10009 || e.keyCode === 27) {
-          e.preventDefault();
-          closeZoomModal();
-        }
+        if (e.key === "ArrowLeft") { e.preventDefault(); panX += PAN_STEP; applyZoomTransform(); }
+        else if (e.key === "ArrowRight") { e.preventDefault(); panX -= PAN_STEP; applyZoomTransform(); }
+        else if (e.key === "ArrowUp") { e.preventDefault(); panY += PAN_STEP; applyZoomTransform(); }
+        else if (e.key === "ArrowDown") { e.preventDefault(); panY -= PAN_STEP; applyZoomTransform(); }
+        else if (e.key === "Escape" || e.key === "Back" || e.keyCode === 10009 || e.keyCode === 27) { e.preventDefault(); closeZoomModal(); }
       } else {
-        if (e.key === "ArrowLeft") {
-          e.preventDefault();
-          navigateZoom(-1);
-        } else if (e.key === "ArrowRight") {
-          e.preventDefault();
-          navigateZoom(1);
-        } else if (e.key === "ArrowUp" || e.key === "ArrowDown" || e.key === "Escape" || e.key === "Back" || e.keyCode === 10009 || e.keyCode === 27) {
-          e.preventDefault();
-          closeZoomModal();
-        }
+        if (e.key === "ArrowLeft") { e.preventDefault(); navigateZoom(-1); }
+        else if (e.key === "ArrowRight") { e.preventDefault(); navigateZoom(1); }
+        else if (e.key === "ArrowUp" || e.key === "ArrowDown" || e.key === "Escape" || e.key === "Back" || e.keyCode === 10009 || e.keyCode === 27) { e.preventDefault(); closeZoomModal(); }
       }
     } else if (isExitActive) {
       if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
