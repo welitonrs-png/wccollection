@@ -12,7 +12,7 @@
     ::-webkit-scrollbar { display: none !important; width: 0 !important; height: 0 !important; }
     * { -ms-overflow-style: none !important; scrollbar-width: none !important; }
 
-    .app-container { display: flex; flex-direction: column; width: 100vw; height: 100vh; overflow: hidden; position: relative; background-color: #1a1e29; padding: 12px 16px; gap: 6px; }
+    .app-container { display: flex; width: 100vw; height: 100vh; overflow: hidden; position: relative; background-color: #1a1e29; }
 
     /* TELA DE CARREGAMENTO */
     .loading-screen {
@@ -31,7 +31,45 @@
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.9; } 50% { transform: scale(1.05); opacity: 1; } }
 
-    /* PAINEL SUPERIOR (BUSCA + LOGO DA MARCA) */
+    /* BOTÃO HAMBÚRGUER (CELULAR) */
+    .mobile-menu-btn {
+      display: none; position: fixed; top: 12px; left: 12px; z-index: 2000;
+      background: rgba(26, 32, 46, 0.9); color: #f39c12; border: 1px solid #f39c12;
+      font-size: 1.5rem; padding: 6px 12px; border-radius: 8px; cursor: pointer;
+    }
+    @media (max-width: 768px) { .mobile-menu-btn { display: block; } }
+
+    /* MENU GAVETA DESLIZANTE */
+    .sidebar-drawer {
+      position: absolute; top: 0; left: -280px; width: 260px; height: 100vh;
+      background: rgba(22, 27, 38, 0.98); backdrop-filter: blur(10px);
+      display: flex; flex-direction: column; padding: 30px 16px; gap: 8px;
+      z-index: 1000; border-right: 1px solid rgba(255,255,255,0.08);
+      transition: left 0.25s cubic-bezier(0.1, 0.9, 0.2, 1); overflow-y: auto;
+      box-shadow: 10px 0 30px rgba(0,0,0,0.6);
+    }
+    .sidebar-drawer.open { left: 0; }
+    .sidebar-logo { width: 100%; height: 50px; object-fit: contain; margin-bottom: 16px; text-align: center; }
+
+    .cat-btn {
+      display: flex; align-items: center; width: 100%; padding: 12px 18px; border-radius: 12px;
+      background: transparent; color: #e2e8f0; font-size: 1.05rem; font-weight: 600; border: none;
+      text-align: left; cursor: pointer; transition: all 0.15s ease; text-transform: uppercase !important;
+    }
+    .cat-btn:focus, .cat-btn.focused, .cat-btn:hover {
+      background: #ffffff !important; color: #1a1f2c !important; font-weight: 700 !important;
+      box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2); outline: none !important;
+    }
+
+    /* ÁREA PRINCIPAL */
+    .main-area {
+      flex: 1; display: flex; flex-direction: column; height: 100vh; padding: 12px 16px; gap: 6px;
+      overflow: hidden; background: #1a1e29; min-width: 0;
+      transition: transform 0.25s cubic-bezier(0.1, 0.9, 0.2, 1);
+    }
+    .main-area.pushed { transform: translateX(260px); }
+
+    /* PAINEL SUPERIOR (BUSCA + LOGO) */
     .top-panel {
       display: flex;
       width: 100%;
@@ -67,7 +105,7 @@
       box-shadow: 0 0 10px rgba(243, 156, 18, 0.4);
     }
 
-    /* AUTOCOMPLETAR COLADO ABAIXO DA BUSCA */
+    /* AUTOCOMPLETAR COLADO ABAIXO */
     .suggestions-list {
       position: absolute;
       top: 100%;
@@ -104,7 +142,7 @@
       font-weight: bold;
     }
 
-    /* DISPLAY DO LOGO DA MARCA */
+    /* LOGO DA MARCA SELECIONADA */
     .brand-hero-display {
       width: 300px;
       height: 100%;
@@ -131,11 +169,10 @@
       letter-spacing: 2px;
     }
 
-    /* CONTADOR DE CARDS */
     .counter-bar { display: flex; justify-content: flex-end; align-items: center; padding: 0 4px; }
     .card-counter { font-size: 0.85rem; font-weight: 900; color: #f39c12; background: transparent; padding: 2px 8px; letter-spacing: 1px; }
 
-    /* SEÇÃO DE CATALOGO DUPLA (2 LINHAS FIXAS) */
+    /* CATÁLOGO EM 2 LINHAS FIXAS */
     .catalog-section {
       flex: 1;
       width: 100%;
@@ -156,7 +193,6 @@
       height: 100%;
     }
 
-    /* ESTILO EXATO DOS CARDS DO INDEX.HTML */
     .card {
       width: 165px !important;
       min-width: 165px !important;
@@ -181,16 +217,12 @@
       padding: 8px !important;
     }
 
-    .card-top-photo img {
-      max-width: 100% !important;
-      max-height: 100% !important;
-      object-fit: contain !important;
-    }
+    .card-top-photo img { max-width: 100% !important; max-height: 100% !important; object-fit: contain !important; }
 
     .card-bottom-bar {
       width: 100% !important;
       height: 75px !important;
-      padding: 10px 10px 10px 10px !important;
+      padding: 10px !important;
       display: flex !important;
       flex-direction: column !important;
       justify-content: space-between !important;
@@ -227,12 +259,7 @@
       padding: 3px 7px !important; border-radius: 6px !important; font-size: 0.72rem !important; font-weight: 600 !important; white-space: nowrap !important;
     }
 
-    .card.focused, .card:hover { 
-      border: 2px solid #f39c12 !important; 
-      box-shadow: 0 0 8px rgba(243, 156, 18, 0.4) !important; 
-      outline: none !important; 
-      z-index: 10 !important; 
-    }
+    .card.focused, .card:hover { border: 2px solid #f39c12 !important; box-shadow: 0 0 8px rgba(243, 156, 18, 0.4) !important; outline: none !important; z-index: 10 !important; }
 
     /* MODAL ZOOM LIGHTBOX */
     .zoom-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.95); z-index: 3000; display: none; justify-content: center; align-items: center; padding: 16px; overflow: hidden; }
@@ -250,21 +277,32 @@
   </div>
 
   <div class="app-container">
-    <header class="top-panel">
-      <div class="search-box-area">
-        <input type="text" id="brandSearchInput" class="brand-search-input" placeholder="DIGITE A MARCA..." autocomplete="off">
-        <div class="suggestions-list" id="suggestionsList"></div>
-      </div>
+    <button class="mobile-menu-btn" onclick="toggleMenuMobile(event)">☰</button>
 
-      <div class="brand-hero-display" id="brandHeroDisplay">
-        <div class="brand-hero-placeholder" id="heroPlaceholder">SELECIONE UMA MARCA</div>
-      </div>
-    </header>
+    <!-- MENU LATERAL -->
+    <nav class="sidebar-drawer" id="sidebarDrawer">
+      <img src="logo.png" alt="Logo" class="sidebar-logo">
+      <button class="cat-btn" onclick="window.location.href='index.html'" tabindex="0">HOME / CATÁLOGO</button>
+      <button class="cat-btn focused" tabindex="0">LATAS POR MARCAS</button>
+    </nav>
 
-    <div class="counter-bar"><div class="card-counter" id="cardCounter">0/0</div></div>
+    <main class="main-area" id="mainArea" onclick="handleMainAreaClick()">
+      <header class="top-panel">
+        <div class="search-box-area">
+          <input type="text" id="brandSearchInput" class="brand-search-input" placeholder="DIGITE A MARCA..." autocomplete="off">
+          <div class="suggestions-list" id="suggestionsList"></div>
+        </div>
 
-    <main class="catalog-section" id="catalogSection">
-      <div class="card-grid-container" id="cardGrid"></div>
+        <div class="brand-hero-display" id="brandHeroDisplay">
+          <div class="brand-hero-placeholder" id="heroPlaceholder">SELECIONE UMA MARCA</div>
+        </div>
+      </header>
+
+      <div class="counter-bar"><div class="card-counter" id="cardCounter">0/0</div></div>
+
+      <section class="catalog-section" id="catalogSection">
+        <div class="card-grid-container" id="cardGrid"></div>
+      </section>
     </main>
   </div>
 
@@ -282,10 +320,9 @@
   let currentZoomIndex = 0;
   let selectedSuggestionIndex = -1;
 
-  /* CONSTANTES DE PAGINAÇÃO (EXATAMENTE 2 LINHAS DE 6 COLS = 12 CARDS POR PÁGINA) */
   const COLS_PER_ROW = 6;
   const ROWS_PER_PAGE = 2;
-  const CARDS_PER_PAGE = COLS_PER_ROW * ROWS_PER_PAGE; // 12 cards por página
+  const CARDS_PER_PAGE = COLS_PER_ROW * ROWS_PER_PAGE;
   
   let currentPage = 0;
   let activeLocalIndex = 0;
@@ -320,6 +357,24 @@
     return code ? `https://flagcdn.com/w40/${code}.png` : '';
   }
 
+  /* CONTROLE DO MENU LATERAL */
+  function openMenu() {
+    document.getElementById("sidebarDrawer").classList.add("open");
+    document.getElementById("mainArea").classList.add("pushed");
+  }
+  function closeMenu() {
+    document.getElementById("sidebarDrawer").classList.remove("open");
+    document.getElementById("mainArea").classList.remove("pushed");
+  }
+  function toggleMenuMobile(e) {
+    if(e) e.stopPropagation();
+    const drawer = document.getElementById("sidebarDrawer");
+    drawer.classList.contains("open") ? closeMenu() : openMenu();
+  }
+  function handleMainAreaClick() {
+    if (document.getElementById("sidebarDrawer").classList.contains("open")) closeMenu();
+  }
+
   /* CARREGA DADOS DA PLANILHA */
   async function fetchCatalogFromSheet() {
     try {
@@ -336,7 +391,7 @@
     }
   }
 
-  /* PESQUISA E SUGESTÕES */
+  /* BUSCA E AUTOCOMPLETAR */
   const searchInput = document.getElementById("brandSearchInput");
   const suggestionsList = document.getElementById("suggestionsList");
 
@@ -350,12 +405,8 @@
     }
 
     const matches = allBrands.filter(b => String(b).toLowerCase().includes(query));
-
-    if (matches.length > 0) {
-      renderSuggestions(matches);
-    } else {
-      suggestionsList.classList.remove("active");
-    }
+    if (matches.length > 0) renderSuggestions(matches);
+    else suggestionsList.classList.remove("active");
   });
 
   function renderSuggestions(matches) {
@@ -379,13 +430,10 @@
     currentPage = 0;
     activeLocalIndex = 0;
     renderApp();
-    
-    if (currentFiltered.length > 0) {
-      focusCardSafely(0);
-    }
+    if (currentFiltered.length > 0) focusCardSafely(0);
   }
 
-  /* TECLADO NA BUSCA */
+  /* NAVEGAÇÃO TECLADO / D-PAD */
   searchInput.addEventListener("keydown", (e) => {
     const items = suggestionsList.querySelectorAll(".suggestion-item");
 
@@ -400,15 +448,15 @@
         updateSuggestionFocus(items);
       } else if (e.key === "Enter") {
         e.preventDefault();
-        if (selectedSuggestionIndex >= 0 && items[selectedSuggestionIndex]) {
-          items[selectedSuggestionIndex].click();
-        } else if (items[0]) {
-          items[0].click();
-        }
+        if (selectedSuggestionIndex >= 0 && items[selectedSuggestionIndex]) items[selectedSuggestionIndex].click();
+        else if (items[0]) items[0].click();
       }
     } else if (e.key === "ArrowDown" && currentFiltered.length > 0) {
       e.preventDefault();
       focusCardSafely(0);
+    } else if (e.key === "ArrowLeft") {
+      e.preventDefault();
+      openMenu();
     }
   });
 
@@ -420,20 +468,15 @@
     }
   }
 
-  /* RENDERIZA OS CARDS EM 2 LINHAS FIXAS (PAGINADO IGUAL AO INDEX) */
+  /* RENDERIZA OS CARDS */
   function renderApp() {
     const grid = document.getElementById("cardGrid");
     grid.innerHTML = "";
 
-    // Atualiza o Display do Logo da Marca
     const heroDisplay = document.getElementById("brandHeroDisplay");
     if (currentFiltered.length > 0) {
       const logoUrl = currentFiltered[0].brandLogo || currentFiltered[0].BRAND_LOGO;
-      if (logoUrl) {
-        heroDisplay.innerHTML = `<img src="${getOptimizedImageUrl(logoUrl, 600)}" alt="LOGO DA MARCA">`;
-      } else {
-        heroDisplay.innerHTML = `<div class="brand-hero-placeholder">${currentFiltered[0].brewery || 'MARCA'}</div>`;
-      }
+      heroDisplay.innerHTML = logoUrl ? `<img src="${getOptimizedImageUrl(logoUrl, 600)}" alt="LOGO DA MARCA">` : `<div class="brand-hero-placeholder">${currentFiltered[0].brewery || 'MARCA'}</div>`;
     }
 
     const total = currentFiltered.length;
@@ -442,7 +485,6 @@
 
     pageItems.forEach((can, localIndex) => {
       const globalIndex = startIndex + localIndex;
-
       const rawImg = can.ImgFront || can.front || can.ImgCover || can.cover;
       const frontImg = getOptimizedImageUrl(rawImg, 400);
 
@@ -469,43 +511,29 @@
 
       card.onclick = () => openZoomModal(can);
 
-      /* SISTEMA COMPLETO DE NAVEGAÇÃO IGUAL AO INDEX (D-PAD / CONTROLE REMOTO) */
       card.onkeydown = (e) => {
         if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          openZoomModal(can);
+          e.preventDefault(); openZoomModal(can);
         } else if (e.key === "ArrowRight") {
           if (localIndex === pageItems.length - 1 && (startIndex + CARDS_PER_PAGE) < total) {
-            e.preventDefault();
-            currentPage++;
-            renderApp();
-            focusCardSafely(0);
+            e.preventDefault(); currentPage++; renderApp(); focusCardSafely(0);
           }
         } else if (e.key === "ArrowLeft") {
-          if (localIndex === 0 && currentPage > 0) {
-            e.preventDefault();
-            currentPage--;
-            renderApp();
-            focusCardSafely(CARDS_PER_PAGE - 1);
+          if (localIndex === 0 || localIndex === COLS_PER_ROW) {
+            if (currentPage > 0) { e.preventDefault(); currentPage--; renderApp(); focusCardSafely(CARDS_PER_PAGE - 1); }
+            else { e.preventDefault(); openMenu(); }
           }
         } else if (e.key === "ArrowDown") {
-          // Navegação vertical entre linha 1 e linha 2
           if (localIndex < COLS_PER_ROW && (localIndex + COLS_PER_ROW) < pageItems.length) {
-            e.preventDefault();
-            focusCardSafely(localIndex + COLS_PER_ROW);
+            e.preventDefault(); focusCardSafely(localIndex + COLS_PER_ROW);
           } else if ((startIndex + CARDS_PER_PAGE) < total) {
-            e.preventDefault();
-            currentPage++;
-            renderApp();
-            focusCardSafely(localIndex % COLS_PER_ROW);
+            e.preventDefault(); currentPage++; renderApp(); focusCardSafely(localIndex % COLS_PER_ROW);
           }
         } else if (e.key === "ArrowUp") {
           if (localIndex >= COLS_PER_ROW) {
-            e.preventDefault();
-            focusCardSafely(localIndex - COLS_PER_ROW);
+            e.preventDefault(); focusCardSafely(localIndex - COLS_PER_ROW);
           } else {
-            e.preventDefault();
-            searchInput.focus();
+            e.preventDefault(); searchInput.focus();
           }
         }
       };
@@ -529,9 +557,7 @@
       grid.appendChild(card);
     });
 
-    if (pageItems.length === 0) {
-      document.getElementById("cardCounter").innerText = "0/0";
-    }
+    if (pageItems.length === 0) document.getElementById("cardCounter").innerText = "0/0";
   }
 
   function focusCardSafely(targetIndex) {
@@ -544,7 +570,7 @@
     }, 50);
   }
 
-  /* MODAL LIGHTBOX DE ZOOM */
+  /* MODAL ZOOM LIGHTBOX */
   function openZoomModal(can) {
     let photos = [can.ImgFront, can.ImgLeft, can.ImgBack, can.ImgRight].filter(Boolean);
     if (photos.length === 0) return;
