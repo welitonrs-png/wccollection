@@ -119,7 +119,9 @@
 
     /* SEÇÃO INFERIOR DO CATÁLOGO */
     .catalog-section { height: 185px; min-height: 185px; width: 100%; overflow: hidden; flex-shrink: 0; touch-action: none; }
-    .card-row { display: flex; height: 100%; width: 100%; justify-content: space-between; align-items: flex-end; }
+    
+    /* ALTERAÇÃO AQUI: Alinhamento à esquerda com gap de 12px entre os cards */
+    .card-row { display: flex; height: 100%; width: 100%; justify-content: flex-start; align-items: flex-end; gap: 12px; }
 
     /* ========================================================
        AJUSTE DE DIMENSÕES: 7 CARDS PROPORCIONAIS DENTRO DA TELA
@@ -140,7 +142,7 @@
 
     .card.card-aspect-sets { width: 170px !important; min-width: 170px !important; }
 
-    /* Área da Foto Superior (Reduzida proporcionalmente) */
+    /* Área da Foto Superior */
     .card-top-photo {
       width: 100% !important;
       height: 137px !important;
