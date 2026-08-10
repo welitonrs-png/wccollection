@@ -7,12 +7,12 @@
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; outline: none; }
     
-    body { background-color: #1a1e29; color: #DDDDDD; height: 100vh; overflow: hidden; display: flex; user-select: none; }
+    body { background-color: #1a1e29; color: #DDDDDD; height: 100vh; overflow: hidden; display: flex; user-select: none; touch-action: pan-y; }
 
     ::-webkit-scrollbar { display: none !important; width: 0 !important; height: 0 !important; }
     * { -ms-overflow-style: none !important; scrollbar-width: none !important; }
 
-    .app-container { display: flex; width: 100vw; height: 100vh; overflow: hidden; position: relative; background-color: #1a1e29; padding: 12px 16px; }
+    .app-container { display: flex; flex-direction: column; width: 100vw; height: 100vh; overflow: hidden; position: relative; background-color: #1a1e29; padding: 12px 16px; gap: 10px; }
 
     /* TELA DE CARREGAMENTO */
     .loading-screen {
@@ -31,22 +31,20 @@
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.9; } 50% { transform: scale(1.05); opacity: 1; } }
 
-    /* ESTRUTURA DO GRID (7 COLUNAS TOTAIS) */
-    .main-grid {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      grid-template-rows: auto auto auto;
-      gap: 12px;
+    /* PAINEL SUPERIOR: BUSCA E LOGO DA MARCA */
+    .top-panel {
+      display: flex;
       width: 100%;
-      height: 100%;
-      overflow-y: auto;
+      height: 120px;
+      gap: 16px;
+      align-items: center;
+      flex-shrink: 0;
     }
 
-    /* ÁREA DO CAMPO DE BUSCA (AGORA COM LARGURA PARA 4 CARDS) */
     .search-box-area {
-      grid-column: span 4;
+      flex: 1;
       position: relative;
-      height: 50px;
+      height: 52px;
     }
 
     .brand-search-input {
@@ -69,7 +67,7 @@
       box-shadow: 0 0 10px rgba(243, 156, 18, 0.4);
     }
 
-    /* LISTA DE SUGESTÕES COLADA LOGO ABAIXO DA BUSCA */
+    /* LISTA DE SUGESTÕES DA BUSCA (COLADA ABAIXO) */
     .suggestions-list {
       position: absolute;
       top: 100%;
@@ -80,7 +78,7 @@
       border-top: none;
       border-bottom-left-radius: 10px;
       border-bottom-right-radius: 10px;
-      max-height: 200px;
+      max-height: 220px;
       overflow-y: auto;
       display: none;
       z-index: 1000;
@@ -106,17 +104,15 @@
       font-weight: bold;
     }
 
-    /* DISPLAY DA MARCA (COR DE FUNDO IDÊNTICA AO FUNDO PRINCIPAL DO APP) */
+    /* DISPLAY DO LOGO DA MARCA (INTEGRADO AO FUNDO) */
     .brand-hero-display {
-      grid-column: span 3;
-      grid-row: span 2;
-      background: #1a1e29; /* Mesma cor do fundo */
-      border: none;
-      border-radius: 12px;
+      width: 320px;
+      height: 100%;
+      background: #1a1e29;
       display: flex;
-      justify-content: center;
+      justify-content: flex-end;
       align-items: center;
-      padding: 12px;
+      padding: 8px;
       overflow: hidden;
     }
 
@@ -135,7 +131,32 @@
       letter-spacing: 2px;
     }
 
-    /* ESTILO DOS CARDS DAS LATAS (TAMANHO IDÊNTICO AO INDEX) */
+    /* BARRA DE CONTADOR DE LATAS */
+    .counter-bar { display: flex; justify-content: flex-end; align-items: center; padding: 0 4px; }
+    .card-counter { font-size: 0.85rem; font-weight: 900; color: #f39c12; background: transparent; padding: 2px 8px; letter-spacing: 1px; }
+
+    /* SEÇÃO INFERIOR DO CATÁLOGO EM 2 LINHAS (ESTILO DO INDEX) */
+    .catalog-section {
+      flex: 1;
+      width: 100%;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      gap: 12px;
+    }
+
+    .card-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(165px, 1fr));
+      grid-template-rows: repeat(2, 230px);
+      gap: 12px;
+      width: 100%;
+      height: 100%;
+      overflow-y: auto;
+    }
+
+    /* ESTILO EXATO DOS CARDS DO INDEX.HTML */
     .card {
       width: 165px !important;
       min-width: 165px !important;
@@ -229,22 +250,24 @@
   </div>
 
   <div class="app-container">
-    <div class="main-grid" id="mainGrid">
-      
-      <!-- CAMPO DE BUSCA (4 COLUNAS) -->
+    <!-- topo COM CAMPO DE BUSCA E FOTO DA MARCA -->
+    <header class="top-panel">
       <div class="search-box-area">
-        <input type="text" id="brandSearchInput" class="brand-search-input" placeholder="DIGITE A MARCA..." autocomplete="off">
+        <input type="text" id="brandSearchInput" class="brand-search-input" placeholder="DIGITE A MARCA (EX: HEINEKEN)..." autocomplete="off">
         <div class="suggestions-list" id="suggestionsList"></div>
       </div>
 
-      <!-- FOTO/LOGO DA MARCA SELECIONADA (3 COLUNAS - FUNDO INTEGRADO) -->
       <div class="brand-hero-display" id="brandHeroDisplay">
         <div class="brand-hero-placeholder" id="heroPlaceholder">SELECIONE UMA MARCA</div>
       </div>
+    </header>
 
-      <!-- CARDS SERÃO INSERIDOS AQUI DINAMICAMENTE -->
+    <div class="counter-bar"><div class="card-counter" id="cardCounter">0/0</div></div>
 
-    </div>
+    <!-- SEÇÃO DOS CARDS EM DUAS LINHAS -->
+    <main class="catalog-section">
+      <div class="card-row" id="cardRow"></div>
+    </main>
   </div>
 
   <!-- MODAL ZOOM LIGHTBOX -->
@@ -347,7 +370,7 @@
     
     currentFiltered = canCatalog.filter(c => String(c.brewery || c.Cervejaria).toLowerCase().trim() === brandName.toLowerCase().trim());
     
-    renderBrandGrid();
+    renderBrandCards();
   }
 
   /* NAVEGAÇÃO NO CAMPO DE BUSCA VIA D-PAD / TECLADO */
@@ -386,15 +409,12 @@
     }
   }
 
-  /* RENDERIZA OS CARDS NO GRID */
-  function renderBrandGrid() {
-    const mainGrid = document.getElementById("mainGrid");
-    
-    // Limpa cards antigos
-    const existingCards = mainGrid.querySelectorAll(".card");
-    existingCards.forEach(c => c.remove());
+  /* RENDERIZA OS CARDS NO CONTAINER EM 2 LINHAS */
+  function renderBrandCards() {
+    const row = document.getElementById("cardRow");
+    row.innerHTML = "";
 
-    // Atualiza a Foto/Logo da Marca no Destaque do Topo
+    // Atualiza o Display da Marca
     const heroDisplay = document.getElementById("brandHeroDisplay");
     if (currentFiltered.length > 0) {
       const logoUrl = currentFiltered[0].brandLogo || currentFiltered[0].BRAND_LOGO;
@@ -405,7 +425,8 @@
       }
     }
 
-    // Renderiza os cards das latas da marca selecionada
+    document.getElementById("cardCounter").innerText = `${currentFiltered.length} LATAS ENCONTRADAS`;
+
     currentFiltered.forEach((can, idx) => {
       const rawImg = can.ImgFront || can.front || can.ImgCover || can.cover;
       const frontImg = getOptimizedImageUrl(rawImg, 400);
@@ -429,7 +450,7 @@
         if (e.key === "Enter" || e.key === " ") {
           e.preventDefault();
           openZoomModal(can);
-        } else if (e.key === "ArrowUp" && idx < 4) { // Pressionar para cima nos 4 primeiros cards volta para a busca
+        } else if (e.key === "ArrowUp" && idx < 7) { // Pressionar para cima na primeira linha foca na busca
           e.preventDefault();
           searchInput.focus();
         }
@@ -451,7 +472,7 @@
         </div>
       `;
 
-      mainGrid.appendChild(card);
+      row.appendChild(card);
     });
   }
 
