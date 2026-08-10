@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WCCollection - Latas por Marcas</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; outline: none; }
+    
+    body { background-color: #1a1e29; color: #DDDDDD; height: 100vh; overflow: hidden; display: flex; user-select: none; touch-action: pan-y; }
+
+    ::-webkit-scrollbar { display: none !important; width: 0 !important; height: 0 !important; }
+    * { -ms-overflow-style: none !important; scrollbar-width: none !important; }
+
+    .app-container { display: flex; width: 100vw; height: 100vh; overflow: hidden; position: relative; background-color: #1a1e29; }
+
+    /* TELA DE CARREGAMENTO */
+    .loading-screen {
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      background-color: #1a1e29; z-index: 9999; display: flex;
+      flex-direction: column; justify-content: center; align-items: center; gap: 20px;
+      transition: opacity 0.5s ease, visibility 0.5s ease;
+    }
+    .loading-screen.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+    .loading-logo { width: 180px; height: auto; object-fit: contain; animation: pulse 1.5s infinite ease-in-out; }
+    .loading-text { color: #f39c12; font-size: 1.1rem; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; }
+    .spinner {
+      width: 40px; height: 40px;
+      border: 4px solid rgba(243, 156, 18, 0.2);
+      border-top: 4px solid #f39c12; border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.9; } 50% { transform: scale(1.05); opacity: 1; } }
+
+    /* ÁREA PRINCIPAL */
+    .main-area {
+      flex: 1; display: flex; flex-direction: column; height: 100vh; padding: 10px 16px; gap: 6px;
+      overflow: hidden; background: #1a1e29; min-width: 0;
+    }
+
+    /* BARRA DE PESQUISA COM AUTOCOMPLETAR */
+    .search-bar-container {
+      position: relative;
+      width: 100%;
+      max-width: 500px;
+      margin: 0 auto 4px auto;
+      z-index: 500;
+    }
+
+    .brand-search-input {
+      width: 100%;
+      padding: 10px 16px;
+      background: #11141d;
+      border: 2px solid #333d52;
+      border-radius: 8px;
+      color: #f39c12;
+      font-size: 1.1rem;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .brand-search-input:focus {
+      border-color: #f39c12;
+      box-shadow: 0 0 10px rgba(243, 156, 18, 0.4);
+    }
+
+    /* LISTA DE SUGESTÕES (AUTOCOMPLETE) */
+    .suggestions-list {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 100%;
+      background: #161b26;
+      border: 2px solid #f39c12;
+      border-top: none;
+      border-bottom-left-radius: 8px;
+      border-bottom-right-radius: 8px;
+      max-height: 200px;
+      overflow-y: auto;
+      display: none;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.8);
+      z-index: 1000;
+    }
+
+    .suggestions-list.active { display: block; }
+
+    .suggestion-item {
+      padding: 10px 16px;
+      color: #dddddd;
+      font-size: 0.95rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background 0.15s ease, color 0.15s ease;
+    }
+
+    .suggestion-item.focused, .suggestion-item:hover {
+      background: #f39c12;
+      color: #1a1f2c;
+      font-weight: bold;
+    }
+
+    /* PAINEL HERO (TOPO) */
+    .hero-panel { flex: 1; min-height: 0; background: transparent; border-radius: 12px; display: flex; padding: 4px 12px; gap: 20px; align-items: center; position: relative; }
+    
+    .hero-brand-logo-container { 
+      position: absolute; top: 0px; right: 20px; 
+      width: 240px; height: 120px; 
+      display: flex; justify-content: flex-end; align-items: flex-start; 
+      z-index: 20; pointer-events: none; 
+    }
+    .hero-brand-logo-container img { max-width: 100%; max-height: 100%; object-fit: contain; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.5)); }
+
+    .hero-left-photos { height: 100%; aspect-ratio: 1 / 1; display: grid; grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(2, 1fr); gap: 8px; }
+
+    .hero-photo-card { background: #ffffff; border-radius: 8px; padding: 4px; display: flex; justify-content: center; align-items: center; width: 100%; height: 100%; overflow: hidden; cursor: pointer; }
+    .hero-photo-card img { width: 100%; height: 100%; object-fit: contain; }
+
+    .hero-right-info { flex: 1; height: 100%; display: flex; flex-direction: column; justify-content: flex-start; gap: 4px; color: #f39c12; text-transform: uppercase; font-style: italic; overflow-y: auto; padding-right: 250px; }
+    .hero-title { font-size: clamp(1.1rem, 1.9vw, 1.5rem); font-weight: 900; line-height: 1.1; color: #f39c12; margin-bottom: 2px; letter-spacing: 0.5px; }
+    .info-block { display: flex; flex-direction: column; margin-bottom: 2px; }
+    .info-label { font-size: clamp(0.65rem, 0.9vw, 0.8rem); font-weight: 900; color: #f39c12; line-height: 1.1; letter-spacing: 0.5px; }
+    .info-val { font-size: clamp(0.9rem, 1.4vw, 1.2rem); font-weight: 900; color: #f39c12; line-height: 1.1; margin-top: 1px; }
+
+    .counter-bar { display: flex; justify-content: flex-end; align-items: center; padding: 0 4px; }
+    .card-counter { font-size: 0.85rem; font-weight: 900; color: #f39c12; background: transparent; padding: 2px 8px; letter-spacing: 1px; }
+
+    /* CARROSSEL DE CARDS (LAYOUT DA ESQUERDA Mantido) */
+    .catalog-section { height: 235px; min-height: 235px; width: 100%; overflow: hidden; flex-shrink: 0; touch-action: none; }
+    .card-row { display: flex; gap: 12px; height: 100%; width: 100%; justify-content: flex-start; align-items: flex-end; }
+
+    .card {
+      width: 165px !important;
+      min-width: 165px !important;
+      height: 230px !important;
+      background: #ffffff !important;
+      border-radius: 12px !important;
+      overflow: hidden !important;
+      display: flex !important;
+      flex-direction: column !important;
+      border: 2px solid transparent !important;
+      cursor: pointer !important;
+      flex-shrink: 0 !important;
+    }
+
+    .card-top-photo {
+      width: 100% !important;
+      height: 155px !important;
+      background: #ffffff !important;
+      display: flex !important;
+      justify-content: center !important;
+      align-items: center !important;
+      padding: 8px !important;
+    }
+
+    .card-top-photo img { max-width: 100% !important; max-height: 100% !important; object-fit: contain !important; }
+
+    .card-bottom-bar {
+      width: 100% !important;
+      height: 75px !important;
+      padding: 10px 10px 10px 10px !important;
+      display: flex !important;
+      flex-direction: column !important;
+      justify-content: space-between !important;
+      box-sizing: border-box !important;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
+    }
+
+    .card-bar-title {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
+      font-size: 0.98rem !important;
+      font-weight: 600 !important;
+      color: #ffffff !important;
+      white-space: nowrap !important;
+      overflow: hidden !important;
+      text-overflow: ellipsis !important;
+      text-transform: capitalize !important;
+      line-height: 1.2 !important;
+    }
+
+    .card-bar-details { display: flex !important; justify-content: space-between !important; align-items: center !important; width: 100% !important; }
+
+    .card-bar-country {
+      display: flex !important; align-items: center !important; gap: 6px !important;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
+      font-size: 0.82rem !important; font-weight: 500 !important; color: #ffffff !important;
+      white-space: nowrap !important; overflow: hidden !important; text-transform: capitalize !important;
+    }
+
+    .card-bar-flag { width: 18px !important; height: 12px !important; object-fit: cover !important; border-radius: 2px !important; }
+
+    .card-bar-vol {
+      background: rgba(0, 0, 0, 0.45) !important; color: #ffffff !important;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
+      padding: 3px 7px !important; border-radius: 6px !important; font-size: 0.72rem !important; font-weight: 600 !important; white-space: nowrap !important;
+    }
+
+    .card.focused, .card:hover { border: 2px solid #f39c12 !important; box-shadow: 0 0 8px rgba(243, 156, 18, 0.4) !important; outline: none !important; z-index: 10 !important; }
+
+    /* MODAL ZOOM */
+    .zoom-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.95); z-index: 3000; display: none; justify-content: center; align-items: center; padding: 16px; overflow: hidden; }
+    .zoom-modal.active { display: flex; }
+    .zoom-modal img { max-width: 85vw; max-height: 85vh; object-fit: contain; border-radius: 6px; cursor: pointer; transition: transform 0.15s ease-out; }
+  </style>
+</head>
+<body>
+
+  <!-- TELA DE CARREGAMENTO -->
+  <div class="loading-screen" id="loadingScreen">
+    <img src="logo.png" alt="Logo" class="loading-logo">
+    <div class="spinner"></div>
+    <div class="loading-text" id="loadingText">CARREGANDO MARCAS...</div>
+  </div>
+
+  <div class="app-container">
+    <main class="main-area">
+      
+      <!-- CAMPO DE PESQUISA COM AUTOCOMPLETAR -->
+      <div class="search-bar-container">
+        <input type="text" id="brandSearchInput" class="brand-search-input" placeholder="DIGITE A MARCA (EX: HEINEKEN)..." autocomplete="off">
+        <div class="suggestions-list" id="suggestionsList"></div>
+      </div>
+
+      <!-- PAINEL HERO (EXIBE A LATA SELECIONADA E O LOGO DA MARCA) -->
+      <section class="hero-panel" id="heroPanel">
+        <div class="hero-brand-logo-container" id="heroBrandLogo"></div>
+
+        <div class="hero-left-photos" id="heroPhotos">
+          <div class="hero-photo-card"><img src="" alt=""></div>
+          <div class="hero-photo-card"><img src="" alt=""></div>
+          <div class="hero-photo-card"><img src="" alt=""></div>
+          <div class="hero-photo-card"><img src="" alt=""></div>
+        </div>
+
+        <div class="hero-right-info">
+          <div class="hero-title" id="heroTitle">SELECIONE UMA MARCA</div>
+          <div class="info-block"><span class="info-label">ORIGEM:</span><div class="info-val" id="heroCountry">-</div></div>
+          <div class="info-block"><span class="info-label">VOLUME:</span><div class="info-val" id="heroVolume">-</div></div>
+          <div class="info-block"><span class="info-label">ANO:</span><div class="info-val" id="heroYear">-</div></div>
+          <div class="info-block"><span class="info-label">CÓD. BARRAS:</span><div class="info-val" id="heroBarcode">-</div></div>
+        </div>
+      </section>
+
+      <div class="counter-bar"><div class="card-counter" id="cardCounter">0/0</div></div>
+
+      <!-- CARROSSEL DE CARDS -->
+      <section class="catalog-section" id="catalogSection">
+        <div class="card-row" id="cardRow"></div>
+      </section>
+    </main>
+  </div>
+
+  <!-- MODAL ZOOM -->
+  <div class="zoom-modal" id="zoomModal" onclick="closeZoomModal()">
+    <img id="zoomImage" src="" alt="Imagem ampliada" onclick="event.stopPropagation(); toggleZoomStep();">
+  </div>
+
+<script>
+  const API_URL = "https://script.google.com/macros/s/AKfycbwP4kTpSrGJllmlWjQp1YmD1Th5jiw1oUtX5cAJAZj9txy-eNi6_EYyLPG_Q0_coyT9/exec";
+  let canCatalog = [];
+  let allBrands = [];
+  let currentFiltered = [];
+  let zoomGallery = [];
+  let currentZoomIndex = 0;
+  
+  let cardsPerRow = 5;
+  let currentPage = 0;
+  let activeLocalIndex = 0;
+  let selectedSuggestionIndex = -1;
+
+  const BRAND_COLORS = {
+    'carlsberg': '#005826', 'heineken': '#008234', 'budweiser': '#1d285a', 'brahma': '#e31b23',
+    'skol': '#fca311', 'stella artois': '#b81d24', 'corona': '#002b49', 'amstel': '#d32f2f',
+    'eisenbahn': '#3a2e2b', 'bohemia': '#8b1e0f', 'antarctica': '#0055a5', 'guinness': '#000000',
+    'therezopolis': '#1b382b', 'wienbier': '#33261d', 'faxe': '#3a0000'
+  };
+
+  function getOptimizedImageUrl(url, size = 300) {
+    if (!url) return '';
+    if (url.includes('googleusercontent.com')) return url.split('=')[0] + `=s${size}-rw`;
+    return url;
+  }
+
+  function formatCapitalizedText(str) {
+    if (!str) return '';
+    return String(str).toLowerCase().trim().split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+  }
+
+  function getFlagUrlByCountry(countryName) {
+    if (!countryName) return '';
+    const name = String(countryName).toLowerCase().trim();
+    const countryCodes = {
+      'china': 'cn', 'holanda': 'nl', 'netherlands': 'nl', 'brasil': 'br', 'brazil': 'br',
+      'alemanha': 'de', 'eua': 'us', 'suíça': 'ch', 'bélgica': 'be', 'japão': 'jp',
+      'méxico': 'mx', 'dinamarca': 'dk', 'itália': 'it', 'espanha': 'es', 'portugal': 'pt'
+    };
+    const code = countryCodes[name];
+    return code ? `https://flagcdn.com/w40/${code}.png` : '';
+  }
+
+  /* CARREGA DADOS DA API */
+  async function fetchCatalogFromSheet() {
+    try {
+      const response = await fetch(API_URL + "?nocache=" + new Date().getTime());
+      canCatalog = await response.json();
+      
+      // Extrai lista única de marcas cadastradas
+      allBrands = [...new Set(canCatalog.map(c => c.brewery || c.Cervejaria).filter(Boolean))].sort();
+      
+      document.getElementById("loadingScreen").classList.add("hidden");
+      document.getElementById("brandSearchInput").focus();
+    } catch (err) {
+      console.error("Erro ao carregar catálogo:", err);
+      document.getElementById("loadingScreen").classList.add("hidden");
+    }
+  }
+
+  /* SISTEMA DE PESQUISA E AUTOCOMPLETAR */
+  const searchInput = document.getElementById("brandSearchInput");
+  const suggestionsList = document.getElementById("suggestionsList");
+
+  searchInput.addEventListener("input", () => {
+    const query = searchInput.value.toLowerCase().trim();
+    selectedSuggestionIndex = -1;
+
+    if (!query) {
+      suggestionsList.classList.remove("active");
+      return;
+    }
+
+    const matches = allBrands.filter(b => String(b).toLowerCase().includes(query));
+
+    if (matches.length > 0) {
+      renderSuggestions(matches);
+    } else {
+      suggestionsList.classList.remove("active");
+    }
+  });
+
+  function renderSuggestions(matches) {
+    suggestionsList.innerHTML = "";
+    matches.forEach((brand, idx) => {
+      const item = document.createElement("div");
+      item.className = "suggestion-item";
+      item.innerText = brand.toUpperCase();
+      item.onclick = () => selectBrand(brand);
+      suggestionsList.appendChild(item);
+    });
+    suggestionsList.classList.add("active");
+  }
+
+  function selectBrand(brandName) {
+    searchInput.value = brandName.toUpperCase();
+    suggestionsList.classList.remove("active");
+    
+    // Filtra catálogo exclusivamente pela marca selecionada
+    currentFiltered = canCatalog.filter(c => String(c.brewery || c.Cervejaria).toLowerCase().trim() === brandName.toLowerCase().trim());
+    
+    currentPage = 0;
+    activeLocalIndex = 0;
+    renderApp();
+
+    if (currentFiltered.length > 0) {
+      updateHeroPanel(currentFiltered[0], 0);
+      focusCardSafely(0);
+    }
+  }
+
+  /* NAVEGAÇÃO POR TECLADO E CONTROLE REMOTO NA BARRA DE PESQUISA */
+  searchInput.addEventListener("keydown", (e) => {
+    const items = suggestionsList.querySelectorAll(".suggestion-item");
+
+    if (suggestionsList.classList.contains("active") && items.length > 0) {
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        selectedSuggestionIndex = Math.min(selectedSuggestionIndex + 1, items.length - 1);
+        updateSuggestionFocus(items);
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        selectedSuggestionIndex = Math.max(selectedSuggestionIndex - 1, 0);
+        updateSuggestionFocus(items);
+      } else if (e.key === "Enter") {
+        e.preventDefault();
+        if (selectedSuggestionIndex >= 0 && items[selectedSuggestionIndex]) {
+          items[selectedSuggestionIndex].click();
+        } else if (items[0]) {
+          items[0].click();
+        }
+      }
+    } else if (e.key === "ArrowDown" && currentFiltered.length > 0) {
+      e.preventDefault();
+      focusCardSafely(0);
+    }
+  });
+
+  function updateSuggestionFocus(items) {
+    items.forEach(i => i.classList.remove("focused"));
+    if (selectedSuggestionIndex >= 0 && items[selectedSuggestionIndex]) {
+      items[selectedSuggestionIndex].classList.add("focused");
+      items[selectedSuggestionIndex].scrollIntoView({ block: "nearest" });
+    }
+  }
+
+  /* RENDERIZAÇÃO DOS CARDS */
+  function renderApp() {
+    const row = document.getElementById("cardRow");
+    row.innerHTML = "";
+
+    const startIndex = currentPage * cardsPerRow;
+    const pageItems = currentFiltered.slice(startIndex, startIndex + cardsPerRow);
+
+    pageItems.forEach((can, localIndex) => {
+      const globalIndex = startIndex + localIndex;
+      const rawImg = can.ImgFront || can.front || can.ImgCover || can.cover;
+      const frontImg = getOptimizedImageUrl(rawImg, 400);
+
+      const brandRaw = can.brewery || can.Cervejaria || can.name || "Cerveja";
+      const brandFormatted = formatCapitalizedText(brandRaw);
+
+      const countryRaw = can.country || can.Pais || "";
+      const countryFormatted = formatCapitalizedText(countryRaw);
+      const volumeText = can.volume || can.Volume || "";
+      const flagUrl = getFlagUrlByCountry(countryRaw);
+
+      const cardColor = BRAND_COLORS[String(brandRaw).toLowerCase().trim()] || "#008234";
+
+      const card = document.createElement("div");
+      card.className = "card";
+      card.tabIndex = 0;
+      
+      card.onfocus = () => {
+        document.querySelectorAll(".card").forEach(c => c.classList.remove("focused"));
+        card.classList.add("focused");
+        activeLocalIndex = localIndex;
+        updateHeroPanel(can, globalIndex);
+      };
+      
+      card.onclick = () => openZoomModal(0);
+
+      card.onkeydown = (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          openZoomModal(0);
+        } else if (e.key === "ArrowRight") {
+          if (localIndex === pageItems.length - 1 && (startIndex + cardsPerRow) < currentFiltered.length) {
+            e.preventDefault(); currentPage++; renderApp(); focusCardSafely(0);
+          }
+        } else if (e.key === "ArrowLeft") {
+          if (localIndex === 0) {
+            e.preventDefault();
+            if (currentPage > 0) { currentPage--; renderApp(); focusCardSafely(cardsPerRow - 1); }
+          }
+        } else if (e.key === "ArrowUp") {
+          e.preventDefault();
+          searchInput.focus();
+        }
+      };
+
+      card.innerHTML = `
+        <div class="card-top-photo">
+          <img src="${frontImg}" alt="${brandFormatted}" loading="lazy">
+        </div>
+        <div class="card-bottom-bar" style="background-color: ${cardColor};">
+          <div class="card-bar-title">${brandFormatted}</div>
+          <div class="card-bar-details">
+            <div class="card-bar-country">
+              ${flagUrl ? `<img src="${flagUrl}" class="card-bar-flag" alt="${countryFormatted}">` : ''}
+              <span>${countryFormatted}</span>
+            </div>
+            ${volumeText ? `<div class="card-bar-vol">${volumeText}</div>` : ''}
+          </div>
+        </div>
+      `;
+
+      row.appendChild(card);
+    });
+  }
+
+  function updateHeroPanel(can, index = 0) {
+    if (!can) return;
+
+    document.getElementById("heroTitle").innerText = String(can.name || can.Nome || "").toUpperCase();
+    document.getElementById("heroCountry").innerText = String(can.country || can.Pais || "-").toUpperCase();
+    document.getElementById("heroVolume").innerText = String(can.volume || can.Volume || "-").toUpperCase();
+    document.getElementById("heroYear").innerText = can.year || can.Ano || "-";
+    document.getElementById("heroBarcode").innerText = can.barcode || can.Barcode || "-";
+
+    const logoContainer = document.getElementById("heroBrandLogo");
+    const logoUrl = can.brandLogo || can.BRAND_LOGO;
+    logoContainer.innerHTML = logoUrl ? `<img src="${getOptimizedImageUrl(logoUrl, 400)}" alt="LOGO">` : "";
+
+    document.getElementById("cardCounter").innerText = `${index + 1}/${currentFiltered.length}`;
+
+    let rawPhotos = [can.ImgFront, can.ImgLeft, can.ImgBack, can.ImgRight].filter(Boolean);
+    zoomGallery = rawPhotos;
+
+    const photosContainer = document.getElementById("heroPhotos");
+    photosContainer.innerHTML = "";
+
+    rawPhotos.slice(0, 4).forEach((url, idx) => {
+      const photoCard = document.createElement("div");
+      photoCard.className = "hero-photo-card";
+      photoCard.innerHTML = `<img src="${getOptimizedImageUrl(url, 1000)}" alt="FOTO">`;
+      photoCard.onclick = () => openZoomModal(idx);
+      photosContainer.appendChild(photoCard);
+    });
+  }
+
+  function focusCardSafely(targetIndex) {
+    setTimeout(() => {
+      const cards = document.querySelectorAll(".card");
+      if (cards.length > 0) {
+        const finalIdx = Math.min(targetIndex, cards.length - 1);
+        cards[finalIdx].focus();
+      }
+    }, 50);
+  }
+
+  function openZoomModal(index) {
+    if (!zoomGallery || zoomGallery.length === 0) return;
+    currentZoomIndex = index;
+    document.getElementById("zoomImage").src = getOptimizedImageUrl(zoomGallery[currentZoomIndex], 1200);
+    document.getElementById("zoomModal").classList.add("active");
+  }
+
+  function closeZoomModal() {
+    document.getElementById("zoomModal").classList.remove("active");
+    focusCardSafely(activeLocalIndex);
+  }
+
+  window.onload = fetchCatalogFromSheet;
+</script>
+</body>
+</html>
