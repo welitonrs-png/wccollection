@@ -98,10 +98,37 @@
     }
     .main-area.pushed { transform: translateX(260px); }
 
-    /* ÁREA SUPERIOR COM BUSCA E LOGO */
+    /* ÁREA SUPERIOR COM BUSCA E WALLPAPER */
     .hero-panel { 
       flex: 1; min-height: 0; background: transparent; border-radius: 12px; 
       display: flex; padding: 8px 12px; position: relative; align-items: flex-start; justify-content: flex-start;
+      overflow: hidden;
+    }
+
+    /* CAMADA DE WALLPAPER DA MARCA */
+    .hero-brand-wallpaper {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      opacity: 0;
+      transition: opacity 0.5s ease-in-out;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .hero-brand-wallpaper.active {
+      opacity: 0.25;
+    }
+
+    .hero-panel::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: linear-gradient(180deg, rgba(26, 30, 41, 0.4) 0%, rgba(26, 30, 41, 0.95) 100%);
+      z-index: 2;
+      pointer-events: none;
     }
 
     .brand-search-wrapper {
@@ -346,8 +373,10 @@
     </nav>
 
     <main class="main-area" id="mainArea" onclick="handleMainAreaClick()">
-      <!-- ÁREA SUPERIOR COM CAMPO DE BUSCA DE MARCAS E LOGO DEDICADO -->
+      <!-- ÁREA SUPERIOR COM CAMPO DE BUSCA DE MARCAS E WALLPAPER -->
       <section class="hero-panel" id="heroPanel">
+        <div class="hero-brand-wallpaper" id="heroBrandWallpaper"></div>
+
         <div class="brand-search-wrapper">
           <input type="text" id="topBrandInput" class="brand-search-input" placeholder="BUSCAR MARCA..." autocomplete="off">
           <div class="autocomplete-dropdown" id="brandAutocompleteList"></div>
@@ -392,7 +421,7 @@
   
   let currentTab = 'home';
   let cardsPerRow = 7;
-  let cardsPerPage = 14; // 2 linhas de 7 cards
+  let cardsPerPage = 14;
   let currentPage = 0;
   let activeLocalIndex = 0;
   let lastSelectedMenuId = 'menuBtnHome'; 
@@ -450,248 +479,74 @@
   }
 
   function getFlagUrlByCountry(countryName) {
-  if (!countryName) return '';
-  
-  // Converte para minúsculas, remove espaços extras e remove todos os acentos/ç
-  const name = String(countryName)
-    .toLowerCase()
-    .trim()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "");
+    if (!countryName) return '';
+    const name = String(countryName)
+      .toLowerCase()
+      .trim()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "");
+    
+    const countryCodes = {
+      'brasil': 'br', 'brazil': 'br',
+      'argentina': 'ar', 'bolivia': 'bo', 'chile': 'cl', 'colombia': 'co', 'equador': 'ec', 'ecuador': 'ec',
+      'guiana': 'gy', 'guyana': 'gy', 'paraguai': 'py', 'paraguay': 'py', 'peru': 'pe', 'suriname': 'sr',
+      'uruguai': 'uy', 'uruguay': 'uy', 'venezuela': 've', 'guiana francesa': 'gf', 'french guiana': 'gf',
+      'estados unidos': 'us', 'eua': 'us', 'usa': 'us', 'united states': 'us', 'canada': 'ca', 'mexico': 'mx',
+      'belize': 'bz', 'costa rica': 'cr', 'el salvador': 'sv', 'guatemala': 'gt', 'honduras': 'hn',
+      'nicaragua': 'ni', 'panama': 'pa', 'antigua e barbuda': 'ag', 'antigua and barbuda': 'ag', 'bahamas': 'bs',
+      'barbados': 'bb', 'cuba': 'cu', 'dominica': 'dm', 'granada': 'gd', 'grenada': 'gd', 'haiti': 'ht',
+      'jamaica': 'jm', 'porto rico': 'pr', 'puerto rico': 'pr', 'republica dominicana': 'do', 'dominican republic': 'do',
+      'santa lucia': 'lc', 'saint lucia': 'lc', 'sao cristovao e nevis': 'kn', 'saint kitts and nevis': 'kn',
+      'sao vicente e granadinas': 'vc', 'saint vincent and the grenadines': 'vc', 'trinidad e tobago': 'tt', 'trinidad and tobago': 'tt',
+      'alemanha': 'de', 'germany': 'de', 'austria': 'at', 'belgica': 'be', 'belgium': 'be', 'espanha': 'es', 'spain': 'es',
+      'franca': 'fr', 'france': 'fr', 'holanda': 'nl', 'netherlands': 'nl', 'paises baixos': 'nl', 'irlanda': 'ie', 'ireland': 'ie',
+      'italia': 'it', 'italy': 'it', 'luxemburgo': 'lu', 'luxembourg': 'lu', 'monaco': 'mc', 'portugal': 'pt',
+      'reino unido': 'gb', 'uk': 'gb', 'inglaterra': 'gb', 'england': 'gb', 'scotland': 'gb', 'escocia': 'gb', 'wales': 'gb', 'pais de gales': 'gb',
+      'suica': 'ch', 'switzerland': 'ch', 'dinamarca': 'dk', 'denmark': 'dk', 'estonia': 'ee', 'finlandia': 'fi', 'finland': 'fi',
+      'islandia': 'is', 'iceland': 'is', 'letonia': 'lv', 'latvia': 'lv', 'lituania': 'lt', 'lithuania': 'lt', 'noruega': 'no', 'norway': 'no',
+      'suecia': 'se', 'sweden': 'se', 'albania': 'al', 'andorra': 'ad', 'bosnia e herzegovina': 'ba', 'bosnia': 'ba', 'bosnia and herzegovina': 'ba',
+      'bulgaria': 'bg', 'croacia': 'hr', 'croatia': 'hr', 'eslovaquia': 'sk', 'slovakia': 'sk', 'eslovenia': 'si', 'slovenia': 'si',
+      'grecia': 'gr', 'greece': 'gr', 'hungria': 'hu', 'hungary': 'hu', 'kosovo': 'xk', 'macedonia do norte': 'mk', 'macedonia': 'mk',
+      'north macedonia': 'mk', 'maldovas': 'md', 'moldavia': 'md', 'moldova': 'md', 'montenegro': 'me', 'polonia': 'pl', 'poland': 'pl',
+      'republica tcheca': 'cz', 'tchequia': 'cz', 'czech republic': 'cz', 'czechia': 'cz', 'romenia': 'ro', 'romania': 'ro', 'russia': 'ru',
+      'servia': 'rs', 'serbia': 'rs', 'ucrania': 'ua', 'ukraine': 'ua', 'bielorrussia': 'by', 'belarus': 'by', 'afeganistao': 'af', 'afghanistan': 'af',
+      'arabia saudita': 'sa', 'saudi arabia': 'sa', 'armenia': 'am', 'azerbaijao': 'az', 'azerbaijan': 'az', 'bahrein': 'bh', 'bahrain': 'bh',
+      'bangladesh': 'bd', 'brunei': 'bn', 'butan': 'bt', 'butao': 'bt', 'bhutan': 'bt', 'camboja': 'kh', 'cambodia': 'kh', 'catar': 'qa',
+      'qatar': 'qa', 'china': 'cn', 'chipre': 'cy', 'cyprus': 'cy', 'coreia do norte': 'kp', 'north korea': 'kp', 'coreia do sul': 'kr',
+      'south korea': 'kr', 'korea': 'kr', 'emirados arabes unidos': 'ae', 'emirados arabes': 'ae', 'uae': 'ae', 'filipinas': 'ph', 'philippines': 'ph',
+      'georgia': 'ge', 'iemen': 'ye', 'yemen': 'ye', 'india': 'in', 'indonesia': 'id', 'irao': 'ir', 'iran': 'ir', 'iraque': 'iq', 'iraq': 'iq',
+      'israel': 'il', 'japao': 'jp', 'japan': 'jp', 'jordania': 'jo', 'jordan': 'jo', 'cazaquistao': 'kz', 'kazakhstan': 'kz', 'kuwait': 'kw',
+      'laos': 'la', 'libano': 'lb', 'lebanon': 'lb', 'malasia': 'my', 'malaysia': 'my', 'maldivas': 'mv', 'maldives': 'mv', 'mianmar': 'mm',
+      'myanmar': 'mm', 'mongolia': 'mn', 'nepal': 'np', 'oma': 'om', 'oman': 'om', 'paquistao': 'pk', 'pakistan': 'pk', 'quirguistao': 'kg',
+      'kyrgyzstan': 'kg', 'singapura': 'sg', 'singapore': 'sg', 'siria': 'sy', 'syria': 'sy', 'penisula do sri lanka': 'lk', 'sri lanka': 'lk',
+      'tailandia': 'th', 'thailand': 'th', 'taiwan': 'tw', 'tadjiquistao': 'tj', 'tajikistan': 'tj', 'timor leste': 'tl', 'east timor': 'tl',
+      'turcomenistao': 'tm', 'turkmenistan': 'tm', 'turquia': 'tr', 'turkey': 'tr', 'turkiye': 'tr', 'uzbequistao': 'uz', 'uzbekistan': 'uz',
+      'vietna': 'vn', 'vietnam': 'vn', 'africa do sul': 'za', 'south africa': 'za', 'angola': 'ao', 'algeria': 'dz', 'argelia': 'dz', 'benin': 'bj',
+      'botsuana': 'bw', 'botswana': 'bw', 'burkina faso': 'bf', 'burundi': 'bi', 'cabo verde': 'cv', 'cape verde': 'cv', 'camaroes': 'cm',
+      'cameroon': 'cm', 'chade': 'td', 'chad': 'td', 'comores': 'km', 'comoros': 'km', 'congo': 'cg', 'republica do congo': 'cg',
+      'republica democratica do congo': 'cd', 'rd congo': 'cd', 'drc': 'cd', 'costa do marfim': 'ci', 'ivory coast': 'ci', 'djibouti': 'dj',
+      'egito': 'eg', 'egypt': 'eg', 'eritreia': 'er', 'eritrea': 'er', 'etiopia': 'et', 'ethiopia': 'et', 'gabao': 'ga', 'gabon': 'ga',
+      'gambia': 'gm', 'gana': 'gh', 'ghana': 'gh', 'guine': 'gn', 'guinea': 'gn', 'guine-bissau': 'gw', 'guine bissau': 'gw',
+      'guine equatorial': 'gq', 'equatorial guinea': 'gq', 'lesoto': 'ls', 'lesotho': 'ls', 'liberia': 'lr', 'libia': 'ly', 'libya': 'ly',
+      'madagascar': 'mg', 'malaui': 'mw', 'malawi': 'mw', 'mali': 'ml', 'marrocos': 'ma', 'morocco': 'ma', 'mauricio': 'mu', 'mauritius': 'mu',
+      'mauritania': 'mr', 'mocambique': 'mz', 'mozambique': 'mz', 'namibia': 'na', 'niger': 'ne', 'nigeria': 'ng', 'quenia': 'ke', 'kenya': 'ke',
+      'republica centro-africana': 'cf', 'car': 'cf', 'ruanda': 'rw', 'rwanda': 'rw', 'sao tome e principe': 'st', 'sao tome and principe': 'st',
+      'senegal': 'sn', 'seicheles': 'sc', 'seychelles': 'sc', 'serra leoa': 'sl', 'sierra leone': 'sl', 'somalia': 'so', 'eswatini': 'sz',
+      'suazilandia': 'sz', 'swaziland': 'sz', 'sudao': 'sd', 'sudan': 'sd', 'sudao do sul': 'ss', 'south sudan': 'ss', 'tanzania': 'tz',
+      'togo': 'tg', 'tunisia': 'tn', 'uganda': 'ug', 'zambia': 'zm', 'zimbabue': 'zw', 'zimbabwe': 'zw', 'australia': 'au', 'fiji': 'fj',
+      'quiribati': 'ki', 'kiribati': 'ki', 'ilhas marshall': 'mh', 'marshall islands': 'mh', 'micronesia': 'fm', 'nauru': 'nr',
+      'nova zelandia': 'nz', 'new zealand': 'nz', 'palau': 'pw', 'papua-nova guine': 'pg', 'papua new guinea': 'pg', 'samoa': 'ws',
+      'ilhas salomao': 'sb', 'solomon islands': 'sb', 'tonga': 'to', 'tuvalu': 'tv', 'vanuatu': 'vu', 'aruba': 'aw', 'curacao': 'cw',
+      'gibraltar': 'gi', 'groenlandia': 'gl', 'greenland': 'gl', 'hong kong': 'hk', 'ilhas faroe': 'fo', 'faroe islands': 'fo',
+      'ilhas cayman': 'ky', 'cayman islands': 'ky', 'macau': 'mo', 'palestina': 'ps', 'palestine': 'ps', 'saara ocidental': 'eh', 'western sahara': 'eh'
+    };
 
-  // Mapa de países cadastrado apenas sem acentos
-  const countryCodes = {
-    // América do Sul
-    'brasil': 'br', 'brazil': 'br',
-    'argentina': 'ar',
-    'bolivia': 'bo',
-    'chile': 'cl',
-    'colombia': 'co',
-    'equador': 'ec', 'ecuador': 'ec',
-    'guiana': 'gy', 'guyana': 'gy',
-    'paraguai': 'py', 'paraguay': 'py',
-    'peru': 'pe',
-    'suriname': 'sr',
-    'uruguai': 'uy', 'uruguay': 'uy',
-    'venezuela': 've',
-    'guiana francesa': 'gf', 'french guiana': 'gf',
-
-    // América do Norte e Central
-    'estados unidos': 'us', 'eua': 'us', 'usa': 'us', 'united states': 'us',
-    'canada': 'ca',
-    'mexico': 'mx',
-    'belize': 'bz',
-    'costa rica': 'cr',
-    'el salvador': 'sv',
-    'guatemala': 'gt',
-    'honduras': 'hn',
-    'nicaragua': 'ni',
-    'panama': 'pa',
-
-    // Caribe
-    'antigua e barbuda': 'ag', 'antigua and barbuda': 'ag',
-    'bahamas': 'bs',
-    'barbados': 'bb',
-    'cuba': 'cu',
-    'dominica': 'dm',
-    'granada': 'gd', 'grenada': 'gd',
-    'haiti': 'ht',
-    'jamaica': 'jm',
-    'porto rico': 'pr', 'puerto rico': 'pr',
-    'republica dominicana': 'do', 'dominican republic': 'do',
-    'santa lucia': 'lc', 'saint lucia': 'lc',
-    'sao cristovao e nevis': 'kn', 'saint kitts and nevis': 'kn',
-    'sao vicente e granadinas': 'vc', 'saint vincent and the grenadines': 'vc',
-    'trinidad e tobago': 'tt', 'trinidad and tobago': 'tt',
-
-    // Europa Ocidental e Central
-    'alemanha': 'de', 'germany': 'de',
-    'austria': 'at',
-    'belgica': 'be', 'belgium': 'be',
-    'espanha': 'es', 'spain': 'es',
-    'franca': 'fr', 'france': 'fr',
-    'holanda': 'nl', 'netherlands': 'nl', 'paises baixos': 'nl',
-    'irlanda': 'ie', 'ireland': 'ie',
-    'italia': 'it', 'italy': 'it',
-    'luxemburgo': 'lu', 'luxembourg': 'lu',
-    'monaco': 'mc',
-    'portugal': 'pt',
-    'reino unido': 'gb', 'uk': 'gb', 'inglaterra': 'gb', 'england': 'gb', 'scotland': 'gb', 'escocia': 'gb', 'wales': 'gb', 'pais de gales': 'gb',
-    'suica': 'ch', 'switzerland': 'ch',
-
-    // Europa do Norte (Escandinávia e Bálticos)
-    'dinamarca': 'dk', 'denmark': 'dk',
-    'estonia': 'ee',
-    'finlandia': 'fi', 'finland': 'fi',
-    'islandia': 'is', 'iceland': 'is',
-    'letonia': 'lv', 'latvia': 'lv',
-    'lituania': 'lt', 'lithuania': 'lt',
-    'noruega': 'no', 'norway': 'no',
-    'suecia': 'se', 'sweden': 'se',
-
-    // Europa Oriental e Balcãs
-    'albania': 'al',
-    'andorra': 'ad',
-    'bosnia e herzegovina': 'ba', 'bosnia': 'ba', 'bosnia and herzegovina': 'ba',
-    'bulgaria': 'bg',
-    'croacia': 'hr', 'croatia': 'hr',
-    'eslovaquia': 'sk', 'slovakia': 'sk',
-    'eslovenia': 'si', 'slovenia': 'si',
-    'grecia': 'gr', 'greece': 'gr',
-    'hungria': 'hu', 'hungary': 'hu',
-    'kosovo': 'xk',
-    'macedonia do norte': 'mk', 'macedonia': 'mk', 'north macedonia': 'mk',
-    'maldovas': 'md', 'moldavia': 'md', 'moldova': 'md',
-    'montenegro': 'me',
-    'polonia': 'pl', 'poland': 'pl',
-    'republica tcheca': 'cz', 'tchequia': 'cz', 'czech republic': 'cz', 'czechia': 'cz',
-    'romenia': 'ro', 'romania': 'ro',
-    'russia': 'ru',
-    'servia': 'rs', 'serbia': 'rs',
-    'ucrania': 'ua', 'ukraine': 'ua',
-    'bielorrussia': 'by', 'belarus': 'by',
-
-    // Ásia
-    'afeganistao': 'af', 'afghanistan': 'af',
-    'arabia saudita': 'sa', 'saudi arabia': 'sa',
-    'armenia': 'am',
-    'azerbaijao': 'az', 'azerbaijan': 'az',
-    'bahrein': 'bh', 'bahrain': 'bh',
-    'bangladesh': 'bd',
-    'brunei': 'bn',
-    'butan': 'bt', 'butao': 'bt', 'bhutan': 'bt',
-    'camboja': 'kh', 'cambodia': 'kh',
-    'catar': 'qa', 'qatar': 'qa',
-    'china': 'cn',
-    'chipre': 'cy', 'cyprus': 'cy',
-    'coreia do norte': 'kp', 'north korea': 'kp',
-    'coreia do sul': 'kr', 'south korea': 'kr', 'korea': 'kr',
-    'emirados arabes unidos': 'ae', 'emirados arabes': 'ae', 'uae': 'ae',
-    'filipinas': 'ph', 'philippines': 'ph',
-    'georgia': 'ge',
-    'iemen': 'ye', 'yemen': 'ye',
-    'india': 'in',
-    'indonesia': 'id',
-    'irao': 'ir', 'iran': 'ir',
-    'iraque': 'iq', 'iraq': 'iq',
-    'israel': 'il',
-    'japao': 'jp', 'japan': 'jp',
-    'jordania': 'jo', 'jordan': 'jo',
-    'cazaquistao': 'kz', 'kazakhstan': 'kz',
-    'kuwait': 'kw',
-    'laos': 'la',
-    'libano': 'lb', 'lebanon': 'lb',
-    'malasia': 'my', 'malaysia': 'my',
-    'maldivas': 'mv', 'maldives': 'mv',
-    'mianmar': 'mm', 'myanmar': 'mm',
-    'mongolia': 'mn',
-    'nepal': 'np',
-    'oma': 'om', 'oman': 'om',
-    'paquistao': 'pk', 'pakistan': 'pk',
-    'quirguistao': 'kg', 'kyrgyzstan': 'kg',
-    'singapura': 'sg', 'singapore': 'sg',
-    'siria': 'sy', 'syria': 'sy',
-    'penisula do sri lanka': 'lk', 'sri lanka': 'lk',
-    'tailandia': 'th', 'thailand': 'th',
-    'taiwan': 'tw',
-    'tadjiquistao': 'tj', 'tajikistan': 'tj',
-    'timor leste': 'tl', 'east timor': 'tl',
-    'turcomenistao': 'tm', 'turkmenistan': 'tm',
-    'turquia': 'tr', 'turkey': 'tr', 'turkiye': 'tr',
-    'uzbequistao': 'uz', 'uzbekistan': 'uz',
-    'vietna': 'vn', 'vietnam': 'vn',
-
-    // África
-    'africa do sul': 'za', 'south africa': 'za',
-    'angola': 'ao',
-    'algeria': 'dz', 'argelia': 'dz',
-    'benin': 'bj',
-    'botsuana': 'bw', 'botswana': 'bw',
-    'burkina faso': 'bf',
-    'burundi': 'bi',
-    'cabo verde': 'cv', 'cape verde': 'cv',
-    'camaroes': 'cm', 'cameroon': 'cm',
-    'chade': 'td', 'chad': 'td',
-    'comores': 'km', 'comoros': 'km',
-    'congo': 'cg', 'republica do congo': 'cg',
-    'republica democratica do congo': 'cd', 'rd congo': 'cd', 'drc': 'cd',
-    'costa do marfim': 'ci', 'ivory coast': 'ci',
-    'djibouti': 'dj',
-    'egito': 'eg', 'egypt': 'eg',
-    'eritreia': 'er', 'eritrea': 'er',
-    'etiopia': 'et', 'ethiopia': 'et',
-    'gabao': 'ga', 'gabon': 'ga',
-    'gambia': 'gm',
-    'gana': 'gh', 'ghana': 'gh',
-    'guine': 'gn', 'guinea': 'gn',
-    'guine-bissau': 'gw', 'guine bissau': 'gw',
-    'guine equatorial': 'gq', 'equatorial guinea': 'gq',
-    'lesoto': 'ls', 'lesotho': 'ls',
-    'liberia': 'lr',
-    'libia': 'ly', 'libya': 'ly',
-    'madagascar': 'mg',
-    'malaui': 'mw', 'malawi': 'mw',
-    'mali': 'ml',
-    'marrocos': 'ma', 'morocco': 'ma',
-    'mauricio': 'mu', 'mauritius': 'mu',
-    'mauritania': 'mr',
-    'mocambique': 'mz', 'mozambique': 'mz',
-    'namibia': 'na',
-    'niger': 'ne',
-    'nigeria': 'ng',
-    'quenia': 'ke', 'kenya': 'ke',
-    'republica centro-africana': 'cf', 'car': 'cf',
-    'ruanda': 'rw', 'rwanda': 'rw',
-    'sao tome e principe': 'st', 'sao tome and principe': 'st',
-    'senegal': 'sn',
-    'seicheles': 'sc', 'seychelles': 'sc',
-    'serra leoa': 'sl', 'sierra leone': 'sl',
-    'somalia': 'so',
-    'eswatini': 'sz', 'suazilandia': 'sz', 'swaziland': 'sz',
-    'sudao': 'sd', 'sudan': 'sd',
-    'sudao do sul': 'ss', 'south sudan': 'ss',
-    'tanzania': 'tz',
-    'togo': 'tg',
-    'tunisia': 'tn',
-    'uganda': 'ug',
-    'zambia': 'zm',
-    'zimbabue': 'zw', 'zimbabwe': 'zw',
-
-    // Oceania
-    'australia': 'au',
-    'fiji': 'fj',
-    'quiribati': 'ki', 'kiribati': 'ki',
-    'ilhas marshall': 'mh', 'marshall islands': 'mh',
-    'micronesia': 'fm',
-    'nauru': 'nr',
-    'nova zelandia': 'nz', 'new zealand': 'nz',
-    'palau': 'pw',
-    'papua-nova guine': 'pg', 'papua new guinea': 'pg',
-    'samoa': 'ws',
-    'ilhas salomao': 'sb', 'solomon islands': 'sb',
-    'tonga': 'to',
-    'tuvalu': 'tv',
-    'vanuatu': 'vu',
-
-    // Territórios / Outros
-    'aruba': 'aw',
-    'curacao': 'cw',
-    'gibraltar': 'gi',
-    'groenlandia': 'gl', 'greenland': 'gl',
-    'hong kong': 'hk',
-    'ilhas faroe': 'fo', 'faroe islands': 'fo',
-    'ilhas cayman': 'ky', 'cayman islands': 'ky',
-    'macau': 'mo',
-    'palestina': 'ps', 'palestine': 'ps',
-    'saara ocidental': 'eh', 'western sahara': 'eh'
-  };
-
-  const code = countryCodes[name];
-  if (code) {
-    return `https://flagcdn.com/w40/${code}.png`;
+    const code = countryCodes[name];
+    if (code) {
+      return `https://flagcdn.com/w40/${code}.png`;
+    }
+    return '';
   }
-  return '';
-}
 
   function preloadFirstImages(items, count = 14) {
     return new Promise((resolve) => {
@@ -758,7 +613,6 @@
     }
   }
 
-  /* EXTRAI MARCAS ÚNICAS DO CATÁLOGO */
   function extractRegisteredBrands() {
     const brandSet = new Set();
     canCatalog.forEach(can => {
@@ -843,26 +697,25 @@
     return list;
   }
 
-/* LIMPA FOCOS DUPLOS E RETIRA O FOCO NATIVO DE ELEMENTOS (EXCETO SE ESTIVER DIGITANDO NO INPUT DE BUSCA) */
-function clearAllCardFocus() {
-  const topInput = document.getElementById("topBrandInput");
-  
-  // Tira o foco nativo apenas se o elemento ativo NÃO for o campo de busca do topo
-  if (document.activeElement && document.activeElement !== topInput && typeof document.activeElement.blur === "function") {
-    document.activeElement.blur();
+  /* LIMPA FOCOS DUPLOS MANTENDO O FOCO NO INPUT DE BUSCA SE TIVER DIGITANDO */
+  function clearAllCardFocus() {
+    const topInput = document.getElementById("topBrandInput");
+    
+    if (document.activeElement && document.activeElement !== topInput && typeof document.activeElement.blur === "function") {
+      document.activeElement.blur();
+    }
+
+    document.querySelectorAll(".card").forEach(c => {
+      c.classList.remove("focused");
+    });
+
+    const sortBtn = document.getElementById("sortOrderBtn");
+    if (sortBtn) sortBtn.classList.remove("focused");
+
+    if (topInput && document.activeElement !== topInput) {
+      topInput.classList.remove("focused");
+    }
   }
-
-  document.querySelectorAll(".card").forEach(c => {
-    c.classList.remove("focused");
-  });
-
-  const sortBtn = document.getElementById("sortOrderBtn");
-  if (sortBtn) sortBtn.classList.remove("focused");
-
-  if (topInput && document.activeElement !== topInput) {
-    topInput.classList.remove("focused");
-  }
-}
 
   function focusCardSafely(targetIndex) {
     closeMenu();
@@ -1046,7 +899,7 @@ function clearAllCardFocus() {
     });
   }
 
-  /* FILTRA CATÁLOGO SOMENTE PELA MARCA E ATUALIZA LOGO */
+  /* FILTRA CATÁLOGO E ATUALIZA LOGO E WALLPAPER */
   function filterCatalogByBrand(query) {
     const val = query.toLowerCase().trim();
     const baseList = getBaseListForCurrentTab();
@@ -1064,11 +917,17 @@ function clearAllCardFocus() {
     updateBrandLogoHeader(query);
   }
 
-  /* ATUALIZA O LOGO DA MARCA NO CANTO SUPERIOR DIREITO */
+  /* ATUALIZA O LOGO E O WALLPAPER DA MARCA NO CANTO SUPERIOR */
   function updateBrandLogoHeader(brandQuery) {
     const logoContainer = document.getElementById("heroBrandLogo");
+    const wallpaperElem = document.getElementById("heroBrandWallpaper");
+
     if (!brandQuery || String(brandQuery).trim() === "") {
       logoContainer.innerHTML = "";
+      if (wallpaperElem) {
+        wallpaperElem.style.backgroundImage = "none";
+        wallpaperElem.classList.remove("active");
+      }
       return;
     }
 
@@ -1079,13 +938,31 @@ function clearAllCardFocus() {
     });
 
     if (matchCan) {
+      // 1. Logo
       const logoUrl = matchCan.brandLogo || matchCan.BRAND_LOGO;
       if (logoUrl && String(logoUrl).trim() !== "") {
         logoContainer.innerHTML = `<img src="${getOptimizedImageUrl(logoUrl, 400)}" alt="LOGO DA MARCA">`;
-        return;
+      } else {
+        logoContainer.innerHTML = "";
+      }
+
+      // 2. Wallpaper
+      const wallpaperUrl = matchCan.brandWallpaper || matchCan.wallpaper || matchCan.brandLogo || matchCan.BRAND_LOGO || matchCan.ImgCover;
+      if (wallpaperElem && wallpaperUrl && String(wallpaperUrl).trim() !== "") {
+        const fullImgUrl = getOptimizedImageUrl(wallpaperUrl, 1000);
+        wallpaperElem.style.backgroundImage = `url('${fullImgUrl}')`;
+        wallpaperElem.classList.add("active");
+      } else if (wallpaperElem) {
+        wallpaperElem.style.backgroundImage = "none";
+        wallpaperElem.classList.remove("active");
+      }
+    } else {
+      logoContainer.innerHTML = "";
+      if (wallpaperElem) {
+        wallpaperElem.style.backgroundImage = "none";
+        wallpaperElem.classList.remove("active");
       }
     }
-    logoContainer.innerHTML = "";
   }
 
   /* LÓGICA DE AUTOCOMPLETE DO CAMPO SUPERIOR */
@@ -1169,10 +1046,9 @@ function clearAllCardFocus() {
     });
   }
 
-  /* SELEÇÃO CORRIGIDA: DESFOCA O INPUT E VAI DIRETO PARA OS CARDS */
   function selectBrandFromAutocomplete(brandName) {
     topBrandInput.value = brandName.toUpperCase();
-    topBrandInput.blur(); // Recolhe o teclado do dispositivo
+    topBrandInput.blur();
     closeAutocomplete();
     filterCatalogByBrand(brandName);
     focusCardSafely(0);
@@ -1194,7 +1070,6 @@ function clearAllCardFocus() {
       counterElem.innerText = `${currentNum}/${total}`;
     }
 
-    // Atualiza galeria para Zoom
     const currentCan = currentFiltered[globalIndex];
     if (currentCan) {
       let rawPhotos = [];
@@ -1204,7 +1079,6 @@ function clearAllCardFocus() {
       if (rawPhotos.length === 0 && logoUrl) rawPhotos.push(logoUrl);
       zoomGallery = rawPhotos;
 
-      // Se a busca do topo estiver vazia, exibe o logo do card em destaque
       if (!topBrandInput.value.trim() && logoUrl) {
         document.getElementById("heroBrandLogo").innerHTML = `<img src="${getOptimizedImageUrl(logoUrl, 400)}" alt="LOGO DA MARCA">`;
       }
@@ -1265,7 +1139,6 @@ function clearAllCardFocus() {
         openZoomModal(0);
       };
 
-      /* NAVEGAÇÃO EM GRID (2 LINHAS X 7 COLUNAS) */
       card.onkeydown = (e) => {
         if (document.getElementById("zoomModal").classList.contains("active") || document.getElementById("exitModal").classList.contains("active")) return;
 
@@ -1296,12 +1169,10 @@ function clearAllCardFocus() {
         } else if (e.key === "ArrowDown") {
           e.preventDefault();
           if (localIndex < cardsPerRow) {
-            // Estava na 1ª linha, vai para a 2ª
             if (localIndex + cardsPerRow < pageItems.length) {
               focusCardSafely(localIndex + cardsPerRow);
             }
           } else if ((startIndex + cardsPerPage) < currentFiltered.length) {
-            // Estava na 2ª linha, avança para a próxima página mantendo a coluna
             currentPage++;
             renderApp();
             focusCardSafely(localIndex % cardsPerRow);
@@ -1309,16 +1180,13 @@ function clearAllCardFocus() {
         } else if (e.key === "ArrowUp") {
           e.preventDefault();
           if (localIndex >= cardsPerRow) {
-            // Estava na 2ª linha, sobe para a 1ª
             focusCardSafely(localIndex - cardsPerRow);
           } else if (currentPage > 0) {
-            // Estava na 1ª linha da pág atual, sobe para a 2ª linha da pág anterior
             currentPage--;
             renderApp();
             const target = cardsPerRow + localIndex;
             focusCardSafely(target);
           } else {
-            // Topo da primeira página -> vai para o campo de busca
             clearAllCardFocus();
             topBrandInput.focus();
             topBrandInput.classList.add("focused");
