@@ -843,17 +843,26 @@
     return list;
   }
 
-  /* LIMPA FOCOS DUPLOS E RETIRA O FOCO NATIVO DE INPUTS/ELEMENTOS */
-  function clearAllCardFocus() {
-    if (document.activeElement && typeof document.activeElement.blur === "function") {
-      document.activeElement.blur();
-    }
-    document.querySelectorAll(".card").forEach(c => {
-      c.classList.remove("focused");
-    });
-    document.getElementById("sortOrderBtn").classList.remove("focused");
-    topBrandInput.classList.remove("focused");
+/* LIMPA FOCOS DUPLOS E RETIRA O FOCO NATIVO DE ELEMENTOS (EXCETO SE ESTIVER DIGITANDO NO INPUT DE BUSCA) */
+function clearAllCardFocus() {
+  const topInput = document.getElementById("topBrandInput");
+  
+  // Tira o foco nativo apenas se o elemento ativo NÃO for o campo de busca do topo
+  if (document.activeElement && document.activeElement !== topInput && typeof document.activeElement.blur === "function") {
+    document.activeElement.blur();
   }
+
+  document.querySelectorAll(".card").forEach(c => {
+    c.classList.remove("focused");
+  });
+
+  const sortBtn = document.getElementById("sortOrderBtn");
+  if (sortBtn) sortBtn.classList.remove("focused");
+
+  if (topInput && document.activeElement !== topInput) {
+    topInput.classList.remove("focused");
+  }
+}
 
   function focusCardSafely(targetIndex) {
     closeMenu();
