@@ -693,7 +693,13 @@
   function clearAllCardFocus() {
     const topInput = document.getElementById("topBrandInput");
     
-    if (document.activeElement && document.activeElement !== topInput && typeof document.activeElement.blur === "function") {
+    // Tira o foco do teclado virtual nativo do campo de texto
+    if (topInput) {
+      topInput.blur();
+      topInput.classList.remove("focused");
+    }
+
+    if (document.activeElement && typeof document.activeElement.blur === "function") {
       document.activeElement.blur();
     }
 
@@ -703,14 +709,11 @@
 
     const sortBtn = document.getElementById("sortOrderBtn");
     if (sortBtn) sortBtn.classList.remove("focused");
-
-    if (topInput && document.activeElement !== topInput) {
-      topInput.classList.remove("focused");
-    }
   }
 
   function focusCardSafely(targetIndex) {
     closeMenu();
+    closeAutocomplete();
     clearAllCardFocus();
     
     setTimeout(() => {
@@ -930,7 +933,6 @@
     });
 
     if (matchCan) {
-      // 1. Logo
       const logoUrl = matchCan.brandLogo || matchCan.BRAND_LOGO;
       if (logoUrl && String(logoUrl).trim() !== "") {
         logoContainer.innerHTML = `<img src="${getOptimizedImageUrl(logoUrl, 400)}" alt="LOGO DA MARCA">`;
@@ -938,7 +940,6 @@
         logoContainer.innerHTML = "";
       }
 
-      // 2. Busca o brandWallpaper (Coluna Q) em QUALQUER latinha da mesma marca
       let wallpaperUrl = "";
       const sameBrandCans = canCatalog.filter(c => {
         const b = String(c.brewery || c.Cervejaria || "").toLowerCase().trim();
@@ -997,10 +998,13 @@
 
     if (e.key === "ArrowDown") {
       e.preventDefault();
-      if (items.length > 0) {
-        activeAutocompleteIndex = (activeAutocompleteIndex + 1) % items.length;
+      if (items.length > 0 && activeAutocompleteIndex < items.length - 1) {
+        activeAutocompleteIndex++;
         updateAutocompleteFocus(items);
       } else {
+        // Sai da caixa de busca e foca nos cards
+        topBrandInput.blur();
+        closeAutocomplete();
         focusCardSafely(0);
       }
     } else if (e.key === "ArrowUp") {
@@ -1014,11 +1018,14 @@
       if (activeAutocompleteIndex >= 0 && items[activeAutocompleteIndex]) {
         selectBrandFromAutocomplete(items[activeAutocompleteIndex].innerText);
       } else {
+        topBrandInput.blur();
         closeAutocomplete();
         focusCardSafely(0);
       }
     } else if (e.key === "Escape") {
       closeAutocomplete();
+      topBrandInput.blur();
+      focusCardSafely(0);
     }
   });
 
@@ -1095,7 +1102,7 @@
     }
   }
 
-  /* RENDERIZAÇÃO DOS CARDS COM DECODING E LOADING ASSÍNCRONOS */
+  /* RENDERIZAÇÃO DOS CARDS */
   function renderApp() {
     clearAllCardFocus();
     const row = document.getElementById("cardRow");
