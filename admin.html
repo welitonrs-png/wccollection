@@ -3,510 +3,518 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Painel de Cadastro - WCCollection</title>
+  <title>Painel de Administração - WCCollection</title>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; outline: none; }
-    body { background-color: #1a1e29; color: #dddddd; padding: 30px; display: flex; justify-content: center; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background-color: #1a1e29; color: #e2e8f0; padding: 20px; display: flex; flex-direction: column; gap: 20px; min-height: 100vh; }
 
-    .admin-card {
-      width: 100%; max-width: 1100px; background: #161b26; border: 1px solid #333d52;
-      border-radius: 12px; padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-    }
+    header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #333d52; padding-bottom: 15px; }
+    h1 { color: #f39c12; font-size: 1.5rem; text-transform: uppercase; letter-spacing: 1px; }
 
-    h1 { color: #f39c12; font-size: 1.8rem; font-weight: 900; text-transform: uppercase; margin-bottom: 6px; }
-    .subtitle { color: #a0aec0; font-size: 0.85rem; margin-bottom: 24px; }
+    .admin-layout { display: grid; grid-template-columns: 420px 1fr; gap: 20px; align-items: start; }
+    @media (max-width: 1024px) { .admin-layout { grid-template-columns: 1fr; } }
 
-    .form-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 20px; }
-    @media (max-width: 900px) { .form-grid { grid-template-columns: repeat(2, 1fr); } }
+    /* CARD E FORMULÁRIO */
+    .card-panel { background: #161b26; border: 1px solid #333d52; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 14px; }
+    .card-panel h2 { color: #f39c12; font-size: 1.1rem; text-transform: uppercase; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px; margin-bottom: 4px; }
 
     .form-group { display: flex; flex-direction: column; gap: 6px; }
-    .form-group.col-2 { grid-column: span 2; }
-
-    label { font-size: 0.75rem; font-weight: 900; color: #f39c12; text-transform: uppercase; }
-
-    input[type="text"], input[type="number"] {
-      width: 100%; padding: 12px; background: #11141d; border: 1px solid #333d52;
-      border-radius: 8px; color: #ffffff; font-size: 0.9rem;
+    .form-group label { font-size: 0.8rem; font-weight: 700; color: #a0aec0; text-transform: uppercase; }
+    
+    .form-control {
+      background: #0f121a; border: 1px solid #333d52; border-radius: 6px; padding: 10px 12px;
+      color: #ffffff; font-size: 0.9rem; transition: border-color 0.2s ease; width: 100%;
     }
+    .form-control:focus { border-color: #f39c12; outline: none; }
 
-    .checkbox-row { display: flex; gap: 24px; align-items: center; margin-bottom: 24px; }
-    .checkbox-label { display: flex; align-items: center; gap: 8px; cursor: pointer; color: #ffffff; font-weight: bold; font-size: 0.85rem; }
-    .checkbox-label input { width: 16px; height: 16px; accent-color: #f39c12; cursor: pointer; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
 
-    .section-title { font-size: 0.8rem; font-weight: 900; color: #f39c12; text-transform: uppercase; margin-bottom: 12px; }
+    .checkbox-group { display: flex; align-items: center; gap: 10px; cursor: pointer; user-select: none; margin-top: 6px; }
+    .checkbox-group input { width: 18px; height: 18px; accent-color: #f39c12; cursor: pointer; }
+    .checkbox-group label { cursor: pointer; font-size: 0.85rem; color: #e2e8f0; font-weight: 600; text-transform: uppercase; }
 
-    .file-upload-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px; }
-    @media (max-width: 768px) { .file-upload-grid { grid-template-columns: 1fr; } }
-
-    .file-box {
-      background: #11141d; border: 1px solid #2a3447; border-radius: 8px;
-      padding: 12px; display: flex; flex-direction: column; gap: 8px;
+    /* GRANDE ÁREA DE FOTOS */
+    .photo-upload-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 4px; }
+    .photo-box {
+      background: #0f121a; border: 1px dashed #333d52; border-radius: 8px; padding: 8px;
+      display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center;
     }
+    .photo-box label { font-size: 0.7rem; color: #f39c12; font-weight: bold; }
+    .photo-preview { width: 100%; height: 75px; object-fit: contain; border-radius: 4px; background: #1a1e29; }
+    .btn-file { font-size: 0.75rem; padding: 4px 8px; background: #2a3447; color: #fff; border: none; border-radius: 4px; cursor: pointer; width: 100%; }
 
-    .file-box-title { font-size: 0.75rem; font-weight: bold; color: #f39c12; text-transform: uppercase; text-align: center; }
+    /* BOTÕES */
+    .btn-action-group { display: flex; gap: 10px; margin-top: 10px; }
+    .btn { padding: 12px 18px; border-radius: 8px; font-weight: bold; font-size: 0.9rem; border: none; cursor: pointer; text-transform: uppercase; transition: all 0.2s ease; flex: 1; text-align: center; }
+    .btn-primary { background: #f39c12; color: #1a1e29; }
+    .btn-primary:hover { background: #e08e0b; }
+    .btn-secondary { background: #2a3447; color: #a0aec0; }
+    .btn-secondary:hover { background: #38465e; color: #fff; }
+    .btn-danger { background: #e74c3c; color: #fff; }
+    .btn-danger:hover { background: #c0392b; }
 
-    .btn-file-custom {
-      display: flex; align-items: center; justify-content: center; gap: 8px;
-      background: #2a3447; color: #f39c12; border: 1px solid #333d52; padding: 10px;
-      border-radius: 6px; font-size: 0.75rem; font-weight: bold; text-transform: uppercase;
-      cursor: pointer; text-align: center; transition: all 0.2s;
-    }
-    .btn-file-custom:hover { background: #333d52; border-color: #f39c12; }
-    .btn-file-custom.has-file { background: #1e3a29; color: #2ecc71; border-color: #2ecc71; }
-    .btn-file-custom.uploading { background: #3a2e1e; color: #f39c12; border-color: #f39c12; }
-    input[type="file"] { display: none; }
+    /* TABELA DE ITENS */
+    .table-container { overflow-x: auto; max-height: calc(100vh - 120px); border-radius: 8px; border: 1px solid #333d52; }
+    table { width: 100%; border-collapse: collapse; background: #161b26; text-align: left; font-size: 0.85rem; }
+    th { background: #0f121a; color: #f39c12; padding: 12px 10px; font-weight: bold; border-bottom: 2px solid #333d52; text-transform: uppercase; position: sticky; top: 0; z-index: 10; }
+    td { padding: 10px; border-bottom: 1px solid #2a3447; color: #cbd5e1; }
+    tr:hover { background: rgba(243, 156, 18, 0.05); }
 
-    .actions-row { display: flex; gap: 16px; margin-bottom: 30px; }
+    .thumb-img { width: 35px; height: 35px; object-fit: contain; border-radius: 4px; background: #ffffff; padding: 2px; }
+    .badge { padding: 2px 6px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; text-transform: uppercase; }
+    .badge-true { background: rgba(46, 204, 113, 0.2); color: #2ecc71; border: 1px solid #2ecc71; }
+    .badge-false { background: rgba(149, 165, 166, 0.2); color: #95a5a6; }
 
-    .btn-primary {
-      background: #f39c12; color: #1a1f2c; padding: 14px 28px; border-radius: 8px;
-      font-weight: 900; font-size: 0.95rem; border: none; cursor: pointer; text-transform: uppercase;
-    }
+    .search-bar { margin-bottom: 12px; }
 
-    .btn-secondary {
-      background: #2a3447; color: #a0aec0; padding: 14px 28px; border-radius: 8px;
-      font-weight: 800; font-size: 0.95rem; border: none; cursor: pointer; text-transform: uppercase;
-    }
-
-    .status-msg {
-      padding: 14px; border-radius: 8px; margin-bottom: 24px; font-size: 0.85rem; font-weight: 800; display: none;
-    }
-    .status-msg.error { background: rgba(231, 76, 60, 0.2); border: 1px solid #e74c3c; color: #e74c3c; display: block; }
-    .status-msg.success { background: rgba(46, 204, 113, 0.2); border: 1px solid #2ecc71; color: #2ecc71; display: block; }
-
-    .table-container { margin-top: 30px; border-top: 1px solid #333d52; padding-top: 24px; overflow-x: auto; }
-    table { width: 100%; border-collapse: collapse; text-align: left; }
-    th { background: #11141d; padding: 14px; font-size: 0.75rem; font-weight: 900; color: #f39c12; text-transform: uppercase; }
-    td { padding: 14px; border-bottom: 1px solid #2a3447; font-size: 0.85rem; }
-
-    .badge { padding: 4px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: 900; text-transform: uppercase; }
-    .badge-lata { background: #1d3557; color: #457b9d; border: 1px solid #457b9d; }
-    .badge-ococ { background: #1b4332; color: #2d6a4f; border: 1px solid #52b788; }
-    .badge-set { background: #3c096c; color: #7b2cbf; border: 1px solid #9d4edd; }
-
-    .btn-table { padding: 6px 14px; border-radius: 6px; font-size: 0.75rem; font-weight: bold; border: none; cursor: pointer; text-transform: uppercase; margin-right: 6px; }
-    .btn-table-edit { background: #f39c12; color: #1a1f2c; }
-    .btn-table-delete { background: #e74c3c; color: #ffffff; }
+    /* STATUS DE MENSAGENS */
+    #statusMsg { position: fixed; bottom: 20px; right: 20px; padding: 12px 20px; border-radius: 8px; font-weight: bold; display: none; z-index: 9999; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+    .status-success { background: #2ecc71; color: #1a1e29; }
+    .status-error { background: #e74c3c; color: #ffffff; }
   </style>
 </head>
 <body>
 
-  <div class="admin-card">
-    <h1>Painel de Cadastro de Latas</h1>
-    <div class="subtitle">Gerencie o catálogo da coleção, anexe arquivos locais em alta qualidade ou cole links.</div>
+  <header>
+    <h1>PAINEL DE ADMINISTRAÇÃO - COLEÇÃO DE LATAIS</h1>
+    <button class="btn btn-secondary" style="flex: initial;" onclick="window.location.href='index.html'">VER APLICAÇÃO</button>
+  </header>
 
-    <div id="statusMsg" class="status-msg"></div>
+  <div class="admin-layout">
+    <!-- FORMULÁRIO DE CADASTRO E EDIÇÃO -->
+    <div class="card-panel">
+      <h2 id="formTitle">CADASTRAR NOVA LATA</h2>
+      <form id="canForm" onsubmit="handleFormSubmit(event)">
+        <input type="hidden" id="_rowNum" name="_rowNum" value="">
 
-    <form id="lataForm" onsubmit="handleFormSubmit(event)">
-      <input type="hidden" id="editRowNum" value="">
-
-      <div class="form-grid">
-        <div class="form-group col-2">
-          <label>Nome da Lata / Edição</label>
-          <input type="text" id="inputNome" required placeholder="Ex: Live Schmeckt's Am Besten">
-        </div>
-        <div class="form-group col-2">
-          <label>Cervejaria / Marca</label>
-          <input type="text" id="inputCervejaria" required placeholder="Ex: Heineken">
-        </div>
-        <div class="form-group col-2">
-          <label>País de Origem</label>
-          <input type="text" id="inputPais" required placeholder="Ex: Suíça">
-        </div>
         <div class="form-group">
-          <label>Volume</label>
-          <input type="text" id="inputVolume" placeholder="Ex: 500 ML">
+          <label for="Nome">NOME DA CERVEJA / LATA:</label>
+          <input type="text" id="Nome" name="Nome" class="form-control" required autocomplete="off" placeholder="Ex: Heineken Edição Limitada">
         </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="Cervejaria">CERVEJARIA / MARCA:</label>
+            <input type="text" id="Cervejaria" name="Cervejaria" class="form-control" required autocomplete="off" placeholder="Ex: Heineken">
+          </div>
+          <div class="form-group">
+            <label for="Pais">PAÍS DE ORIGEM:</label>
+            <input type="text" id="Pais" name="Pais" class="form-control" required autocomplete="off" placeholder="Ex: Holanda">
+          </div>
+        </div>
+
+        <div class="form-row-3">
+          <div class="form-group">
+            <label for="Volume">VOLUME:</label>
+            <input type="text" id="Volume" name="Volume" class="form-control" placeholder="330ml">
+          </div>
+          <div class="form-group">
+            <label for="Ano">ANO:</label>
+            <input type="text" id="Ano" name="Ano" class="form-control" placeholder="2024">
+          </div>
+          <div class="form-group">
+            <label for="Barcode">CÓD. BARRAS:</label>
+            <input type="text" id="Barcode" name="Barcode" class="form-control" placeholder="789...">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="checkbox-group">
+            <input type="checkbox" id="isOcoc" name="isOcoc">
+            <label for="isOcoc">É OCOC (PAÍS)?</label>
+          </div>
+          <div class="checkbox-group">
+            <input type="checkbox" id="isSet" name="isSet" onchange="toggleSetFields()">
+            <label for="isSet">É SET / PACK?</label>
+          </div>
+        </div>
+
+        <div class="form-group" id="setNameContainer" style="display: none;">
+          <label for="setName">NOME DO SET:</label>
+          <input type="text" id="setName" name="setName" class="form-control" placeholder="Ex: Coleção Cidades">
+        </div>
+
         <div class="form-group">
-          <label>Ano</label>
-          <input type="number" id="inputAno" placeholder="Ex: 2024">
+          <label for="brandLogo">LOGO DA MARCA (URL):</label>
+          <input type="text" id="brandLogo" name="BRAND_LOGO" class="form-control" placeholder="Cole o link do logo...">
         </div>
-       
-<!-- COLE O CAMPO DO WALLPAPER LOGO ABAIXO -->
-<div class="form-group">
-  <label for="brandWallpaper">WALLPAPER DA MARCA (COLUNA Q):</label>
-  <input 
-    type="text" 
-    id="brandWallpaper" 
-    name="brandWallpaper" 
-    class="form-control" 
-    placeholder="Cole a URL ou o link do Google Drive do wallpaper..."
-    autocomplete="off"
-  >
-</div>
-        <div class="form-group col-2">
-          <label>Código de Barras</label>
-          <input type="text" id="inputBarcode" placeholder="Ex: 7610055020750">
+
+        <!-- CAMPO WALLPAPER DA MARCA -->
+        <div class="form-group">
+          <label for="brandWallpaper">WALLPAPER DA MARCA (URL):</label>
+          <input 
+            type="text" 
+            id="brandWallpaper" 
+            name="brandWallpaper" 
+            class="form-control" 
+            placeholder="Cole o link do Google Drive ou Web..."
+            autocomplete="off"
+          >
+          <small style="color: #a0aec0; font-size: 0.7rem; margin-top: 2px;">
+            Autopreenchido se a marca já possuir wallpaper cadastrado.
+          </small>
         </div>
-      </div>
 
-      <div class="checkbox-row">
-        <label class="checkbox-label"><input type="checkbox" id="checkOcoc"> É OCOC (PAÍSES)</label>
-        <label class="checkbox-label"><input type="checkbox" id="checkSet"> É SET / PACK</label>
-      </div>
+        <!-- FOTOS DA LATINHA -->
+        <div class="form-group">
+          <label>FOTOS DA LATA (DRIVE / UPLOAD):</label>
+          <div class="photo-upload-grid">
+            <div class="photo-box">
+              <label>CAPA / FRENTE</label>
+              <img id="prevCover" class="photo-preview" src="">
+              <input type="hidden" id="ImgCover" name="ImgCover">
+              <input type="file" id="fileCover" accept="image/*" class="btn-file" onchange="uploadImage(this, 'ImgCover', 'prevCover')">
+            </div>
+            <div class="photo-box">
+              <label>LADO ESQUERDO</label>
+              <img id="prevLeft" class="photo-preview" src="">
+              <input type="hidden" id="ImgLeft" name="ImgLeft">
+              <input type="file" id="fileLeft" accept="image/*" class="btn-file" onchange="uploadImage(this, 'ImgLeft', 'prevLeft')">
+            </div>
+            <div class="photo-box">
+              <label>FUNDO / TRÁS</label>
+              <img id="prevBack" class="photo-preview" src="">
+              <input type="hidden" id="ImgBack" name="ImgBack">
+              <input type="file" id="fileBack" accept="image/*" class="btn-file" onchange="uploadImage(this, 'ImgBack', 'prevBack')">
+            </div>
+            <div class="photo-box">
+              <label>LADO DIREITO</label>
+              <img id="prevRight" class="photo-preview" src="">
+              <input type="hidden" id="ImgRight" name="ImgRight">
+              <input type="file" id="fileRight" accept="image/*" class="btn-file" onchange="uploadImage(this, 'ImgRight', 'prevRight')">
+            </div>
+          </div>
+        </div>
 
-      <div class="section-title">Imagens do Item (Upload em Alta Qualidade ou Link)</div>
+        <div class="btn-action-group">
+          <button type="submit" id="btnSave" class="btn btn-primary">SALVAR</button>
+          <button type="button" class="btn btn-secondary" onclick="resetForm()">LIMPAR</button>
+          <button type="button" id="btnDelete" class="btn btn-danger" style="display: none;" onclick="deleteCurrentItem()">EXCLUIR</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- LISTAGEM DE ITENS DA PLANILHA -->
+    <div class="card-panel">
+      <h2>CATÁLOGO DE LATAS CADASTRADAS</h2>
+      <input type="text" id="tableSearch" class="form-control search-bar" placeholder="BUSCAR POR NOME, CERVEJARIA, PAÍS..." oninput="filterTable()">
       
-      <div class="file-upload-grid">
-        <div class="file-box">
-          <div class="file-box-title">Logo da Marca</div>
-          <label class="btn-file-custom" id="lblLogo">📁 ANEXAR ARQUIVO LOCAL<input type="file" id="fileLogo" accept="image/*" onchange="uploadFileDirectly('fileLogo', 'lblLogo', 'inputLogo', 'logo')"></label>
-          <input type="text" id="inputLogo" placeholder="Ou cole a URL..." style="font-size: 0.75rem; padding: 6px;">
-        </div>
-
-        <div class="file-box">
-          <div class="file-box-title">Foto da Capa (Cover)</div>
-          <label class="btn-file-custom" id="lblCover">📁 ANEXAR ARQUIVO LOCAL<input type="file" id="fileCover" accept="image/*" onchange="uploadFileDirectly('fileCover', 'lblCover', 'inputCover', 'cover')"></label>
-          <input type="text" id="inputCover" placeholder="Ou cole a URL..." style="font-size: 0.75rem; padding: 6px;">
-        </div>
-
-        <div class="file-box">
-          <div class="file-box-title">Foto Frente (Front)</div>
-          <label class="btn-file-custom" id="lblFront">📁 ANEXAR ARQUIVO LOCAL<input type="file" id="fileFront" accept="image/*" onchange="uploadFileDirectly('fileFront', 'lblFront', 'inputFront', 'front')"></label>
-          <input type="text" id="inputFront" placeholder="Ou cole a URL..." style="font-size: 0.75rem; padding: 6px;">
-        </div>
-
-        <div class="file-box">
-          <div class="file-box-title">Foto Esquerda (Left)</div>
-          <label class="btn-file-custom" id="lblLeft">📁 ANEXAR ARQUIVO LOCAL<input type="file" id="fileLeft" accept="image/*" onchange="uploadFileDirectly('fileLeft', 'lblLeft', 'inputLeft', 'left')"></label>
-          <input type="text" id="inputLeft" placeholder="Ou cole a URL..." style="font-size: 0.75rem; padding: 6px;">
-        </div>
-
-        <div class="file-box">
-          <div class="file-box-title">Foto Verso (Back)</div>
-          <label class="btn-file-custom" id="lblBack">📁 ANEXAR ARQUIVO LOCAL<input type="file" id="fileBack" accept="image/*" onchange="uploadFileDirectly('fileBack', 'lblBack', 'inputBack', 'back')"></label>
-          <input type="text" id="inputBack" placeholder="Ou cole a URL..." style="font-size: 0.75rem; padding: 6px;">
-        </div>
-
-        <div class="file-box">
-          <div class="file-box-title">Foto Direita (Right)</div>
-          <label class="btn-file-custom" id="lblRight">📁 ANEXAR ARQUIVO LOCAL<input type="file" id="fileRight" accept="image/*" onchange="uploadFileDirectly('fileRight', 'lblRight', 'inputRight', 'right')"></label>
-          <input type="text" id="inputRight" placeholder="Ou cole a URL..." style="font-size: 0.75rem; padding: 6px;">
-        </div>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>CAPA</th>
+              <th>NOME</th>
+              <th>CERVEJARIA</th>
+              <th>PAÍS</th>
+              <th>VOL.</th>
+              <th>OCOC</th>
+              <th>SET</th>
+              <th>AÇÃO</th>
+            </tr>
+          </thead>
+          <tbody id="catalogTableBody">
+            <tr><td colspan="9" style="text-align: center; padding: 20px;">Carregando itens...</td></tr>
+          </tbody>
+        </table>
       </div>
-
-      <div class="actions-row">
-        <button type="submit" class="btn-primary" id="btnSave">SALVAR ITEM</button>
-        <button type="button" class="btn-secondary" onclick="resetForm()">CANCELAR / LIMPAR</button>
-      </div>
-    </form>
-
-    <div class="table-container">
-      <h2>Itens Cadastrados no Catálogo</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Tipo</th>
-            <th>Nome</th>
-            <th>Cervejaria</th>
-            <th>País</th>
-            <th>Volume</th>
-            <th>Ações</th>
-          </tr>
-        </thead>
-        <tbody id="catalogTableBody">
-          <tr><td colspan="7" style="text-align:center;">Carregando itens do catálogo...</td></tr>
-        </tbody>
-      </table>
     </div>
   </div>
 
+  <div id="statusMsg"></div>
+
 <script>
   const API_URL = "https://script.google.com/macros/s/AKfycbwP4kTpSrGJllmlWjQp1YmD1Th5jiw1oUtX5cAJAZj9txy-eNi6_EYyLPG_Q0_coyT9/exec";
-  let fullCatalog = [];
+  let canCatalog = [];
 
-  function getItemVal(item, keys) {
-    if (!item) return "";
-    for (let k of keys) {
-      if (item[k] !== undefined && item[k] !== null && String(item[k]).trim() !== "") {
-        return item[k];
-      }
+  function fixDriveUrl(url) {
+    if (!url) return '';
+    const str = String(url).trim();
+    const match = str.match(/\/d\/([^\/\?]+)/);
+    if (match && match[1]) {
+      return `https://lh3.googleusercontent.com/d/${match[1]}`;
     }
-    return "";
+    return str;
   }
 
-  function showStatus(msg, isSuccess) {
-    const el = document.getElementById("statusMsg");
-    el.innerText = msg;
-    el.className = `status-msg ${isSuccess ? 'success' : 'error'}`;
-    setTimeout(() => { el.style.display = 'none'; }, 6000);
+  function getOptimizedImageUrl(url, size = 150) {
+    if (!url) return '';
+    const cleanUrl = fixDriveUrl(url);
+    if (cleanUrl.includes('googleusercontent.com')) {
+      return cleanUrl.split('=')[0] + `=s${size}-rw`;
+    }
+    return cleanUrl;
   }
 
-  // Leitura Base64 mantendo 100% da resolução e qualidade do arquivo original
-  function getOriginalBase64(file) {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = (e) => resolve(e.target.result);
-      reader.onerror = (err) => reject(err);
-      reader.readAsDataURL(file);
+  function showStatus(text, isError = false) {
+    const msg = document.getElementById("statusMsg");
+    msg.innerText = text;
+    msg.className = isError ? "status-error" : "status-success";
+    msg.style.display = "block";
+    setTimeout(() => { msg.style.display = "none"; }, 4000);
+  }
+
+  async function loadCatalog() {
+    try {
+      const res = await fetch(API_URL + "?nocache=" + new Date().getTime());
+      const data = await res.json();
+      canCatalog = data;
+      renderTable(canCatalog);
+    } catch (err) {
+      console.error("Erro ao carregar dados:", err);
+      showStatus("Erro ao conectar com a planilha.", true);
+    }
+  }
+
+  function renderTable(items) {
+    const tbody = document.getElementById("catalogTableBody");
+    tbody.innerHTML = "";
+
+    if (!items || items.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="9" style="text-align: center; padding: 20px;">Nenhum item encontrado.</td></tr>`;
+      return;
+    }
+
+    items.forEach(item => {
+      const coverUrl = getOptimizedImageUrl(item.ImgCover || item.ImgFront || item.brandLogo, 100);
+      const isOcocBadge = item.isOcoc ? `<span class="badge badge-true">SIM</span>` : `<span class="badge badge-false">NÃO</span>`;
+      const isSetBadge = item.isSet ? `<span class="badge badge-true">SIM</span>` : `<span class="badge badge-false">NÃO</span>`;
+
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td><b>${item.ID || '-'}</b></td>
+        <td>${coverUrl ? `<img src="${coverUrl}" class="thumb-img">` : '-'}</td>
+        <td><b>${item.Nome || '-'}</b></td>
+        <td>${item.Cervejaria || '-'}</td>
+        <td>${item.Pais || '-'}</td>
+        <td>${item.Volume || '-'}</td>
+        <td>${isOcocBadge}</td>
+        <td>${isSetBadge}</td>
+        <td>
+          <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 0.75rem;" onclick="editItem(${item._rowNum})">EDITAR</button>
+        </td>
+      `;
+      tbody.appendChild(tr);
     });
   }
-  // Preenche o wallpaper automaticamente ao digitar a cervejaria
-function autoFillBrandWallpaper() {
-  const breweryInput = document.getElementById("Cervejaria") || document.getElementById("brewery");
-  const wallpaperInput = document.getElementById("brandWallpaper") || document.getElementById("wallpaper");
 
-  if (!breweryInput || !wallpaperInput) return;
-
-  const typedBrewery = breweryInput.value.trim().toLowerCase();
-
-  if (!typedBrewery) return;
-
-  // Busca no catálogo do Admin se já existe alguma lata dessa cervejaria com wallpaper
-  // (Substitua 'canCatalog' pelo nome da variável onde você armazena a lista de latas no Admin)
-  const listToSearch = typeof canCatalog !== "undefined" ? canCatalog : (typeof catalogData !== "undefined" ? catalogData : []);
-
-  const match = listToSearch.find(item => {
-    const b = String(item.brewery || item.Cervejaria || "").trim().toLowerCase();
-    const wp = item.brandWallpaper || item.wallpaper || item.BRANDWALLPAPER || item.WALLPAPER;
-    return b === typedBrewery && wp && String(wp).trim() !== "";
-  });
-
-  // Se encontrou um wallpaper e o campo atual está vazio, preenche automaticamente
-  if (match) {
-    const foundWp = match.brandWallpaper || match.wallpaper || match.BRANDWALLPAPER || match.WALLPAPER;
-    wallpaperInput.value = foundWp;
+  function filterTable() {
+    const query = document.getElementById("tableSearch").value.toLowerCase().trim();
+    const filtered = canCatalog.filter(can => {
+      return [can.Nome, can.Cervejaria, can.Pais, can.Volume, can.Ano, can.Barcode]
+        .map(v => String(v || "").toLowerCase())
+        .join(" ")
+        .includes(query);
+    });
+    renderTable(filtered);
   }
-}
 
-  async function uploadFileDirectly(inputId, lblId, targetInputId, photoType) {
-    const fileInput = document.getElementById(inputId);
-    const lbl = document.getElementById(lblId);
-    const targetInput = document.getElementById(targetInputId);
+  function editItem(rowNum) {
+    const item = canCatalog.find(i => i._rowNum === rowNum);
+    if (!item) return;
 
-    if (!fileInput.files || fileInput.files.length === 0) return;
+    document.getElementById("_rowNum").value = item._rowNum;
+    document.getElementById("Nome").value = item.Nome || item.name || "";
+    document.getElementById("Cervejaria").value = item.Cervejaria || item.brewery || "";
+    document.getElementById("Pais").value = item.Pais || item.country || "";
+    document.getElementById("Volume").value = item.Volume || "";
+    document.getElementById("Ano").value = item.Ano || item.year || "";
+    document.getElementById("Barcode").value = item.Barcode || "";
 
-    const file = fileInput.files[0];
-    const itemName = document.getElementById("inputNome").value.trim() || "lata";
+    document.getElementById("isOcoc").checked = item.isOcoc === true || String(item.isOcoc).toLowerCase() === "true";
+    document.getElementById("isSet").checked = item.isSet === true || String(item.isSet).toLowerCase() === "true";
+    toggleSetFields();
+    document.getElementById("setName").value = item.setName || "";
 
-    lbl.innerHTML = "⏳ ENVIANDO AO DRIVE...";
-    lbl.className = "btn-file-custom uploading";
+    document.getElementById("brandLogo").value = item.BRAND_LOGO || item.brandLogo || "";
+    document.getElementById("brandWallpaper").value = item.brandWallpaper || item.wallpaper || "";
 
-    try {
-      const ext = file.name.split('.').pop().toLowerCase() || 'png';
-      const base64Data = await getOriginalBase64(file);
+    setPhotoField("ImgCover", "prevCover", item.ImgCover);
+    setPhotoField("ImgLeft", "prevLeft", item.ImgLeft);
+    setPhotoField("ImgBack", "prevBack", item.ImgBack);
+    setPhotoField("ImgRight", "prevRight", item.ImgRight);
 
-      if (!base64Data) {
-        lbl.innerHTML = "📁 ERRO NA IMAGEM";
-        lbl.className = "btn-file-custom";
-        return;
-      }
+    document.getElementById("formTitle").innerText = `EDITAR LATA #${item.ID || ''}`;
+    document.getElementById("btnDelete").style.display = "block";
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
 
-      const params = new URLSearchParams();
-      params.append("action", "upload_photo");
-      params.append("base64", base64Data);
-      params.append("fileName", `${itemName}_${photoType}.${ext}`);
-
-      const res = await fetch(API_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
-        body: params.toString()
-      });
-
-      const data = await res.json();
-      if (data && data.success && data.url) {
-        targetInput.value = data.url;
-        lbl.innerHTML = `✓ ${file.name.substring(0, 10)}...`;
-        lbl.className = "btn-file-custom has-file";
-        showStatus(`Foto (${photoType}) enviada em alta qualidade!`, true);
-      } else {
-        lbl.innerHTML = "📁 RETENTAR OU COLE URL";
-        lbl.className = "btn-file-custom";
-        showStatus("Erro ao salvar no Drive. Tente cole o link manualmente.", false);
-      }
-    } catch (err) {
-      console.error(err);
-      lbl.innerHTML = "📁 RETENTAR OU COLE URL";
-      lbl.className = "btn-file-custom";
-      showStatus("Erro de comunicação com o servidor.", false);
+  function setPhotoField(inputId, prevId, url) {
+    document.getElementById(inputId).value = url || "";
+    const prevElem = document.getElementById(prevId);
+    if (url) {
+      prevElem.src = getOptimizedImageUrl(url, 200);
+    } else {
+      prevElem.src = "";
     }
+  }
+
+  function toggleSetFields() {
+    const isChecked = document.getElementById("isSet").checked;
+    document.getElementById("setNameContainer").style.display = isChecked ? "flex" : "none";
+  }
+
+  /* AUTOPREENCHE O WALLPAPER CASO A CERVEJARIA JÁ POSSUA UM CADASTRADO */
+  function autoFillBrandWallpaper() {
+    const breweryInput = document.getElementById("Cervejaria");
+    const wallpaperInput = document.getElementById("brandWallpaper");
+
+    if (!breweryInput || !wallpaperInput) return;
+    const typedBrewery = breweryInput.value.trim().toLowerCase();
+
+    if (!typedBrewery) return;
+
+    const match = canCatalog.find(item => {
+      const b = String(item.brewery || item.Cervejaria || "").trim().toLowerCase();
+      const wp = item.brandWallpaper || item.wallpaper || item.BRANDWALLPAPER || item.WALLPAPER;
+      return b === typedBrewery && wp && String(wp).trim() !== "";
+    });
+
+    if (match && !wallpaperInput.value.trim()) {
+      const foundWp = match.brandWallpaper || match.wallpaper || match.BRANDWALLPAPER || match.WALLPAPER;
+      wallpaperInput.value = foundWp;
+    }
+  }
+
+  /* UPLOAD DE IMAGEM DADOS EM BASE64 -> GOOGLE DRIVE */
+  function uploadImage(fileInput, hiddenId, prevId) {
+    const file = fileInput.files[0];
+    if (!file) return;
+
+    showStatus("Enviando foto para o Google Drive...", false);
+
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      const base64Data = e.target.result;
+      try {
+        const payload = { action: "upload_photo", base64: base64Data, fileName: file.name };
+        const res = await fetch(API_URL, {
+          method: "POST",
+          body: JSON.stringify(payload)
+        });
+        const result = await res.json();
+
+        if (result.success && result.url) {
+          document.getElementById(hiddenId).value = result.url;
+          document.getElementById(prevId).src = getOptimizedImageUrl(result.url, 200);
+          showStatus("Imagem enviada com sucesso!", false);
+        } else {
+          showStatus("Falha ao enviar imagem.", true);
+        }
+      } catch (err) {
+        console.error(err);
+        showStatus("Erro ao conectar no upload.", true);
+      }
+    };
+    reader.readAsDataURL(file);
   }
 
   async function handleFormSubmit(e) {
     e.preventDefault();
     const btnSave = document.getElementById("btnSave");
-    btnSave.innerText = "SALVANDO...";
     btnSave.disabled = true;
+    btnSave.innerText = "SAVANDO...";
+
+    const rowNum = document.getElementById("_rowNum").value;
+    const actionType = rowNum ? "edit" : "save";
+
+    const formData = {
+      action: actionType,
+      _rowNum: rowNum,
+      Nome: document.getElementById("Nome").value,
+      Cervejaria: document.getElementById("Cervejaria").value,
+      Pais: document.getElementById("Pais").value,
+      Volume: document.getElementById("Volume").value,
+      Ano: document.getElementById("Ano").value,
+      Barcode: document.getElementById("Barcode").value,
+      isOcoc: document.getElementById("isOcoc").checked,
+      isSet: document.getElementById("isSet").checked,
+      setName: document.getElementById("setName").value,
+      BRAND_LOGO: fixDriveUrl(document.getElementById("brandLogo").value),
+      brandWallpaper: fixDriveUrl(document.getElementById("brandWallpaper").value),
+      ImgCover: fixDriveUrl(document.getElementById("ImgCover").value),
+      ImgFront: fixDriveUrl(document.getElementById("ImgCover").value),
+      ImgLeft: fixDriveUrl(document.getElementById("ImgLeft").value),
+      ImgBack: fixDriveUrl(document.getElementById("ImgBack").value),
+      ImgRight: fixDriveUrl(document.getElementById("ImgRight").value)
+    };
 
     try {
-      const rowNum = document.getElementById("editRowNum").value;
-      const action = rowNum ? "edit" : "save";
-
-      const params = new URLSearchParams();
-      params.append("action", action);
-      params.append("_rowNum", rowNum);
-      params.append("Nome", document.getElementById("inputNome").value);
-      params.append("Cervejaria", document.getElementById("inputCervejaria").value);
-      params.append("Pais", document.getElementById("inputPais").value);
-      params.append("Volume", document.getElementById("inputVolume").value);
-      params.append("Ano", document.getElementById("inputAno").value);
-      params.append("Barcode", document.getElementById("inputBarcode").value);
-      params.append("isOcoc", document.getElementById("checkOcoc").checked);
-      params.append("isSet", document.getElementById("checkSet").checked);
-
-      params.append("BRAND_LOGO", document.getElementById("inputLogo").value);
-      params.append("ImgCover", document.getElementById("inputCover").value);
-      params.append("ImgFront", document.getElementById("inputFront").value);
-      params.append("ImgLeft", document.getElementById("inputLeft").value);
-      params.append("ImgBack", document.getElementById("inputBack").value);
-      params.append("ImgRight", document.getElementById("inputRight").value);
-
-      const response = await fetch(API_URL, {
+      const res = await fetch(API_URL, {
         method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
-        body: params.toString()
+        body: JSON.stringify(formData)
       });
+      const result = await res.json();
 
-      const res = await response.json();
-
-      if (res && res.success) {
-        showStatus(res.message || "Item salvo com sucesso!", true);
+      if (result.success) {
+        showStatus(result.message || "Lata salva com sucesso!");
         resetForm();
-        loadCatalogTable();
+        await loadCatalog();
       } else {
-        showStatus("Erro: " + (res.error || "Não foi possível salvar."), false);
+        showStatus(result.error || "Erro ao salvar item.", true);
       }
     } catch (err) {
       console.error(err);
-      showStatus("Erro ao comunicar com o servidor.", false);
+      showStatus("Erro de conexão ao salvar.", true);
     } finally {
-      btnSave.innerText = "SALVAR ITEM";
       btnSave.disabled = false;
+      btnSave.innerText = "SALVAR";
     }
   }
 
-  async function loadCatalogTable() {
-    const tbody = document.getElementById("catalogTableBody");
+  async function deleteCurrentItem() {
+    const rowNum = document.getElementById("_rowNum").value;
+    if (!rowNum || !confirm("Tem certeza que deseja excluir esta lata permanentemente?")) return;
+
     try {
-      const response = await fetch(API_URL + "?nocache=" + new Date().getTime());
-      const data = await response.json();
+      const payload = { action: "delete", _rowNum: rowNum };
+      const res = await fetch(API_URL, {
+        method: "POST",
+        body: JSON.stringify(payload)
+      });
+      const result = await res.json();
 
-      if (Array.isArray(data)) {
-        fullCatalog = data;
-      } else if (data && Array.isArray(data.data)) {
-        fullCatalog = data.data;
+      if (result.success) {
+        showStatus("Lata excluída com sucesso!");
+        resetForm();
+        await loadCatalog();
       } else {
-        fullCatalog = [];
+        showStatus(result.error || "Erro ao excluir lata.", true);
       }
-
-      renderTable();
     } catch (err) {
       console.error(err);
-      if (tbody) {
-        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:#e74c3c;">Erro ao carregar o catálogo do servidor.</td></tr>`;
-      }
-    }
-  }
-
-  function renderTable() {
-    const tbody = document.getElementById("catalogTableBody");
-    tbody.innerHTML = "";
-
-    if (fullCatalog.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;">Nenhum item cadastrado.</td></tr>`;
-      return;
-    }
-
-    fullCatalog.forEach((item, index) => {
-      const isSet = getItemVal(item, ["isSet", "IsSet", "isset"]);
-      const isOcoc = getItemVal(item, ["isOcoc", "IsOcoc", "isococ"]);
-
-      let badge = '<span class="badge badge-lata">LATA</span>';
-      if (isSet && String(isSet).toLowerCase() === 'true') badge = '<span class="badge badge-set">SET</span>';
-      else if (isOcoc && String(isOcoc).toLowerCase() === 'true') badge = '<span class="badge badge-ococ">OCOC</span>';
-
-      const nomeVal = getItemVal(item, ["Nome", "nome", "name"]) || "-";
-      const cervejariaVal = getItemVal(item, ["Cervejaria", "cervejaria", "brewery"]) || "-";
-      const paisVal = getItemVal(item, ["Pais", "pais", "country"]) || "-";
-      const volumeVal = getItemVal(item, ["Volume", "volume"]) || "-";
-      const idVal = item.ID || item.id || (index + 1);
-
-      const row = document.createElement("tr");
-      row.innerHTML = `
-        <td>${idVal}</td>
-        <td>${badge}</td>
-        <td>${nomeVal}</td>
-        <td>${cervejariaVal}</td>
-        <td>${paisVal}</td>
-        <td>${volumeVal}</td>
-        <td>
-          <button class="btn-table btn-table-edit" onclick="editItemByIndex(${index})">EDITAR</button>
-          <button class="btn-table btn-table-delete" onclick="deleteItemByIndex(${index})">EXCLUIR</button>
-        </td>
-      `;
-      tbody.appendChild(row);
-    });
-  }
-
-  function editItemByIndex(index) {
-    const item = fullCatalog[index];
-    if (!item) return;
-
-    const realRowNum = item._rowNum || (index + 2);
-    document.getElementById("editRowNum").value = realRowNum;
-
-    document.getElementById("inputNome").value = getItemVal(item, ["Nome", "nome", "name"]);
-    document.getElementById("inputCervejaria").value = getItemVal(item, ["Cervejaria", "cervejaria", "brewery"]);
-    document.getElementById("inputPais").value = getItemVal(item, ["Pais", "pais", "country"]);
-    document.getElementById("inputVolume").value = getItemVal(item, ["Volume", "volume"]);
-    document.getElementById("inputAno").value = getItemVal(item, ["Ano", "ano", "year"]);
-    document.getElementById("inputBarcode").value = getItemVal(item, ["Barcode", "barcode"]);
-
-    document.getElementById("inputLogo").value = getItemVal(item, ["BRAND_LOGO", "brand_logo", "logo"]);
-    document.getElementById("inputCover").value = getItemVal(item, ["ImgCover", "imgcover", "cover"]);
-    document.getElementById("inputFront").value = getItemVal(item, ["ImgFront", "imgfront", "front"]);
-    document.getElementById("inputLeft").value = getItemVal(item, ["ImgLeft", "imgleft", "left"]);
-    document.getElementById("inputBack").value = getItemVal(item, ["ImgBack", "imgback", "back"]);
-    document.getElementById("inputRight").value = getItemVal(item, ["ImgRight", "imgright", "right"]);
-
-    const isSet = getItemVal(item, ["isSet", "IsSet", "isset"]);
-    const isOcoc = getItemVal(item, ["isOcoc", "IsOcoc", "isococ"]);
-    document.getElementById("checkOcoc").checked = isOcoc && String(isOcoc).toLowerCase() === 'true';
-    document.getElementById("checkSet").checked = isSet && String(isSet).toLowerCase() === 'true';
-
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-
-  async function deleteItemByIndex(index) {
-    const item = fullCatalog[index];
-    if (!item) return;
-
-    const realRowNum = item._rowNum || (index + 2);
-    if (!confirm("Tem certeza que deseja excluir esta lata?")) return;
-
-    try {
-      const params = new URLSearchParams();
-      params.append("action", "delete");
-      params.append("_rowNum", realRowNum);
-
-      const response = await fetch(API_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
-        body: params.toString()
-      });
-      const res = await response.json();
-      if (res && res.success) {
-        showStatus("Item excluído com sucesso!", true);
-        loadCatalogTable();
-      } else {
-        showStatus("Erro ao excluir item.", false);
-      }
-    } catch (err) {
-      showStatus("Erro ao comunicar com o servidor.", false);
+      showStatus("Erro ao conectar para excluir.", true);
     }
   }
 
   function resetForm() {
-    document.getElementById("editRowNum").value = "";
-    document.getElementById("lataForm").reset();
-    ['lblLogo', 'lblCover', 'lblFront', 'lblLeft', 'lblBack', 'lblRight'].forEach(id => {
-      const el = document.getElementById(id);
-      if(el) { el.innerHTML = "📁 ANEXAR ARQUIVO LOCAL"; el.classList.remove("has-file"); }
-    });
+    document.getElementById("canForm").reset();
+    document.getElementById("_rowNum").value = "";
+    document.getElementById("ImgCover").value = "";
+    document.getElementById("ImgLeft").value = "";
+    document.getElementById("ImgBack").value = "";
+    document.getElementById("ImgRight").value = "";
+
+    document.getElementById("prevCover").src = "";
+    document.getElementById("prevLeft").src = "";
+    document.getElementById("prevBack").src = "";
+    document.getElementById("prevRight").src = "";
+
+    document.getElementById("formTitle").innerText = "CADASTRAR NOVA LATA";
+    document.getElementById("btnDelete").style.display = "none";
+    toggleSetFields();
   }
 
-  window.onload = loadCatalogTable;
+  document.addEventListener("DOMContentLoaded", () => {
+    const breweryInput = document.getElementById("Cervejaria");
+    if (breweryInput) {
+      breweryInput.addEventListener("input", autoFillBrandWallpaper);
+      breweryInput.addEventListener("change", autoFillBrandWallpaper);
+    }
+    loadCatalog();
+  });
 </script>
 </body>
 </html>
