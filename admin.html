@@ -11,7 +11,7 @@
     header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #333d52; padding-bottom: 15px; }
     h1 { color: #f39c12; font-size: 1.5rem; text-transform: uppercase; letter-spacing: 1px; }
 
-    .admin-layout { display: grid; grid-template-columns: 420px 1fr; gap: 20px; align-items: start; }
+    .admin-layout { display: grid; grid-template-columns: 460px 1fr; gap: 20px; align-items: start; }
     @media (max-width: 1024px) { .admin-layout { grid-template-columns: 1fr; } }
 
     /* CARD E FORMULÁRIO */
@@ -34,15 +34,17 @@
     .checkbox-group input { width: 18px; height: 18px; accent-color: #f39c12; cursor: pointer; }
     .checkbox-group label { cursor: pointer; font-size: 0.85rem; color: #e2e8f0; font-weight: 600; text-transform: uppercase; }
 
-    /* GRANDE ÁREA DE FOTOS */
-    .photo-upload-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 4px; }
+    /* CAIXAS DE FOTOS E LOGO/WALLPAPER */
+    .photo-upload-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 4px; }
+    .photo-upload-grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 4px; }
+    
     .photo-box {
       background: #0f121a; border: 1px dashed #333d52; border-radius: 8px; padding: 8px;
       display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center;
     }
     .photo-box label { font-size: 0.7rem; color: #f39c12; font-weight: bold; }
-    .photo-preview { width: 100%; height: 75px; object-fit: contain; border-radius: 4px; background: #1a1e29; }
-    .btn-file { font-size: 0.75rem; padding: 4px 8px; background: #2a3447; color: #fff; border: none; border-radius: 4px; cursor: pointer; width: 100%; }
+    .photo-preview { width: 100%; height: 70px; object-fit: contain; border-radius: 4px; background: #1a1e29; }
+    .btn-file { font-size: 0.72rem; padding: 4px 6px; background: #2a3447; color: #fff; border: none; border-radius: 4px; cursor: pointer; width: 100%; }
 
     /* BOTÕES */
     .btn-action-group { display: flex; gap: 10px; margin-top: 10px; }
@@ -77,7 +79,7 @@
 <body>
 
   <header>
-    <h1>PAINEL DE ADMINISTRAÇÃO - COLEÇÃO DE LATAIS</h1>
+    <h1>PAINEL DE ADMINISTRAÇÃO - COLEÇÃO DE LATAS</h1>
     <button class="btn btn-secondary" style="flex: initial;" onclick="window.location.href='index.html'">VER APLICAÇÃO</button>
   </header>
 
@@ -135,51 +137,60 @@
           <input type="text" id="setName" name="setName" class="form-control" placeholder="Ex: Coleção Cidades">
         </div>
 
+        <!-- LOGO E WALLPAPER DA MARCA (URL OU ANEXAR) -->
         <div class="form-group">
-          <label for="brandLogo">LOGO DA MARCA (URL):</label>
-          <input type="text" id="brandLogo" name="BRAND_LOGO" class="form-control" placeholder="Cole o link do logo...">
+          <label>IMAGENS DA MARCA (URL OU UPLOAD):</label>
+          <div class="photo-upload-grid-2">
+            <div class="photo-box">
+              <label>LOGO DA MARCA</label>
+              <img id="prevLogo" class="photo-preview" src="">
+              <input type="text" id="brandLogo" name="BRAND_LOGO" class="form-control" style="font-size: 0.75rem; padding: 4px;" placeholder="URL ou upload..." onchange="updatePreview('brandLogo', 'prevLogo')">
+              <input type="file" id="fileLogo" accept="image/*" class="btn-file" onchange="uploadImage(this, 'brandLogo', 'prevLogo')">
+            </div>
+
+            <div class="photo-box">
+              <label>WALLPAPER DA MARCA</label>
+              <img id="prevWallpaper" class="photo-preview" src="">
+              <input type="text" id="brandWallpaper" name="brandWallpaper" class="form-control" style="font-size: 0.75rem; padding: 4px;" placeholder="URL ou upload..." onchange="updatePreview('brandWallpaper', 'prevWallpaper')">
+              <input type="file" id="fileWallpaper" accept="image/*" class="btn-file" onchange="uploadImage(this, 'brandWallpaper', 'prevWallpaper')">
+            </div>
+          </div>
         </div>
 
-        <!-- CAMPO WALLPAPER DA MARCA -->
+        <!-- FOTOS DA LATINHA (CAPA, FRENTE, LADOS, TRÁS) -->
         <div class="form-group">
-          <label for="brandWallpaper">WALLPAPER DA MARCA (URL):</label>
-          <input 
-            type="text" 
-            id="brandWallpaper" 
-            name="brandWallpaper" 
-            class="form-control" 
-            placeholder="Cole o link do Google Drive ou Web..."
-            autocomplete="off"
-          >
-          <small style="color: #a0aec0; font-size: 0.7rem; margin-top: 2px;">
-            Autopreenchido se a marca já possuir wallpaper cadastrado.
-          </small>
-        </div>
-
-        <!-- FOTOS DA LATINHA -->
-        <div class="form-group">
-          <label>FOTOS DA LATA (DRIVE / UPLOAD):</label>
+          <label>FOTOS DA LATA (URL OU UPLOAD):</label>
           <div class="photo-upload-grid">
             <div class="photo-box">
-              <label>CAPA / FRENTE</label>
+              <label>1. CAPA (MINIATURA)</label>
               <img id="prevCover" class="photo-preview" src="">
               <input type="hidden" id="ImgCover" name="ImgCover">
               <input type="file" id="fileCover" accept="image/*" class="btn-file" onchange="uploadImage(this, 'ImgCover', 'prevCover')">
             </div>
+
             <div class="photo-box">
-              <label>LADO ESQUERDO</label>
+              <label>2. FRENTE (PAINEL)</label>
+              <img id="prevFront" class="photo-preview" src="">
+              <input type="hidden" id="ImgFront" name="ImgFront">
+              <input type="file" id="fileFront" accept="image/*" class="btn-file" onchange="uploadImage(this, 'ImgFront', 'prevFront')">
+            </div>
+
+            <div class="photo-box">
+              <label>3. LADO ESQUERDO</label>
               <img id="prevLeft" class="photo-preview" src="">
               <input type="hidden" id="ImgLeft" name="ImgLeft">
               <input type="file" id="fileLeft" accept="image/*" class="btn-file" onchange="uploadImage(this, 'ImgLeft', 'prevLeft')">
             </div>
+
             <div class="photo-box">
-              <label>FUNDO / TRÁS</label>
+              <label>4. TRÁS / BACK</label>
               <img id="prevBack" class="photo-preview" src="">
               <input type="hidden" id="ImgBack" name="ImgBack">
               <input type="file" id="fileBack" accept="image/*" class="btn-file" onchange="uploadImage(this, 'ImgBack', 'prevBack')">
             </div>
+
             <div class="photo-box">
-              <label>LADO DIREITO</label>
+              <label>5. LADO DIREITO</label>
               <img id="prevRight" class="photo-preview" src="">
               <input type="hidden" id="ImgRight" name="ImgRight">
               <input type="file" id="fileRight" accept="image/*" class="btn-file" onchange="uploadImage(this, 'ImgRight', 'prevRight')">
@@ -246,6 +257,16 @@
       return cleanUrl.split('=')[0] + `=s${size}-rw`;
     }
     return cleanUrl;
+  }
+
+  function updatePreview(inputId, prevId) {
+    const url = document.getElementById(inputId).value;
+    const prevElem = document.getElementById(prevId);
+    if (url) {
+      prevElem.src = getOptimizedImageUrl(url, 200);
+    } else {
+      prevElem.src = "";
+    }
   }
 
   function showStatus(text, isError = false) {
@@ -328,10 +349,11 @@
     toggleSetFields();
     document.getElementById("setName").value = item.setName || "";
 
-    document.getElementById("brandLogo").value = item.BRAND_LOGO || item.brandLogo || "";
-    document.getElementById("brandWallpaper").value = item.brandWallpaper || item.wallpaper || "";
+    setPhotoField("brandLogo", "prevLogo", item.BRAND_LOGO || item.brandLogo);
+    setPhotoField("brandWallpaper", "prevWallpaper", item.brandWallpaper || item.wallpaper);
 
     setPhotoField("ImgCover", "prevCover", item.ImgCover);
+    setPhotoField("ImgFront", "prevFront", item.ImgFront);
     setPhotoField("ImgLeft", "prevLeft", item.ImgLeft);
     setPhotoField("ImgBack", "prevBack", item.ImgBack);
     setPhotoField("ImgRight", "prevRight", item.ImgRight);
@@ -343,12 +365,7 @@
 
   function setPhotoField(inputId, prevId, url) {
     document.getElementById(inputId).value = url || "";
-    const prevElem = document.getElementById(prevId);
-    if (url) {
-      prevElem.src = getOptimizedImageUrl(url, 200);
-    } else {
-      prevElem.src = "";
-    }
+    updatePreview(inputId, prevId);
   }
 
   function toggleSetFields() {
@@ -356,25 +373,30 @@
     document.getElementById("setNameContainer").style.display = isChecked ? "flex" : "none";
   }
 
-  /* AUTOPREENCHE O WALLPAPER CASO A CERVEJARIA JÁ POSSUA UM CADASTRADO */
+  /* AUTOPREENCHE LOGO E WALLPAPER CASO A CERVEJARIA JÁ POSSUA CADASTRADOS */
   function autoFillBrandWallpaper() {
     const breweryInput = document.getElementById("Cervejaria");
     const wallpaperInput = document.getElementById("brandWallpaper");
+    const logoInput = document.getElementById("brandLogo");
 
-    if (!breweryInput || !wallpaperInput) return;
+    if (!breweryInput) return;
     const typedBrewery = breweryInput.value.trim().toLowerCase();
-
     if (!typedBrewery) return;
 
     const match = canCatalog.find(item => {
       const b = String(item.brewery || item.Cervejaria || "").trim().toLowerCase();
-      const wp = item.brandWallpaper || item.wallpaper || item.BRANDWALLPAPER || item.WALLPAPER;
-      return b === typedBrewery && wp && String(wp).trim() !== "";
+      return b === typedBrewery;
     });
 
-    if (match && !wallpaperInput.value.trim()) {
-      const foundWp = match.brandWallpaper || match.wallpaper || match.BRANDWALLPAPER || match.WALLPAPER;
-      wallpaperInput.value = foundWp;
+    if (match) {
+      if (wallpaperInput && !wallpaperInput.value.trim()) {
+        const foundWp = match.brandWallpaper || match.wallpaper || match.BRANDWALLPAPER || match.WALLPAPER;
+        if (foundWp) setPhotoField("brandWallpaper", "prevWallpaper", foundWp);
+      }
+      if (logoInput && !logoInput.value.trim()) {
+        const foundLogo = match.BRAND_LOGO || match.brandLogo;
+        if (foundLogo) setPhotoField("brandLogo", "prevLogo", foundLogo);
+      }
     }
   }
 
@@ -398,7 +420,7 @@
 
         if (result.success && result.url) {
           document.getElementById(hiddenId).value = result.url;
-          document.getElementById(prevId).src = getOptimizedImageUrl(result.url, 200);
+          updatePreview(hiddenId, prevId);
           showStatus("Imagem enviada com sucesso!", false);
         } else {
           showStatus("Falha ao enviar imagem.", true);
@@ -415,10 +437,14 @@
     e.preventDefault();
     const btnSave = document.getElementById("btnSave");
     btnSave.disabled = true;
-    btnSave.innerText = "SAVANDO...";
+    btnSave.innerText = "SALVANDO...";
 
     const rowNum = document.getElementById("_rowNum").value;
     const actionType = rowNum ? "edit" : "save";
+
+    // Se o campo ImgCover (Capa) ficar em branco, assume o valor do ImgFront (Frente) como fallback
+    const coverValue = document.getElementById("ImgCover").value || document.getElementById("ImgFront").value;
+    const frontValue = document.getElementById("ImgFront").value || document.getElementById("ImgCover").value;
 
     const formData = {
       action: actionType,
@@ -434,8 +460,8 @@
       setName: document.getElementById("setName").value,
       BRAND_LOGO: fixDriveUrl(document.getElementById("brandLogo").value),
       brandWallpaper: fixDriveUrl(document.getElementById("brandWallpaper").value),
-      ImgCover: fixDriveUrl(document.getElementById("ImgCover").value),
-      ImgFront: fixDriveUrl(document.getElementById("ImgCover").value),
+      ImgCover: fixDriveUrl(coverValue),
+      ImgFront: fixDriveUrl(frontValue),
       ImgLeft: fixDriveUrl(document.getElementById("ImgLeft").value),
       ImgBack: fixDriveUrl(document.getElementById("ImgBack").value),
       ImgRight: fixDriveUrl(document.getElementById("ImgRight").value)
@@ -493,11 +519,15 @@
     document.getElementById("canForm").reset();
     document.getElementById("_rowNum").value = "";
     document.getElementById("ImgCover").value = "";
+    document.getElementById("ImgFront").value = "";
     document.getElementById("ImgLeft").value = "";
     document.getElementById("ImgBack").value = "";
     document.getElementById("ImgRight").value = "";
 
+    document.getElementById("prevLogo").src = "";
+    document.getElementById("prevWallpaper").src = "";
     document.getElementById("prevCover").src = "";
+    document.getElementById("prevFront").src = "";
     document.getElementById("prevLeft").src = "";
     document.getElementById("prevBack").src = "";
     document.getElementById("prevRight").src = "";
