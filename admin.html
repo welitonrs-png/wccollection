@@ -242,6 +242,33 @@
       reader.readAsDataURL(file);
     });
   }
+  // Preenche o wallpaper automaticamente ao digitar a cervejaria
+function autoFillBrandWallpaper() {
+  const breweryInput = document.getElementById("Cervejaria") || document.getElementById("brewery");
+  const wallpaperInput = document.getElementById("brandWallpaper") || document.getElementById("wallpaper");
+
+  if (!breweryInput || !wallpaperInput) return;
+
+  const typedBrewery = breweryInput.value.trim().toLowerCase();
+
+  if (!typedBrewery) return;
+
+  // Busca no catálogo do Admin se já existe alguma lata dessa cervejaria com wallpaper
+  // (Substitua 'canCatalog' pelo nome da variável onde você armazena a lista de latas no Admin)
+  const listToSearch = typeof canCatalog !== "undefined" ? canCatalog : (typeof catalogData !== "undefined" ? catalogData : []);
+
+  const match = listToSearch.find(item => {
+    const b = String(item.brewery || item.Cervejaria || "").trim().toLowerCase();
+    const wp = item.brandWallpaper || item.wallpaper || item.BRANDWALLPAPER || item.WALLPAPER;
+    return b === typedBrewery && wp && String(wp).trim() !== "";
+  });
+
+  // Se encontrou um wallpaper e o campo atual está vazio, preenche automaticamente
+  if (match) {
+    const foundWp = match.brandWallpaper || match.wallpaper || match.BRANDWALLPAPER || match.WALLPAPER;
+    wallpaperInput.value = foundWp;
+  }
+}
 
   async function uploadFileDirectly(inputId, lblId, targetInputId, photoType) {
     const fileInput = document.getElementById(inputId);
