@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>WCCollection - Universal SPA</title>
+  <title>WCCollection - Universal SPA (Marcas)</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; outline: none; }
     
@@ -98,31 +98,100 @@
     }
     .main-area.pushed { transform: translateX(260px); }
 
-    .hero-panel { flex: 1; min-height: 0; background: transparent; border-radius: 12px; display: flex; padding: 8px 12px; gap: 20px; align-items: center; position: relative; }
-    .hero-brand-logo-container { position: absolute; top: 8px; right: 20px; width: 180px; height: 80px; display: flex; justify-content: flex-end; align-items: flex-start; z-index: 20; pointer-events: none; }
+    /* ÁREA SUPERIOR COM BUSCA E LOGO */
+    .hero-panel { 
+      flex: 1; min-height: 0; background: transparent; border-radius: 12px; 
+      display: flex; padding: 8px 12px; position: relative; align-items: flex-start; justify-content: flex-start;
+    }
+
+    .brand-search-wrapper {
+      position: relative;
+      width: 320px;
+      max-width: 60%;
+      z-index: 30;
+    }
+
+    .brand-search-input {
+      width: 100%;
+      padding: 10px 16px;
+      background: #11141d;
+      border: 2px solid #333d52;
+      border-radius: 8px;
+      color: #f39c12;
+      font-size: 0.95rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .brand-search-input:focus, .brand-search-input.focused {
+      border-color: #f39c12;
+      box-shadow: 0 0 10px rgba(243, 156, 18, 0.3);
+      outline: none;
+    }
+
+    .autocomplete-dropdown {
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      width: 100%;
+      max-height: 180px;
+      background: rgba(17, 20, 29, 0.98);
+      border: 1px solid #333d52;
+      border-radius: 8px;
+      overflow-y: auto;
+      display: none;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+      z-index: 100;
+    }
+
+    .autocomplete-dropdown.active {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .autocomplete-item {
+      padding: 10px 14px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #a0aec0;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background 0.15s ease, color 0.15s ease;
+    }
+
+    .autocomplete-item:hover, .autocomplete-item.active {
+      background: #f39c12;
+      color: #1a1e29;
+    }
+
+    .hero-brand-logo-container {
+      position: absolute; top: 8px; right: 20px; width: 180px; height: 80px;
+      display: flex; justify-content: flex-end; align-items: flex-start; z-index: 20; pointer-events: none;
+    }
     .hero-brand-logo-container img { max-width: 100%; max-height: 100%; object-fit: contain; }
 
-    .hero-left-photos { height: 100%; aspect-ratio: 1 / 1; display: grid; grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(2, 1fr); gap: 8px; }
-    .hero-left-photos.aspect-sets { aspect-ratio: 4 / 3; }
-
-    .hero-photo-card { background: #ffffff; border-radius: 8px; padding: 4px; display: flex; justify-content: center; align-items: center; width: 100%; height: 100%; overflow: hidden; cursor: pointer; }
-    .hero-photo-card img { width: 100%; height: 100%; object-fit: contain; }
-
-    .hero-right-info { flex: 1; height: 100%; display: flex; flex-direction: column; justify-content: flex-start; gap: 6px; color: #f39c12; text-transform: uppercase; font-style: italic; overflow-y: auto; padding-right: 180px; }
-    .hero-title { font-size: clamp(1.1rem, 1.9vw, 1.5rem); font-weight: 900; line-height: 1.1; color: #f39c12; margin-bottom: 2px; letter-spacing: 0.5px; }
-    .info-block { display: flex; flex-direction: column; margin-bottom: 2px; }
-    .info-label { font-size: clamp(0.65rem, 0.9vw, 0.8rem); font-weight: 900; color: #f39c12; line-height: 1.1; letter-spacing: 0.5px; }
-    .info-val { font-size: clamp(0.9rem, 1.4vw, 1.2rem); font-weight: 900; color: #f39c12; line-height: 1.1; margin-top: 1px; }
-
-    .counter-bar { display: flex; justify-content: flex-end; align-items: center; padding: 0 4px; }
-    .card-counter { font-size: 0.85rem; font-weight: 900; color: #f39c12; background: transparent; padding: 2px 8px; letter-spacing: 1px; }
-
-    /* SEÇÃO INFERIOR DO CATÁLOGO */
-    .catalog-section { height: 185px; min-height: 185px; width: 100%; overflow: hidden; flex-shrink: 0; touch-action: none; }
+    /* BARRA DO MEIO COM O BOTÃO TRIÂNGULO AO LADO DA CONTAGEM */
+    .counter-bar { display: flex; justify-content: flex-end; align-items: center; padding: 0 4px; gap: 8px; height: 20px; }
     
-    .card-row { display: flex; height: 100%; width: 100%; justify-content: flex-start; align-items: flex-end; gap: 12px; }
+    .sort-icon-btn {
+      background: transparent; color: #a0aec0; border: none; font-size: 0.9rem;
+      cursor: pointer; padding: 0; display: flex; align-items: center;
+      justify-content: center; transition: color 0.2s ease, transform 0.2s ease; outline: none;
+    }
+    
+    .sort-icon-btn:hover, .sort-icon-btn:focus, .sort-icon-btn.focused {
+      color: #f39c12 !important; background: transparent !important;
+      border: none !important; box-shadow: none !important; transform: scale(1.25);
+    }
 
-    /* DIMENSÕES: 7 CARDS PROPORCIONAIS ALINHADOS À ESQUERDA */
+    .card-counter { font-size: 0.85rem; font-weight: 900; color: #f39c12; background: transparent; padding: 0; letter-spacing: 1px; }
+
+    /* SEÇÃO INFERIOR DO CATÁLOGO - 2 LINHAS */
+    .catalog-section { height: 380px; min-height: 380px; width: 100%; overflow: hidden; flex-shrink: 0; touch-action: none; }
+    .card-row { display: grid; grid-template-columns: repeat(7, 122px); grid-template-rows: repeat(2, 185px); gap: 10px 12px; width: 100%; height: 100%; justify-content: start; align-content: start; }
+
     .card {
       width: 122px !important;
       min-width: 122px !important;
@@ -139,7 +208,6 @@
 
     .card.card-aspect-sets { width: 170px !important; min-width: 170px !important; }
 
-    /* Área da Foto Superior */
     .card-top-photo {
       width: 100% !important;
       height: 137px !important;
@@ -156,7 +224,6 @@
       object-fit: contain !important;
     }
 
-    /* Barra Colorida Inferior */
     .card-bottom-bar {
       width: 100% !important;
       height: 48px !important;
@@ -168,7 +235,6 @@
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
     }
 
-    /* Nome da Marca */
     .card-bar-title {
       font-family: "Helvetica Now Display", "Helvetica Neue", Helvetica, Arial, sans-serif !important;
       font-size: 0.75rem !important;
@@ -190,7 +256,6 @@
       margin-bottom: 1px !important;
     }
 
-    /* Nome do País e Bandeira */
     .card-bar-country {
       display: flex !important;
       align-items: center !important;
@@ -212,7 +277,6 @@
       flex-shrink: 0 !important;
     }
 
-    /* Badge de Volume */
     .card-bar-vol {
       background: rgba(0, 0, 0, 0.45) !important;
       color: #ffffff !important;
@@ -225,7 +289,6 @@
       flex-shrink: 0 !important;
     }
 
-    /* Borda Laranja de Seleção */
     .card.focused, .card:hover { 
       border: 2px solid #f39c12 !important; 
       box-shadow: 0 0 8px rgba(243, 156, 18, 0.4) !important; 
@@ -257,7 +320,7 @@
   <div class="loading-screen" id="loadingScreen">
     <img src="logo.png" alt="Logo" class="loading-logo">
     <div class="spinner"></div>
-    <div class="loading-text" id="loadingText">CARREGANDO CATÁLOGO...</div>
+    <div class="loading-text" id="loadingText">CARREGANDO MARCAS...</div>
   </div>
 
   <div class="app-container">
@@ -265,7 +328,9 @@
 
     <nav class="sidebar-drawer" id="sidebarDrawer">
       <img src="logo.png" alt="Logo" class="sidebar-logo">
-      <button class="cat-btn" id="menuBtnHome" onclick="switchTab('home')" tabindex="0">HOME / CATÁLOGO</button>
+      
+      <!-- NAVEGAÇÃO DE VOLTA PARA INDEX -->
+      <button class="cat-btn" id="menuBtnHome" onclick="window.location.href='index.html'" tabindex="0">HOME / CATÁLOGO</button>
       
       <button class="cat-btn" id="menuBtnSearch" onclick="toggleSearchInline()" tabindex="0">PESQUISAR</button>
       <div class="inline-panel-container" id="searchInlineContainer">
@@ -281,26 +346,19 @@
     </nav>
 
     <main class="main-area" id="mainArea" onclick="handleMainAreaClick()">
+      <!-- ÁREA SUPERIOR COM CAMPO DE BUSCA DE MARCAS E LOGO DEDICADO -->
       <section class="hero-panel" id="heroPanel">
+        <div class="brand-search-wrapper">
+          <input type="text" id="topBrandInput" class="brand-search-input" placeholder="BUSCAR MARCA..." autocomplete="off">
+          <div class="autocomplete-dropdown" id="brandAutocompleteList"></div>
+        </div>
         <div class="hero-brand-logo-container" id="heroBrandLogo"></div>
-
-        <div class="hero-left-photos" id="heroPhotos">
-          <div class="hero-photo-card"><img src="" alt=""></div>
-          <div class="hero-photo-card"><img src="" alt=""></div>
-          <div class="hero-photo-card"><img src="" alt=""></div>
-          <div class="hero-photo-card"><img src="" alt=""></div>
-        </div>
-
-        <div class="hero-right-info">
-          <div class="hero-title" id="heroTitle">SELECIONE UMA LATA</div>
-          <div class="info-block"><span class="info-label" id="labelCountry">ORIGEM:</span><div class="info-val" id="heroCountry">-</div></div>
-          <div class="info-block"><span class="info-label">VOLUME:</span><div class="info-val" id="heroVolume">-</div></div>
-          <div class="info-block"><span class="info-label">ANO:</span><div class="info-val" id="heroYear">-</div></div>
-          <div class="info-block"><span class="info-label">CÓD. BARRAS:</span><div class="info-val" id="heroBarcode">-</div></div>
-        </div>
       </section>
 
-      <div class="counter-bar"><div class="card-counter" id="cardCounter">0/0</div></div>
+      <div class="counter-bar">
+        <button class="sort-icon-btn" id="sortOrderBtn" onclick="toggleSortOrder()" tabindex="0" title="Alternar Ordenação">▼</button>
+        <div class="card-counter" id="cardCounter">0/0</div>
+      </div>
 
       <section class="catalog-section" id="catalogSection">
         <div class="card-row" id="cardRow"></div>
@@ -330,13 +388,19 @@
   let currentFiltered = [];
   let zoomGallery = [];
   let currentZoomIndex = 0;
+  let sortNewestFirst = true;
   
   let currentTab = 'home';
   let cardsPerRow = 7;
+  let cardsPerPage = 14; // 2 linhas de 7 cards
   let currentPage = 0;
   let activeLocalIndex = 0;
   let lastSelectedMenuId = 'menuBtnHome'; 
   let lastSelectedBrandElem = null;
+
+  /* AUTOCOMPLETE VARIÁVEIS */
+  let registeredBrands = [];
+  let activeAutocompleteIndex = -1;
 
   /* MAPA DE CORES AUTOMÁTICO DAS MARCAS */
   const BRAND_COLORS = {
@@ -375,7 +439,6 @@
     return url;
   }
 
-  /* Função para capitalizar (Apenas 1ª letra maiúscula) */
   function formatCapitalizedText(str) {
     if (!str) return '';
     return String(str)
@@ -418,7 +481,7 @@
     return '';
   }
 
-  function preloadFirstImages(items, count = 7) {
+  function preloadFirstImages(items, count = 14) {
     return new Promise((resolve) => {
       const pageItems = items.slice(0, count);
       if (pageItems.length === 0) {
@@ -469,10 +532,11 @@
       const freshData = await response.json();
       
       canCatalog = freshData;
+      extractRegisteredBrands();
       processTabChange();
 
       document.getElementById("loadingText").innerText = "PREPARANDO IMAGENS...";
-      await preloadFirstImages(currentFiltered, cardsPerRow);
+      await preloadFirstImages(currentFiltered, cardsPerPage);
       hideLoadingScreen();
       focusCardSafely(0);
     } catch (err) {
@@ -480,6 +544,18 @@
       hideLoadingScreen();
       focusCardSafely(0);
     }
+  }
+
+  /* EXTRAI MARCAS ÚNICAS DO CATÁLOGO */
+  function extractRegisteredBrands() {
+    const brandSet = new Set();
+    canCatalog.forEach(can => {
+      const b = can.brewery || can.Cervejaria;
+      if (b && String(b).trim() !== "") {
+        brandSet.add(String(b).trim());
+      }
+    });
+    registeredBrands = Array.from(brandSet).sort((a, b) => a.localeCompare(b));
   }
 
   function switchTab(tabName) {
@@ -498,32 +574,33 @@
     focusCardSafely(0);
   }
 
-  function processTabChange() {
-    const heroPhotos = document.getElementById("heroPhotos");
-    const labelCountry = document.getElementById("labelCountry");
-
-    if (currentTab === 'sets') {
-      cardsPerRow = 7;
-      heroPhotos.classList.add("aspect-sets");
-      labelCountry.innerText = "ORIGEM:";
-    } else if (currentTab === 'ococ') {
-      cardsPerRow = 7;
-      heroPhotos.classList.remove("aspect-sets");
-      labelCountry.innerText = "PAÍS / ORIGEM:";
+  function toggleSortOrder() {
+    sortNewestFirst = !sortNewestFirst;
+    const sortBtn = document.getElementById("sortOrderBtn");
+    if (sortNewestFirst) {
+      sortBtn.innerText = "▼";
+      sortBtn.title = "Ordenação: Maior para Menor (Mais Novos)";
     } else {
-      cardsPerRow = 7;
-      heroPhotos.classList.remove("aspect-sets");
-      labelCountry.innerText = "ORIGEM:";
+      sortBtn.innerText = "▲";
+      sortBtn.title = "Ordenação: Menor para Maior (Mais Antigos)";
     }
 
+    const currentSearchVal = document.getElementById("topBrandInput").value;
+    filterCatalogByBrand(currentSearchVal);
+    focusCardSafely(0);
+  }
+
+  function processTabChange() {
     buildBrandList();
     buildVirtualKeyboard();
-    filterCatalog(document.getElementById("menuSearchInput").value);
+    const currentSearchVal = document.getElementById("topBrandInput").value;
+    filterCatalogByBrand(currentSearchVal);
   }
 
   function getBaseListForCurrentTab() {
+    let list = [];
     if (currentTab === 'home') {
-      return canCatalog.filter(can => {
+      list = canCatalog.filter(can => {
         const val = can.isSet !== undefined ? can.isSet : can.isSet;
         return !val || String(val).toLowerCase() === "false";
       });
@@ -540,17 +617,21 @@
           countryMap.set(String(countryVal).toLowerCase(), can);
         }
       });
-      return Array.from(countryMap.values()).sort((a,b) => String(a.country || a.Pais).localeCompare(String(b.country || b.Pais)));
+      list = Array.from(countryMap.values()).sort((a,b) => String(a.country || a.Pais).localeCompare(String(b.country || b.Pais)));
     } else if (currentTab === 'sets') {
-      return canCatalog.filter(can => {
+      list = canCatalog.filter(can => {
         const val = can.isSet;
         return val === true || String(val).toLowerCase() === "true";
       });
     }
-    return [];
+
+    if (sortNewestFirst && currentTab !== 'ococ') {
+      return [...list].reverse();
+    }
+    return list;
   }
 
-  /* CORREÇÃO DO FOCO DUPLO: Remove bordas e desfoca elemento nativo */
+  /* LIMPA FOCOS DUPLOS E RETIRA O FOCO NATIVO DE INPUTS/ELEMENTOS */
   function clearAllCardFocus() {
     if (document.activeElement && typeof document.activeElement.blur === "function") {
       document.activeElement.blur();
@@ -558,6 +639,8 @@
     document.querySelectorAll(".card").forEach(c => {
       c.classList.remove("focused");
     });
+    document.getElementById("sortOrderBtn").classList.remove("focused");
+    topBrandInput.classList.remove("focused");
   }
 
   function focusCardSafely(targetIndex) {
@@ -571,6 +654,7 @@
         activeLocalIndex = finalIdx;
         cards[finalIdx].classList.add("focused");
         cards[finalIdx].focus();
+        updateCounter(finalIdx);
       }
     }, 50);
   }
@@ -622,6 +706,7 @@
     if (document.getElementById("sidebarDrawer").classList.contains("open")) {
       closeMenu();
     }
+    closeAutocomplete();
   }
 
   function toggleSearchInline() {
@@ -682,7 +767,7 @@
     else if (key === 'DEL') input.value = input.value.slice(0, -1);
     else if (key === 'LIMPAR') input.value = '';
     else input.value += key;
-    filterCatalog(input.value);
+    filterCatalogByBrand(input.value);
   }
 
   function buildBrandList() {
@@ -700,7 +785,11 @@
     
     allBtn.onclick = (e) => { 
       e.stopPropagation();
-      selectBrandFromMenu("");
+      lastSelectedMenuId = 'menuBtnBrands';
+      lastSelectedBrandElem = allBtn;
+      document.getElementById("topBrandInput").value = "";
+      filterCatalogByBrand(""); 
+      focusCardSafely(0); 
     };
 
     allBtn.onkeydown = (e) => {
@@ -718,7 +807,11 @@
       
       btn.onclick = (e) => { 
         e.stopPropagation();
-        selectBrandFromMenu(b);
+        lastSelectedMenuId = 'menuBtnBrands';
+        lastSelectedBrandElem = btn;
+        document.getElementById("topBrandInput").value = b;
+        filterCatalogByBrand(b); 
+        focusCardSafely(0); 
       };
 
       btn.onkeydown = (e) => {
@@ -732,52 +825,181 @@
     });
   }
 
-  /* SELEÇÃO DA MARCA: Fecha o submenu/teclado e mostra só a marca selecionada */
-  function selectBrandFromMenu(brandName) {
-    const input = document.getElementById("menuSearchInput");
-    input.value = String(brandName).toUpperCase();
-    document.getElementById("brandInlineList").classList.remove("active");
-    filterCatalog(brandName);
-    focusCardSafely(0);
-  }
-
-  function filterCatalog(query) {
+  /* FILTRA CATÁLOGO SOMENTE PELA MARCA E ATUALIZA LOGO */
+  function filterCatalogByBrand(query) {
     const val = query.toLowerCase().trim();
     const baseList = getBaseListForCurrentTab();
 
     currentFiltered = baseList.filter(can => {
       if (!val) return true;
-      return [
-        can.name || can.Nome,
-        can.brewery || can.Cervejaria,
-        can.country || can.Pais,
-        can.volume || can.Volume,
-        can.year || can.Ano,
-        can.barcode || can.Barcode
-      ].map(v => String(v || "").toLowerCase()).join(" ").includes(val);
+      const b = String(can.brewery || can.Cervejaria || "").toLowerCase();
+      return b.includes(val);
     });
 
     currentPage = 0;
     activeLocalIndex = 0;
     renderApp();
+    updateCounter(0);
+    updateBrandLogoHeader(query);
+  }
 
-    if (currentFiltered.length > 0) {
-      updateHeroPanel(currentFiltered[0], 0);
+  /* ATUALIZA O LOGO DA MARCA NO CANTO SUPERIOR DIREITO */
+  function updateBrandLogoHeader(brandQuery) {
+    const logoContainer = document.getElementById("heroBrandLogo");
+    if (!brandQuery || String(brandQuery).trim() === "") {
+      logoContainer.innerHTML = "";
+      return;
+    }
+
+    const queryLower = String(brandQuery).toLowerCase().trim();
+    const matchCan = canCatalog.find(c => {
+      const b = String(c.brewery || c.Cervejaria || "").toLowerCase().trim();
+      return b === queryLower || b.includes(queryLower);
+    });
+
+    if (matchCan) {
+      const logoUrl = matchCan.brandLogo || matchCan.BRAND_LOGO;
+      if (logoUrl && String(logoUrl).trim() !== "") {
+        logoContainer.innerHTML = `<img src="${getOptimizedImageUrl(logoUrl, 400)}" alt="LOGO DA MARCA">`;
+        return;
+      }
+    }
+    logoContainer.innerHTML = "";
+  }
+
+  /* LÓGICA DE AUTOCOMPLETE DO CAMPO SUPERIOR */
+  const topBrandInput = document.getElementById("topBrandInput");
+  const brandAutocompleteList = document.getElementById("brandAutocompleteList");
+
+  topBrandInput.addEventListener("input", (e) => {
+    const val = e.target.value.toLowerCase().trim();
+    activeAutocompleteIndex = -1;
+
+    if (!val) {
+      closeAutocomplete();
+      filterCatalogByBrand("");
+      return;
+    }
+
+    const matches = registeredBrands.filter(b => b.toLowerCase().includes(val));
+    renderAutocompleteDropdown(matches);
+    filterCatalogByBrand(val);
+  });
+
+  topBrandInput.addEventListener("keydown", (e) => {
+    const items = brandAutocompleteList.querySelectorAll(".autocomplete-item");
+
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      if (items.length > 0) {
+        activeAutocompleteIndex = (activeAutocompleteIndex + 1) % items.length;
+        updateAutocompleteFocus(items);
+      } else {
+        focusCardSafely(0);
+      }
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      if (items.length > 0 && activeAutocompleteIndex > 0) {
+        activeAutocompleteIndex--;
+        updateAutocompleteFocus(items);
+      }
+    } else if (e.key === "Enter") {
+      e.preventDefault();
+      if (activeAutocompleteIndex >= 0 && items[activeAutocompleteIndex]) {
+        selectBrandFromAutocomplete(items[activeAutocompleteIndex].innerText);
+      } else {
+        closeAutocomplete();
+        focusCardSafely(0);
+      }
+    } else if (e.key === "Escape") {
+      closeAutocomplete();
+    }
+  });
+
+  function renderAutocompleteDropdown(matches) {
+    brandAutocompleteList.innerHTML = "";
+    if (matches.length === 0) {
+      closeAutocomplete();
+      return;
+    }
+
+    matches.forEach((brand, idx) => {
+      const item = document.createElement("div");
+      item.className = "autocomplete-item";
+      item.innerText = brand.toUpperCase();
+      item.onclick = (e) => {
+        e.stopPropagation();
+        selectBrandFromAutocomplete(brand);
+      };
+      brandAutocompleteList.appendChild(item);
+    });
+
+    brandAutocompleteList.classList.add("active");
+  }
+
+  function updateAutocompleteFocus(items) {
+    items.forEach((item, idx) => {
+      if (idx === activeAutocompleteIndex) {
+        item.classList.add("active");
+        item.scrollIntoView({ block: "nearest" });
+      } else {
+        item.classList.remove("active");
+      }
+    });
+  }
+
+  /* SELEÇÃO CORRIGIDA: DESFOCA O INPUT E VAI DIRETO PARA OS CARDS */
+  function selectBrandFromAutocomplete(brandName) {
+    topBrandInput.value = brandName.toUpperCase();
+    topBrandInput.blur(); // Recolhe o teclado do dispositivo
+    closeAutocomplete();
+    filterCatalogByBrand(brandName);
+    focusCardSafely(0);
+  }
+
+  function closeAutocomplete() {
+    brandAutocompleteList.innerHTML = "";
+    brandAutocompleteList.classList.remove("active");
+    activeAutocompleteIndex = -1;
+  }
+
+  function updateCounter(localIndex) {
+    const total = currentFiltered.length;
+    const globalIndex = currentPage * cardsPerPage + localIndex;
+    const currentNum = total > 0 ? (globalIndex + 1) : 0;
+    
+    const counterElem = document.getElementById("cardCounter");
+    if (counterElem) {
+      counterElem.innerText = `${currentNum}/${total}`;
+    }
+
+    // Atualiza galeria para Zoom
+    const currentCan = currentFiltered[globalIndex];
+    if (currentCan) {
+      let rawPhotos = [];
+      if (currentCan.images) rawPhotos = [currentCan.images.front, currentCan.images.left, currentCan.images.back, currentCan.images.right].filter(Boolean);
+      if (rawPhotos.length === 0) rawPhotos = [currentCan.ImgFront, currentCan.ImgLeft, currentCan.ImgBack, currentCan.ImgRight].filter(Boolean);
+      const logoUrl = currentCan.brandLogo || currentCan.BRAND_LOGO;
+      if (rawPhotos.length === 0 && logoUrl) rawPhotos.push(logoUrl);
+      zoomGallery = rawPhotos;
+
+      // Se a busca do topo estiver vazia, exibe o logo do card em destaque
+      if (!topBrandInput.value.trim() && logoUrl) {
+        document.getElementById("heroBrandLogo").innerHTML = `<img src="${getOptimizedImageUrl(logoUrl, 400)}" alt="LOGO DA MARCA">`;
+      }
     } else {
-      document.getElementById("cardCounter").innerText = "0/0";
-      document.getElementById("heroTitle").innerText = "NENHUMA LATA ENCONTRADA";
-      document.getElementById("heroPhotos").innerHTML = "";
+      zoomGallery = [];
     }
   }
 
-  /* RENDERIZAÇÃO DOS CARDS */
+  /* RENDERIZAÇÃO DOS CARDS (2 LINHAS DE 7) */
   function renderApp() {
     clearAllCardFocus();
     const row = document.getElementById("cardRow");
     row.innerHTML = "";
 
-    const startIndex = currentPage * cardsPerRow;
-    const pageItems = currentFiltered.slice(startIndex, startIndex + cardsPerRow);
+    const startIndex = currentPage * cardsPerPage;
+    const pageItems = currentFiltered.slice(startIndex, startIndex + cardsPerPage);
 
     pageItems.forEach((can, localIndex) => {
       const globalIndex = startIndex + localIndex;
@@ -806,7 +1028,7 @@
         clearAllCardFocus();
         card.classList.add("focused");
         activeLocalIndex = localIndex;
-        updateHeroPanel(can, globalIndex);
+        updateCounter(localIndex);
       };
 
       card.onfocus = () => {
@@ -814,7 +1036,7 @@
         clearAllCardFocus();
         card.classList.add("focused");
         activeLocalIndex = localIndex;
-        updateHeroPanel(can, globalIndex);
+        updateCounter(localIndex);
       };
       
       card.onclick = (e) => {
@@ -822,6 +1044,7 @@
         openZoomModal(0);
       };
 
+      /* NAVEGAÇÃO EM GRID (2 LINHAS X 7 COLUNAS) */
       card.onkeydown = (e) => {
         if (document.getElementById("zoomModal").classList.contains("active") || document.getElementById("exitModal").classList.contains("active")) return;
 
@@ -829,37 +1052,55 @@
           e.preventDefault();
           openZoomModal(0);
         } else if (e.key === "ArrowRight") {
-          if (localIndex === pageItems.length - 1 && (startIndex + cardsPerRow) < currentFiltered.length) {
-            e.preventDefault();
+          e.preventDefault();
+          if (localIndex < pageItems.length - 1) {
+            focusCardSafely(localIndex + 1);
+          } else if ((startIndex + cardsPerPage) < currentFiltered.length) {
             currentPage++;
             renderApp();
             focusCardSafely(0);
           }
         } else if (e.key === "ArrowLeft") {
-          if (localIndex === 0) {
-            e.preventDefault();
-            if (currentPage > 0) {
-              currentPage--;
-              renderApp();
-              focusCardSafely(cardsPerRow - 1);
-            } else {
-              clearAllCardFocus();
-              openMenu();
-            }
+          e.preventDefault();
+          if (localIndex > 0) {
+            focusCardSafely(localIndex - 1);
+          } else if (currentPage > 0) {
+            currentPage--;
+            renderApp();
+            focusCardSafely(cardsPerPage - 1);
+          } else {
+            clearAllCardFocus();
+            openMenu();
           }
         } else if (e.key === "ArrowDown") {
           e.preventDefault();
-          if ((startIndex + cardsPerRow) < currentFiltered.length) {
+          if (localIndex < cardsPerRow) {
+            // Estava na 1ª linha, vai para a 2ª
+            if (localIndex + cardsPerRow < pageItems.length) {
+              focusCardSafely(localIndex + cardsPerRow);
+            }
+          } else if ((startIndex + cardsPerPage) < currentFiltered.length) {
+            // Estava na 2ª linha, avança para a próxima página mantendo a coluna
             currentPage++;
             renderApp();
-            focusCardSafely(activeLocalIndex);
+            focusCardSafely(localIndex % cardsPerRow);
           }
         } else if (e.key === "ArrowUp") {
           e.preventDefault();
-          if (currentPage > 0) {
+          if (localIndex >= cardsPerRow) {
+            // Estava na 2ª linha, sobe para a 1ª
+            focusCardSafely(localIndex - cardsPerRow);
+          } else if (currentPage > 0) {
+            // Estava na 1ª linha da pág atual, sobe para a 2ª linha da pág anterior
             currentPage--;
             renderApp();
-            focusCardSafely(activeLocalIndex);
+            const target = cardsPerRow + localIndex;
+            focusCardSafely(target);
+          } else {
+            // Topo da primeira página -> vai para o campo de busca
+            clearAllCardFocus();
+            topBrandInput.focus();
+            topBrandInput.classList.add("focused");
           }
         }
       };
@@ -882,73 +1123,6 @@
 
       row.appendChild(card);
     });
-  }
-
-  function updateHeroPanel(can, index = 0) {
-    if (!can) return;
-
-    let fallbackTitle = "SELECIONE UMA LATA";
-    if (currentTab === 'ococ') fallbackTitle = "SELECIONE UMA LATA (OCOC)";
-    if (currentTab === 'sets') fallbackTitle = "SELECIONE UM SET";
-
-    const titleVal = can.name || can.Nome || fallbackTitle;
-    const countryVal = can.country || can.Pais || "-";
-    const volumeVal = can.volume || can.Volume || "-";
-    const yearVal = can.year || can.Ano || "-";
-    const barcodeVal = can.barcode || can.Barcode || "-";
-
-    document.getElementById("heroTitle").innerText = String(titleVal).toUpperCase();
-    document.getElementById("heroCountry").innerText = String(countryVal).toUpperCase();
-    document.getElementById("heroVolume").innerText = String(volumeVal).toUpperCase();
-    document.getElementById("heroYear").innerText = yearVal;
-    document.getElementById("heroBarcode").innerText = barcodeVal;
-
-    const logoContainer = document.getElementById("heroBrandLogo");
-    const logoUrl = can.brandLogo || can.BRAND_LOGO;
-    if (logoUrl && String(logoUrl).trim() !== "") {
-      logoContainer.innerHTML = `<img src="${getOptimizedImageUrl(logoUrl, 400)}" alt="LOGO DA CERVEJARIA">`;
-    } else {
-      logoContainer.innerHTML = "";
-    }
-
-    const total = currentFiltered.length;
-    const currentNum = total > 0 ? (index + 1) : 0;
-    document.getElementById("cardCounter").innerText = `${currentNum}/${total}`;
-
-    let rawPhotos = [];
-    if (can.images) {
-      rawPhotos = [can.images.front, can.images.left, can.images.back, can.images.right].filter(Boolean);
-    }
-    if (rawPhotos.length === 0) {
-      rawPhotos = [can.ImgFront, can.ImgLeft, can.ImgBack, can.ImgRight].filter(Boolean);
-    }
-
-    if (rawPhotos.length === 0 && logoUrl) {
-      rawPhotos.push(logoUrl);
-    }
-
-    zoomGallery = rawPhotos;
-
-    const photosContainer = document.getElementById("heroPhotos");
-    photosContainer.innerHTML = "";
-
-    const displayPhotos = rawPhotos.slice(0, 4);
-
-    if (displayPhotos.length > 0) {
-      displayPhotos.forEach((url, idx) => {
-        const optimizedUrl = getOptimizedImageUrl(url, 1000);
-        const photoCard = document.createElement("div");
-        photoCard.className = "hero-photo-card";
-        photoCard.innerHTML = `<img src="${optimizedUrl}" alt="FOTO ${idx+1}" loading="lazy">`;
-        photoCard.onclick = (e) => {
-          e.stopPropagation();
-          openZoomModal(idx);
-        };
-        photosContainer.appendChild(photoCard);
-      });
-    } else {
-      photosContainer.innerHTML = `<div class="hero-photo-card" style="grid-column: span 2; grid-row: span 2; color:#aaa; font-size:0.8rem;">SEM FOTOS</div>`;
-    }
   }
 
   /* SISTEMA DE ZOOM CICLICO E PAN */
@@ -1052,7 +1226,7 @@
   /* SCROLL DO MOUSE */
   catalogSection.addEventListener("wheel", (e) => {
     if (e.deltaY > 0) {
-      if (((currentPage + 1) * cardsPerRow) < currentFiltered.length) {
+      if (((currentPage + 1) * cardsPerPage) < currentFiltered.length) {
         currentPage++;
         renderApp();
         focusCardSafely(activeLocalIndex);
@@ -1073,7 +1247,7 @@
 
     if (Math.abs(diffY) > Math.abs(diffX)) {
       if (diffY < -threshold) {
-        if (((currentPage + 1) * cardsPerRow) < currentFiltered.length) {
+        if (((currentPage + 1) * cardsPerPage) < currentFiltered.length) {
           currentPage++;
           renderApp();
           focusCardSafely(activeLocalIndex);
@@ -1090,7 +1264,7 @@
         const cards = document.querySelectorAll(".card");
         if (activeLocalIndex < cards.length - 1) {
           focusCardSafely(activeLocalIndex + 1);
-        } else if (((currentPage + 1) * cardsPerRow) < currentFiltered.length) {
+        } else if (((currentPage + 1) * cardsPerPage) < currentFiltered.length) {
           currentPage++;
           renderApp();
           focusCardSafely(0);
@@ -1101,11 +1275,26 @@
         } else if (currentPage > 0) {
           currentPage--;
           renderApp();
-          focusCardSafely(cardsPerRow - 1);
+          focusCardSafely(cardsPerPage - 1);
         }
       }
     }
   }
+
+  /* NAVEGAÇÃO DO BOTÃO DE ORDENAÇÃO VIA TECLADO */
+  const sortBtnElem = document.getElementById("sortOrderBtn");
+  sortBtnElem.onkeydown = (e) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      toggleSortOrder();
+    } else if (e.key === "ArrowDown") {
+      e.preventDefault();
+      focusCardSafely(0);
+    } else if (e.key === "ArrowLeft") {
+      e.preventDefault();
+      openMenu();
+    }
+  };
 
   /* TECLADO E CONTROLE REMOTO */
   document.addEventListener("keydown", (e) => {
