@@ -162,7 +162,7 @@
 
     .card-counter { font-size: 0.85rem; font-weight: 900; color: #f39c12; background: transparent; padding: 0; letter-spacing: 1px; }
 
-    /* SEÇÃO INFERIOR DO CATÁLOGO - 1 LINHA DE 7 CARDS */
+    /* SEÇÃO INFERIOR DO CATÁLOGO - 1 LINHA DE CARDS */
     .catalog-section { height: 195px; min-height: 195px; width: 100%; overflow: hidden; flex-shrink: 0; touch-action: none; }
     .card-row { display: grid; grid-template-columns: repeat(7, 122px); grid-template-rows: repeat(1, 185px); gap: 10px 12px; width: 100%; height: 100%; justify-content: start; align-content: start; }
 
@@ -319,7 +319,7 @@
 
     <main class="main-area" id="mainArea" onclick="handleMainAreaClick()">
       <section class="hero-panel" id="heroPanel">
-        <!-- CAMADA DE WALLPAPER DA MARCA ADICIONADA AQUI -->
+        <!-- CAMADA DE WALLPAPER DA MARCA DE FUNDO -->
         <div class="hero-brand-wallpaper" id="heroBrandWallpaper"></div>
 
         <div class="hero-brand-logo-container" id="heroBrandLogo"></div>
@@ -373,7 +373,7 @@
   let currentFiltered = [];
   let zoomGallery = [];
   let currentZoomIndex = 0;
-  let sortNewestFirst = true; // Define se é do maior para o menor
+  let sortNewestFirst = true;
 
   let currentTab = 'home';
   let cardsPerRow = 7;
@@ -445,7 +445,6 @@
   function getFlagUrlByCountry(countryName) {
     if (!countryName) return '';
     
-    // Converte para minúsculas, remove espaços extras e remove todos os acentos/ç
     const name = String(countryName)
       .toLowerCase()
       .trim()
@@ -865,7 +864,7 @@
     }
   }
 
-  /* RENDERIZAÇÃO DOS CARDS COM DECODING E LOADING ASSÍNCRONOS */
+  /* RENDERIZAÇÃO DOS CARDS COM CORREÇÃO DE NAVEGAÇÃO DA SETA PARA CIMA */
   function renderApp() {
     const row = document.getElementById("cardRow");
     row.innerHTML = "";
@@ -916,28 +915,32 @@
         openZoomModal(0);
       };
 
-      } else if (e.key === "ArrowUp") {
-  e.preventDefault();
-  
-  if (localIndex >= cardsPerRow) {
-    // 1. Se estiver da 2ª linha em diante, sobe para o card da linha acima
-    focusCardSafely(localIndex - cardsPerRow);
-  } else if (currentPage > 0) {
-    // 2. Se estiver na 1ª linha de uma página avançada, volta para a página anterior
-    currentPage--;
-    renderApp();
-    focusCardSafely(cardsPerRow + localIndex);
-  } else {
-    // 3. SÓ VAI PARA O TRIÂNGULO se estiver na 1ª LINHA da 1ª PÁGINA
-    clearAllCardFocus();
-    const sortBtn = document.getElementById("sortOrderBtn");
-    if (sortBtn) {
-      sortBtn.classList.add("focused");
-      sortBtn.focus();
-    }
-  }
-}
- else if (e.key === "ArrowDown") {
+      card.onkeydown = (e) => {
+        if (document.getElementById("zoomModal").classList.contains("active") || document.getElementById("exitModal").classList.contains("active")) return;
+
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          openZoomModal(0);
+        } else if (e.key === "ArrowRight") {
+          if (localIndex === pageItems.length - 1 && (startIndex + cardsPerRow) < currentFiltered.length) {
+            e.preventDefault();
+            currentPage++;
+            renderApp();
+            focusCardSafely(0);
+          }
+        } else if (e.key === "ArrowLeft") {
+          if (localIndex === 0) {
+            e.preventDefault();
+            if (currentPage > 0) {
+              currentPage--;
+              renderApp();
+              focusCardSafely(cardsPerRow - 1);
+            } else {
+              clearAllCardFocus();
+              openMenu();
+            }
+          }
+        } else if (e.key === "ArrowDown") {
           e.preventDefault();
           if ((startIndex + cardsPerRow) < currentFiltered.length) {
             currentPage++;
@@ -946,10 +949,24 @@
           }
         } else if (e.key === "ArrowUp") {
           e.preventDefault();
-          clearAllCardFocus();
-          const sortBtn = document.getElementById("sortOrderBtn");
-          sortBtn.classList.add("focused");
-          sortBtn.focus();
+          
+          if (localIndex >= cardsPerRow) {
+            // 1. Se estiver na 2ª linha em diante, sobe para o card da linha acima
+            focusCardSafely(localIndex - cardsPerRow);
+          } else if (currentPage > 0) {
+            // 2. Se estiver na 1ª linha de uma página posterior, volta para a página anterior
+            currentPage--;
+            renderApp();
+            focusCardSafely(cardsPerRow + localIndex);
+          } else {
+            // 3. SÓ VAI PARA O TRIÂNGULO se estiver na 1ª LINHA da 1ª PÁGINA
+            clearAllCardFocus();
+            const sortBtn = document.getElementById("sortOrderBtn");
+            if (sortBtn) {
+              sortBtn.classList.add("focused");
+              sortBtn.focus();
+            }
+          }
         }
       };
 
