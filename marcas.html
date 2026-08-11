@@ -460,36 +460,26 @@
 
   const vkKeys = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','1','2','3','4','5','6','7','8','9','0','ESPAÇO','DEL','LIMPAR'];
 
-// Converte links de compartilhamento do Google Drive para links diretos de imagem
-function fixDriveUrl(url) {
-  if (!url) return '';
-  const str = String(url).trim();
-  const match = str.match(/\/d\/([^\/\?]+)/);
-  if (match && match[1]) {
-    return `https://lh3.googleusercontent.com/d/${match[1]}`;
+  // Converte links de compartilhamento do Google Drive para links diretos de imagem na CDN 'lh3'
+  function fixDriveUrl(url) {
+    if (!url) return '';
+    const str = String(url).trim();
+    const match = str.match(/\/d\/([^\/\?]+)/);
+    if (match && match[1]) {
+      return `https://lh3.googleusercontent.com/d/${match[1]}`;
+    }
+    return str;
   }
-  return str;
-}
 
-// Substitua a sua getOptimizedImageUrl antiga por esta:
-function getOptimizedImageUrl(url, size = 300) {
-  if (!url) return '';
-  const cleanUrl = fixDriveUrl(url); // Trata o link do Drive primeiro
-  if (cleanUrl.includes('googleusercontent.com')) {
-    return cleanUrl.split('=')[0] + `=s${size}-rw`;
+  // Trata e otimiza imagens com redimensionamento e compressão WebP nativa
+  function getOptimizedImageUrl(url, size = 300) {
+    if (!url) return '';
+    const cleanUrl = fixDriveUrl(url);
+    if (cleanUrl.includes('googleusercontent.com')) {
+      return cleanUrl.split('=')[0] + `=s${size}-rw`;
+    }
+    return cleanUrl;
   }
-  return cleanUrl;
-}
-
-function formatCapitalizedText(str) {
-  if (!str) return '';
-  return String(str)
-    .toLowerCase()
-    .trim()
-    .split(' ')
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(' ');
-}
 
   function formatCapitalizedText(str) {
     if (!str) return '';
@@ -571,40 +561,6 @@ function formatCapitalizedText(str) {
     return '';
   }
 
-  function preloadFirstImages(items, count = 14) {
-    return new Promise((resolve) => {
-      const pageItems = items.slice(0, count);
-      if (pageItems.length === 0) {
-        resolve();
-        return;
-      }
-
-      let loadedCount = 0;
-      const totalToLoad = pageItems.length;
-
-      pageItems.forEach((can) => {
-        const rawCover = can.ImgFront || can.front || can.ImgCover || can.cover;
-
-        if (!rawCover) {
-          loadedCount++;
-          if (loadedCount >= totalToLoad) resolve();
-          return;
-        }
-
-        const img = new Image();
-        img.src = getOptimizedImageUrl(rawCover, 300);
-        img.onload = img.onerror = () => {
-          loadedCount++;
-          if (loadedCount >= totalToLoad) {
-            resolve();
-          }
-        };
-      });
-
-      setTimeout(resolve, 3500);
-    });
-  }
-
   function hideLoadingScreen() {
     const screen = document.getElementById("loadingScreen");
     if (screen) {
@@ -612,27 +568,41 @@ function formatCapitalizedText(str) {
     }
   }
 
+  /* CARREGAMENTO ULTRA RÁPIDO COM LOCALSTORAGE CACHE */
   async function fetchCatalogFromSheet() {
-    if(!API_URL || API_URL.includes("COLE_AQUI")) return;
+    if (!API_URL || API_URL.includes("COLE_AQUI")) return;
 
-    localStorage.removeItem("beercan_catalog_cache");
+    // 1. CARREGAMENTO INSTANTÂNEO: Lê o cache gravado no dispositivo
+    const cachedData = localStorage.getItem("beercan_catalog_cache");
+    if (cachedData) {
+      try {
+        canCatalog = JSON.parse(cachedData);
+        extractRegisteredBrands();
+        processTabChange();
+        hideLoadingScreen();
+        focusCardSafely(0);
+      } catch (e) {
+        console.error("Erro ao ler cache local:", e);
+      }
+    }
 
+    // 2. ATUALIZAÇÃO SILENCIOSA EM SEGUNDO PLANO
     try {
-      const response = await fetch(API_URL + "?nocache=" + new Date().getTime());
+      const response = await fetch(API_URL);
       const freshData = await response.json();
-      
-      canCatalog = freshData;
-      extractRegisteredBrands();
-      processTabChange();
 
-      document.getElementById("loadingText").innerText = "PREPARANDO IMAGENS...";
-      await preloadFirstImages(currentFiltered, cardsPerPage);
-      hideLoadingScreen();
-      focusCardSafely(0);
+      if (Array.isArray(freshData) && freshData.length > 0) {
+        canCatalog = freshData;
+        localStorage.setItem("beercan_catalog_cache", JSON.stringify(freshData));
+        extractRegisteredBrands();
+        processTabChange();
+        hideLoadingScreen();
+        if (!cachedData) focusCardSafely(0);
+      }
     } catch (err) {
-      console.error("Erro ao carregar catálogo da API:", err);
+      console.error("Erro na atualização remota:", err);
       hideLoadingScreen();
-      focusCardSafely(0);
+      if (!cachedData) focusCardSafely(0);
     }
   }
 
@@ -720,7 +690,6 @@ function formatCapitalizedText(str) {
     return list;
   }
 
-  /* LIMPA FOCOS DUPLOS MANTENDO O FOCO NO INPUT DE BUSCA SE TIVER DIGITANDO */
   function clearAllCardFocus() {
     const topInput = document.getElementById("topBrandInput");
     
@@ -940,12 +909,11 @@ function formatCapitalizedText(str) {
     updateBrandLogoHeader(query);
   }
 
-/* ATUALIZA O LOGO E O WALLPAPER DA MARCA NO CANTO SUPERIOR */
+  /* ATUALIZA O LOGO E O WALLPAPER DA MARCA NO CANTO SUPERIOR */
   function updateBrandLogoHeader(brandQuery) {
     const logoContainer = document.getElementById("heroBrandLogo");
     const wallpaperElem = document.getElementById("heroBrandWallpaper");
 
-    // Se o campo de busca estiver vazio, limpa logo e wallpaper
     if (!brandQuery || String(brandQuery).trim() === "") {
       logoContainer.innerHTML = "";
       if (wallpaperElem) {
@@ -956,15 +924,13 @@ function formatCapitalizedText(str) {
     }
 
     const queryLower = String(brandQuery).toLowerCase().trim();
-
-    // 1. Procura a primeira latinha da marca para pegar o Logo
     const matchCan = canCatalog.find(c => {
       const b = String(c.brewery || c.Cervejaria || "").toLowerCase().trim();
       return b === queryLower || b.includes(queryLower);
     });
 
     if (matchCan) {
-      // Exibe o Logo no canto direito
+      // 1. Logo
       const logoUrl = matchCan.brandLogo || matchCan.BRAND_LOGO;
       if (logoUrl && String(logoUrl).trim() !== "") {
         logoContainer.innerHTML = `<img src="${getOptimizedImageUrl(logoUrl, 400)}" alt="LOGO DA MARCA">`;
@@ -972,16 +938,13 @@ function formatCapitalizedText(str) {
         logoContainer.innerHTML = "";
       }
 
-      // 2. Busca o brandWallpaper (Coluna Q) em QUALQUER latinha cadastrada da mesma marca
+      // 2. Busca o brandWallpaper (Coluna Q) em QUALQUER latinha da mesma marca
       let wallpaperUrl = "";
-
-      // Filtra todas as latinhas que pertencem à marca buscada
       const sameBrandCans = canCatalog.filter(c => {
         const b = String(c.brewery || c.Cervejaria || "").toLowerCase().trim();
         return b === queryLower || b.includes(queryLower);
       });
 
-      // Procura em qualquer uma dessas latinhas se existe um 'brandWallpaper' ou 'wallpaper' preenchido
       const canWithWallpaper = sameBrandCans.find(c => {
         const wp = c.brandWallpaper || c.wallpaper || c.BRANDWALLPAPER || c.WALLPAPER;
         return wp && String(wp).trim() !== "";
@@ -990,11 +953,9 @@ function formatCapitalizedText(str) {
       if (canWithWallpaper) {
         wallpaperUrl = canWithWallpaper.brandWallpaper || canWithWallpaper.wallpaper || canWithWallpaper.BRANDWALLPAPER || canWithWallpaper.WALLPAPER;
       } else {
-        // FALLBACK: Se nenhuma latinha da marca tiver a coluna Q preenchida, usa o Logo ou a Capa da lata
         wallpaperUrl = matchCan.brandLogo || matchCan.BRAND_LOGO || matchCan.ImgCover || matchCan.cover;
       }
 
-      // Aplica o Wallpaper encontrado no fundo
       if (wallpaperElem && wallpaperUrl && String(wallpaperUrl).trim() !== "") {
         const fullImgUrl = getOptimizedImageUrl(wallpaperUrl, 1200);
         wallpaperElem.style.backgroundImage = `url('${fullImgUrl}')`;
@@ -1134,7 +1095,7 @@ function formatCapitalizedText(str) {
     }
   }
 
-  /* RENDERIZAÇÃO DOS CARDS (2 LINHAS DE 7) */
+  /* RENDERIZAÇÃO DOS CARDS COM DECODING E LOADING ASSÍNCRONOS */
   function renderApp() {
     clearAllCardFocus();
     const row = document.getElementById("cardRow");
@@ -1243,13 +1204,13 @@ function formatCapitalizedText(str) {
 
       card.innerHTML = `
         <div class="card-top-photo">
-          <img src="${frontImg}" alt="${brandFormatted}" loading="lazy">
+          <img src="${frontImg}" alt="${brandFormatted}" loading="lazy" decoding="async">
         </div>
         <div class="card-bottom-bar" style="background-color: ${cardColor};">
           <div class="card-bar-title">${brandFormatted}</div>
           <div class="card-bar-details">
             <div class="card-bar-country">
-              ${flagUrl ? `<img src="${flagUrl}" class="card-bar-flag" alt="${countryFormatted}">` : ''}
+              ${flagUrl ? `<img src="${flagUrl}" class="card-bar-flag" alt="${countryFormatted}" loading="lazy">` : ''}
               <span>${countryFormatted}</span>
             </div>
             ${volumeText ? `<div class="card-bar-vol">${volumeText}</div>` : ''}
