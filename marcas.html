@@ -917,11 +917,12 @@
     updateBrandLogoHeader(query);
   }
 
-  /* ATUALIZA O LOGO E O WALLPAPER DA MARCA NO CANTO SUPERIOR */
+/* ATUALIZA O LOGO E O WALLPAPER DA MARCA NO CANTO SUPERIOR */
   function updateBrandLogoHeader(brandQuery) {
     const logoContainer = document.getElementById("heroBrandLogo");
     const wallpaperElem = document.getElementById("heroBrandWallpaper");
 
+    // Se o campo de busca estiver vazio, limpa logo e wallpaper
     if (!brandQuery || String(brandQuery).trim() === "") {
       logoContainer.innerHTML = "";
       if (wallpaperElem) {
@@ -932,13 +933,15 @@
     }
 
     const queryLower = String(brandQuery).toLowerCase().trim();
+
+    // 1. Procura a primeira latinha da marca para pegar o Logo
     const matchCan = canCatalog.find(c => {
       const b = String(c.brewery || c.Cervejaria || "").toLowerCase().trim();
       return b === queryLower || b.includes(queryLower);
     });
 
     if (matchCan) {
-      // 1. Logo
+      // Exibe o Logo no canto direito
       const logoUrl = matchCan.brandLogo || matchCan.BRAND_LOGO;
       if (logoUrl && String(logoUrl).trim() !== "") {
         logoContainer.innerHTML = `<img src="${getOptimizedImageUrl(logoUrl, 400)}" alt="LOGO DA MARCA">`;
@@ -946,10 +949,31 @@
         logoContainer.innerHTML = "";
       }
 
-      // 2. Wallpaper
-      const wallpaperUrl = matchCan.brandWallpaper || matchCan.wallpaper || matchCan.brandLogo || matchCan.BRAND_LOGO || matchCan.ImgCover;
+      // 2. Busca o brandWallpaper (Coluna Q) em QUALQUER latinha cadastrada da mesma marca
+      let wallpaperUrl = "";
+
+      // Filtra todas as latinhas que pertencem à marca buscada
+      const sameBrandCans = canCatalog.filter(c => {
+        const b = String(c.brewery || c.Cervejaria || "").toLowerCase().trim();
+        return b === queryLower || b.includes(queryLower);
+      });
+
+      // Procura em qualquer uma dessas latinhas se existe um 'brandWallpaper' ou 'wallpaper' preenchido
+      const canWithWallpaper = sameBrandCans.find(c => {
+        const wp = c.brandWallpaper || c.wallpaper || c.BRANDWALLPAPER || c.WALLPAPER;
+        return wp && String(wp).trim() !== "";
+      });
+
+      if (canWithWallpaper) {
+        wallpaperUrl = canWithWallpaper.brandWallpaper || canWithWallpaper.wallpaper || canWithWallpaper.BRANDWALLPAPER || canWithWallpaper.WALLPAPER;
+      } else {
+        // FALLBACK: Se nenhuma latinha da marca tiver a coluna Q preenchida, usa o Logo ou a Capa da lata
+        wallpaperUrl = matchCan.brandLogo || matchCan.BRAND_LOGO || matchCan.ImgCover || matchCan.cover;
+      }
+
+      // Aplica o Wallpaper encontrado no fundo
       if (wallpaperElem && wallpaperUrl && String(wallpaperUrl).trim() !== "") {
-        const fullImgUrl = getOptimizedImageUrl(wallpaperUrl, 1000);
+        const fullImgUrl = getOptimizedImageUrl(wallpaperUrl, 1200);
         wallpaperElem.style.backgroundImage = `url('${fullImgUrl}')`;
         wallpaperElem.classList.add("active");
       } else if (wallpaperElem) {
