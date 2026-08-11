@@ -460,14 +460,7 @@
 
   const vkKeys = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','1','2','3','4','5','6','7','8','9','0','ESPAÇO','DEL','LIMPAR'];
 
-  function getOptimizedImageUrl(url, size = 300) {
-    if (!url) return '';
-    if (url.includes('googleusercontent.com')) {
-      return url.split('=')[0] + `=s${size}-rw`;
-    }
-    return url;
-  }
-  // Converte links comuns do Google Drive em links diretos de imagem
+// Converte links de compartilhamento do Google Drive para links diretos de imagem
 function fixDriveUrl(url) {
   if (!url) return '';
   const str = String(url).trim();
@@ -476,6 +469,16 @@ function fixDriveUrl(url) {
     return `https://lh3.googleusercontent.com/d/${match[1]}`;
   }
   return str;
+}
+
+// Substitua a sua getOptimizedImageUrl antiga por esta:
+function getOptimizedImageUrl(url, size = 300) {
+  if (!url) return '';
+  const cleanUrl = fixDriveUrl(url); // Trata o link do Drive primeiro
+  if (cleanUrl.includes('googleusercontent.com')) {
+    return cleanUrl.split('=')[0] + `=s${size}-rw`;
+  }
+  return cleanUrl;
 }
 
   function formatCapitalizedText(str) {
