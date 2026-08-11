@@ -1,188 +1,96 @@
 <!DOCTYPE html>
-
 <html lang="pt-BR">
-
 <head>
-
   <meta charset="UTF-8">
-
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>WCCollection - Universal SPA</title>
-
   <style>
-
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; outline: none; }
-
     
-
     body { background-color: #1a1e29; color: #DDDDDD; height: 100vh; overflow: hidden; display: flex; user-select: none; touch-action: pan-y; }
 
-
-
     ::-webkit-scrollbar { display: none !important; width: 0 !important; height: 0 !important; }
-
     * { -ms-overflow-style: none !important; scrollbar-width: none !important; }
-
-
 
     .app-container { display: flex; width: 100vw; height: 100vh; overflow: hidden; position: relative; background-color: #1a1e29; }
 
-
-
     /* TELA DE CARREGAMENTO (SPLASH SCREEN) */
-
     .loading-screen {
-
       position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-
       background-color: #1a1e29; z-index: 9999; display: flex;
-
       flex-direction: column; justify-content: center; align-items: center; gap: 20px;
-
       transition: opacity 0.5s ease, visibility 0.5s ease;
-
     }
-
-
 
     .loading-screen.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
 
-
-
     .loading-logo { width: 180px; height: auto; object-fit: contain; animation: pulse 1.5s infinite ease-in-out; }
-
-
 
     .loading-text { color: #f39c12; font-size: 1.1rem; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; }
 
-
-
     .spinner {
-
       width: 40px; height: 40px;
-
       border: 4px solid rgba(243, 156, 18, 0.2);
-
       border-top: 4px solid #f39c12; border-radius: 50%;
-
       animation: spin 1s linear infinite;
-
     }
-
-
 
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
     @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.9; } 50% { transform: scale(1.05); opacity: 1; } }
 
-
-
     /* BOTÃO HAMBÚRGUER (EXCLUSIVO PARA CELULAR) */
-
     .mobile-menu-btn {
-
       display: none; position: fixed; top: 12px; left: 12px; z-index: 2000;
-
       background: rgba(26, 32, 46, 0.9); color: #f39c12; border: 1px solid #f39c12;
-
       font-size: 1.5rem; padding: 6px 12px; border-radius: 8px; cursor: pointer;
-
     }
-
-
 
     @media (max-width: 768px) {
-
       .mobile-menu-btn { display: block; }
-
     }
-
-
 
     /* MENU GAVETA DESLIZANTE */
-
     .sidebar-drawer {
-
       position: absolute; top: 0; left: -280px; width: 260px; height: 100vh;
-
       background: rgba(22, 27, 38, 0.98); backdrop-filter: blur(10px);
-
       display: flex; flex-direction: column; padding: 30px 16px; gap: 8px;
-
       z-index: 1000; border-right: 1px solid rgba(255,255,255,0.08);
-
       transition: left 0.25s cubic-bezier(0.1, 0.9, 0.2, 1); overflow-y: auto;
-
       box-shadow: 10px 0 30px rgba(0,0,0,0.6);
-
     }
-
     
-
     .sidebar-drawer.open { left: 0; }
-
-
 
     .sidebar-logo { width: 100%; height: 50px; object-fit: contain; margin-bottom: 16px; text-align: center; }
 
-
-
     /* BOTÕES DO MENU */
-
     .cat-btn {
-
       display: flex; align-items: center; width: 100%; padding: 12px 18px; border-radius: 12px;
-
       background: transparent; color: #e2e8f0; font-size: 1.05rem; font-weight: 600; border: none;
-
       text-align: left; cursor: pointer; transition: all 0.15s ease; text-transform: uppercase !important;
-
     }
-
-
 
     .cat-btn:focus, .cat-btn.focused, .cat-btn:hover {
-
       background: #ffffff !important; color: #1a1f2c !important; font-weight: 700 !important;
-
       box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2); outline: none !important;
-
     }
-
-
 
     .inline-panel-container { display: none; flex-direction: column; gap: 4px; padding: 6px 0; }
-
     .inline-panel-container.active { display: flex; }
 
-
-
     .brand-btn { 
-
       font-size: 0.85rem; padding: 8px 12px; border-radius: 8px; background: transparent; color: #a0aec0; cursor: pointer; 
-
       border: none !important; text-align: left; font-weight: 600; text-transform: uppercase !important; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-
     }
-
     .brand-btn:focus, .brand-btn:hover { color: #ffffff !important; background: rgba(255,255,255,0.1) !important; }
 
-
-
     .menu-search-box { width: 100%; padding: 8px; background: #11141d; border: 1px solid #333d52; border-radius: 8px; color: #fff; font-size: 0.8rem; text-align: center; text-transform: uppercase; margin-bottom: 4px; pointer-events: none; }
-
     .vk-container { display: grid; grid-template-columns: repeat(6, 1fr); gap: 2px; }
-
     .vk-key { background: #11141d; border: 1px solid #2a3447; color: #a0aec0; padding: 8px 0; border-radius: 4px; font-size: 0.75rem; font-weight: bold; cursor: pointer; text-align: center; user-select: none; }
-
     .vk-key:focus, .vk-key:hover { color: #fff; border-color: #fff; background: rgba(255,255,255,0.2); }
-
     .vk-key-wide { grid-column: span 2; }
 
-
-
-/* ÁREA PRINCIPAL */
+    /* ÁREA PRINCIPAL */
     .main-area {
       flex: 1; display: flex; flex-direction: column; height: 100vh; padding: 10px 16px; gap: 6px;
       overflow: hidden; background: #1a1e29; min-width: 0;
@@ -194,7 +102,7 @@
     .hero-panel { 
       flex: 1; min-height: 0; background: transparent; border-radius: 12px; 
       display: flex; padding: 8px 12px; gap: 20px; align-items: center; position: relative;
-      overflow: hidden; /* Garante que o wallpaper respeite os cantos arredondados */
+      overflow: hidden;
     }
 
     /* CAMADA DE WALLPAPER DA MARCA DE FUNDO */
@@ -211,10 +119,9 @@
     }
 
     .hero-brand-wallpaper.active {
-      opacity: 0.25; /* Transparência do fundo */
+      opacity: 0.25;
     }
 
-    /* GRADIENTE DE ESCURECIMENTO SOBRE O WALLPAPER PARA MANTER O TEXTO LEGÍVEL */
     .hero-panel::after {
       content: '';
       position: absolute;
@@ -234,297 +141,153 @@
     .hero-photo-card img { width: 100%; height: 100%; object-fit: contain; }
 
     .hero-right-info { flex: 1; height: 100%; display: flex; flex-direction: column; justify-content: flex-start; gap: 6px; color: #f39c12; text-transform: uppercase; font-style: italic; overflow-y: auto; padding-right: 180px; z-index: 10; position: relative; }
-    .hero-title { font-size: clamp(3rem, 1.9vw, 1.5rem); font-weight: 900; line-height: 1.1; color: #f39c12; margin-bottom: 2px; letter-spacing: 0.5px; }
+    .hero-title { font-size: clamp(1.1rem, 1.9vw, 1.5rem); font-weight: 900; line-height: 1.1; color: #f39c12; margin-bottom: 2px; letter-spacing: 0.5px; }
     .info-block { display: flex; flex-direction: column; margin-bottom: 2px; }
-    .info-label { font-size: clamp(1rem, 0.9vw, 0.8rem); font-weight: 900; color: #f39c12; line-height: 1.1; letter-spacing: 0.5px; }
-    .info-val { font-size: clamp(1.8rem, 1.4vw, 1.2rem); font-weight: 900; color: #f39c12; line-height: 1.1; margin-top: 1px; }
-
-
+    .info-label { font-size: clamp(0.65rem, 0.9vw, 0.8rem); font-weight: 900; color: #f39c12; line-height: 1.1; letter-spacing: 0.5px; }
+    .info-val { font-size: clamp(0.9rem, 1.4vw, 1.2rem); font-weight: 900; color: #f39c12; line-height: 1.1; margin-top: 1px; }
 
     /* BARRA DO MEIO COM O BOTÃO TRIÂNGULO AO LADO DA CONTAGEM */
-
     .counter-bar { display: flex; justify-content: flex-end; align-items: center; padding: 0 4px; gap: 8px; height: 20px; }
-
     
-
     .sort-icon-btn {
-
       background: transparent; color: #a0aec0; border: none; font-size: 0.9rem;
-
       cursor: pointer; padding: 0; display: flex; align-items: center;
-
       justify-content: center; transition: color 0.2s ease, transform 0.2s ease; outline: none;
-
     }
-
     
-
     .sort-icon-btn:hover, .sort-icon-btn:focus, .sort-icon-btn.focused {
-
       color: #f39c12 !important; background: transparent !important;
-
       border: none !important; box-shadow: none !important; transform: scale(1.25);
-
     }
-
-
 
     .card-counter { font-size: 0.85rem; font-weight: 900; color: #f39c12; background: transparent; padding: 0; letter-spacing: 1px; }
 
-
-
-    /* SEÇÃO INFERIOR DO CATÁLOGO */
-
-    .catalog-section { height: 185px; min-height: 185px; width: 100%; overflow: hidden; flex-shrink: 0; touch-action: none; }
-
-    .card-row { display: flex; height: 100%; width: 100%; justify-content: flex-start; align-items: flex-end; gap: 12px; }
-
-
+    /* SEÇÃO INFERIOR DO CATÁLOGO - 1 LINHA DE 7 CARDS */
+    .catalog-section { height: 195px; min-height: 195px; width: 100%; overflow: hidden; flex-shrink: 0; touch-action: none; }
+    .card-row { display: grid; grid-template-columns: repeat(7, 122px); grid-template-rows: repeat(1, 185px); gap: 10px 12px; width: 100%; height: 100%; justify-content: start; align-content: start; }
 
     .card {
-
       width: 122px !important;
-
       min-width: 122px !important;
-
       height: 185px !important;
-
       background: #ffffff !important;
-
       border-radius: 10px !important;
-
       overflow: hidden !important;
-
       display: flex !important;
-
       flex-direction: column !important;
-
       border: 2px solid transparent !important;
-
       cursor: pointer !important;
-
       flex-shrink: 0 !important;
-
     }
-
-
 
     .card.card-aspect-sets { width: 170px !important; min-width: 170px !important; }
 
-
-
     .card-top-photo {
-
       width: 100% !important;
-
       height: 137px !important;
-
       background: #ffffff !important;
-
       display: flex !important;
-
       justify-content: center !important;
-
       align-items: center !important;
-
       padding: 4px !important;
-
     }
-
-
 
     .card-top-photo img {
-
       max-width: 100% !important;
-
       max-height: 100% !important;
-
       object-fit: contain !important;
-
     }
-
-
 
     .card-bottom-bar {
-
       width: 100% !important;
-
       height: 48px !important;
-
       padding: 2px 5px 3px 5px !important;
-
       display: flex !important;
-
       flex-direction: column !important;
-
       justify-content: space-between !important;
-
       box-sizing: border-box !important;
-
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
-
     }
-
-
 
     .card-bar-title {
-
       font-family: "Helvetica Now Display", "Helvetica Neue", Helvetica, Arial, sans-serif !important;
-
       font-size: 0.75rem !important;
-
       font-weight: 700 !important;
-
       color: #ffffff !important;
-
       white-space: nowrap !important;
-
       overflow: hidden !important;
-
       text-overflow: ellipsis !important;
-
       text-transform: capitalize !important;
-
       line-height: 1.1 !important;
-
       margin-top: 3px !important;
-
     }
-
-
 
     .card-bar-details {
-
       display: flex !important;
-
       justify-content: space-between !important;
-
       align-items: center !important;
-
       width: 100% !important;
-
       margin-bottom: 1px !important;
-
     }
-
-
 
     .card-bar-country {
-
       display: flex !important;
-
       align-items: center !important;
-
       gap: 3px !important;
-
       font-family: Helvetica, Arial, sans-serif !important;
-
       font-size: 0.60rem !important;
-
       font-weight: 400 !important;
-
       color: #ffffff !important;
-
       white-space: nowrap !important;
-
       overflow: hidden !important;
-
       text-transform: capitalize !important;
-
     }
-
-
 
     .card-bar-flag {
-
       width: 13px !important;
-
       height: 8px !important;
-
       object-fit: cover !important;
-
       border-radius: 2px !important;
-
       flex-shrink: 0 !important;
-
     }
-
-
 
     .card-bar-vol {
-
       background: rgba(0, 0, 0, 0.45) !important;
-
       color: #ffffff !important;
-
       font-family: Helvetica, Arial, sans-serif !important;
-
       padding: 1px 4px !important;
-
       border-radius: 4px !important;
-
       font-size: 0.55rem !important;
-
       font-weight: 400 !important;
-
       white-space: nowrap !important;
-
       flex-shrink: 0 !important;
-
     }
-
-
 
     .card.focused, .card:hover { 
-
       border: 2px solid #f39c12 !important; 
-
       box-shadow: 0 0 8px rgba(243, 156, 18, 0.4) !important; 
-
       outline: none !important; 
-
       z-index: 10 !important; 
-
     }
-
-
 
     /* MODAL DE ZOOM E NAVEGAÇÃO */
-
     .zoom-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.95); z-index: 3000; display: none; justify-content: center; align-items: center; padding: 16px; overflow: hidden; }
-
     .zoom-modal.active { display: flex; }
-
     .zoom-modal img { 
-
       max-width: 85vw; max-height: 85vh; object-fit: contain; border-radius: 6px; cursor: pointer; 
-
       transition: transform 0.15s ease-out; transform-origin: center center; 
-
     }
 
-
-
     /* MODAL VISUAL DE SAÍDA NATIVO */
-
     .exit-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); z-index: 4000; display: none; justify-content: center; align-items: center; }
-
     .exit-modal.active { display: flex; }
-
     .exit-box { background: #161b26; border: 2px solid #333d52; padding: 30px 40px; border-radius: 12px; display: flex; flex-direction: column; align-items: center; gap: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
-
     .exit-title { color: #f39c12; font-size: 1.3rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
-
     .exit-buttons { display: flex; gap: 16px; }
-
     .exit-btn { padding: 10px 24px; border-radius: 8px; font-weight: bold; font-size: 1rem; border: none; cursor: pointer; text-transform: uppercase; background: #2a3447; color: #a0aec0; transition: all 0.15s ease; }
-
     .exit-btn:focus, .exit-btn:hover { background: #ffffff; color: #1a1f2c; box-shadow: 0 0 15px rgba(255,255,255,0.3); outline: none; }
-
   </style>
-
 </head>
-
 <body>
 
   <!-- TELA DE CARREGAMENTO (SPLASH SCREEN) -->
@@ -604,8 +367,6 @@
     </div>
   </div>
 
-
-
 <script>
   const API_URL = "https://script.google.com/macros/s/AKfycbwP4kTpSrGJllmlWjQp1YmD1Th5jiw1oUtX5cAJAZj9txy-eNi6_EYyLPG_Q0_coyT9/exec";
   let canCatalog = [];
@@ -650,36 +411,27 @@
 
   const vkKeys = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','1','2','3','4','5','6','7','8','9','0','ESPAÇO','DEL','LIMPAR'];
 
-// Converte links de compartilhamento do Google Drive para links diretos de imagem
-function fixDriveUrl(url) {
-  if (!url) return '';
-  const str = String(url).trim();
-  const match = str.match(/\/d\/([^\/\?]+)/);
-  if (match && match[1]) {
-    return `https://lh3.googleusercontent.com/d/${match[1]}`;
+  // Converte links de compartilhamento do Google Drive para links diretos de imagem na CDN 'lh3'
+  function fixDriveUrl(url) {
+    if (!url) return '';
+    const str = String(url).trim();
+    const match = str.match(/\/d\/([^\/\?]+)/);
+    if (match && match[1]) {
+      return `https://lh3.googleusercontent.com/d/${match[1]}`;
+    }
+    return str;
   }
-  return str;
-}
 
-// Substitua a sua getOptimizedImageUrl antiga por esta:
-function getOptimizedImageUrl(url, size = 300) {
-  if (!url) return '';
-  const cleanUrl = fixDriveUrl(url); // Trata o link do Drive primeiro
-  if (cleanUrl.includes('googleusercontent.com')) {
-    return cleanUrl.split('=')[0] + `=s${size}-rw`;
+  // Trata e otimiza imagens com redimensionamento e compressão WebP nativa
+  function getOptimizedImageUrl(url, size = 300) {
+    if (!url) return '';
+    const cleanUrl = fixDriveUrl(url);
+    if (cleanUrl.includes('googleusercontent.com')) {
+      return cleanUrl.split('=')[0] + `=s${size}-rw`;
+    }
+    return cleanUrl;
   }
-  return cleanUrl;
-}
 
-function formatCapitalizedText(str) {
-  if (!str) return '';
-  return String(str)
-    .toLowerCase()
-    .trim()
-    .split(' ')
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(' ');
-}
   function formatCapitalizedText(str) {
     if (!str) return '';
     return String(str)
@@ -700,231 +452,59 @@ function formatCapitalizedText(str) {
       .normalize("NFD")
       .replace(/[\u0300-\u036f]/g, "");
 
-    // Mapa de países cadastrado apenas sem acentos
     const countryCodes = {
-      // América do Sul
       'brasil': 'br', 'brazil': 'br',
-      'argentina': 'ar',
-      'bolivia': 'bo',
-      'chile': 'cl',
-      'colombia': 'co',
-      'equador': 'ec', 'ecuador': 'ec',
-      'guiana': 'gy', 'guyana': 'gy',
-      'paraguai': 'py', 'paraguay': 'py',
-      'peru': 'pe',
-      'suriname': 'sr',
-      'uruguai': 'uy', 'uruguay': 'uy',
-      'venezuela': 've',
-      'guiana francesa': 'gf', 'french guiana': 'gf',
-
-      // América do Norte e Central
-      'estados unidos': 'us', 'eua': 'us', 'usa': 'us', 'united states': 'us',
-      'canada': 'ca',
-      'mexico': 'mx',
-      'belize': 'bz',
-      'costa rica': 'cr',
-      'el salvador': 'sv',
-      'guatemala': 'gt',
-      'honduras': 'hn',
-      'nicaragua': 'ni',
-      'panama': 'pa',
-
-      // Caribe
-      'antigua e barbuda': 'ag', 'antigua and barbuda': 'ag',
-      'bahamas': 'bs',
-      'barbados': 'bb',
-      'cuba': 'cu',
-      'dominica': 'dm',
-      'granada': 'gd', 'grenada': 'gd',
-      'haiti': 'ht',
-      'jamaica': 'jm',
-      'porto rico': 'pr', 'puerto rico': 'pr',
-      'republica dominicana': 'do', 'dominican republic': 'do',
-      'santa lucia': 'lc', 'saint lucia': 'lc',
-      'sao cristovao e nevis': 'kn', 'saint kitts and nevis': 'kn',
-      'sao vicente e granadinas': 'vc', 'saint vincent and the grenadines': 'vc',
-      'trinidad e tobago': 'tt', 'trinidad and tobago': 'tt',
-
-      // Europa Ocidental e Central
-      'alemanha': 'de', 'germany': 'de',
-      'austria': 'at',
-      'belgica': 'be', 'belgium': 'be',
-      'espanha': 'es', 'spain': 'es',
-      'franca': 'fr', 'france': 'fr',
-      'holanda': 'nl', 'netherlands': 'nl', 'paises baixos': 'nl',
-      'irlanda': 'ie', 'ireland': 'ie',
-      'italia': 'it', 'italy': 'it',
-      'luxemburgo': 'lu', 'luxembourg': 'lu',
-      'monaco': 'mc',
-      'portugal': 'pt',
+      'argentina': 'ar', 'bolivia': 'bo', 'chile': 'cl', 'colombia': 'co', 'equador': 'ec', 'ecuador': 'ec',
+      'guiana': 'gy', 'guyana': 'gy', 'paraguai': 'py', 'paraguay': 'py', 'peru': 'pe', 'suriname': 'sr',
+      'uruguai': 'uy', 'uruguay': 'uy', 'venezuela': 've', 'guiana francesa': 'gf', 'french guiana': 'gf',
+      'estados unidos': 'us', 'eua': 'us', 'usa': 'us', 'united states': 'us', 'canada': 'ca', 'mexico': 'mx',
+      'belize': 'bz', 'costa rica': 'cr', 'el salvador': 'sv', 'guatemala': 'gt', 'honduras': 'hn',
+      'nicaragua': 'ni', 'panama': 'pa', 'antigua e barbuda': 'ag', 'antigua and barbuda': 'ag', 'bahamas': 'bs',
+      'barbados': 'bb', 'cuba': 'cu', 'dominica': 'dm', 'granada': 'gd', 'grenada': 'gd', 'haiti': 'ht',
+      'jamaica': 'jm', 'porto rico': 'pr', 'puerto rico': 'pr', 'republica dominicana': 'do', 'dominican republic': 'do',
+      'santa lucia': 'lc', 'saint lucia': 'lc', 'sao cristovao e nevis': 'kn', 'saint kitts and nevis': 'kn',
+      'sao vicente e granadinas': 'vc', 'saint vincent and the grenadines': 'vc', 'trinidad e tobago': 'tt', 'trinidad and tobago': 'tt',
+      'alemanha': 'de', 'germany': 'de', 'austria': 'at', 'belgica': 'be', 'belgium': 'be', 'espanha': 'es', 'spain': 'es',
+      'franca': 'fr', 'france': 'fr', 'holanda': 'nl', 'netherlands': 'nl', 'paises baixos': 'nl', 'irlanda': 'ie', 'ireland': 'ie',
+      'italia': 'it', 'italy': 'it', 'luxemburgo': 'lu', 'luxembourg': 'lu', 'monaco': 'mc', 'portugal': 'pt',
       'reino unido': 'gb', 'uk': 'gb', 'inglaterra': 'gb', 'england': 'gb', 'scotland': 'gb', 'escocia': 'gb', 'wales': 'gb', 'pais de gales': 'gb',
-      'suica': 'ch', 'switzerland': 'ch',
-
-      // Europa do Norte (Escandinávia e Bálticos)
-      'dinamarca': 'dk', 'denmark': 'dk',
-      'estonia': 'ee',
-      'finlandia': 'fi', 'finland': 'fi',
-      'islandia': 'is', 'iceland': 'is',
-      'letonia': 'lv', 'latvia': 'lv',
-      'lituania': 'lt', 'lithuania': 'lt',
-      'noruega': 'no', 'norway': 'no',
-      'suecia': 'se', 'sweden': 'se',
-
-      // Europa Oriental e Balcãs
-      'albania': 'al',
-      'andorra': 'ad',
-      'bosnia e herzegovina': 'ba', 'bosnia': 'ba', 'bosnia and herzegovina': 'ba',
-      'bulgaria': 'bg',
-      'croacia': 'hr', 'croatia': 'hr',
-      'eslovaquia': 'sk', 'slovakia': 'sk',
-      'eslovenia': 'si', 'slovenia': 'si',
-      'grecia': 'gr', 'greece': 'gr',
-      'hungria': 'hu', 'hungary': 'hu',
-      'kosovo': 'xk',
-      'macedonia do norte': 'mk', 'macedonia': 'mk', 'north macedonia': 'mk',
-      'maldovas': 'md', 'moldavia': 'md', 'moldova': 'md',
-      'montenegro': 'me',
-      'polonia': 'pl', 'poland': 'pl',
-      'republica tcheca': 'cz', 'tchequia': 'cz', 'czech republic': 'cz', 'czechia': 'cz',
-      'romenia': 'ro', 'romania': 'ro',
-      'russia': 'ru',
-      'servia': 'rs', 'serbia': 'rs',
-      'ucrania': 'ua', 'ukraine': 'ua',
-      'bielorrussia': 'by', 'belarus': 'by',
-
-      // Ásia
-      'afeganistao': 'af', 'afghanistan': 'af',
-      'arabia saudita': 'sa', 'saudi arabia': 'sa',
-      'armenia': 'am',
-      'azerbaijao': 'az', 'azerbaijan': 'az',
-      'bahrein': 'bh', 'bahrain': 'bh',
-      'bangladesh': 'bd',
-      'brunei': 'bn',
-      'butan': 'bt', 'butao': 'bt', 'bhutan': 'bt',
-      'camboja': 'kh', 'cambodia': 'kh',
-      'catar': 'qa', 'qatar': 'qa',
-      'china': 'cn',
-      'chipre': 'cy', 'cyprus': 'cy',
-      'coreia do norte': 'kp', 'north korea': 'kp',
-      'coreia do sul': 'kr', 'south korea': 'kr', 'korea': 'kr',
-      'emirados arabes unidos': 'ae', 'emirados arabes': 'ae', 'uae': 'ae',
-      'filipinas': 'ph', 'philippines': 'ph',
-      'georgia': 'ge',
-      'iemen': 'ye', 'yemen': 'ye',
-      'india': 'in',
-      'indonesia': 'id',
-      'irao': 'ir', 'iran': 'ir',
-      'iraque': 'iq', 'iraq': 'iq',
-      'israel': 'il',
-      'japao': 'jp', 'japan': 'jp',
-      'jordania': 'jo', 'jordan': 'jo',
-      'cazaquistao': 'kz', 'kazakhstan': 'kz',
-      'kuwait': 'kw',
-      'laos': 'la',
-      'libano': 'lb', 'lebanon': 'lb',
-      'malasia': 'my', 'malaysia': 'my',
-      'maldivas': 'mv', 'maldives': 'mv',
-      'mianmar': 'mm', 'myanmar': 'mm',
-      'mongolia': 'mn',
-      'nepal': 'np',
-      'oma': 'om', 'oman': 'om',
-      'paquistao': 'pk', 'pakistan': 'pk',
-      'quirguistao': 'kg', 'kyrgyzstan': 'kg',
-      'singapura': 'sg', 'singapore': 'sg',
-      'siria': 'sy', 'syria': 'sy',
-      'penisula do sri lanka': 'lk', 'sri lanka': 'lk',
-      'tailandia': 'th', 'thailand': 'th',
-      'taiwan': 'tw',
-      'tadjiquistao': 'tj', 'tajikistan': 'tj',
-      'timor leste': 'tl', 'east timor': 'tl',
-      'turcomenistao': 'tm', 'turkmenistan': 'tm',
-      'turquia': 'tr', 'turkey': 'tr', 'turkiye': 'tr',
-      'uzbequistao': 'uz', 'uzbekistan': 'uz',
-      'vietna': 'vn', 'vietnam': 'vn',
-
-      // África
-      'africa do sul': 'za', 'south africa': 'za',
-      'angola': 'ao',
-      'algeria': 'dz', 'argelia': 'dz',
-      'benin': 'bj',
-      'botsuana': 'bw', 'botswana': 'bw',
-      'burkina faso': 'bf',
-      'burundi': 'bi',
-      'cabo verde': 'cv', 'cape verde': 'cv',
-      'camaroes': 'cm', 'cameroon': 'cm',
-      'chade': 'td', 'chad': 'td',
-      'comores': 'km', 'comoros': 'km',
-      'congo': 'cg', 'republica do congo': 'cg',
-      'republica democratica do congo': 'cd', 'rd congo': 'cd', 'drc': 'cd',
-      'costa do marfim': 'ci', 'ivory coast': 'ci',
-      'djibouti': 'dj',
-      'egito': 'eg', 'egypt': 'eg',
-      'eritreia': 'er', 'eritrea': 'er',
-      'etiopia': 'et', 'ethiopia': 'et',
-      'gabao': 'ga', 'gabon': 'ga',
-      'gambia': 'gm',
-      'gana': 'gh', 'ghana': 'gh',
-      'guine': 'gn', 'guinea': 'gn',
-      'guine-bissau': 'gw', 'guine bissau': 'gw',
-      'guine equatorial': 'gq', 'equatorial guinea': 'gq',
-      'lesoto': 'ls', 'lesotho': 'ls',
-      'liberia': 'lr',
-      'libia': 'ly', 'libya': 'ly',
-      'madagascar': 'mg',
-      'malaui': 'mw', 'malawi': 'mw',
-      'mali': 'ml',
-      'marrocos': 'ma', 'morocco': 'ma',
-      'mauricio': 'mu', 'mauritius': 'mu',
-      'mauritania': 'mr',
-      'mocambique': 'mz', 'mozambique': 'mz',
-      'namibia': 'na',
-      'niger': 'ne',
-      'nigeria': 'ng',
-      'quenia': 'ke', 'kenya': 'ke',
-      'republica centro-africana': 'cf', 'car': 'cf',
-      'ruanda': 'rw', 'rwanda': 'rw',
-      'sao tome e principe': 'st', 'sao tome and principe': 'st',
-      'senegal': 'sn',
-      'seicheles': 'sc', 'seychelles': 'sc',
-      'serra leoa': 'sl', 'sierra leone': 'sl',
-      'somalia': 'so',
-      'eswatini': 'sz', 'suazilandia': 'sz', 'swaziland': 'sz',
-      'sudao': 'sd', 'sudan': 'sd',
-      'sudao do sul': 'ss', 'south sudan': 'ss',
-      'tanzania': 'tz',
-      'togo': 'tg',
-      'tunisia': 'tn',
-      'uganda': 'ug',
-      'zambia': 'zm',
-      'zimbabue': 'zw', 'zimbabwe': 'zw',
-
-      // Oceania
-      'australia': 'au',
-      'fiji': 'fj',
-      'quiribati': 'ki', 'kiribati': 'ki',
-      'ilhas marshall': 'mh', 'marshall islands': 'mh',
-      'micronesia': 'fm',
-      'nauru': 'nr',
-      'nova zelandia': 'nz', 'new zealand': 'nz',
-      'palau': 'pw',
-      'papua-nova guine': 'pg', 'papua new guinea': 'pg',
-      'samoa': 'ws',
-      'ilhas salomao': 'sb', 'solomon islands': 'sb',
-      'tonga': 'to',
-      'tuvalu': 'tv',
-      'vanuatu': 'vu',
-
-      // Territórios / Outros
-      'aruba': 'aw',
-      'curacao': 'cw',
-      'gibraltar': 'gi',
-      'groenlandia': 'gl', 'greenland': 'gl',
-      'hong kong': 'hk',
-      'ilhas faroe': 'fo', 'faroe islands': 'fo',
-      'ilhas cayman': 'ky', 'cayman islands': 'ky',
-      'macau': 'mo',
-      'palestina': 'ps', 'palestine': 'ps',
-      'saara ocidental': 'eh', 'western sahara': 'eh'
+      'suica': 'ch', 'switzerland': 'ch', 'dinamarca': 'dk', 'denmark': 'dk', 'estonia': 'ee', 'finlandia': 'fi', 'finland': 'fi',
+      'islandia': 'is', 'iceland': 'is', 'letonia': 'lv', 'latvia': 'lv', 'lituania': 'lt', 'lithuania': 'lt', 'noruega': 'no', 'norway': 'no',
+      'suecia': 'se', 'sweden': 'se', 'albania': 'al', 'andorra': 'ad', 'bosnia e herzegovina': 'ba', 'bosnia': 'ba', 'bosnia and herzegovina': 'ba',
+      'bulgaria': 'bg', 'croacia': 'hr', 'croatia': 'hr', 'eslovaquia': 'sk', 'slovakia': 'sk', 'eslovenia': 'si', 'slovenia': 'si',
+      'grecia': 'gr', 'greece': 'gr', 'hungria': 'hu', 'hungary': 'hu', 'kosovo': 'xk', 'macedonia do norte': 'mk', 'macedonia': 'mk',
+      'north macedonia': 'mk', 'maldovas': 'md', 'moldavia': 'md', 'moldova': 'md', 'montenegro': 'me', 'polonia': 'pl', 'poland': 'pl',
+      'republica tcheca': 'cz', 'tchequia': 'cz', 'czech republic': 'cz', 'czechia': 'cz', 'romenia': 'ro', 'romania': 'ro', 'russia': 'ru',
+      'servia': 'rs', 'serbia': 'rs', 'ucrania': 'ua', 'ukraine': 'ua', 'bielorrussia': 'by', 'belarus': 'by', 'afeganistao': 'af', 'afghanistan': 'af',
+      'arabia saudita': 'sa', 'saudi arabia': 'sa', 'armenia': 'am', 'azerbaijao': 'az', 'azerbaijan': 'az', 'bahrein': 'bh', 'bahrain': 'bh',
+      'bangladesh': 'bd', 'brunei': 'bn', 'butan': 'bt', 'butao': 'bt', 'bhutan': 'bt', 'camboja': 'kh', 'cambodia': 'kh', 'catar': 'qa',
+      'qatar': 'qa', 'china': 'cn', 'chipre': 'cy', 'cyprus': 'cy', 'coreia do norte': 'kp', 'north korea': 'kp', 'coreia do sul': 'kr',
+      'south korea': 'kr', 'korea': 'kr', 'emirados arabes unidos': 'ae', 'emirados arabes': 'ae', 'uae': 'ae', 'filipinas': 'ph', 'philippines': 'ph',
+      'georgia': 'ge', 'iemen': 'ye', 'yemen': 'ye', 'india': 'in', 'indonesia': 'id', 'irao': 'ir', 'iran': 'ir', 'iraque': 'iq', 'iraq': 'iq',
+      'israel': 'il', 'japao': 'jp', 'japan': 'jp', 'jordania': 'jo', 'jordan': 'jo', 'cazaquistao': 'kz', 'kazakhstan': 'kz', 'kuwait': 'kw',
+      'laos': 'la', 'libano': 'lb', 'lebanon': 'lb', 'malasia': 'my', 'malaysia': 'my', 'maldivas': 'mv', 'maldives': 'mv', 'mianmar': 'mm',
+      'myanmar': 'mm', 'mongolia': 'mn', 'nepal': 'np', 'oma': 'om', 'oman': 'om', 'paquistao': 'pk', 'pakistan': 'pk', 'quirguistao': 'kg',
+      'kyrgyzstan': 'kg', 'singapura': 'sg', 'singapore': 'sg', 'siria': 'sy', 'syria': 'sy', 'penisula do sri lanka': 'lk', 'sri lanka': 'lk',
+      'tailandia': 'th', 'thailand': 'th', 'taiwan': 'tw', 'tadjiquistao': 'tj', 'tajikistan': 'tj', 'timor leste': 'tl', 'east timor': 'tl',
+      'turcomenistao': 'tm', 'turkmenistan': 'tm', 'turquia': 'tr', 'turkey': 'tr', 'turkiye': 'tr', 'uzbequistao': 'uz', 'uzbekistan': 'uz',
+      'vietna': 'vn', 'vietnam': 'vn', 'africa do sul': 'za', 'south africa': 'za', 'angola': 'ao', 'algeria': 'dz', 'argelia': 'dz', 'benin': 'bj',
+      'botsuana': 'bw', 'botswana': 'bw', 'burkina faso': 'bf', 'burundi': 'bi', 'cabo verde': 'cv', 'cape verde': 'cv', 'camaroes': 'cm',
+      'cameroon': 'cm', 'chade': 'td', 'chad': 'td', 'comores': 'km', 'comoros': 'km', 'congo': 'cg', 'republica do congo': 'cg',
+      'republica democratica do congo': 'cd', 'rd congo': 'cd', 'drc': 'cd', 'costa do marfim': 'ci', 'ivory coast': 'ci', 'djibouti': 'dj',
+      'egito': 'eg', 'egypt': 'eg', 'eritreia': 'er', 'eritrea': 'er', 'etiopia': 'et', 'ethiopia': 'et', 'gabao': 'ga', 'gabon': 'ga',
+      'gambia': 'gm', 'gana': 'gh', 'ghana': 'gh', 'guine': 'gn', 'guinea': 'gn', 'guine-bissau': 'gw', 'guine bissau': 'gw',
+      'guine equatorial': 'gq', 'equatorial guinea': 'gq', 'lesoto': 'ls', 'lesotho': 'ls', 'liberia': 'lr', 'libia': 'ly', 'libya': 'ly',
+      'madagascar': 'mg', 'malaui': 'mw', 'malawi': 'mw', 'mali': 'ml', 'marrocos': 'ma', 'morocco': 'ma', 'mauricio': 'mu', 'mauritius': 'mu',
+      'mauritania': 'mr', 'mocambique': 'mz', 'mozambique': 'mz', 'namibia': 'na', 'niger': 'ne', 'nigeria': 'ng', 'quenia': 'ke', 'kenya': 'ke',
+      'republica centro-africana': 'cf', 'car': 'cf', 'ruanda': 'rw', 'rwanda': 'rw', 'sao tome e principe': 'st', 'sao tome and principe': 'st',
+      'senegal': 'sn', 'seicheles': 'sc', 'seychelles': 'sc', 'serra leoa': 'sl', 'sierra leone': 'sl', 'somalia': 'so', 'eswatini': 'sz',
+      'suazilandia': 'sz', 'swaziland': 'sz', 'sudao': 'sd', 'sudan': 'sd', 'sudao do sul': 'ss', 'south sudan': 'ss', 'tanzania': 'tz',
+      'togo': 'tg', 'tunisia': 'tn', 'uganda': 'ug', 'zambia': 'zm', 'zimbabue': 'zw', 'zimbabwe': 'zw', 'australia': 'au', 'fiji': 'fj',
+      'quiribati': 'ki', 'kiribati': 'ki', 'ilhas marshall': 'mh', 'marshall islands': 'mh', 'micronesia': 'fm', 'nauru': 'nr',
+      'nova zelandia': 'nz', 'new zealand': 'nz', 'palau': 'pw', 'papua-nova guine': 'pg', 'papua new guinea': 'pg', 'samoa': 'ws',
+      'ilhas salomao': 'sb', 'solomon islands': 'sb', 'tonga': 'to', 'tuvalu': 'tv', 'vanuatu': 'vu', 'aruba': 'aw', 'curacao': 'cw',
+      'gibraltar': 'gi', 'groenlandia': 'gl', 'greenland': 'gl', 'hong kong': 'hk', 'ilhas faroe': 'fo', 'faroe islands': 'fo',
+      'ilhas cayman': 'ky', 'cayman islands': 'ky', 'macau': 'mo', 'palestina': 'ps', 'palestine': 'ps', 'saara ocidental': 'eh', 'western sahara': 'eh'
     };
 
     const code = countryCodes[name];
@@ -934,40 +514,6 @@ function formatCapitalizedText(str) {
     return '';
   }
 
-  function preloadFirstImages(items, count = 7) {
-    return new Promise((resolve) => {
-      const pageItems = items.slice(0, count);
-      if (pageItems.length === 0) {
-        resolve();
-        return;
-      }
-
-      let loadedCount = 0;
-      const totalToLoad = pageItems.length;
-
-      pageItems.forEach((can) => {
-        const rawCover = can.ImgFront || can.front || can.ImgCover || can.cover;
-
-        if (!rawCover) {
-          loadedCount++;
-          if (loadedCount >= totalToLoad) resolve();
-          return;
-        }
-
-        const img = new Image();
-        img.src = getOptimizedImageUrl(rawCover, 300);
-        img.onload = img.onerror = () => {
-          loadedCount++;
-          if (loadedCount >= totalToLoad) {
-            resolve();
-          }
-        };
-      });
-
-      setTimeout(resolve, 3500);
-    });
-  }
-
   function hideLoadingScreen() {
     const screen = document.getElementById("loadingScreen");
     if (screen) {
@@ -975,26 +521,39 @@ function formatCapitalizedText(str) {
     }
   }
 
+  /* CARREGAMENTO ULTRA RÁPIDO COM CACHE EM LOCALSTORAGE */
   async function fetchCatalogFromSheet() {
-    if(!API_URL || API_URL.includes("COLE_AQUI")) return;
+    if (!API_URL || API_URL.includes("COLE_AQUI")) return;
 
-    localStorage.removeItem("beercan_catalog_cache");
+    // 1. CARREGAMENTO INSTANTÂNEO: Lê o cache gravado no dispositivo
+    const cachedData = localStorage.getItem("beercan_catalog_cache");
+    if (cachedData) {
+      try {
+        canCatalog = JSON.parse(cachedData);
+        processTabChange();
+        hideLoadingScreen();
+        focusCardSafely(0);
+      } catch (e) {
+        console.error("Erro ao ler cache local:", e);
+      }
+    }
 
+    // 2. ATUALIZAÇÃO SILENCIOSA EM SEGUNDO PLANO
     try {
-      const response = await fetch(API_URL + "?nocache=" + new Date().getTime());
+      const response = await fetch(API_URL);
       const freshData = await response.json();
-      
-      canCatalog = freshData;
-      processTabChange();
 
-      document.getElementById("loadingText").innerText = "PREPARANDO IMAGENS...";
-      await preloadFirstImages(currentFiltered, cardsPerRow);
-      hideLoadingScreen();
-      focusCardSafely(0);
+      if (Array.isArray(freshData) && freshData.length > 0) {
+        canCatalog = freshData;
+        localStorage.setItem("beercan_catalog_cache", JSON.stringify(freshData));
+        processTabChange();
+        hideLoadingScreen();
+        if (!cachedData) focusCardSafely(0);
+      }
     } catch (err) {
-      console.error("Erro ao carregar catálogo da API:", err);
+      console.error("Erro na atualização remota do catálogo:", err);
       hideLoadingScreen();
-      focusCardSafely(0);
+      if (!cachedData) focusCardSafely(0);
     }
   }
 
@@ -1306,7 +865,7 @@ function formatCapitalizedText(str) {
     }
   }
 
-  /* RENDERIZAÇÃO DOS CARDS */
+  /* RENDERIZAÇÃO DOS CARDS COM DECODING E LOADING ASSÍNCRONOS */
   function renderApp() {
     const row = document.getElementById("cardRow");
     row.innerHTML = "";
@@ -1400,13 +959,13 @@ function formatCapitalizedText(str) {
 
       card.innerHTML = `
         <div class="card-top-photo">
-          <img src="${frontImg}" alt="${brandFormatted}" loading="lazy">
+          <img src="${frontImg}" alt="${brandFormatted}" loading="lazy" decoding="async">
         </div>
         <div class="card-bottom-bar" style="background-color: ${cardColor};">
           <div class="card-bar-title">${brandFormatted}</div>
           <div class="card-bar-details">
             <div class="card-bar-country">
-              ${flagUrl ? `<img src="${flagUrl}" class="card-bar-flag" alt="${countryFormatted}">` : ''}
+              ${flagUrl ? `<img src="${flagUrl}" class="card-bar-flag" alt="${countryFormatted}" loading="lazy">` : ''}
               <span>${countryFormatted}</span>
             </div>
             ${volumeText ? `<div class="card-bar-vol">${volumeText}</div>` : ''}
@@ -1451,7 +1010,6 @@ function formatCapitalizedText(str) {
     let wallpaperUrl = "";
 
     if (currentBrand) {
-      // Procura o brandWallpaper (Coluna Q) em QUALQUER latinha cadastrada da mesma marca
       const sameBrandCans = canCatalog.filter(c => {
         const b = String(c.brewery || c.Cervejaria || "").toLowerCase().trim();
         return b === currentBrand || b.includes(currentBrand);
@@ -1465,7 +1023,6 @@ function formatCapitalizedText(str) {
       if (canWithWallpaper) {
         wallpaperUrl = canWithWallpaper.brandWallpaper || canWithWallpaper.wallpaper || canWithWallpaper.BRANDWALLPAPER || canWithWallpaper.WALLPAPER;
       } else {
-        // FALLBACK: Usa o Logo ou a Capa da lata caso a Coluna Q não esteja preenchida
         wallpaperUrl = logoUrl || can.ImgCover || can.cover;
       }
     }
@@ -1507,7 +1064,7 @@ function formatCapitalizedText(str) {
         const optimizedUrl = getOptimizedImageUrl(url, 1000);
         const photoCard = document.createElement("div");
         photoCard.className = "hero-photo-card";
-        photoCard.innerHTML = `<img src="${optimizedUrl}" alt="FOTO ${idx+1}" loading="lazy">`;
+        photoCard.innerHTML = `<img src="${optimizedUrl}" alt="FOTO ${idx+1}" loading="lazy" decoding="async">`;
         photoCard.onclick = (e) => {
           e.stopPropagation();
           openZoomModal(idx);
@@ -1669,7 +1226,7 @@ function formatCapitalizedText(str) {
         } else if (currentPage > 0) {
           currentPage--;
           renderApp();
-          focusCardSafely(cardsPerPage - 1);
+          focusCardSafely(cardsPerRow - 1);
         }
       }
     }
@@ -1766,7 +1323,5 @@ function formatCapitalizedText(str) {
 
   window.onload = fetchCatalogFromSheet;
 </script>
-
 </body>
-
 </html>
