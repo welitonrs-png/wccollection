@@ -682,7 +682,7 @@
     filterCatalog(document.getElementById("menuSearchInput").value);
   }
 
-  function getBaseListForCurrentTab() {
+function getBaseListForCurrentTab() {
     let list = [];
     if (currentTab === 'home') {
       list = canCatalog.filter(can => {
@@ -690,19 +690,23 @@
         return !val || String(val).toLowerCase() === "false";
       });
     } else if (currentTab === 'ococ') {
-      const countryMap = new Map();
+      const ococMap = new Map();
       canCatalog.forEach(can => {
-        const countryVal = can.brewery || can.Cervejaria;
+        const brandVal = String(can.brewery || can.Cervejaria || "").toLowerCase().trim();
+        const countryVal = String(can.country || can.Pais || "").toLowerCase().trim();
         const isOcocVal = can.isOcoc;
         const isSetVal = can.isSet;
 
+        // Chave única combinando Cervejaria + País para permitir várias da mesma marca de países diferentes
+        const uniqueKey = `${brandVal}_${countryVal}`;
+
         if ((!isSetVal || String(isSetVal).toLowerCase() === "false") && 
             (isOcocVal === true || String(isOcocVal).toLowerCase() === "true") && 
-            countryVal && !countryMap.has(String(countryVal).toLowerCase())) {
-          countryMap.set(String(countryVal).toLowerCase(), can);
+            brandVal && countryVal && !ococMap.has(uniqueKey)) {
+          ococMap.set(uniqueKey, can);
         }
       });
-      list = Array.from(countryMap.values()).sort((a,b) => String(a.country || a.Pais).localeCompare(String(b.country || b.Pais)));
+      list = Array.from(ococMap.values()).sort((a,b) => String(a.country || a.Pais).localeCompare(String(b.country || b.Pais)));
     } else if (currentTab === 'sets') {
       list = canCatalog.filter(can => {
         const val = can.isSet;
