@@ -175,7 +175,7 @@
     /* TÍTULO/NOME DA LATA (HELVETICA NOW EM NEGRITO) */
     .hero-title { 
       font-family: "Helvetica Now Display", "Helvetica Neue", Helvetica, Arial, sans-serif !important; 
-      font-size: clamp(3rem, 2.3vw, 1.8rem) !important; 
+      font-size: clamp(1.3rem, 2.3vw, 1.8rem) !important; 
       font-weight: 900 !important; 
       line-height: 1.1; 
       color: #f39c12; 
@@ -201,7 +201,7 @@
     /* VALORES - HELVETICA EM NEGRITO */
     .info-val { 
       font-family: Helvetica, Arial, sans-serif !important; 
-      font-size: clamp(1.5rem, 1.6vw, 1.35rem) !important; 
+      font-size: clamp(1.0rem, 1.6vw, 1.35rem) !important; 
       font-weight: 900 !important; 
       color: #f39c12; 
       line-height: 1.1; 
@@ -225,7 +225,7 @@
     .card-counter { font-size: 0.85rem; font-weight: 900; color: #f39c12; background: transparent; padding: 0; letter-spacing: 1px; }
 
     /* SEÇÃO INFERIOR DO CATÁLOGO - 1 LINHA DE CARDS */
-.catalog-section { height: 195px; min-height: 195px; width: 100%; overflow: hidden; flex-shrink: 0; touch-action: none; }
+    .catalog-section { height: 195px; min-height: 195px; width: 100%; overflow: hidden; flex-shrink: 0; touch-action: none; }
     
     /* LARGURA ADAPTÁVEL PARA 7 CARDS NORMAIS OU 5 CARDS DE SETS */
     .card-row { 
@@ -249,6 +249,7 @@
       border: 2px solid transparent !important;
       cursor: pointer !important;
       flex-shrink: 0 !important;
+      outline: none !important;
     }
 
     .card.card-aspect-sets { width: 170px !important; min-width: 170px !important; }
@@ -334,9 +335,9 @@
       flex-shrink: 0 !important;
     }
 
-    .card.focused, .card:hover { 
+    .card.focused, .card:focus, .card:hover { 
       border: 2px solid #f39c12 !important; 
-      box-shadow: 0 0 8px rgba(243, 156, 18, 0.4) !important; 
+      box-shadow: 0 0 12px rgba(243, 156, 18, 0.6) !important; 
       outline: none !important; 
       z-index: 10 !important; 
     }
@@ -482,7 +483,6 @@
 
   const vkKeys = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','1','2','3','4','5','6','7','8','9','0','ESPAÇO','DEL','LIMPAR'];
 
-  // Converte links de compartilhamento do Google Drive para links diretos de imagem na CDN 'lh3'
   function fixDriveUrl(url) {
     if (!url) return '';
     const str = String(url).trim();
@@ -493,7 +493,6 @@
     return str;
   }
 
-  // Trata e otimiza imagens com redimensionamento e compressão WebP nativa
   function getOptimizedImageUrl(url, size = 300) {
     if (!url) return '';
     const cleanUrl = fixDriveUrl(url);
@@ -523,79 +522,30 @@
       .replace(/[\u0300-\u036f]/g, "");
 
     const countryCodes = {
-      'brasil': 'br', 'brazil': 'br',
-      'argentina': 'ar', 'bolivia': 'bo', 'chile': 'cl', 'colombia': 'co', 'equador': 'ec', 'ecuador': 'ec',
-      'guiana': 'gy', 'guyana': 'gy', 'paraguai': 'py', 'paraguay': 'py', 'peru': 'pe', 'suriname': 'sr',
-      'uruguai': 'uy', 'uruguay': 'uy', 'venezuela': 've', 'guiana francesa': 'gf', 'french guiana': 'gf',
-      'estados unidos': 'us', 'eua': 'us', 'usa': 'us', 'united states': 'us', 'canada': 'ca', 'mexico': 'mx',
-      'belize': 'bz', 'costa rica': 'cr', 'el salvador': 'sv', 'guatemala': 'gt', 'honduras': 'hn',
-      'nicaragua': 'ni', 'panama': 'pa', 'antigua e barbuda': 'ag', 'antigua and barbuda': 'ag', 'bahamas': 'bs',
-      'barbados': 'bb', 'cuba': 'cu', 'dominica': 'dm', 'granada': 'gd', 'grenada': 'gd', 'haiti': 'ht',
-      'jamaica': 'jm', 'porto rico': 'pr', 'puerto rico': 'pr', 'republica dominicana': 'do', 'dominican republic': 'do',
-      'santa lucia': 'lc', 'saint lucia': 'lc', 'sao cristovao e nevis': 'kn', 'saint kitts and nevis': 'kn',
-      'sao vicente e granadinas': 'vc', 'saint vincent and the grenadines': 'vc', 'trinidad e tobago': 'tt', 'trinidad and tobago': 'tt',
-      'alemanha': 'de', 'germany': 'de', 'austria': 'at', 'belgica': 'be', 'belgium': 'be', 'espanha': 'es', 'spain': 'es',
-      'franca': 'fr', 'france': 'fr', 'holanda': 'nl', 'netherlands': 'nl', 'paises baixos': 'nl', 'irlanda': 'ie', 'ireland': 'ie',
-      'italia': 'it', 'italy': 'it', 'luxemburgo': 'lu', 'luxembourg': 'lu', 'monaco': 'mc', 'portugal': 'pt',
-      'reino unido': 'gb', 'uk': 'gb', 'inglaterra': 'gb', 'england': 'gb', 'scotland': 'gb', 'escocia': 'gb', 'wales': 'gb', 'pais de gales': 'gb',
-      'suica': 'ch', 'switzerland': 'ch', 'dinamarca': 'dk', 'denmark': 'dk', 'estonia': 'ee', 'finlandia': 'fi', 'finland': 'fi',
-      'islandia': 'is', 'iceland': 'is', 'letonia': 'lv', 'latvia': 'lv', 'lituania': 'lt', 'lithuania': 'lt', 'noruega': 'no', 'norway': 'no',
-      'suecia': 'se', 'sweden': 'se', 'albania': 'al', 'andorra': 'ad', 'bosnia e herzegovina': 'ba', 'bosnia': 'ba', 'bosnia and herzegovina': 'ba',
-      'bulgaria': 'bg', 'croacia': 'hr', 'croatia': 'hr', 'eslovaquia': 'sk', 'slovakia': 'sk', 'eslovenia': 'si', 'slovenia': 'si',
-      'grecia': 'gr', 'greece': 'gr', 'hungria': 'hu', 'hungary': 'hu', 'kosovo': 'xk', 'macedonia do norte': 'mk', 'macedonia': 'mk',
-      'north macedonia': 'mk', 'maldovas': 'md', 'moldavia': 'md', 'moldova': 'md', 'montenegro': 'me', 'polonia': 'pl', 'poland': 'pl',
-      'republica tcheca': 'cz', 'tchequia': 'cz', 'czech republic': 'cz', 'czechia': 'cz', 'romenia': 'ro', 'romania': 'ro', 'russia': 'ru',
-      'servia': 'rs', 'serbia': 'rs', 'ucrania': 'ua', 'ukraine': 'ua', 'bielorrussia': 'by', 'belarus': 'by', 'afeganistao': 'af', 'afghanistan': 'af',
-      'arabia saudita': 'sa', 'saudi arabia': 'sa', 'armenia': 'am', 'azerbaijao': 'az', 'azerbaijan': 'az', 'bahrein': 'bh', 'bahrain': 'bh',
-      'bangladesh': 'bd', 'brunei': 'bn', 'butan': 'bt', 'butao': 'bt', 'bhutan': 'bt', 'camboja': 'kh', 'cambodia': 'kh', 'catar': 'qa',
-      'qatar': 'qa', 'china': 'cn', 'chipre': 'cy', 'cyprus': 'cy', 'coreia do norte': 'kp', 'north korea': 'kp', 'coreia do sul': 'kr',
-      'south korea': 'kr', 'korea': 'kr', 'emirados arabes unidos': 'ae', 'emirados arabes': 'ae', 'uae': 'ae', 'filipinas': 'ph', 'philippines': 'ph',
-      'georgia': 'ge', 'iemen': 'ye', 'yemen': 'ye', 'india': 'in', 'indonesia': 'id', 'irao': 'ir', 'iran': 'ir', 'iraque': 'iq', 'iraq': 'iq',
-      'israel': 'il', 'japao': 'jp', 'japan': 'jp', 'jordania': 'jo', 'jordan': 'jo', 'cazaquistao': 'kz', 'kazakhstan': 'kz', 'kuwait': 'kw',
-      'laos': 'la', 'libano': 'lb', 'lebanon': 'lb', 'malasia': 'my', 'malaysia': 'my', 'maldivas': 'mv', 'maldives': 'mv', 'mianmar': 'mm',
-      'myanmar': 'mm', 'mongolia': 'mn', 'nepal': 'np', 'oma': 'om', 'oman': 'om', 'paquistao': 'pk', 'pakistan': 'pk', 'quirguistao': 'kg',
-      'kyrgyzstan': 'kg', 'singapura': 'sg', 'singapore': 'sg', 'siria': 'sy', 'syria': 'sy', 'penisula do sri lanka': 'lk', 'sri lanka': 'lk',
-      'tailandia': 'th', 'thailand': 'th', 'taiwan': 'tw', 'tadjiquistao': 'tj', 'tajikistan': 'tj', 'timor leste': 'tl', 'east timor': 'tl',
-      'turcomenistao': 'tm', 'turkmenistan': 'tm', 'turquia': 'tr', 'turkey': 'tr', 'turkiye': 'tr', 'uzbequistao': 'uz', 'uzbekistan': 'uz',
-      'vietna': 'vn', 'vietnam': 'vn', 'africa do sul': 'za', 'south africa': 'za', 'angola': 'ao', 'algeria': 'dz', 'argelia': 'dz', 'benin': 'bj',
-      'botsuana': 'bw', 'botswana': 'bw', 'burkina faso': 'bf', 'burundi': 'bi', 'cabo verde': 'cv', 'cape verde': 'cv', 'camaroes': 'cm',
-      'cameroon': 'cm', 'chade': 'td', 'chad': 'td', 'comores': 'km', 'comoros': 'km', 'congo': 'cg', 'republica do congo': 'cg',
-      'republica democratica do congo': 'cd', 'rd congo': 'cd', 'drc': 'cd', 'costa do marfim': 'ci', 'ivory coast': 'ci', 'djibouti': 'dj',
-      'egito': 'eg', 'egypt': 'eg', 'eritreia': 'er', 'eritrea': 'er', 'etiopia': 'et', 'ethiopia': 'et', 'gabao': 'ga', 'gabon': 'ga',
-      'gambia': 'gm', 'gana': 'gh', 'ghana': 'gh', 'guine': 'gn', 'guinea': 'gn', 'guine-bissau': 'gw', 'guine bissau': 'gw',
-      'guine equatorial': 'gq', 'equatorial guinea': 'gq', 'lesoto': 'ls', 'lesotho': 'ls', 'liberia': 'lr', 'libia': 'ly', 'libya': 'ly',
-      'madagascar': 'mg', 'malaui': 'mw', 'malawi': 'mw', 'mali': 'ml', 'marrocos': 'ma', 'morocco': 'ma', 'mauricio': 'mu', 'mauritius': 'mu',
-      'mauritania': 'mr', 'mocambique': 'mz', 'mozambique': 'mz', 'namibia': 'na', 'niger': 'ne', 'nigeria': 'ng', 'quenia': 'ke', 'kenya': 'ke',
-      'republica centro-africana': 'cf', 'car': 'cf', 'ruanda': 'rw', 'rwanda': 'rw', 'sao tome e principe': 'st', 'sao tome and principe': 'st',
-      'senegal': 'sn', 'seicheles': 'sc', 'seychelles': 'sc', 'serra leoa': 'sl', 'sierra leone': 'sl', 'somalia': 'so', 'eswatini': 'sz',
-      'suazilandia': 'sz', 'swaziland': 'sz', 'sudao': 'sd', 'sudan': 'sd', 'sudao do sul': 'ss', 'south sudan': 'ss', 'tanzania': 'tz',
-      'togo': 'tg', 'tunisia': 'tn', 'uganda': 'ug', 'zambia': 'zm', 'zimbabue': 'zw', 'zimbabwe': 'zw', 'australia': 'au', 'fiji': 'fj',
-      'quiribati': 'ki', 'kiribati': 'ki', 'ilhas marshall': 'mh', 'marshall islands': 'mh', 'micronesia': 'fm', 'nauru': 'nr',
-      'nova zelandia': 'nz', 'new zealand': 'nz', 'palau': 'pw', 'papua-nova guine': 'pg', 'papua new guinea': 'pg', 'samoa': 'ws',
-      'ilhas salomao': 'sb', 'solomon islands': 'sb', 'tonga': 'to', 'tuvalu': 'tv', 'vanuatu': 'vu', 'aruba': 'aw', 'curacao': 'cw',
-      'gibraltar': 'gi', 'groenlandia': 'gl', 'greenland': 'gl', 'hong kong': 'hk', 'ilhas faroe': 'fo', 'faroe islands': 'fo',
-      'ilhas cayman': 'ky', 'cayman islands': 'ky', 'macau': 'mo', 'palestina': 'ps', 'palestine': 'ps', 'saara ocidental': 'eh', 'western sahara': 'eh'
+      'brasil': 'br', 'brazil': 'br', 'argentina': 'ar', 'bolivia': 'bo', 'chile': 'cl', 'colombia': 'co',
+      'equador': 'ec', 'ecuador': 'ec', 'paraguai': 'py', 'paraguay': 'py', 'peru': 'pe', 'uruguai': 'uy',
+      'uruguay': 'uy', 'venezuela': 've', 'estados unidos': 'us', 'eua': 'us', 'usa': 'us', 'canada': 'ca',
+      'mexico': 'mx', 'alemanha': 'de', 'germany': 'de', 'austria': 'at', 'belgica': 'be', 'espanha': 'es',
+      'franca': 'fr', 'france': 'fr', 'holanda': 'nl', 'netherlands': 'nl', 'irlanda': 'ie', 'italia': 'it',
+      'portugal': 'pt', 'reino unido': 'gb', 'uk': 'gb', 'inglaterra': 'gb', 'escocia': 'gb', 'suica': 'ch',
+      'dinamarca': 'dk', 'finlandia': 'fi', 'noruega': 'no', 'suecia': 'se', 'russia': 'ru', 'japao': 'jp',
+      'japan': 'jp', 'china': 'cn', 'australia': 'au'
     };
 
     const code = countryCodes[name];
-    if (code) {
-      return `https://flagcdn.com/w40/${code}.png`;
-    }
+    if (code) return `https://flagcdn.com/w40/${code}.png`;
     return '';
   }
 
   function hideLoadingScreen() {
     const screen = document.getElementById("loadingScreen");
-    if (screen) {
-      screen.classList.add("hidden");
-    }
+    if (screen) screen.classList.add("hidden");
   }
 
   /* CARREGAMENTO ULTRA RÁPIDO COM CACHE EM LOCALSTORAGE */
   async function fetchCatalogFromSheet() {
     if (!API_URL || API_URL.includes("COLE_AQUI")) return;
 
-    // 1. CARREGAMENTO INSTANTÂNEO: Lê o cache gravado no dispositivo
     const cachedData = localStorage.getItem("beercan_catalog_cache");
     if (cachedData) {
       try {
@@ -608,7 +558,6 @@
       }
     }
 
-    // 2. ATUALIZAÇÃO SILENCIOSA EM SEGUNDO PLANO
     try {
       const response = await fetch(API_URL);
       const freshData = await response.json();
@@ -643,7 +592,6 @@
     focusCardSafely(0);
   }
 
-  /* FUNÇÃO DE INVERTER ORDENAÇÃO */
   function toggleSortOrder() {
     sortNewestFirst = !sortNewestFirst;
     const sortBtn = document.getElementById("sortOrderBtn");
@@ -682,7 +630,7 @@
     filterCatalog(document.getElementById("menuSearchInput").value);
   }
 
-function getBaseListForCurrentTab() {
+  function getBaseListForCurrentTab() {
     let list = [];
     if (currentTab === 'home') {
       list = canCatalog.filter(can => {
@@ -721,13 +669,6 @@ function getBaseListForCurrentTab() {
   }
 
   function clearAllCardFocus() {
-    const topInput = document.getElementById("topBrandInput");
-    if (topInput) {
-      topInput.blur();
-      topInput.classList.remove("focused");
-    }
-
-    // Remove a classe 'focused' de absolutamente todos os cards e do botão
     document.querySelectorAll(".card").forEach(c => {
       c.classList.remove("focused");
     });
@@ -738,19 +679,17 @@ function getBaseListForCurrentTab() {
 
   function focusCardSafely(targetIndex) {
     closeMenu();
-    closeAutocomplete();
     
     const cards = document.querySelectorAll(".card");
     if (cards.length > 0) {
       const finalIdx = Math.min(Math.max(0, targetIndex), cards.length - 1);
       
-      // Limpa a seleção visual de todos os cards
       clearAllCardFocus();
 
-      // Atualiza o índice ativo e aplica o foco de forma direta e síncrona
       activeLocalIndex = finalIdx;
-      cards[finalIdx].classList.add("focused");
-      cards[finalIdx].focus();
+      const targetCard = cards[finalIdx];
+      targetCard.classList.add("focused");
+      targetCard.focus();
       
       const globalIndex = currentPage * cardsPerRow + finalIdx;
       if (currentFiltered[globalIndex]) {
@@ -847,7 +786,7 @@ function getBaseListForCurrentTab() {
       };
 
       btn.onkeydown = (e) => {
-        if (e.key === "ArrowRight") {
+        if (e.key === "ArrowRight" || e.keyCode === 39) {
           const isLastInRow = (index + 1) % 6 === 0 || index === vkKeys.length - 1;
           if (isLastInRow) {
             e.preventDefault();
@@ -891,7 +830,7 @@ function getBaseListForCurrentTab() {
     };
 
     allBtn.onkeydown = (e) => {
-      if (e.key === "ArrowRight") {
+      if (e.key === "ArrowRight" || e.keyCode === 39) {
         e.preventDefault();
         focusCardSafely(activeLocalIndex);
       }
@@ -912,7 +851,7 @@ function getBaseListForCurrentTab() {
       };
 
       btn.onkeydown = (e) => {
-        if (e.key === "ArrowRight") {
+        if (e.key === "ArrowRight" || e.keyCode === 39) {
           e.preventDefault();
           focusCardSafely(activeLocalIndex);
         }
@@ -956,7 +895,7 @@ function getBaseListForCurrentTab() {
     }
   }
 
-  /* RENDERIZAÇÃO DOS CARDS NO INDEX.HTML */
+  /* RENDERIZAÇÃO DOS CARDS NO INDEX.HTML COM D-PAD */
   function renderApp() {
     clearAllCardFocus();
     const row = document.getElementById("cardRow");
@@ -1000,6 +939,7 @@ function getBaseListForCurrentTab() {
       const card = document.createElement("div");
       card.className = `card ${currentTab === 'sets' ? 'card-aspect-sets' : ''}`;
       card.tabIndex = 0;
+      card.dataset.localIndex = localIndex;
       card.dataset.globalIndex = globalIndex;
       
       card.onmouseenter = () => {
@@ -1025,10 +965,11 @@ function getBaseListForCurrentTab() {
       card.onkeydown = (e) => {
         if (document.getElementById("zoomModal").classList.contains("active") || document.getElementById("exitModal").classList.contains("active")) return;
 
-        if (e.key === "Enter" || e.key === " ") {
+        // TECLADO DO CONTROLE REMOTO (D-PAD / TECLADO FISICO)
+        if (e.key === "Enter" || e.key === " " || e.keyCode === 13) {
           e.preventDefault();
           openZoomModal(0);
-        } else if (e.key === "ArrowRight") {
+        } else if (e.key === "ArrowRight" || e.keyCode === 39) {
           e.preventDefault();
           if (localIndex < pageItems.length - 1) {
             focusCardSafely(localIndex + 1);
@@ -1037,7 +978,7 @@ function getBaseListForCurrentTab() {
             renderApp();
             focusCardSafely(0);
           }
-        } else if (e.key === "ArrowLeft") {
+        } else if (e.key === "ArrowLeft" || e.keyCode === 37) {
           e.preventDefault();
           if (localIndex > 0) {
             focusCardSafely(localIndex - 1);
@@ -1049,38 +990,25 @@ function getBaseListForCurrentTab() {
             clearAllCardFocus();
             openMenu();
           }
-        } else if (e.key === "ArrowDown") {
+        } else if (e.key === "ArrowDown" || e.keyCode === 40) {
           e.preventDefault();
-          if (localIndex < cardsPerRow) {
-            if (localIndex + cardsPerRow < pageItems.length) {
-              focusCardSafely(localIndex + cardsPerRow);
-            }
-          } else if ((startIndex + cardsPerRow) < currentFiltered.length) {
+          if ((startIndex + cardsPerRow) < currentFiltered.length) {
             currentPage++;
             renderApp();
-            focusCardSafely(localIndex % cardsPerRow);
+            focusCardSafely(Math.min(localIndex, currentFiltered.slice(currentPage * cardsPerRow).length - 1));
           }
-        } else if (e.key === "ArrowUp") {
+        } else if (e.key === "ArrowUp" || e.keyCode === 38) {
           e.preventDefault();
-          if (localIndex >= cardsPerRow) {
-            focusCardSafely(localIndex - cardsPerRow);
-          } else if (currentPage > 0) {
+          if (currentPage > 0) {
             currentPage--;
             renderApp();
-            const target = cardsPerRow + localIndex;
-            focusCardSafely(target);
+            focusCardSafely(localIndex);
           } else {
             clearAllCardFocus();
-            const topInput = document.getElementById("topBrandInput");
-            if (topInput) {
-              topInput.focus();
-              topInput.classList.add("focused");
-            } else {
-              const sortBtn = document.getElementById("sortOrderBtn");
-              if (sortBtn) {
-                sortBtn.classList.add("focused");
-                sortBtn.focus();
-              }
+            const sortBtn = document.getElementById("sortOrderBtn");
+            if (sortBtn) {
+              sortBtn.classList.add("focused");
+              sortBtn.focus();
             }
           }
         }
@@ -1364,19 +1292,19 @@ function getBaseListForCurrentTab() {
   /* NAVEGAÇÃO DO BOTÃO DE ORDENAÇÃO VIA TECLADO */
   const sortBtnElem = document.getElementById("sortOrderBtn");
   sortBtnElem.onkeydown = (e) => {
-    if (e.key === "Enter" || e.key === " ") {
+    if (e.key === "Enter" || e.key === " " || e.keyCode === 13) {
       e.preventDefault();
       toggleSortOrder();
-    } else if (e.key === "ArrowDown") {
+    } else if (e.key === "ArrowDown" || e.keyCode === 40) {
       e.preventDefault();
       focusCardSafely(0);
-    } else if (e.key === "ArrowLeft") {
+    } else if (e.key === "ArrowLeft" || e.keyCode === 37) {
       e.preventDefault();
       openMenu();
     }
   };
 
-  /* TECLADO E CONTROLE REMOTO */
+  /* TECLADO E CONTROLE REMOTO GLOBAL */
   document.addEventListener("keydown", (e) => {
     const isZoomActive = document.getElementById("zoomModal").classList.contains("active");
     const isExitActive = document.getElementById("exitModal").classList.contains("active");
@@ -1387,19 +1315,19 @@ function getBaseListForCurrentTab() {
         e.preventDefault();
         toggleZoomStep();
       } else if (zoomLevel > 1.0) {
-        if (e.key === "ArrowLeft") {
+        if (e.key === "ArrowLeft" || e.keyCode === 37) {
           e.preventDefault();
           panX += PAN_STEP;
           applyZoomTransform();
-        } else if (e.key === "ArrowRight") {
+        } else if (e.key === "ArrowRight" || e.keyCode === 39) {
           e.preventDefault();
           panX -= PAN_STEP;
           applyZoomTransform();
-        } else if (e.key === "ArrowUp") {
+        } else if (e.key === "ArrowUp" || e.keyCode === 38) {
           e.preventDefault();
           panY += PAN_STEP;
           applyZoomTransform();
-        } else if (e.key === "ArrowDown") {
+        } else if (e.key === "ArrowDown" || e.keyCode === 40) {
           e.preventDefault();
           panY -= PAN_STEP;
           applyZoomTransform();
@@ -1408,10 +1336,10 @@ function getBaseListForCurrentTab() {
           closeZoomModal();
         }
       } else {
-        if (e.key === "ArrowLeft") {
+        if (e.key === "ArrowLeft" || e.keyCode === 37) {
           e.preventDefault();
           navigateZoom(-1);
-        } else if (e.key === "ArrowRight") {
+        } else if (e.key === "ArrowRight" || e.keyCode === 39) {
           e.preventDefault();
           navigateZoom(1);
         } else if (e.key === "ArrowUp" || e.key === "ArrowDown" || e.key === "Escape" || e.key === "Back" || e.keyCode === 10009 || e.keyCode === 27) {
@@ -1420,7 +1348,7 @@ function getBaseListForCurrentTab() {
         }
       }
     } else if (isExitActive) {
-      if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
+      if (e.key === "ArrowLeft" || e.key === "ArrowRight" || e.keyCode === 37 || e.keyCode === 39) {
         e.preventDefault();
         const active = document.activeElement;
         const btnNo = document.getElementById("exitBtnNo");
@@ -1443,7 +1371,7 @@ function getBaseListForCurrentTab() {
       }
 
       const activeElem = document.activeElement;
-      if (activeElem && (activeElem.classList.contains("cat-btn") || activeElem.classList.contains("brand-btn")) && e.key === "ArrowRight") {
+      if (activeElem && (activeElem.classList.contains("cat-btn") || activeElem.classList.contains("brand-btn")) && (e.key === "ArrowRight" || e.keyCode === 39)) {
         e.preventDefault();
         focusCardSafely(activeLocalIndex);
       }
