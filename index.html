@@ -140,56 +140,56 @@
     .hero-photo-card { background: #ffffff; border-radius: 8px; padding: 4px; display: flex; justify-content: center; align-items: center; width: 100%; height: 100%; overflow: hidden; cursor: pointer; }
     .hero-photo-card img { width: 100%; height: 100%; object-fit: contain; }
 
-.hero-right-info { 
+/* CONTAINER DE INFORMAÇÕES ALINHADO NO TOPO E NA BASE DO HERO */
+    .hero-right-info { 
       flex: 1; 
       height: 100%; 
       display: flex; 
       flex-direction: column; 
-      justify-content: flex-start; 
-      gap: 6px; 
+      justify-content: space-between; /* Distribui o primeiro item no topo e o último na base */
       color: #f39c12; 
       text-transform: uppercase; 
       font-style: italic; 
-      overflow-y: auto; 
       padding-right: 180px; 
       z-index: 10; 
       position: relative; 
+      box-sizing: border-box;
     }
 
-    /* DESCRIÇÃO / TÍTULO DA LATA EM HELVETICA NOW EM NEGRITO */
+    /* TÍTULO/NOME DA LATA (HELVETICA NOW EM NEGRITO) - FONTE AUMENTADA */
     .hero-title { 
       font-family: "Helvetica Now Display", "Helvetica Neue", Helvetica, Arial, sans-serif !important; 
-      font-size: clamp(5rem, 1.9vw, 1.5rem); 
+      font-size: clamp(1.3rem, 2.3vw, 1.8rem) !important; 
       font-weight: 900 !important; 
       line-height: 1.1; 
       color: #f39c12; 
-      margin-bottom: 2px; 
+      margin-bottom: 0; 
       letter-spacing: 0.5px; 
     }
 
     .info-block { 
       display: flex; 
       flex-direction: column; 
-      margin-bottom: 2px; 
     }
 
-    /* RESTANTE DAS INFORMAÇÕES EM HELVETICA EM NEGRITO */
+    /* RÓTULOS (ORIGEM, VOLUME, ETC.) - HELVETICA EM NEGRITO */
     .info-label { 
       font-family: Helvetica, Arial, sans-serif !important; 
-      font-size: clamp(1rem, 0.9vw, 0.8rem); 
+      font-size: clamp(0.75rem, 1.0vw, 0.9rem) !important; 
       font-weight: 900 !important; 
       color: #f39c12; 
       line-height: 1.1; 
       letter-spacing: 0.5px; 
     }
 
+    /* VALORES - HELVETICA EM NEGRITO - FONTE AUMENTADA PROPORCIONALMENTE */
     .info-val { 
       font-family: Helvetica, Arial, sans-serif !important; 
-      font-size: clamp(2.5rem, 1.4vw, 1.2rem); 
+      font-size: clamp(1.0rem, 1.6vw, 1.35rem) !important; 
       font-weight: 900 !important; 
       color: #f39c12; 
       line-height: 1.1; 
-      margin-top: 1px; 
+      margin-top: 2px; 
     }
 
     /* BARRA DO MEIO COM O BOTÃO TRIÂNGULO AO LADO DA CONTAGEM */
