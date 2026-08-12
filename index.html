@@ -130,10 +130,35 @@
       z-index: 2;
       pointer-events: none;
     }
+.hero-brand-logo-container {
+      position: absolute; 
+      top: 10px; 
+      right: 16px; 
+      width: 190px; 
+      height: 85px;
+      display: flex; 
+      justify-content: center; 
+      align-items: center; 
+      z-index: 20; 
+      pointer-events: none;
+      padding: 8px 12px;
+      
+      /* EFEITO GLASSMORPHISM (VIDRO TRANSLÚCIDO COM BRILHO SUAVE) */
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    }
 
-    .hero-brand-logo-container { position: absolute; top: 8px; right: 20px; width: 180px; height: 80px; display: flex; justify-content: flex-end; align-items: flex-start; z-index: 20; pointer-events: none; }
-    .hero-brand-logo-container img { max-width: 100%; max-height: 100%; object-fit: contain; }
-
+    .hero-brand-logo-container img { 
+      max-width: 100%; 
+      max-height: 100%; 
+      object-fit: contain; 
+      /* FILTRO DE NITIDEZ E LEVE BRILHO */
+      filter: drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.5));
+    }
     .hero-left-photos { height: 100%; aspect-ratio: 1 / 1; display: grid; grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(2, 1fr); gap: 8px; z-index: 10; position: relative; }
     .hero-left-photos.aspect-sets { aspect-ratio: 4 / 3; }
 
