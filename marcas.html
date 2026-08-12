@@ -1103,7 +1103,7 @@
     }
   }
 
-  /* RENDERIZAÇÃO DOS CARDS */
+/* RENDERIZAÇÃO DOS CARDS NO MARCAS.HTML */
   function renderApp() {
     clearAllCardFocus();
     const row = document.getElementById("cardRow");
@@ -1127,8 +1127,22 @@
       const volumeText = can.volume || can.Volume || "";
       const flagUrl = getFlagUrlByCountry(countryRaw);
 
-      const brandKey = String(brandRaw).toLowerCase().trim();
-      const cardColor = BRAND_COLORS[brandKey] || "#008234";
+      // BUSCA DINÂMICA DA COR DA MARCA
+      let cardColor = can.brandColor || can.color;
+      if (!cardColor || cardColor === "") {
+        const brandKey = String(brandRaw).toLowerCase().trim();
+        const sameBrandCan = canCatalog.find(c => {
+          const b = String(c.brewery || c.Cervejaria || "").toLowerCase().trim();
+          const cColor = c.brandColor || c.color;
+          return b === brandKey && cColor && String(cColor).trim() !== "";
+        });
+        if (sameBrandCan) {
+          cardColor = sameBrandCan.brandColor || sameBrandCan.color;
+        }
+      }
+      if (!cardColor) {
+        cardColor = "#008234";
+      }
 
       const card = document.createElement("div");
       card.className = `card ${currentTab === 'sets' ? 'card-aspect-sets' : ''}`;
@@ -1204,8 +1218,17 @@
             focusCardSafely(target);
           } else {
             clearAllCardFocus();
-            topBrandInput.focus();
-            topBrandInput.classList.add("focused");
+            const topInput = document.getElementById("topBrandInput");
+            if (topInput) {
+              topInput.focus();
+              topInput.classList.add("focused");
+            } else {
+              const sortBtn = document.getElementById("sortOrderBtn");
+              if (sortBtn) {
+                sortBtn.classList.add("focused");
+                sortBtn.focus();
+              }
+            }
           }
         }
       };
