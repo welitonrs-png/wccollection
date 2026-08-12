@@ -225,8 +225,17 @@
     .card-counter { font-size: 0.85rem; font-weight: 900; color: #f39c12; background: transparent; padding: 0; letter-spacing: 1px; }
 
     /* SEÇÃO INFERIOR DO CATÁLOGO - 1 LINHA DE CARDS */
-    .catalog-section { height: 195px; min-height: 195px; width: 100%; overflow: hidden; flex-shrink: 0; touch-action: none; }
-    .card-row { display: grid; grid-template-columns: repeat(7, 122px); grid-template-rows: repeat(1, 185px); gap: 10px 12px; width: 100%; height: 100%; justify-content: start; align-content: start; }
+.catalog-section { height: 195px; min-height: 195px; width: 100%; overflow: hidden; flex-shrink: 0; touch-action: none; }
+    
+    /* LARGURA ADAPTÁVEL PARA 7 CARDS NORMAIS OU 5 CARDS DE SETS */
+    .card-row { 
+      display: flex; 
+      gap: 12px; 
+      width: 100%; 
+      height: 100%; 
+      justify-content: flex-start; 
+      align-content: start; 
+    }
 
     .card {
       width: 122px !important;
