@@ -64,6 +64,7 @@
     tr:hover { background: rgba(243, 156, 18, 0.05); }
 
     .thumb-img { width: 35px; height: 35px; object-fit: contain; border-radius: 4px; background: #ffffff; padding: 2px; }
+    .color-badge { width: 24px; height: 24px; border-radius: 4px; border: 1px solid #fff; display: inline-block; vertical-align: middle; }
     .badge { padding: 2px 6px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; text-transform: uppercase; }
     .badge-true { background: rgba(46, 204, 113, 0.2); color: #2ecc71; border: 1px solid #2ecc71; }
     .badge-false { background: rgba(149, 165, 166, 0.2); color: #95a5a6; }
@@ -157,6 +158,32 @@
           </div>
         </div>
 
+        <!-- CAMPO COR DA MARCA -->
+        <div class="form-group">
+          <label for="brandColor">COR DA MARCA DA LATA (COLUNA R):</label>
+          <div style="display: flex; gap: 8px; align-items: center;">
+            <input 
+              type="color" 
+              id="brandColorPicker" 
+              style="width: 45px; height: 38px; border: 1px solid #333d52; border-radius: 6px; background: #0f121a; cursor: pointer;"
+              value="#008234"
+              onchange="document.getElementById('brandColor').value = this.value;"
+            >
+            <input 
+              type="text" 
+              id="brandColor" 
+              name="brandColor" 
+              class="form-control" 
+              placeholder="#008234"
+              autocomplete="off"
+              oninput="if(this.value.length === 7) document.getElementById('brandColorPicker').value = this.value;"
+            >
+          </div>
+          <small style="color: #a0aec0; font-size: 0.7rem; margin-top: 2px;">
+            Escolha no seletor ou digite o Hexadecimal. Autopreenchido se a marca já possuir cor.
+          </small>
+        </div>
+
         <!-- FOTOS DA LATINHA (CAPA, FRENTE, LADOS, TRÁS) -->
         <div class="form-group">
           <label>FOTOS DA LATA (URL OU UPLOAD):</label>
@@ -217,6 +244,7 @@
             <tr>
               <th>ID</th>
               <th>CAPA</th>
+              <th>COR</th>
               <th>NOME</th>
               <th>CERVEJARIA</th>
               <th>PAÍS</th>
@@ -227,7 +255,7 @@
             </tr>
           </thead>
           <tbody id="catalogTableBody">
-            <tr><td colspan="9" style="text-align: center; padding: 20px;">Carregando itens...</td></tr>
+            <tr><td colspan="10" style="text-align: center; padding: 20px;">Carregando itens...</td></tr>
           </tbody>
         </table>
       </div>
@@ -294,7 +322,7 @@
     tbody.innerHTML = "";
 
     if (!items || items.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="9" style="text-align: center; padding: 20px;">Nenhum item encontrado.</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="10" style="text-align: center; padding: 20px;">Nenhum item encontrado.</td></tr>`;
       return;
     }
 
@@ -302,11 +330,13 @@
       const coverUrl = getOptimizedImageUrl(item.ImgCover || item.ImgFront || item.brandLogo, 100);
       const isOcocBadge = item.isOcoc ? `<span class="badge badge-true">SIM</span>` : `<span class="badge badge-false">NÃO</span>`;
       const isSetBadge = item.isSet ? `<span class="badge badge-true">SIM</span>` : `<span class="badge badge-false">NÃO</span>`;
+      const colorHex = item.brandColor || item.color || "#008234";
 
       const tr = document.createElement("tr");
       tr.innerHTML = `
         <td><b>${item.ID || '-'}</b></td>
         <td>${coverUrl ? `<img src="${coverUrl}" class="thumb-img">` : '-'}</td>
+        <td><span class="color-badge" style="background-color: ${colorHex};" title="${colorHex}"></span></td>
         <td><b>${item.Nome || '-'}</b></td>
         <td>${item.Cervejaria || '-'}</td>
         <td>${item.Pais || '-'}</td>
@@ -349,6 +379,10 @@
     toggleSetFields();
     document.getElementById("setName").value = item.setName || "";
 
+    const savedColor = item.brandColor || item.color || "#008234";
+    document.getElementById("brandColor").value = savedColor;
+    document.getElementById("brandColorPicker").value = savedColor;
+
     setPhotoField("brandLogo", "prevLogo", item.BRAND_LOGO || item.brandLogo);
     setPhotoField("brandWallpaper", "prevWallpaper", item.brandWallpaper || item.wallpaper);
 
@@ -373,11 +407,13 @@
     document.getElementById("setNameContainer").style.display = isChecked ? "flex" : "none";
   }
 
-  /* AUTOPREENCHE LOGO E WALLPAPER CASO A CERVEJARIA JÁ POSSUA CADASTRADOS */
+  /* AUTOPREENCHE LOGO, WALLPAPER E COR DA MARCA SE JA CADASTRADOS */
   function autoFillBrandWallpaper() {
     const breweryInput = document.getElementById("Cervejaria");
     const wallpaperInput = document.getElementById("brandWallpaper");
     const logoInput = document.getElementById("brandLogo");
+    const colorInput = document.getElementById("brandColor");
+    const colorPicker = document.getElementById("brandColorPicker");
 
     if (!breweryInput) return;
     const typedBrewery = breweryInput.value.trim().toLowerCase();
@@ -397,10 +433,17 @@
         const foundLogo = match.BRAND_LOGO || match.brandLogo;
         if (foundLogo) setPhotoField("brandLogo", "prevLogo", foundLogo);
       }
+      if (colorInput && !colorInput.value.trim()) {
+        const foundColor = match.brandColor || match.color;
+        if (foundColor) {
+          colorInput.value = foundColor;
+          if (colorPicker) colorPicker.value = foundColor;
+        }
+      }
     }
   }
 
-  /* UPLOAD DE IMAGEM DADOS EM BASE64 -> GOOGLE DRIVE */
+  /* UPLOAD DE IMAGEM BASE64 -> GOOGLE DRIVE */
   function uploadImage(fileInput, hiddenId, prevId) {
     const file = fileInput.files[0];
     if (!file) return;
@@ -442,7 +485,6 @@
     const rowNum = document.getElementById("_rowNum").value;
     const actionType = rowNum ? "edit" : "save";
 
-    // Se o campo ImgCover (Capa) ficar em branco, assume o valor do ImgFront (Frente) como fallback
     const coverValue = document.getElementById("ImgCover").value || document.getElementById("ImgFront").value;
     const frontValue = document.getElementById("ImgFront").value || document.getElementById("ImgCover").value;
 
@@ -458,6 +500,7 @@
       isOcoc: document.getElementById("isOcoc").checked,
       isSet: document.getElementById("isSet").checked,
       setName: document.getElementById("setName").value,
+      brandColor: document.getElementById("brandColor").value || "#008234",
       BRAND_LOGO: fixDriveUrl(document.getElementById("brandLogo").value),
       brandWallpaper: fixDriveUrl(document.getElementById("brandWallpaper").value),
       ImgCover: fixDriveUrl(coverValue),
@@ -523,6 +566,8 @@
     document.getElementById("ImgLeft").value = "";
     document.getElementById("ImgBack").value = "";
     document.getElementById("ImgRight").value = "";
+    document.getElementById("brandColor").value = "#008234";
+    document.getElementById("brandColorPicker").value = "#008234";
 
     document.getElementById("prevLogo").src = "";
     document.getElementById("prevWallpaper").src = "";
