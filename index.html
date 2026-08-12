@@ -645,27 +645,44 @@
     return list;
   }
 
-  function clearAllCardFocus() {
+    function clearAllCardFocus() {
+    const topInput = document.getElementById("topBrandInput");
+    if (topInput) {
+      topInput.blur();
+      topInput.classList.remove("focused");
+    }
+
+    // Remove a classe 'focused' de absolutamente todos os cards e do botão
     document.querySelectorAll(".card").forEach(c => {
       c.classList.remove("focused");
     });
-    document.getElementById("sortOrderBtn").classList.remove("focused");
+
+    const sortBtn = document.getElementById("sortOrderBtn");
+    if (sortBtn) sortBtn.classList.remove("focused");
   }
 
   function focusCardSafely(targetIndex) {
     closeMenu();
-    clearAllCardFocus();
+    closeAutocomplete();
     
-    setTimeout(() => {
-      const cards = document.querySelectorAll(".card");
-      if (cards.length > 0) {
-        const finalIdx = Math.min(targetIndex, cards.length - 1);
-        activeLocalIndex = finalIdx;
-        cards[finalIdx].classList.add("focused");
-        cards[finalIdx].focus();
+    const cards = document.querySelectorAll(".card");
+    if (cards.length > 0) {
+      const finalIdx = Math.min(Math.max(0, targetIndex), cards.length - 1);
+      
+      // Limpa a seleção visual de todos os cards
+      clearAllCardFocus();
+
+      // Atualiza o índice ativo e aplica o foco de forma direta e síncrona
+      activeLocalIndex = finalIdx;
+      cards[finalIdx].classList.add("focused");
+      cards[finalIdx].focus();
+      
+      if (typeof updateCounter === "function") {
+        updateCounter(finalIdx);
       }
-    }, 50);
+    }
   }
+
 
   function openMenu() {
     document.getElementById("sidebarDrawer").classList.add("open");
