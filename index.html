@@ -927,8 +927,9 @@
     }
   }
 
-  /* RENDERIZAÇÃO DOS CARDS COM CORREÇÃO DE NAVEGAÇÃO DA SETA PARA CIMA */
+/* RENDERIZAÇÃO DOS CARDS NO INDEX.HTML */
   function renderApp() {
+    clearAllCardFocus();
     const row = document.getElementById("cardRow");
     row.innerHTML = "";
 
@@ -950,8 +951,22 @@
       const volumeText = can.volume || can.Volume || "";
       const flagUrl = getFlagUrlByCountry(countryRaw);
 
-      const brandKey = String(brandRaw).toLowerCase().trim();
-      const cardColor = BRAND_COLORS[brandKey] || "#008234";
+      // BUSCA DINÂMICA DA COR DA MARCA
+      let cardColor = can.brandColor || can.color;
+      if (!cardColor || cardColor === "") {
+        const brandKey = String(brandRaw).toLowerCase().trim();
+        const sameBrandCan = canCatalog.find(c => {
+          const b = String(c.brewery || c.Cervejaria || "").toLowerCase().trim();
+          const cColor = c.brandColor || c.color;
+          return b === brandKey && cColor && String(cColor).trim() !== "";
+        });
+        if (sameBrandCan) {
+          cardColor = sameBrandCan.brandColor || sameBrandCan.color;
+        }
+      }
+      if (!cardColor) {
+        cardColor = "#008234";
+      }
 
       const card = document.createElement("div");
       card.className = `card ${currentTab === 'sets' ? 'card-aspect-sets' : ''}`;
@@ -962,7 +977,7 @@
         clearAllCardFocus();
         card.classList.add("focused");
         activeLocalIndex = localIndex;
-        updateHeroPanel(can, globalIndex);
+        updateCounter(localIndex);
       };
 
       card.onfocus = () => {
@@ -970,7 +985,7 @@
         clearAllCardFocus();
         card.classList.add("focused");
         activeLocalIndex = localIndex;
-        updateHeroPanel(can, globalIndex);
+        updateCounter(localIndex);
       };
       
       card.onclick = (e) => {
@@ -985,49 +1000,58 @@
           e.preventDefault();
           openZoomModal(0);
         } else if (e.key === "ArrowRight") {
-          if (localIndex === pageItems.length - 1 && (startIndex + cardsPerRow) < currentFiltered.length) {
-            e.preventDefault();
+          e.preventDefault();
+          if (localIndex < pageItems.length - 1) {
+            focusCardSafely(localIndex + 1);
+          } else if ((startIndex + cardsPerPage) < currentFiltered.length) {
             currentPage++;
             renderApp();
             focusCardSafely(0);
           }
         } else if (e.key === "ArrowLeft") {
-          if (localIndex === 0) {
-            e.preventDefault();
-            if (currentPage > 0) {
-              currentPage--;
-              renderApp();
-              focusCardSafely(cardsPerRow - 1);
-            } else {
-              clearAllCardFocus();
-              openMenu();
-            }
+          e.preventDefault();
+          if (localIndex > 0) {
+            focusCardSafely(localIndex - 1);
+          } else if (currentPage > 0) {
+            currentPage--;
+            renderApp();
+            focusCardSafely(cardsPerPage - 1);
+          } else {
+            clearAllCardFocus();
+            openMenu();
           }
         } else if (e.key === "ArrowDown") {
           e.preventDefault();
-          if ((startIndex + cardsPerRow) < currentFiltered.length) {
+          if (localIndex < cardsPerRow) {
+            if (localIndex + cardsPerRow < pageItems.length) {
+              focusCardSafely(localIndex + cardsPerRow);
+            }
+          } else if ((startIndex + cardsPerPage) < currentFiltered.length) {
             currentPage++;
             renderApp();
-            focusCardSafely(activeLocalIndex);
+            focusCardSafely(localIndex % cardsPerRow);
           }
         } else if (e.key === "ArrowUp") {
           e.preventDefault();
-          
           if (localIndex >= cardsPerRow) {
-            // 1. Se estiver na 2ª linha em diante, sobe para o card da linha acima
             focusCardSafely(localIndex - cardsPerRow);
           } else if (currentPage > 0) {
-            // 2. Se estiver na 1ª linha de uma página posterior, volta para a página anterior
             currentPage--;
             renderApp();
-            focusCardSafely(cardsPerRow + localIndex);
+            const target = cardsPerRow + localIndex;
+            focusCardSafely(target);
           } else {
-            // 3. SÓ VAI PARA O TRIÂNGULO se estiver na 1ª LINHA da 1ª PÁGINA
             clearAllCardFocus();
-            const sortBtn = document.getElementById("sortOrderBtn");
-            if (sortBtn) {
-              sortBtn.classList.add("focused");
-              sortBtn.focus();
+            const topInput = document.getElementById("topBrandInput");
+            if (topInput) {
+              topInput.focus();
+              topInput.classList.add("focused");
+            } else {
+              const sortBtn = document.getElementById("sortOrderBtn");
+              if (sortBtn) {
+                sortBtn.classList.add("focused");
+                sortBtn.focus();
+              }
             }
           }
         }
