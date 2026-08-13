@@ -821,9 +821,18 @@
     filterCatalogByBrand(input.value);
   }
 
-  function openTopVkPanel() {
+function openTopVkPanel() {
     const panel = document.getElementById("topVkPanel");
-    panel.classList.add("active");
+    const wrapper = document.querySelector(".brand-search-wrapper");
+    const hero = document.getElementById("heroPanel");
+
+    // Eleva o z-index de toda a árvore do Hero/Wrapper para ficar acima do catálogo
+    if (hero) hero.style.zIndex = "9999";
+    if (wrapper) wrapper.style.zIndex = "9999";
+    if (panel) {
+      panel.style.zIndex = "10000";
+      panel.classList.add("active");
+    }
     
     setTimeout(() => {
       const firstKey = panel.querySelector(".vk-key");
@@ -836,7 +845,15 @@
 
   function closeTopVkPanel() {
     const panel = document.getElementById("topVkPanel");
+    const wrapper = document.querySelector(".brand-search-wrapper");
+    const hero = document.getElementById("heroPanel");
+
     if (panel) panel.classList.remove("active");
+    
+    // Restaura os z-index originais ao fechar
+    if (hero) hero.style.zIndex = "50";
+    if (wrapper) wrapper.style.zIndex = "500";
+    
     closeAutocomplete();
   }
 
