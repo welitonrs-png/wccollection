@@ -701,36 +701,43 @@
   }
 
   function clearAllCardFocus() {
-    document.querySelectorAll(".card").forEach(c => {
-      c.classList.remove("focused");
-    });
-
-    const sortBtn = document.getElementById("sortOrderBtn");
-    if (sortBtn) sortBtn.classList.remove("focused");
+  // Remove o foco nativo do elemento ativo para não dar conflito na TV
+  if (document.activeElement && typeof document.activeElement.blur === 'function') {
+    document.activeElement.blur();
   }
+
+  // Remove a classe de destaque de todos os cards
+  document.querySelectorAll(".card").forEach(c => {
+    c.classList.remove("focused");
+  });
+
+  const sortBtn = document.getElementById("sortOrderBtn");
+  if (sortBtn) sortBtn.classList.remove("focused");
+}
+
 
   function focusCardSafely(targetIndex) {
-    closeMenu();
-    
-    requestAnimationFrame(() => {
-      const cards = document.querySelectorAll(".card");
-      if (cards.length > 0) {
-        const finalIdx = Math.min(Math.max(0, targetIndex), cards.length - 1);
-        
-        clearAllCardFocus();
+  closeMenu();
+  
+  requestAnimationFrame(() => {
+    const cards = document.querySelectorAll(".card");
+    if (cards.length > 0) {
+      const finalIdx = Math.min(Math.max(0, targetIndex), cards.length - 1);
+      
+      // Limpa rigorosamente qualquer outro card antes de focar o novo
+      clearAllCardFocus();
 
-        activeLocalIndex = finalIdx;
-        const targetCard = cards[finalIdx];
-        targetCard.classList.add("focused");
-        targetCard.focus({ preventScroll: true });
-        
-        const globalIndex = currentPage * cardsPerRow + finalIdx;
-        if (currentFiltered[globalIndex]) {
-          updateHeroPanel(currentFiltered[globalIndex], globalIndex);
-        }
-      }
-    });
-  }
+      activeLocalIndex = finalIdx;
+      const targetCard = cards[finalIdx];
+      
+      // Aplica o destaque e o foco real no mesmo milissegundo
+      targetCard.classList.add("focused");
+      targetCard.focus({ preventScroll: true });
+      updateCounter(finalIdx);
+    }
+  });
+}
+
 
   function openMenu() {
     document.getElementById("sidebarDrawer").classList.add("open");
@@ -976,19 +983,25 @@
       card.dataset.globalIndex = globalIndex;
       
       card.onmouseenter = () => {
-        clearAllCardFocus();
-        card.classList.add("focused");
-        activeLocalIndex = localIndex;
-        updateHeroPanel(can, globalIndex);
-      };
+  clearAllCardFocus();
+  card.classList.add("focused");
+  activeLocalIndex = localIndex;
+  updateCounter(localIndex);
+};
 
-      card.onfocus = () => {
-        if (document.getElementById("zoomModal").classList.contains("active") || document.getElementById("exitModal").classList.contains("active")) return;
-        clearAllCardFocus();
-        card.classList.add("focused");
-        activeLocalIndex = localIndex;
-        updateHeroPanel(can, globalIndex);
-      };
+card.onfocus = () => {
+  if (document.getElementById("zoomModal").classList.contains("active") || document.getElementById("exitModal").classList.contains("active")) return;
+  
+  // Limpa os outros cards para garantir que só o card focado atual fique ativo
+  document.querySelectorAll(".card").forEach(c => {
+    if (c !== card) c.classList.remove("focused");
+  });
+  
+  card.classList.add("focused");
+  activeLocalIndex = localIndex;
+  updateCounter(localIndex);
+};
+
       
       card.onclick = (e) => {
         e.stopPropagation();
