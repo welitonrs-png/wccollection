@@ -80,7 +80,6 @@
 
     .menu-search-box { width: 100%; padding: 8px; background: #11141d; border: 1px solid #333d52; border-radius: 8px; color: #fff; font-size: 0.8rem; text-align: center; text-transform: uppercase; margin-bottom: 4px; pointer-events: none; }
     
-    /* TECLADO VIRTUAL GERAL & SUPERIOR */
     .vk-container { display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; }
     
     .vk-key { 
@@ -97,7 +96,6 @@
       transition: all 0.15s ease; 
     }
 
-    /* FOCO DOURADO */
     .vk-key:focus, .vk-key.focused, .vk-key:hover { 
       color: #1a1e29 !important; 
       border-color: #f39c12 !important; 
@@ -546,12 +544,8 @@
     return list;
   }
 
-  /* LIMPA COMPLETAMENTE O FOCO DE TODOS OS CARDS E BOTÕES DA TELA */
+  /* LIMPA VISUALMENTE A SELEÇÃO DOS OUTROS CARDS SEM CANCELAR O FOCO ATIVO */
   function clearAllCardFocus() {
-    if (document.activeElement && typeof document.activeElement.blur === 'function') {
-      document.activeElement.blur();
-    }
-
     const topInput = document.getElementById("topBrandInput");
     if (topInput) topInput.classList.remove("focused");
 
@@ -1074,7 +1068,7 @@
       card.dataset.globalIndex = globalIndex;
       
       card.onmouseenter = () => {
-        clearAllCardFocus();
+        document.querySelectorAll(".card").forEach(c => c.classList.remove("focused"));
         card.classList.add("focused");
         activeLocalIndex = localIndex;
         updateCounter(localIndex);
@@ -1082,7 +1076,12 @@
 
       card.onfocus = () => {
         if (document.getElementById("zoomModal").classList.contains("active") || document.getElementById("exitModal").classList.contains("active")) return;
-        clearAllCardFocus();
+        
+        /* LIMPA VISUALMENTE APENAS OS OUTROS CARDS PARA NÃO CANCELAR O FOCO */
+        document.querySelectorAll(".card").forEach(c => {
+          if (c !== card) c.classList.remove("focused");
+        });
+
         card.classList.add("focused");
         activeLocalIndex = localIndex;
         updateCounter(localIndex);
