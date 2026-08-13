@@ -238,18 +238,28 @@
     .card-counter { font-size: 0.85rem; font-weight: 900; color: #f39c12; background: transparent; padding: 0; letter-spacing: 1px; }
 
     /* SEÇÃO INFERIOR DO CATÁLOGO - 1 LINHA DE CARDS */
-    .catalog-section { height: 195px; min-height: 195px; width: 100%; overflow: hidden; flex-shrink: 0; touch-action: none; }
+        /* SEÇÃO INFERIOR DO CATÁLOGO */
+    .catalog-section { 
+      height: 195px; 
+      min-height: 195px; 
+      width: 100%; 
+      overflow: hidden; 
+      flex-shrink: 0; 
+      touch-action: none; 
+      display: flex;
+      justify-content: center; /* Centraliza o bloco da fileira no meio da tela */
+    }
     
-    /* SEÇÃO INFERIOR DO CATÁLOGO - INDEX.HTML */
-/* SEÇÃO INFERIOR DO CATÁLOGO - INDEX.HTML */
-.card-row { 
-  display: flex; 
-  gap: 12px; 
-  width: fit-content; /* Tamanho exato dos 7 cards */
-  margin: 0 auto;     /* Centraliza a fileira inteira na tela */
-  justify-content: flex-start; /* Cards incompletos começam da esquerda */
-  align-content: start; 
-}
+    .card-row { 
+      display: flex; 
+      gap: 12px; 
+      width: max-content; /* Força o contêiner a ter o tamanho exato dos cards */
+      max-width: 100%;
+      height: 100%; 
+      justify-content: flex-start; /* Cards preenchem da esquerda para a direita */
+      align-content: start; 
+    }
+
 
 
 
