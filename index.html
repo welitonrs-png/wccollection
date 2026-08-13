@@ -33,7 +33,8 @@
       animation: spin 1s linear infinite;
     }
 
-    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: scale(1); opacity: 0.9; } 50% { transform: scale(1.05); opacity: 1; } }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.9; } 50% { transform: scale(1.05); opacity: 1; } }
 
     .mobile-menu-btn {
       display: none; position: fixed; top: 12px; left: 12px; z-index: 2000;
@@ -136,8 +137,9 @@
 
     .card-counter { font-size: 0.85rem; font-weight: 900; color: #f39c12; background: transparent; padding: 0; letter-spacing: 1px; }
 
-    .catalog-section { height: 380px; min-height: 380px; width: 100%; overflow: hidden; flex-shrink: 0; touch-action: none; z-index: 5; }
-    .card-row { display: grid; grid-template-columns: repeat(7, 122px); grid-template-rows: repeat(2, 185px); gap: 10px 12px; width: 100%; height: 100%; justify-content: start; align-content: start; }
+    /* LAYOUT ORIGINAL: 1 LINHA DE CARDS */
+    .catalog-section { height: 195px; min-height: 195px; width: 100%; overflow: hidden; flex-shrink: 0; touch-action: none; z-index: 5; }
+    .card-row { display: grid; grid-template-columns: repeat(7, 122px); grid-template-rows: 185px; gap: 0 12px; width: 100%; height: 100%; justify-content: start; align-content: start; }
 
     .card {
       width: 122px !important; min-width: 122px !important; height: 185px !important;
@@ -273,7 +275,7 @@
   
   let currentTab = 'home';
   let cardsPerRow = 7;
-  let cardsPerPage = 14;
+  let cardsPerPage = 7; /* ORIGINAL: 7 CARDS POR PÁGINA (1 LINHA) */
   let currentPage = 0;
   let activeLocalIndex = 0;
   let lastSelectedMenuId = 'menuBtnHome'; 
@@ -454,7 +456,7 @@
     return list;
   }
 
-  /* LIMPA VISUALMENTE APENAS OS OUTROS CARDS PARA NÃO CANCELAR O FOCO ATIVO */
+  /* LIMPA VISUALMENTE APENAS OS OUTROS CARDS PARA NÃO TRAVAR O CURSOR */
   function clearAllCardFocus() {
     document.querySelectorAll(".card").forEach(c => c.classList.remove("focused"));
     document.querySelectorAll(".vk-key").forEach(k => k.classList.remove("focused"));
