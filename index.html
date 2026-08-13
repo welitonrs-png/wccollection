@@ -92,25 +92,33 @@
 
     /* ÁREA PRINCIPAL */
     .main-area {
-      flex: 1; display: flex; flex-direction: column; height: 100vh; padding: 10px 16px; gap: 6px;
-      overflow: hidden; background: #6a89a7; min-width: 0;
+      flex: 1; 
+      display: flex; 
+      flex-direction: column; 
+      height: 100vh; 
+      padding: 0 0 10px 0; /* Zerado topo e laterais; mantém apenas respiro inferior */
+      gap: 6px;
+      overflow: hidden; 
+      background: #6a89a7; 
+      min-width: 0; 
+      position: relative;
       transition: transform 0.25s cubic-bezier(0.1, 0.9, 0.2, 1);
     }
     .main-area.pushed { transform: translateX(260px); }
 
     /* ÁREA SUPERIOR COM BUSCA E WALLPAPER */
 .hero-panel { 
-  flex: 1; 
-  min-height: 0; 
-  background: transparent !important; 
-  border-radius: 12px; 
-  display: flex; 
-  padding: 8px 12px; 
-  gap: 20px; 
-  align-items: center; 
-  position: relative;
-  overflow: hidden;
-}
+      flex: 1; 
+      min-height: 0; 
+      background: transparent !important; 
+      border-radius: 0; /* Zerado para encostar totalmente nos cantos */
+      display: flex; 
+      padding: 12px 16px; /* Ajuste interno para os elementos não grudarem na borda seca */
+      gap: 20px; 
+      align-items: center; 
+      position: relative;
+      overflow: hidden;
+    }
 
     /* CAMADA DE WALLPAPER DA MARCA DE FUNDO */
 .hero-brand-wallpaper {
