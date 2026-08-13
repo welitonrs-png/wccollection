@@ -727,7 +727,7 @@
     filterCatalogByBrand(input.value);
   }
 
-  function buildTopVirtualKeyboard() {
+function buildTopVirtualKeyboard() {
     const container = document.getElementById("topVkContainer");
     if (!container) return;
     container.innerHTML = "";
@@ -783,7 +783,8 @@
             const downBtn = container.children[index + cols];
             if (downBtn) downBtn.focus();
           } else {
-            const firstItem = brandAutocompleteList.querySelector(".autocomplete-item");
+            const autocomplete = document.getElementById("brandAutocompleteList");
+            const firstItem = autocomplete ? autocomplete.querySelector(".autocomplete-item") : null;
             if (firstItem) firstItem.focus();
           }
         } else if (e.key === "ArrowUp" || e.keyCode === 38) {
@@ -821,18 +822,27 @@
     filterCatalogByBrand(input.value);
   }
 
-function openTopVkPanel() {
+  function openTopVkPanel() {
     const panel = document.getElementById("topVkPanel");
-    const wrapper = document.querySelector(".brand-search-wrapper");
-    const hero = document.getElementById("heroPanel");
+    if (!panel) return;
 
-    // Eleva o z-index de toda a árvore do Hero/Wrapper para ficar acima do catálogo
-    if (hero) hero.style.zIndex = "9999";
-    if (wrapper) wrapper.style.zIndex = "9999";
-    if (panel) {
-      panel.style.zIndex = "10000";
-      panel.classList.add("active");
+    // Anexa o painel ao body para ignorar limitações de overflow/container
+    if (panel.parentNode !== document.body) {
+      document.body.appendChild(panel);
     }
+
+    // Posiciona flutuando no topo direito com z-index máximo
+    Object.assign(panel.style, {
+      position: "fixed",
+      top: "12px",
+      right: "20px",
+      left: "auto",
+      width: "420px",
+      zIndex: "99999",
+      boxShadow: "0 10px 30px rgba(0,0,0,0.8)"
+    });
+
+    panel.classList.add("active");
     
     setTimeout(() => {
       const firstKey = panel.querySelector(".vk-key");
@@ -845,15 +855,9 @@ function openTopVkPanel() {
 
   function closeTopVkPanel() {
     const panel = document.getElementById("topVkPanel");
-    const wrapper = document.querySelector(".brand-search-wrapper");
-    const hero = document.getElementById("heroPanel");
-
-    if (panel) panel.classList.remove("active");
-    
-    // Restaura os z-index originais ao fechar
-    if (hero) hero.style.zIndex = "50";
-    if (wrapper) wrapper.style.zIndex = "500";
-    
+    if (panel) {
+      panel.classList.remove("active");
+    }
     closeAutocomplete();
   }
 
