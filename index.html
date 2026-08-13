@@ -243,13 +243,16 @@
     /* SEÇÃO INFERIOR DO CATÁLOGO - INDEX.HTML */
 /* SEÇÃO INFERIOR DO CATÁLOGO - INDEX.HTML */
 .card-row { 
-  display: flex; 
-  gap: 12px; 
-  width: 100%; 
-  height: 100%; 
-  justify-content: center; /* Centraliza os cards horizontalmente */
+  display: grid; 
+  grid-template-columns: repeat(7, 122px); 
+  grid-template-rows: repeat(2, 185px); 
+  gap: 10px 12px; 
+  width: fit-content; /* Faz a grade ter o tamanho exato dos 7 cards */
+  margin: 0 auto;     /* Centraliza o bloco inteiro de 7 colunas na tela */
+  justify-content: start; /* Garante que itens incompletos fiquem à esquerda */
   align-content: start; 
 }
+
 
 
 
