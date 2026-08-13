@@ -113,16 +113,23 @@
 }
 
     /* CAMADA DE WALLPAPER DA MARCA DE FUNDO */
-    .hero-brand-wallpaper {
-      position: absolute;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background-size: cover;
-      background-position: center;
+.hero-brand-wallpaper {
+      position: absolute; 
+      top: 0; 
+      left: 0; 
+      width: 100%; 
+      height: 100%;
+      background-size: cover; 
+      background-position: center; 
       background-repeat: no-repeat;
-      opacity: 0;
-      transition: opacity 0.5s ease-in-out, background-image 0.5s ease-in-out;
-      z-index: 1;
+      opacity: 0; 
+      transition: opacity 0.5s ease-in-out; 
+      z-index: 1; 
       pointer-events: none;
+
+      /* MÁSCARA COM GRADIENTE: 1/3 Transparente à esquerda e 2/3 com a Imagem */
+      -webkit-mask-image: linear-gradient(to right, transparent 0%, transparent 33%, black 66%, black 100%);
+      mask-image: linear-gradient(to right, transparent 0%, transparent 33%, black 66%, black 100%);
     }
 
     .hero-brand-wallpaper.active {
