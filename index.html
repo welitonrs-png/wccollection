@@ -239,26 +239,28 @@
 
     /* SEÇÃO INFERIOR DO CATÁLOGO - 1 LINHA DE CARDS */
         /* SEÇÃO INFERIOR DO CATÁLOGO */
-    .catalog-section { 
-      height: 195px; 
-      min-height: 195px; 
-      width: 100%; 
-      overflow: hidden; 
-      flex-shrink: 0; 
-      touch-action: none; 
-      display: flex;
-      justify-content: center; /* Centraliza o bloco da fileira no meio da tela */
-    }
-    
-    .card-row { 
-      display: flex; 
-      gap: 12px; 
-      width: max-content; /* Força o contêiner a ter o tamanho exato dos cards */
-      max-width: 100%;
-      height: 100%; 
-      justify-content: flex-start; /* Cards preenchem da esquerda para a direita */
-      align-content: start; 
-    }
+/* SEÇÃO INFERIOR DO CATÁLOGO - INDEX.HTML */
+.catalog-section { 
+  height: 195px; 
+  min-height: 195px; 
+  width: 100%; 
+  overflow: hidden; 
+  flex-shrink: 0; 
+  touch-action: none; 
+  display: flex;
+  justify-content: center; /* Centraliza a estrutura fixa de 7 colunas na TV */
+}
+
+.card-row { 
+  display: flex; 
+  gap: 12px; 
+  width: 926px; /* LARGURA FIXA DE 7 CARDS: (7 x 122px) + (6 x 12px gap) */
+  max-width: 100%;
+  height: 100%; 
+  justify-content: flex-start; /* Força os cards a encostarem na esquerda da estrutura */
+  align-content: start; 
+}
+
 
 
 
