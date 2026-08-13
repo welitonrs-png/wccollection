@@ -824,26 +824,38 @@ function buildTopVirtualKeyboard() {
 
   function openTopVkPanel() {
     const panel = document.getElementById("topVkPanel");
-    if (!panel) return;
+    const input = document.getElementById("topBrandInput");
+    if (!panel || !input) return;
 
-    // Anexa o painel ao body para ignorar limitações de overflow/container
+    // Move o painel para o document.body para evitar cortes de overflow
     if (panel.parentNode !== document.body) {
       document.body.appendChild(panel);
     }
 
-    // Posiciona flutuando no topo direito com z-index máximo
+    // Pega as coordenadas exatas do campo de busca na tela
+    const rect = input.getBoundingClientRect();
+
+    // Posiciona o teclado no topo esquerdo, logo abaixo do campo de busca
     Object.assign(panel.style, {
       position: "fixed",
-      top: "12px",
-      right: "20px",
-      left: "auto",
+      top: `${rect.bottom + 6}px`,
+      left: `${rect.left}px`,
+      right: "auto",
       width: "420px",
       zIndex: "99999",
-      boxShadow: "0 10px 30px rgba(0,0,0,0.8)"
+      boxShadow: "0 10px 30px rgba(0,0,0,0.85)"
     });
 
     panel.classList.add("active");
     
+    setTimeout(() => {
+      const firstKey = panel.querySelector(".vk-key");
+      if (firstKey) {
+        firstKey.focus();
+        firstKey.classList.add("focused");
+      }
+    }, 50);
+  } 
     setTimeout(() => {
       const firstKey = panel.querySelector(".vk-key");
       if (firstKey) {
