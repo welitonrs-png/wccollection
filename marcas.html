@@ -590,6 +590,7 @@
   'tuvalu': 'tv', 'vanuatu': 'vu'
 };
 
+
     const code = countryCodes[name];
     if (code) return `https://flagcdn.com/w40/${code}.png`;
     return '';
@@ -602,7 +603,7 @@
     }
   }
 
-    async function fetchCatalogFromSheet() {
+  async function fetchCatalogFromSheet() {
     if (!API_URL || API_URL.includes("COLE_AQUI")) return;
 
     const cachedData = localStorage.getItem("beercan_catalog_cache");
@@ -612,7 +613,6 @@
         extractRegisteredBrands();
         processTabChange();
         hideLoadingScreen();
-        // ABERTURA AUTOMÁTICA DO TECLADO AO CARREGAR O CACHE
         openTopVkPanel();
       } catch (e) {
         console.error("Erro ao ler cache local:", e);
@@ -629,39 +629,12 @@
         extractRegisteredBrands();
         processTabChange();
         hideLoadingScreen();
-        // ABERTURA AUTOMÁTICA DO TECLADO AO CARREGAR PELA API
         if (!cachedData) openTopVkPanel();
       }
     } catch (err) {
       console.error("Erro na atualização remota:", err);
       hideLoadingScreen();
       if (!cachedData) openTopVkPanel();
-    }
-  }
-
-  window.onload = () => {
-    fetchCatalogFromSheet();
-    // DEFINE O FOCO INICIAL NO TECLADO VIRTUAL
-    openTopVkPanel();
-  };
-
-
-    try {
-      const response = await fetch(API_URL);
-      const freshData = await response.json();
-
-      if (Array.isArray(freshData) && freshData.length > 0) {
-        canCatalog = freshData;
-        localStorage.setItem("beercan_catalog_cache", JSON.stringify(freshData));
-        extractRegisteredBrands();
-        processTabChange();
-        hideLoadingScreen();
-        if (!cachedData) focusCardSafely(0);
-      }
-    } catch (err) {
-      console.error("Erro na atualização remota:", err);
-      hideLoadingScreen();
-      if (!cachedData) focusCardSafely(0);
     }
   }
 
@@ -924,7 +897,6 @@
           handleTopVkPress(k);
           btn.focus();
         } else if (e.key === "ArrowDown" || e.keyCode === 40) {
-          // BLOQUEIA O FECHAMENTO AUTOMÁTICO
           e.preventDefault();
           if (lastRowKeys.includes(k)) {
             const firstItem = brandAutocompleteList.querySelector(".autocomplete-item");
@@ -1122,7 +1094,6 @@
       openTopVkPanel();
     } else if (e.key === "ArrowDown" || e.keyCode === 40) {
       e.preventDefault();
-      // Não fecha mais ao pressionar seta para baixo
     }
   });
 
@@ -1154,7 +1125,6 @@
           if (next) {
             next.focus();
           }
-          // BLOQUEIA O FECHAMENTO SE FOR O ÚLTIMO ITEM
         } else if (e.key === "ArrowUp" || e.keyCode === 38) {
           e.preventDefault();
           const prev = item.previousElementSibling;
@@ -1616,7 +1586,10 @@
     }
   }, true);
 
-  window.onload = fetchCatalogFromSheet;
+  window.onload = () => {
+    fetchCatalogFromSheet();
+    openTopVkPanel();
+  };
 </script>
 </body>
 </html>
