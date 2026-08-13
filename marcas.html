@@ -14,7 +14,7 @@
 
     .app-container { display: flex; width: 100vw; height: 100vh; overflow: hidden; position: relative; background-color: #1a1e29; }
 
-    /* TELA DE CARREGAMENTO (SPLASH SCREEN) */
+    /* TELA DE CARREGAMENTO */
     .loading-screen {
       position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
       background-color: #1a1e29; z-index: 9999; display: flex;
@@ -23,9 +23,7 @@
     }
 
     .loading-screen.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
-
     .loading-logo { width: 180px; height: auto; object-fit: contain; animation: pulse 1.5s infinite ease-in-out; }
-
     .loading-text { color: #f39c12; font-size: 1.1rem; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; }
 
     .spinner {
@@ -38,7 +36,6 @@
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.9; } 50% { transform: scale(1.05); opacity: 1; } }
 
-    /* BOTÃO HAMBÚRGUER (EXCLUSIVO PARA CELULAR) */
     .mobile-menu-btn {
       display: none; position: fixed; top: 12px; left: 12px; z-index: 2000;
       background: rgba(26, 32, 46, 0.9); color: #f39c12; border: 1px solid #f39c12;
@@ -49,7 +46,6 @@
       .mobile-menu-btn { display: block; }
     }
 
-    /* MENU GAVETA DESLIZANTE */
     .sidebar-drawer {
       position: absolute; top: 0; left: -280px; width: 260px; height: 100vh;
       background: rgba(22, 27, 38, 0.98); backdrop-filter: blur(10px);
@@ -60,10 +56,8 @@
     }
     
     .sidebar-drawer.open { left: 0; }
-
     .sidebar-logo { width: 100%; height: 50px; object-fit: contain; margin-bottom: 16px; text-align: center; }
 
-    /* BOTÕES DO MENU */
     .cat-btn {
       display: flex; align-items: center; width: 100%; padding: 12px 18px; border-radius: 12px;
       background: transparent; color: #e2e8f0; font-size: 1.05rem; font-weight: 600; border: none;
@@ -86,10 +80,34 @@
 
     .menu-search-box { width: 100%; padding: 8px; background: #11141d; border: 1px solid #333d52; border-radius: 8px; color: #fff; font-size: 0.8rem; text-align: center; text-transform: uppercase; margin-bottom: 4px; pointer-events: none; }
     
-    /* TECLADO VIRTUAL GERAL */
-    .vk-container { display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; }
-    .vk-key { background: #11141d; border: 1px solid #2a3447; color: #a0aec0; padding: 8px 0; border-radius: 6px; font-size: 0.85rem; font-weight: bold; cursor: pointer; text-align: center; user-select: none; transition: all 0.15s ease; }
-    .vk-key:focus, .vk-key:hover { color: #fff; border-color: #f39c12; background: #f39c12; color: #1a1e29; box-shadow: 0 0 10px rgba(243, 156, 18, 0.5); }
+    /* TECLADO VIRTUAL GERAL & SUPERIOR */
+    .vk-container { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; }
+    
+    .vk-key { 
+      background: #11141d; 
+      border: 2px solid #2a3447; 
+      color: #a0aec0; 
+      padding: 10px 0; 
+      border-radius: 6px; 
+      font-size: 0.9rem; 
+      font-weight: bold; 
+      cursor: pointer; 
+      text-align: center; 
+      user-select: none; 
+      transition: all 0.1s ease; 
+    }
+
+    /* DESTAQUE VISUAL DE FOCO PARA CONTROLE REMOTO/TV */
+    .vk-key:focus, .vk-key.focused, .vk-key:hover { 
+      color: #1a1e29 !important; 
+      border-color: #ffffff !important; 
+      background: #f39c12 !important; 
+      box-shadow: 0 0 14px rgba(243, 156, 18, 0.9) !important; 
+      transform: scale(1.08);
+      z-index: 10;
+      outline: 2px solid #ffffff !important;
+    }
+
     .vk-key-wide { grid-column: span 2; }
 
     /* ÁREA PRINCIPAL */
@@ -100,88 +118,46 @@
     }
     .main-area.pushed { transform: translateX(260px); }
 
-    /* ÁREA SUPERIOR COM BUSCA E WALLPAPER */
     .hero-panel { 
       flex: 1; min-height: 0; background: transparent; border-radius: 12px; 
       display: flex; padding: 8px 12px; position: relative; align-items: flex-start; justify-content: flex-start;
       overflow: visible; z-index: 50;
     }
 
-    /* CAMADA DE WALLPAPER DA MARCA */
     .hero-brand-wallpaper {
-      position: absolute;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      opacity: 0;
-      transition: opacity 0.5s ease-in-out;
-      z-index: 1;
-      pointer-events: none;
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      background-size: cover; background-position: center; background-repeat: no-repeat;
+      opacity: 0; transition: opacity 0.5s ease-in-out; z-index: 1; pointer-events: none;
     }
 
-    .hero-brand-wallpaper.active {
-      opacity: 0.25;
-    }
+    .hero-brand-wallpaper.active { opacity: 0.25; }
 
     .hero-panel::after {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; width: 100%; height: 100%;
+      content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
       background: linear-gradient(180deg, rgba(26, 30, 41, 0.4) 0%, rgba(26, 30, 41, 0.95) 100%);
-      z-index: 2;
-      pointer-events: none;
+      z-index: 2; pointer-events: none;
     }
 
-    .brand-search-wrapper {
-      position: relative;
-      width: 380px;
-      max-width: 80%;
-      z-index: 500;
-    }
+    .brand-search-wrapper { position: relative; width: 380px; max-width: 80%; z-index: 500; }
 
     .brand-search-input {
-      width: 100%;
-      padding: 10px 16px;
-      background: #11141d;
-      border: 2px solid #333d52;
-      border-radius: 8px;
-      color: #f39c12;
-      font-size: 0.95rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      transition: border-color 0.2s ease, box-shadow 0.2s ease;
-      cursor: pointer;
+      width: 100%; padding: 10px 16px; background: #11141d; border: 2px solid #333d52;
+      border-radius: 8px; color: #f39c12; font-size: 0.95rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.5px; transition: border-color 0.2s ease, box-shadow 0.2s ease; cursor: pointer;
     }
 
     .brand-search-input:focus, .brand-search-input.focused {
-      border-color: #f39c12;
-      box-shadow: 0 0 10px rgba(243, 156, 18, 0.5);
-      outline: none;
+      border-color: #f39c12; box-shadow: 0 0 10px rgba(243, 156, 18, 0.5); outline: none;
     }
 
-    /* SOBREPOSIÇÃO (OVERLAY) DO TECLADO VIRTUAL E AUTOCOMPLETE */
     .top-vk-panel {
-      display: none;
-      position: absolute;
-      top: calc(100% + 6px);
-      left: 0;
-      width: 440px;
-      max-width: 95vw;
-      padding: 12px;
-      background: rgba(22, 27, 38, 0.98);
-      border: 2px solid #f39c12;
-      border-radius: 12px;
-      box-shadow: 0 12px 35px rgba(0,0,0,0.95);
-      z-index: 2500;
-      backdrop-filter: blur(12px);
+      display: none; position: absolute; top: calc(100% + 6px); left: 0;
+      width: 440px; max-width: 95vw; padding: 12px; background: rgba(22, 27, 38, 0.98);
+      border: 2px solid #f39c12; border-radius: 12px; box-shadow: 0 12px 35px rgba(0,0,0,0.95);
+      z-index: 2500; backdrop-filter: blur(12px);
     }
 
-    .top-vk-panel.active {
-      display: block;
-      animation: fadeIn 0.2s ease-out;
-    }
+    .top-vk-panel.active { display: block; animation: fadeIn 0.2s ease-out; }
 
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(-8px); }
@@ -189,60 +165,29 @@
     }
 
     .autocomplete-dropdown {
-      position: relative;
-      width: 100%;
-      max-height: 140px;
-      background: #11141d;
-      border: 1px solid #333d52;
-      border-radius: 6px;
-      overflow-y: auto;
-      display: none;
-      box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.5);
-      margin-top: 8px;
-      z-index: 2600;
+      position: relative; width: 100%; max-height: 140px; background: #11141d;
+      border: 1px solid #333d52; border-radius: 6px; overflow-y: auto; display: none;
+      box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.5); margin-top: 8px; z-index: 2600;
     }
 
-    .autocomplete-dropdown.active {
-      display: flex;
-      flex-direction: column;
-    }
+    .autocomplete-dropdown.active { display: flex; flex-direction: column; }
 
     .autocomplete-item {
-      padding: 8px 12px;
-      font-size: 0.85rem;
-      font-weight: 700;
-      color: #a0aec0;
-      text-transform: uppercase;
-      cursor: pointer;
-      transition: background 0.15s ease, color 0.15s ease;
+      padding: 8px 12px; font-size: 0.85rem; font-weight: 700; color: #a0aec0;
+      text-transform: uppercase; cursor: pointer; transition: background 0.15s ease, color 0.15s ease;
     }
 
     .autocomplete-item:hover, .autocomplete-item:focus, .autocomplete-item.active {
-      background: #f39c12;
-      color: #1a1e29;
-      outline: none;
+      background: #f39c12; color: #1a1e29; outline: none;
     }
 
     .hero-brand-logo-container {
-      position: absolute; 
-      top: 8px; 
-      right: 20px; 
-      width: 180px; 
-      height: 80px;
-      display: flex; 
-      justify-content: flex-end; 
-      align-items: flex-start; 
-      z-index: 20; 
-      pointer-events: none;
+      position: absolute; top: 8px; right: 20px; width: 180px; height: 80px;
+      display: flex; justify-content: flex-end; align-items: flex-start; z-index: 20; pointer-events: none;
     }
 
-    .hero-brand-logo-container img { 
-      max-width: 100%; 
-      max-height: 100%; 
-      object-fit: contain; 
-    }
+    .hero-brand-logo-container img { max-width: 100%; max-height: 100%; object-fit: contain; }
 
-    /* BARRA DO MEIO COM O BOTÃO TRIÂNGULO AO LADO DA CONTAGEM */
     .counter-bar { display: flex; justify-content: flex-end; align-items: center; padding: 0 4px; gap: 8px; height: 20px; z-index: 10; }
     
     .sort-icon-btn {
@@ -252,130 +197,69 @@
     }
     
     .sort-icon-btn:hover, .sort-icon-btn:focus, .sort-icon-btn.focused {
-      color: #f39c12 !important; background: transparent !important;
-      border: none !important; box-shadow: none !important; transform: scale(1.25);
+      color: #f39c12 !important; background: transparent !important; border: none !important; box-shadow: none !important; transform: scale(1.25);
     }
 
     .card-counter { font-size: 0.85rem; font-weight: 900; color: #f39c12; background: transparent; padding: 0; letter-spacing: 1px; }
 
-    /* SEÇÃO INFERIOR DO CATÁLOGO - 2 LINHAS */
     .catalog-section { height: 380px; min-height: 380px; width: 100%; overflow: hidden; flex-shrink: 0; touch-action: none; z-index: 5; }
     .card-row { display: grid; grid-template-columns: repeat(7, 122px); grid-template-rows: repeat(2, 185px); gap: 10px 12px; width: 100%; height: 100%; justify-content: start; align-content: start; }
 
     .card {
-      width: 122px !important;
-      min-width: 122px !important;
-      height: 185px !important;
-      background: #ffffff !important;
-      border-radius: 10px !important;
-      overflow: hidden !important;
-      display: flex !important;
-      flex-direction: column !important;
-      border: 2px solid transparent !important;
-      cursor: pointer !important;
-      flex-shrink: 0 !important;
-      outline: none !important;
+      width: 122px !important; min-width: 122px !important; height: 185px !important;
+      background: #ffffff !important; border-radius: 10px !important; overflow: hidden !important;
+      display: flex !important; flex-direction: column !important; border: 2px solid transparent !important;
+      cursor: pointer !important; flex-shrink: 0 !important; outline: none !important;
     }
 
     .card.card-aspect-sets { width: 170px !important; min-width: 170px !important; }
 
     .card-top-photo {
-      width: 100% !important;
-      height: 137px !important;
-      background: #ffffff !important;
-      display: flex !important;
-      justify-content: center !important;
-      align-items: center !important;
-      padding: 4px !important;
+      width: 100% !important; height: 137px !important; background: #ffffff !important;
+      display: flex !important; justify-content: center !important; align-items: center !important; padding: 4px !important;
     }
 
-    .card-top-photo img {
-      max-width: 100% !important;
-      max-height: 100% !important;
-      object-fit: contain !important;
-    }
+    .card-top-photo img { max-width: 100% !important; max-height: 100% !important; object-fit: contain !important; }
 
     .card-bottom-bar {
-      width: 100% !important;
-      height: 48px !important;
-      padding: 2px 5px 3px 5px !important;
-      display: flex !important;
-      flex-direction: column !important;
-      justify-content: space-between !important;
-      box-sizing: border-box !important;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
+      width: 100% !important; height: 48px !important; padding: 2px 5px 3px 5px !important;
+      display: flex !important; flex-direction: column !important; justify-content: space-between !important;
+      box-sizing: border-box !important; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
     }
 
     .card-bar-title {
       font-family: "Helvetica Now Display", "Helvetica Neue", Helvetica, Arial, sans-serif !important;
-      font-size: 0.75rem !important;
-      font-weight: 700 !important;
-      color: #ffffff !important;
-      white-space: nowrap !important;
-      overflow: hidden !important;
-      text-overflow: ellipsis !important;
-      text-transform: capitalize !important;
-      line-height: 1.1 !important;
-      margin-top: 3px !important;
+      font-size: 0.75rem !important; font-weight: 700 !important; color: #ffffff !important;
+      white-space: nowrap !important; overflow: hidden !important; text-overflow: ellipsis !important;
+      text-transform: capitalize !important; line-height: 1.1 !important; margin-top: 3px !important;
     }
 
-    .card-bar-details {
-      display: flex !important;
-      justify-content: space-between !important;
-      align-items: center !important;
-      width: 100% !important;
-      margin-bottom: 1px !important;
-    }
+    .card-bar-details { display: flex !important; justify-content: space-between !important; align-items: center !important; width: 100% !important; margin-bottom: 1px !important; }
 
     .card-bar-country {
-      display: flex !important;
-      align-items: center !important;
-      gap: 3px !important;
-      font-family: Helvetica, Arial, sans-serif !important;
-      font-size: 0.60rem !important;
-      font-weight: 400 !important;
-      color: #ffffff !important;
-      white-space: nowrap !important;
-      overflow: hidden !important;
-      text-transform: capitalize !important;
+      display: flex !important; align-items: center !important; gap: 3px !important;
+      font-family: Helvetica, Arial, sans-serif !important; font-size: 0.60rem !important;
+      font-weight: 400 !important; color: #ffffff !important; white-space: nowrap !important;
+      overflow: hidden !important; text-transform: capitalize !important;
     }
 
-    .card-bar-flag {
-      width: 13px !important;
-      height: 8px !important;
-      object-fit: cover !important;
-      border-radius: 2px !important;
-      flex-shrink: 0 !important;
-    }
+    .card-bar-flag { width: 13px !important; height: 8px !important; object-fit: cover !important; border-radius: 2px !important; flex-shrink: 0 !important; }
 
     .card-bar-vol {
-      background: rgba(0, 0, 0, 0.45) !important;
-      color: #ffffff !important;
-      font-family: Helvetica, Arial, sans-serif !important;
-      padding: 1px 4px !important;
-      border-radius: 4px !important;
-      font-size: 0.55rem !important;
-      font-weight: 400 !important;
-      white-space: nowrap !important;
-      flex-shrink: 0 !important;
+      background: rgba(0, 0, 0, 0.45) !important; color: #ffffff !important;
+      font-family: Helvetica, Arial, sans-serif !important; padding: 1px 4px !important;
+      border-radius: 4px !important; font-size: 0.55rem !important; font-weight: 400 !important;
+      white-space: nowrap !important; flex-shrink: 0 !important;
     }
 
     .card.focused, .card:focus, .card:hover { 
-      border: 2px solid #f39c12 !important; 
-      box-shadow: 0 0 12px rgba(243, 156, 18, 0.6) !important; 
-      outline: none !important; 
-      z-index: 10 !important; 
+      border: 2px solid #f39c12 !important; box-shadow: 0 0 12px rgba(243, 156, 18, 0.6) !important; outline: none !important; z-index: 10 !important; 
     }
 
-    /* MODAL DE ZOOM E NAVEGAÇÃO */
     .zoom-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.95); z-index: 3000; display: none; justify-content: center; align-items: center; padding: 16px; overflow: hidden; }
     .zoom-modal.active { display: flex; }
-    .zoom-modal img { 
-      max-width: 85vw; max-height: 85vh; object-fit: contain; border-radius: 6px; cursor: pointer; 
-      transition: transform 0.15s ease-out; transform-origin: center center; 
-    }
+    .zoom-modal img { max-width: 85vw; max-height: 85vh; object-fit: contain; border-radius: 6px; cursor: pointer; transition: transform 0.15s ease-out; transform-origin: center center; }
 
-    /* MODAL VISUAL DE SAÍDA NATIVO */
     .exit-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); z-index: 4000; display: none; justify-content: center; align-items: center; }
     .exit-modal.active { display: flex; }
     .exit-box { background: #161b26; border: 2px solid #333d52; padding: 30px 40px; border-radius: 12px; display: flex; flex-direction: column; align-items: center; gap: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
@@ -387,7 +271,6 @@
 </head>
 <body>
 
-  <!-- TELA DE CARREGAMENTO (SPLASH SCREEN) -->
   <div class="loading-screen" id="loadingScreen">
     <img src="logo.png" alt="Logo" class="loading-logo">
     <div class="spinner"></div>
@@ -416,14 +299,12 @@
     </nav>
 
     <main class="main-area" id="mainArea" onclick="handleMainAreaClick()">
-      <!-- ÁREA SUPERIOR COM CAMPO DE BUSCA DE MARCAS E WALLPAPER -->
       <section class="hero-panel" id="heroPanel">
         <div class="hero-brand-wallpaper" id="heroBrandWallpaper"></div>
 
         <div class="brand-search-wrapper" onclick="event.stopPropagation();">
           <input type="text" id="topBrandInput" class="brand-search-input" placeholder="BUSCAR MARCA..." readonly tabindex="0">
           
-          <!-- PAINEL SOBREPOSTO DO TECLADO VIRTUAL -->
           <div class="top-vk-panel" id="topVkPanel">
             <div class="vk-container" id="topVkContainer"></div>
             <div class="autocomplete-dropdown" id="brandAutocompleteList"></div>
@@ -444,12 +325,10 @@
     </main>
   </div>
 
-  <!-- MODAL DE ZOOM -->
   <div class="zoom-modal" id="zoomModal" onclick="closeZoomModal()">
     <img id="zoomImage" src="" alt="Imagem ampliada" onclick="event.stopPropagation(); toggleZoomStep();">
   </div>
 
-  <!-- MODAL DE SAÍDA DO APLICATIVO -->
   <div class="exit-modal" id="exitModal">
     <div class="exit-box">
       <div class="exit-title">TEM CERTEZA QUE QUER SAIR?</div>
@@ -476,7 +355,6 @@
   let lastSelectedMenuId = 'menuBtnHome'; 
   let lastSelectedBrandElem = null;
 
-  /* AUTOCOMPLETE VARIÁVEIS */
   let registeredBrands = [];
 
   let zoomLevel = 1.0; 
@@ -525,71 +403,15 @@
       .replace(/[\u0300-\u036f]/g, "");
     
     const countryCodes = {
-  // América do Sul
-  'brasil': 'br', 'brazil': 'br', 'argentina': 'ar', 'bolivia': 'bo', 'chile': 'cl', 
-  'colombia': 'co', 'equador': 'ec', 'ecuador': 'ec', 'guiana': 'gy', 'gyana': 'gy',
-  'guiana francesa': 'gf', 'paraguai': 'py', 'paraguay': 'py', 'peru': 'pe', 
-  'suriname': 'sr', 'uruguai': 'uy', 'uruguay': 'uy', 'venezuela': 've',
-
-  // América do Norte e Central
-  'antigua e barbuda': 'ag', 'bahamas': 'bs', 'barbados': 'bb', 'belize': 'bz', 
-  'canada': 'ca', 'costa rica': 'cr', 'cuba': 'cu', 'dominica': 'dm', 'el salvador': 'sv', 
-  'estados unidos': 'us', 'eua': 'us', 'usa': 'us', 'granada': 'gd', 'guatemala': 'gt', 
-  'haiti': 'ht', 'honduras': 'hn', 'jamaica': 'jm', 'mexico': 'mx', 'nicaragua': 'ni', 
-  'panama': 'pa', 'porto rico': 'pr', 'republica dominicana': 'do', 
-  'sao cristovao e nevis': 'kn', 'sao vicente e granadinas': 'vc', 'santa lucia': 'lc', 
-  'trinidad e tobago': 'tt',
-
-  // Europa
-  'albania': 'al', 'alemanha': 'de', 'germany': 'de', 'andorra': 'ad', 'armenia': 'am', 
-  'austria': 'at', 'azerbaijao': 'az', 'belgica': 'be', 'bielorrussia': 'by', 
-  'bosnia e herzegovina': 'ba', 'bulgaria': 'bg', 'chipre': 'cy', 'croacia': 'hr', 
-  'dinamarca': 'dk', 'eslovaquia': 'sk', 'eslovenia': 'si', 'espanha': 'es', 
-  'estonia': 'ee', 'finlandia': 'fi', 'franca': 'fr', 'france': 'fr', 'georgia': 'ge', 
-  'grecia': 'gr', 'holanda': 'nl', 'paises baixos': 'nl', 'netherlands': 'nl', 
-  'hungria': 'hu', 'irlanda': 'ie', 'islandia': 'is', 'italia': 'it', 'kosovo': 'xk', 
-  'letonia': 'lv', 'liechtenstein': 'li', 'lituania': 'lt', 'luxemburgo': 'lu', 
-  'macedonia do norte': 'mk', 'malta': 'mt', 'moldavia': 'md', 'monaco': 'mc', 
-  'montenegro': 'me', 'noruega': 'no', 'polonia': 'pl', 'portugal': 'pt', 
-  'reino unido': 'gb', 'uk': 'gb', 'inglaterra': 'gb', 'escocia': 'gb', 'paises de gales': 'gb', 
-  'republica tcheca': 'cz', 'tchequia': 'cz', 'romenia': 'ro', 'russia': 'ru', 
-  'san marino': 'sm', 'servia': 'rs', 'suecia': 'se', 'suica': 'ch', 'turquia': 'tr', 
-  'ucrania': 'ua', 'vaticano': 'va',
-
-  // Ásia
-  'afeganistao': 'af', 'arabia saudita': 'sa', 'bangladesh': 'bd', 'bahrein': 'bh', 
-  'brunei': 'bn', 'butao': 'bt', 'camboja': 'kh', 'catar': 'qa', 'qatar': 'qa', 
-  'cazaquistao': 'kz', 'china': 'cn', 'coreia do norte': 'kp', 'coreia do sul': 'kr', 
-  'emirados arabes unidos': 'ae', 'eau': 'ae', 'filipinas': 'ph', 'iemen': 'ye', 
-  'india': 'in', 'indonesia': 'id', 'iraque': 'iq', 'ira': 'ir', 'israel': 'il', 
-  'japao': 'jp', 'japan': 'jp', 'jordania': 'jo', 'kuwait': 'kw', 'laos': 'la', 
-  'libano': 'lb', 'malasia': 'my', 'maldivas': 'mv', 'mianmar': 'mm', 'mongolia': 'mn', 
-  'nepal': 'np', 'oman': 'om', 'paquistao': 'pk', 'quirguistao': 'kg', 'singapura': 'sg', 
-  'siria': 'sy', 'sri lanka': 'lk', 'tailandia': 'th', 'taiwan': 'tw', 'tajiquistao': 'tj', 
-  'timor leste': 'tl', 'turcomenistao': 'tm', 'uzbequistao': 'uz', 'vietna': 'vn',
-
-  // África
-  'africa do sul': 'za', 'angola': 'ao', 'algeria': 'dz', 'benin': 'bj', 'botsuana': 'bw', 
-  'burkina faso': 'bf', 'burundi': 'bi', 'cabo verde': 'cv', 'camaroes': 'cm', 
-  'chade': 'td', 'comores': 'km', 'congo': 'cg', 'costa do marfim': 'ci', 'djibout': 'dj', 
-  'egito': 'eg', 'eritreia': 'er', 'esuatini': 'sz', 'suazilandia': 'sz', 'etiopia': 'et', 
-  'gabao': 'ga', 'gambia': 'gm', 'gana': 'gh', 'guine': 'gn', 'guine bissau': 'gw', 
-  'guine equatorial': 'gq', 'ilha mauricio': 'mu', 'lesoto': 'ls', 'liberia': 'lr', 
-  'libia': 'ly', 'madagascar': 'mg', 'malawi': 'mw', 'mali': 'ml', 'marrocos': 'ma', 
-  'mauritania': 'mr', 'mocambique': 'mz', 'namibia': 'na', 'niger': 'ne', 'nigeria': 'ng', 
-  'quenia': 'ke', 'republica centro africana': 'cf', 'republica democratica do congo': 'cd', 
-  'ruanda': 'rw', 'sao tome e principe': 'st', 'senegal': 'sn', 'serra leoa': 'sl', 
-  'seichelas': 'sc', 'somalia': 'so', 'sudao': 'sd', 'sudao do sul': 'ss', 
-  'tanzania': 'tz', 'togo': 'tg', 'tunisia': 'tn', 'uganda': 'ug', 'zambia': 'zm', 
-  'zimbabue': 'zw',
-
-  // Oceania
-  'australia': 'au', 'fiji': 'fj', 'ilhas marechal': 'mh', 'ilhas salomao': 'sb', 
-  'kiribati': 'ki', 'micronesia': 'fm', 'nauru': 'nr', 'nova zelandia': 'nz', 
-  'palau': 'pw', 'papua nova guine': 'pg', 'samoa': 'ws', 'tonga': 'to', 
-  'tuvalu': 'tv', 'vanuatu': 'vu'
-};
-
+      'brasil': 'br', 'brazil': 'br', 'argentina': 'ar', 'bolivia': 'bo', 'chile': 'cl', 'colombia': 'co',
+      'equador': 'ec', 'ecuador': 'ec', 'paraguai': 'py', 'paraguay': 'py', 'peru': 'pe', 'uruguai': 'uy',
+      'uruguay': 'uy', 'venezuela': 've', 'estados unidos': 'us', 'eua': 'us', 'usa': 'us', 'canada': 'ca',
+      'mexico': 'mx', 'alemanha': 'de', 'germany': 'de', 'austria': 'at', 'belgica': 'be', 'espanha': 'es',
+      'franca': 'fr', 'france': 'fr', 'holanda': 'nl', 'netherlands': 'nl', 'irlanda': 'ie', 'italia': 'it',
+      'portugal': 'pt', 'reino unido': 'gb', 'uk': 'gb', 'inglaterra': 'gb', 'escocia': 'gb', 'suica': 'ch',
+      'dinamarca': 'dk', 'finlandia': 'fi', 'noruega': 'no', 'suecia': 'se', 'russia': 'ru', 'japao': 'jp',
+      'japan': 'jp', 'china': 'cn', 'australia': 'au'
+    };
 
     const code = countryCodes[name];
     if (code) return `https://flagcdn.com/w40/${code}.png`;
@@ -728,13 +550,10 @@
 
   function clearAllCardFocus() {
     const topInput = document.getElementById("topBrandInput");
-    if (topInput) {
-      topInput.classList.remove("focused");
-    }
+    if (topInput) topInput.classList.remove("focused");
 
-    document.querySelectorAll(".card").forEach(c => {
-      c.classList.remove("focused");
-    });
+    document.querySelectorAll(".card").forEach(c => c.classList.remove("focused"));
+    document.querySelectorAll(".vk-key").forEach(k => k.classList.remove("focused"));
 
     const sortBtn = document.getElementById("sortOrderBtn");
     if (sortBtn) sortBtn.classList.remove("focused");
@@ -748,7 +567,6 @@
       const cards = document.querySelectorAll(".card");
       if (cards.length > 0) {
         const finalIdx = Math.min(Math.max(0, targetIndex), cards.length - 1);
-        
         clearAllCardFocus();
 
         activeLocalIndex = finalIdx;
@@ -781,11 +599,8 @@
     }
 
     const targetElem = document.getElementById(lastSelectedMenuId);
-    if (targetElem) {
-      targetElem.focus();
-    } else {
-      document.getElementById("menuBtnHome").focus();
-    }
+    if (targetElem) targetElem.focus();
+    else document.getElementById("menuBtnHome").focus();
   }
 
   function closeMenu() {
@@ -796,11 +611,8 @@
   function toggleMenuMobile(e) {
     if(e) e.stopPropagation();
     const drawer = document.getElementById("sidebarDrawer");
-    if (drawer.classList.contains("open")) {
-      closeMenu();
-    } else {
-      openMenu();
-    }
+    if (drawer.classList.contains("open")) closeMenu();
+    else openMenu();
   }
 
   function handleMainAreaClick() {
@@ -870,39 +682,72 @@
     filterCatalogByBrand(input.value);
   }
 
-  /* CONSTRUÇÃO DO TECLADO VIRTUAL SUPERIOR SOBREPOSTO */
+  /* CONSTRUÇÃO E NAVEGAÇÃO PERFEITA NO TECLADO VIRTUAL SUPERIOR */
   function buildTopVirtualKeyboard() {
     const container = document.getElementById("topVkContainer");
     if (!container) return;
     container.innerHTML = "";
-    
-    const lastRowKeys = ['1','2','3','4','5','6','7','8','9','0','ESPAÇO','DEL','LIMPAR'];
 
     vkKeys.forEach((k, index) => {
       const btn = document.createElement("button");
       btn.className = `vk-key ${ (k === 'ESPAÇO' || k === 'DEL' || k === 'LIMPAR') ? 'vk-key-wide' : '' }`;
       btn.tabIndex = 0; 
       btn.innerText = k;
-      
+      btn.dataset.vkIndex = index;
+
+      const triggerKeyPress = () => {
+        handleTopVkPress(k);
+        // FORÇA O FOCO A PERMANECER NESTE MESMO BOTÃO
+        setTimeout(() => {
+          btn.focus();
+          btn.classList.add("focused");
+        }, 10);
+      };
+
       btn.onclick = (e) => {
         e.stopPropagation();
-        handleTopVkPress(k);
-        btn.focus();
+        triggerKeyPress();
+      };
+
+      btn.onfocus = () => {
+        document.querySelectorAll("#topVkContainer .vk-key").forEach(el => el.classList.remove("focused"));
+        btn.classList.add("focused");
       };
 
       btn.onkeydown = (e) => {
+        const cols = 6;
+        const total = vkKeys.length;
+
         if (e.key === "Enter" || e.keyCode === 13) {
           e.preventDefault();
           e.stopPropagation();
-          handleTopVkPress(k);
-          btn.focus();
+          triggerKeyPress();
+        } else if (e.key === "ArrowRight" || e.keyCode === 39) {
+          e.preventDefault();
+          if (index < total - 1) {
+            const nextBtn = container.children[index + 1];
+            if (nextBtn) nextBtn.focus();
+          }
+        } else if (e.key === "ArrowLeft" || e.keyCode === 37) {
+          e.preventDefault();
+          if (index > 0) {
+            const prevBtn = container.children[index - 1];
+            if (prevBtn) prevBtn.focus();
+          }
         } else if (e.key === "ArrowDown" || e.keyCode === 40) {
           e.preventDefault();
-          if (lastRowKeys.includes(k)) {
+          if (index + cols < total) {
+            const downBtn = container.children[index + cols];
+            if (downBtn) downBtn.focus();
+          } else {
             const firstItem = brandAutocompleteList.querySelector(".autocomplete-item");
-            if (firstItem) {
-              firstItem.focus();
-            }
+            if (firstItem) firstItem.focus();
+          }
+        } else if (e.key === "ArrowUp" || e.keyCode === 38) {
+          e.preventDefault();
+          if (index - cols >= 0) {
+            const upBtn = container.children[index - cols];
+            if (upBtn) upBtn.focus();
           }
         } else if (e.key === "Escape" || e.keyCode === 27) {
           e.preventDefault();
@@ -936,8 +781,14 @@
   function openTopVkPanel() {
     const panel = document.getElementById("topVkPanel");
     panel.classList.add("active");
-    const firstKey = panel.querySelector(".vk-key");
-    if (firstKey) firstKey.focus();
+    
+    setTimeout(() => {
+      const firstKey = panel.querySelector(".vk-key");
+      if (firstKey) {
+        firstKey.focus();
+        firstKey.classList.add("focused");
+      }
+    }, 50);
   }
 
   function closeTopVkPanel() {
@@ -1079,7 +930,6 @@
     }
   }
 
-  /* EVENTOS DO CAMPO SUPERIOR DE BUSCA DE MARCA */
   const topBrandInput = document.getElementById("topBrandInput");
   const brandAutocompleteList = document.getElementById("brandAutocompleteList");
 
@@ -1092,8 +942,6 @@
     if (e.key === "Enter" || e.keyCode === 13) {
       e.preventDefault();
       openTopVkPanel();
-    } else if (e.key === "ArrowDown" || e.keyCode === 40) {
-      e.preventDefault();
     }
   });
 
@@ -1122,9 +970,7 @@
         } else if (e.key === "ArrowDown" || e.keyCode === 40) {
           e.preventDefault();
           const next = item.nextElementSibling;
-          if (next) {
-            next.focus();
-          }
+          if (next) next.focus();
         } else if (e.key === "ArrowUp" || e.keyCode === 38) {
           e.preventDefault();
           const prev = item.previousElementSibling;
@@ -1182,9 +1028,7 @@
     }
   }
 
-  /* RENDERIZAÇÃO DOS CARDS NO MARCAS.HTML */
   function renderApp() {
-    clearAllCardFocus();
     const row = document.getElementById("cardRow");
     row.innerHTML = "";
 
@@ -1309,17 +1153,7 @@
             focusCardSafely(target);
           } else {
             clearAllCardFocus();
-            const topInput = document.getElementById("topBrandInput");
-            if (topInput) {
-              topInput.focus();
-              topInput.classList.add("focused");
-            } else {
-              const sortBtn = document.getElementById("sortOrderBtn");
-              if (sortBtn) {
-                sortBtn.classList.add("focused");
-                sortBtn.focus();
-              }
-            }
+            openTopVkPanel();
           }
         }
       };
@@ -1372,9 +1206,7 @@
     zoomState = (zoomState + 1) % 4;
 
     if (zoomState === 0) {
-      zoomLevel = 1.0;
-      panX = 0;
-      panY = 0;
+      zoomLevel = 1.0; panX = 0; panY = 0;
     } else if (zoomState === 1) {
       zoomLevel = 1.5;
     } else if (zoomState === 2) {
@@ -1521,35 +1353,23 @@
         toggleZoomStep();
       } else if (zoomLevel > 1.0) {
         if (e.key === "ArrowLeft" || e.keyCode === 37) {
-          e.preventDefault();
-          panX += PAN_STEP;
-          applyZoomTransform();
+          e.preventDefault(); panX += PAN_STEP; applyZoomTransform();
         } else if (e.key === "ArrowRight" || e.keyCode === 39) {
-          e.preventDefault();
-          panX -= PAN_STEP;
-          applyZoomTransform();
+          e.preventDefault(); panX -= PAN_STEP; applyZoomTransform();
         } else if (e.key === "ArrowUp" || e.keyCode === 38) {
-          e.preventDefault();
-          panY += PAN_STEP;
-          applyZoomTransform();
+          e.preventDefault(); panY += PAN_STEP; applyZoomTransform();
         } else if (e.key === "ArrowDown" || e.keyCode === 40) {
-          e.preventDefault();
-          panY -= PAN_STEP;
-          applyZoomTransform();
+          e.preventDefault(); panY -= PAN_STEP; applyZoomTransform();
         } else if (e.key === "Escape" || e.key === "Back" || e.keyCode === 10009 || e.keyCode === 27) {
-          e.preventDefault();
-          closeZoomModal();
+          e.preventDefault(); closeZoomModal();
         }
       } else {
         if (e.key === "ArrowLeft" || e.keyCode === 37) {
-          e.preventDefault();
-          navigateZoom(-1);
+          e.preventDefault(); navigateZoom(-1);
         } else if (e.key === "ArrowRight" || e.keyCode === 39) {
-          e.preventDefault();
-          navigateZoom(1);
+          e.preventDefault(); navigateZoom(1);
         } else if (e.key === "ArrowUp" || e.key === "ArrowDown" || e.key === "Escape" || e.key === "Back" || e.keyCode === 10009 || e.keyCode === 27) {
-          e.preventDefault();
-          closeZoomModal();
+          e.preventDefault(); closeZoomModal();
         }
       }
     } else if (isExitActive) {
@@ -1561,8 +1381,7 @@
         if (active === btnNo) btnYes.focus();
         else btnNo.focus();
       } else if (e.key === "Escape" || e.key === "Back" || e.keyCode === 10009 || e.keyCode === 27) {
-        e.preventDefault();
-        closeExitModal();
+        e.preventDefault(); closeExitModal();
       }
     } else {
       if (e.key === "Escape" || e.key === "Back" || e.keyCode === 10009 || e.keyCode === 27) {
