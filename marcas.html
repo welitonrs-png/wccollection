@@ -602,7 +602,7 @@
     }
   }
 
-  async function fetchCatalogFromSheet() {
+    async function fetchCatalogFromSheet() {
     if (!API_URL || API_URL.includes("COLE_AQUI")) return;
 
     const cachedData = localStorage.getItem("beercan_catalog_cache");
@@ -612,11 +612,39 @@
         extractRegisteredBrands();
         processTabChange();
         hideLoadingScreen();
-        focusCardSafely(0);
+        // ABERTURA AUTOMÁTICA DO TECLADO AO CARREGAR O CACHE
+        openTopVkPanel();
       } catch (e) {
         console.error("Erro ao ler cache local:", e);
       }
     }
+
+    try {
+      const response = await fetch(API_URL);
+      const freshData = await response.json();
+
+      if (Array.isArray(freshData) && freshData.length > 0) {
+        canCatalog = freshData;
+        localStorage.setItem("beercan_catalog_cache", JSON.stringify(freshData));
+        extractRegisteredBrands();
+        processTabChange();
+        hideLoadingScreen();
+        // ABERTURA AUTOMÁTICA DO TECLADO AO CARREGAR PELA API
+        if (!cachedData) openTopVkPanel();
+      }
+    } catch (err) {
+      console.error("Erro na atualização remota:", err);
+      hideLoadingScreen();
+      if (!cachedData) openTopVkPanel();
+    }
+  }
+
+  window.onload = () => {
+    fetchCatalogFromSheet();
+    // DEFINE O FOCO INICIAL NO TECLADO VIRTUAL
+    openTopVkPanel();
+  };
+
 
     try {
       const response = await fetch(API_URL);
