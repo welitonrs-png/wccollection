@@ -81,31 +81,29 @@
     .menu-search-box { width: 100%; padding: 8px; background: #11141d; border: 1px solid #333d52; border-radius: 8px; color: #fff; font-size: 0.8rem; text-align: center; text-transform: uppercase; margin-bottom: 4px; pointer-events: none; }
     
     /* TECLADO VIRTUAL GERAL & SUPERIOR */
-    .vk-container { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; }
+    .vk-container { display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; }
     
     .vk-key { 
       background: #11141d; 
-      border: 2px solid #2a3447; 
+      border: 1px solid #2a3447; 
       color: #a0aec0; 
-      padding: 10px 0; 
+      padding: 8px 0; 
       border-radius: 6px; 
-      font-size: 0.9rem; 
+      font-size: 0.85rem; 
       font-weight: bold; 
       cursor: pointer; 
       text-align: center; 
       user-select: none; 
-      transition: all 0.1s ease; 
+      transition: all 0.15s ease; 
     }
 
-    /* DESTAQUE VISUAL DE FOCO PARA CONTROLE REMOTO/TV */
+    /* FOCO ELEGANTE DOURADO */
     .vk-key:focus, .vk-key.focused, .vk-key:hover { 
       color: #1a1e29 !important; 
-      border-color: #ffffff !important; 
+      border-color: #f39c12 !important; 
       background: #f39c12 !important; 
-      box-shadow: 0 0 14px rgba(243, 156, 18, 0.9) !important; 
-      transform: scale(1.08);
-      z-index: 10;
-      outline: 2px solid #ffffff !important;
+      box-shadow: 0 0 10px rgba(243, 156, 18, 0.5) !important; 
+      outline: none !important;
     }
 
     .vk-key-wide { grid-column: span 2; }
@@ -451,12 +449,12 @@
         extractRegisteredBrands();
         processTabChange();
         hideLoadingScreen();
-        if (!cachedData) openTopVkPanel();
+        openTopVkPanel();
       }
     } catch (err) {
       console.error("Erro na atualização remota:", err);
       hideLoadingScreen();
-      if (!cachedData) openTopVkPanel();
+      openTopVkPanel();
     }
   }
 
@@ -682,7 +680,6 @@
     filterCatalogByBrand(input.value);
   }
 
-  /* CONSTRUÇÃO E NAVEGAÇÃO PERFEITA NO TECLADO VIRTUAL SUPERIOR */
   function buildTopVirtualKeyboard() {
     const container = document.getElementById("topVkContainer");
     if (!container) return;
@@ -697,7 +694,6 @@
 
       const triggerKeyPress = () => {
         handleTopVkPress(k);
-        // FORÇA O FOCO A PERMANECER NESTE MESMO BOTÃO
         setTimeout(() => {
           btn.focus();
           btn.classList.add("focused");
@@ -1407,7 +1403,6 @@
 
   window.onload = () => {
     fetchCatalogFromSheet();
-    openTopVkPanel();
   };
 </script>
 </body>
