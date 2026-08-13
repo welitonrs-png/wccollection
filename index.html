@@ -33,8 +33,7 @@
       animation: spin 1s linear infinite;
     }
 
-    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-    @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.9; } 50% { transform: scale(1.05); opacity: 1; } }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: scale(1); opacity: 0.9; } 50% { transform: scale(1.05); opacity: 1; } }
 
     .mobile-menu-btn {
       display: none; position: fixed; top: 12px; left: 12px; z-index: 2000;
@@ -81,7 +80,11 @@
     .menu-search-box { width: 100%; padding: 8px; background: #11141d; border: 1px solid #333d52; border-radius: 8px; color: #fff; font-size: 0.8rem; text-align: center; text-transform: uppercase; margin-bottom: 4px; pointer-events: none; }
     
     .vk-container { display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; }
-    .vk-key { background: #11141d; border: 1px solid #2a3447; color: #a0aec0; padding: 8px 0; border-radius: 6px; font-size: 0.85rem; font-weight: bold; cursor: pointer; text-align: center; user-select: none; transition: all 0.15s ease; }
+    
+    .vk-key { 
+      background: #11141d; border: 1px solid #2a3447; color: #a0aec0; padding: 8px 0; border-radius: 6px; 
+      font-size: 0.85rem; font-weight: bold; cursor: pointer; text-align: center; user-select: none; transition: all 0.15s ease; 
+    }
     .vk-key:focus, .vk-key:hover { color: #fff; border-color: #f39c12; background: #f39c12; color: #1a1e29; box-shadow: 0 0 10px rgba(243, 156, 18, 0.5); }
     .vk-key-wide { grid-column: span 2; }
 
@@ -222,7 +225,7 @@
         <div class="vk-container" id="vkContainer"></div>
       </div>
 
-      <button class="cat-btn" id="menuBtnBrands" onclick="window.location.href='marcas.html'" tabindex="0">MARCAS</button>
+      <button class="cat-btn" id="menuBtnBrands" onclick="toggleBrandInline()" tabindex="0">POR MARCAS</button>
       <div class="inline-panel-container" id="brandInlineList"></div>
 
       <button class="cat-btn" id="menuBtnOcoc" onclick="switchTab('ococ')" tabindex="0">OCOC (PAÍSES)</button>
@@ -451,12 +454,8 @@
     return list;
   }
 
-  /* LIMPA COMPLETAMENTE O FOCO NATIVO E VISUAL DA TELA */
+  /* LIMPA VISUALMENTE APENAS OS OUTROS CARDS PARA NÃO CANCELAR O FOCO ATIVO */
   function clearAllCardFocus() {
-    if (document.activeElement && typeof document.activeElement.blur === 'function') {
-      document.activeElement.blur();
-    }
-
     document.querySelectorAll(".card").forEach(c => c.classList.remove("focused"));
     document.querySelectorAll(".vk-key").forEach(k => k.classList.remove("focused"));
 
@@ -729,7 +728,7 @@
       card.dataset.globalIndex = globalIndex;
       
       card.onmouseenter = () => {
-        clearAllCardFocus();
+        document.querySelectorAll(".card").forEach(c => c.classList.remove("focused"));
         card.classList.add("focused");
         activeLocalIndex = localIndex;
         updateCounter(localIndex);
@@ -738,7 +737,6 @@
       card.onfocus = () => {
         if (document.getElementById("zoomModal").classList.contains("active") || document.getElementById("exitModal").classList.contains("active")) return;
         
-        // NOVO: Garante remoção exata da classe dos outros cards
         document.querySelectorAll(".card").forEach(c => {
           if (c !== card) c.classList.remove("focused");
         });
