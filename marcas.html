@@ -97,7 +97,7 @@
       transition: all 0.15s ease; 
     }
 
-    /* FOCO ELEGANTE DOURADO */
+    /* FOCO DOURADO */
     .vk-key:focus, .vk-key.focused, .vk-key:hover { 
       color: #1a1e29 !important; 
       border-color: #f39c12 !important; 
@@ -250,7 +250,7 @@
       white-space: nowrap !important; flex-shrink: 0 !important;
     }
 
-    .card.focused, .card:focus, .card:hover { 
+    .card.focused, .card:focus { 
       border: 2px solid #f39c12 !important; box-shadow: 0 0 12px rgba(243, 156, 18, 0.6) !important; outline: none !important; z-index: 10 !important; 
     }
 
@@ -546,7 +546,12 @@
     return list;
   }
 
+  /* LIMPA COMPLETAMENTE O FOCO DE TODOS OS CARDS E BOTÕES DA TELA */
   function clearAllCardFocus() {
+    if (document.activeElement && typeof document.activeElement.blur === 'function') {
+      document.activeElement.blur();
+    }
+
     const topInput = document.getElementById("topBrandInput");
     if (topInput) topInput.classList.remove("focused");
 
