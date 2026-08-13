@@ -247,7 +247,6 @@
       outline: none !important;
     }
 
-    /* CARD DEITADO DO MODO SETS (4 POR LINHA) */
     .card.card-aspect-sets { 
       width: 220px !important; 
       min-width: 220px !important; 
@@ -500,71 +499,56 @@
       .replace(/[\u0300-\u036f]/g, "");
 
     const countryCodes = {
-  // América do Sul
-  'brasil': 'br', 'brazil': 'br', 'argentina': 'ar', 'bolivia': 'bo', 'chile': 'cl', 
-  'colombia': 'co', 'equador': 'ec', 'ecuador': 'ec', 'guiana': 'gy', 'gyana': 'gy',
-  'guiana francesa': 'gf', 'paraguai': 'py', 'paraguay': 'py', 'peru': 'pe', 
-  'suriname': 'sr', 'uruguai': 'uy', 'uruguay': 'uy', 'venezuela': 've',
-
-  // América do Norte e Central
-  'antigua e barbuda': 'ag', 'bahamas': 'bs', 'barbados': 'bb', 'belize': 'bz', 
-  'canada': 'ca', 'costa rica': 'cr', 'cuba': 'cu', 'dominica': 'dm', 'el salvador': 'sv', 
-  'estados unidos': 'us', 'eua': 'us', 'usa': 'us', 'granada': 'gd', 'guatemala': 'gt', 
-  'haiti': 'ht', 'honduras': 'hn', 'jamaica': 'jm', 'mexico': 'mx', 'nicaragua': 'ni', 
-  'panama': 'pa', 'porto rico': 'pr', 'republica dominicana': 'do', 
-  'sao cristovao e nevis': 'kn', 'sao vicente e granadinas': 'vc', 'santa lucia': 'lc', 
-  'trinidad e tobago': 'tt',
-
-  // Europa
-  'albania': 'al', 'alemanha': 'de', 'germany': 'de', 'andorra': 'ad', 'armenia': 'am', 
-  'austria': 'at', 'azerbaijao': 'az', 'belgica': 'be', 'bielorrussia': 'by', 
-  'bosnia e herzegovina': 'ba', 'bulgaria': 'bg', 'chipre': 'cy', 'croacia': 'hr', 
-  'dinamarca': 'dk', 'eslovaquia': 'sk', 'eslovenia': 'si', 'espanha': 'es', 
-  'estonia': 'ee', 'finlandia': 'fi', 'franca': 'fr', 'france': 'fr', 'georgia': 'ge', 
-  'grecia': 'gr', 'holanda': 'nl', 'paises baixos': 'nl', 'netherlands': 'nl', 
-  'hungria': 'hu', 'irlanda': 'ie', 'islandia': 'is', 'italia': 'it', 'kosovo': 'xk', 
-  'letonia': 'lv', 'liechtenstein': 'li', 'lituania': 'lt', 'luxemburgo': 'lu', 
-  'macedonia do norte': 'mk', 'malta': 'mt', 'moldavia': 'md', 'monaco': 'mc', 
-  'montenegro': 'me', 'noruega': 'no', 'polonia': 'pl', 'portugal': 'pt', 
-  'reino unido': 'gb', 'uk': 'gb', 'inglaterra': 'gb', 'escocia': 'gb', 'paises de gales': 'gb', 
-  'republica tcheca': 'cz', 'tchequia': 'cz', 'romenia': 'ro', 'russia': 'ru', 
-  'san marino': 'sm', 'servia': 'rs', 'suecia': 'se', 'suica': 'ch', 'turquia': 'tr', 
-  'ucrania': 'ua', 'vaticano': 'va',
-
-  // Ásia
-  'afeganistao': 'af', 'arabia saudita': 'sa', 'bangladesh': 'bd', 'bahrein': 'bh', 
-  'brunei': 'bn', 'butao': 'bt', 'camboja': 'kh', 'catar': 'qa', 'qatar': 'qa', 
-  'cazaquistao': 'kz', 'china': 'cn', 'coreia do norte': 'kp', 'coreia do sul': 'kr', 
-  'emirados arabes unidos': 'ae', 'eau': 'ae', 'filipinas': 'ph', 'iemen': 'ye', 
-  'india': 'in', 'indonesia': 'id', 'iraque': 'iq', 'ira': 'ir', 'israel': 'il', 
-  'japao': 'jp', 'japan': 'jp', 'jordania': 'jo', 'kuwait': 'kw', 'laos': 'la', 
-  'libano': 'lb', 'malasia': 'my', 'maldivas': 'mv', 'mianmar': 'mm', 'mongolia': 'mn', 
-  'nepal': 'np', 'oman': 'om', 'paquistao': 'pk', 'quirguistao': 'kg', 'singapura': 'sg', 
-  'siria': 'sy', 'sri lanka': 'lk', 'tailandia': 'th', 'taiwan': 'tw', 'tajiquistao': 'tj', 
-  'timor leste': 'tl', 'turcomenistao': 'tm', 'uzbequistao': 'uz', 'vietna': 'vn',
-
-  // África
-  'africa do sul': 'za', 'angola': 'ao', 'algeria': 'dz', 'benin': 'bj', 'botsuana': 'bw', 
-  'burkina faso': 'bf', 'burundi': 'bi', 'cabo verde': 'cv', 'camaroes': 'cm', 
-  'chade': 'td', 'comores': 'km', 'congo': 'cg', 'costa do marfim': 'ci', 'djibout': 'dj', 
-  'egito': 'eg', 'eritreia': 'er', 'esuatini': 'sz', 'suazilandia': 'sz', 'etiopia': 'et', 
-  'gabao': 'ga', 'gambia': 'gm', 'gana': 'gh', 'guine': 'gn', 'guine bissau': 'gw', 
-  'guine equatorial': 'gq', 'ilha mauricio': 'mu', 'lesoto': 'ls', 'liberia': 'lr', 
-  'libia': 'ly', 'madagascar': 'mg', 'malawi': 'mw', 'mali': 'ml', 'marrocos': 'ma', 
-  'mauritania': 'mr', 'mocambique': 'mz', 'namibia': 'na', 'niger': 'ne', 'nigeria': 'ng', 
-  'quenia': 'ke', 'republica centro africana': 'cf', 'republica democratica do congo': 'cd', 
-  'ruanda': 'rw', 'sao tome e principe': 'st', 'senegal': 'sn', 'serra leoa': 'sl', 
-  'seichelas': 'sc', 'somalia': 'so', 'sudao': 'sd', 'sudao do sul': 'ss', 
-  'tanzania': 'tz', 'togo': 'tg', 'tunisia': 'tn', 'uganda': 'ug', 'zambia': 'zm', 
-  'zimbabue': 'zw',
-
-  // Oceania
-  'australia': 'au', 'fiji': 'fj', 'ilhas marechal': 'mh', 'ilhas salomao': 'sb', 
-  'kiribati': 'ki', 'micronesia': 'fm', 'nauru': 'nr', 'nova zelandia': 'nz', 
-  'palau': 'pw', 'papua nova guine': 'pg', 'samoa': 'ws', 'tonga': 'to', 
-  'tuvalu': 'tv', 'vanuatu': 'vu'
-};
-
+      'brasil': 'br', 'brazil': 'br', 'argentina': 'ar', 'bolivia': 'bo', 'chile': 'cl', 
+      'colombia': 'co', 'equador': 'ec', 'ecuador': 'ec', 'guiana': 'gy', 'gyana': 'gy',
+      'guiana francesa': 'gf', 'paraguai': 'py', 'paraguay': 'py', 'peru': 'pe', 
+      'suriname': 'sr', 'uruguai': 'uy', 'uruguay': 'uy', 'venezuela': 've',
+      'antigua e barbuda': 'ag', 'bahamas': 'bs', 'barbados': 'bb', 'belize': 'bz', 
+      'canada': 'ca', 'costa rica': 'cr', 'cuba': 'cu', 'dominica': 'dm', 'el salvador': 'sv', 
+      'estados unidos': 'us', 'eua': 'us', 'usa': 'us', 'granada': 'gd', 'guatemala': 'gt', 
+      'haiti': 'ht', 'honduras': 'hn', 'jamaica': 'jm', 'mexico': 'mx', 'nicaragua': 'ni', 
+      'panama': 'pa', 'porto rico': 'pr', 'republica dominicana': 'do', 
+      'sao cristovao e nevis': 'kn', 'sao vicente e granadinas': 'vc', 'santa lucia': 'lc', 
+      'trinidad e tobago': 'tt', 'albania': 'al', 'alemanha': 'de', 'germany': 'de', 'andorra': 'ad', 'armenia': 'am', 
+      'austria': 'at', 'azerbaijao': 'az', 'belgica': 'be', 'bielorrussia': 'by', 
+      'bosnia e herzegovina': 'ba', 'bulgaria': 'bg', 'chipre': 'cy', 'croacia': 'hr', 
+      'dinamarca': 'dk', 'eslovaquia': 'sk', 'eslovenia': 'si', 'espanha': 'es', 
+      'estonia': 'ee', 'finlandia': 'fi', 'franca': 'fr', 'france': 'fr', 'georgia': 'ge', 
+      'grecia': 'gr', 'holanda': 'nl', 'paises baixos': 'nl', 'netherlands': 'nl', 
+      'hungria': 'hu', 'irlanda': 'ie', 'islandia': 'is', 'italia': 'it', 'kosovo': 'xk', 
+      'letonia': 'lv', 'liechtenstein': 'li', 'lituania': 'lt', 'luxemburgo': 'lu', 
+      'macedonia do norte': 'mk', 'malta': 'mt', 'moldavia': 'md', 'monaco': 'mc', 
+      'montenegro': 'me', 'noruega': 'no', 'polonia': 'pl', 'portugal': 'pt', 
+      'reino unido': 'gb', 'uk': 'gb', 'inglaterra': 'gb', 'escocia': 'gb', 'paises de gales': 'gb', 
+      'republica tcheca': 'cz', 'tchequia': 'cz', 'romenia': 'ro', 'russia': 'ru', 
+      'san marino': 'sm', 'servia': 'rs', 'suecia': 'se', 'suica': 'ch', 'turquia': 'tr', 
+      'ucrania': 'ua', 'vaticano': 'va', 'afeganistao': 'af', 'arabia saudita': 'sa', 'bangladesh': 'bd', 'bahrein': 'bh', 
+      'brunei': 'bn', 'butao': 'bt', 'camboja': 'kh', 'catar': 'qa', 'qatar': 'qa', 
+      'cazaquistao': 'kz', 'china': 'cn', 'coreia do norte': 'kp', 'coreia do sul': 'kr', 
+      'emirados arabes unidos': 'ae', 'eau': 'ae', 'filipinas': 'ph', 'iemen': 'ye', 
+      'india': 'in', 'indonesia': 'id', 'iraque': 'iq', 'ira': 'ir', 'israel': 'il', 
+      'japao': 'jp', 'japan': 'jp', 'jordania': 'jo', 'kuwait': 'kw', 'laos': 'la', 
+      'libano': 'lb', 'malasia': 'my', 'maldivas': 'mv', 'mianmar': 'mm', 'mongolia': 'mn', 
+      'nepal': 'np', 'oman': 'om', 'paquistao': 'pk', 'quirguistao': 'kg', 'singapura': 'sg', 
+      'siria': 'sy', 'sri lanka': 'lk', 'tailandia': 'th', 'taiwan': 'tw', 'tajiquistao': 'tj', 
+      'timor leste': 'tl', 'turcomenistao': 'tm', 'uzbequistao': 'uz', 'vietna': 'vn',
+      'africa do sul': 'za', 'angola': 'ao', 'algeria': 'dz', 'benin': 'bj', 'botsuana': 'bw', 
+      'burkina faso': 'bf', 'burundi': 'bi', 'cabo verde': 'cv', 'camaroes': 'cm', 
+      'chade': 'td', 'comores': 'km', 'congo': 'cg', 'costa do marfim': 'ci', 'djibout': 'dj', 
+      'egito': 'eg', 'eritreia': 'er', 'esuatini': 'sz', 'suazilandia': 'sz', 'etiopia': 'et', 
+      'gabao': 'ga', 'gambia': 'gm', 'gana': 'gh', 'guine': 'gn', 'guine bissau': 'gw', 
+      'guine equatorial': 'gq', 'ilha mauricio': 'mu', 'lesoto': 'ls', 'liberia': 'lr', 
+      'libia': 'ly', 'madagascar': 'mg', 'malawi': 'mw', 'mali': 'ml', 'marrocos': 'ma', 
+      'mauritania': 'mr', 'mocambique': 'mz', 'namibia': 'na', 'niger': 'ne', 'nigeria': 'ng', 
+      'quenia': 'ke', 'republica centro africana': 'cf', 'republica democratica do congo': 'cd', 
+      'ruanda': 'rw', 'sao tome e principe': 'st', 'senegal': 'sn', 'serra leoa': 'sl', 
+      'seichelas': 'sc', 'somalia': 'so', 'sudao': 'sd', 'sudao do sul': 'ss', 
+      'tanzania': 'tz', 'togo': 'tg', 'tunisia': 'tn', 'uganda': 'ug', 'zambia': 'zm', 
+      'zimbabue': 'zw', 'australia': 'au', 'fiji': 'fj', 'ilhas marechal': 'mh', 'ilhas salomao': 'sb', 
+      'kiribati': 'ki', 'micronesia': 'fm', 'nauru': 'nr', 'nova zelandia': 'nz', 
+      'palau': 'pw', 'papua nova guine': 'pg', 'samoa': 'ws', 'tonga': 'to', 
+      'tuvalu': 'tv', 'vanuatu': 'vu'
+    };
 
     const code = countryCodes[name];
     if (code) return `https://flagcdn.com/w40/${code}.png`;
@@ -645,7 +629,7 @@
     const labelCountry = document.getElementById("labelCountry");
 
     if (currentTab === 'sets') {
-      cardsPerRow = 4; // Ajustado para exatamente 4 cards retangulares em Sets
+      cardsPerRow = 4;
       heroPhotos.classList.add("aspect-sets");
       labelCountry.innerText = "ORIGEM:";
     } else if (currentTab === 'ococ') {
@@ -700,6 +684,7 @@
     return list;
   }
 
+  /* LIMPA VISUALMENTE TODOS OS CARDS GARANTINDO QUE APENAS UM ELEMENTO FICARÁ COM FOCO */
   function clearAllCardFocus() {
     document.querySelectorAll(".card").forEach(c => {
       c.classList.remove("focused");
@@ -929,7 +914,7 @@
     }
   }
 
-  /* RENDERIZAÇÃO DOS CARDS COM CORREÇÃO DE FOCO NATIVA */
+  /* RENDERIZAÇÃO DOS CARDS COM CORREÇÃO DEFINITIVA DE FOCO DUPLO */
   function renderApp() {
     clearAllCardFocus();
     const row = document.getElementById("cardRow");
