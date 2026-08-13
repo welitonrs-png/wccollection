@@ -204,7 +204,7 @@
     .card {
       width: 122px !important; min-width: 122px !important; height: 185px !important;
       background: #ffffff !important; border-radius: 10px !important; overflow: hidden !important;
-      display: flex !important; flex-direction: column !important; border: 2px solid transparent !important;
+      display: flex !important; flex-direction: column !important; border: 2px solid #1a1e29 !important;
       cursor: pointer !important; flex-shrink: 0 !important; outline: none !important;
     }
 
@@ -248,8 +248,8 @@
       white-space: nowrap !important; flex-shrink: 0 !important;
     }
 
-    .card.focused, .card:focus { 
-      border: 2px solid #f39c12 !important; box-shadow: 0 0 12px rgba(243, 156, 18, 0.6) !important; outline: none !important; z-index: 10 !important; 
+    .card.focused, .card:focus, .card:hover { 
+      border: 2px solid #ffffff !important; box-shadow: 0 0 12px rgba(255, 255, 255, 0.6) !important; outline: none !important; z-index: 10 !important; 
     }
 
     .zoom-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.95); z-index: 3000; display: none; justify-content: center; align-items: center; padding: 16px; overflow: hidden; }
