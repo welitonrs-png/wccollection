@@ -162,7 +162,7 @@
       height: 100%; 
       display: flex; 
       flex-direction: column; 
-      justify-content: space-between; /* Distribui o primeiro item no topo e o último na base */
+      justify-content: space-between; 
       color: #f39c12; 
       text-transform: uppercase; 
       font-style: italic; 
@@ -172,7 +172,6 @@
       box-sizing: border-box;
     }
 
-    /* TÍTULO/NOME DA LATA (HELVETICA NOW EM NEGRITO) */
     .hero-title { 
       font-family: "Helvetica Now Display", "Helvetica Neue", Helvetica, Arial, sans-serif !important; 
       font-size: clamp(1.3rem, 2.3vw, 1.8rem) !important; 
@@ -188,7 +187,6 @@
       flex-direction: column; 
     }
 
-    /* RÓTULOS (ORIGEM, VOLUME, ETC.) - HELVETICA EM NEGRITO */
     .info-label { 
       font-family: Helvetica, Arial, sans-serif !important; 
       font-size: clamp(0.75rem, 1.0vw, 0.9rem) !important; 
@@ -198,7 +196,6 @@
       letter-spacing: 0.5px; 
     }
 
-    /* VALORES - HELVETICA EM NEGRITO */
     .info-val { 
       font-family: Helvetica, Arial, sans-serif !important; 
       font-size: clamp(1.0rem, 1.6vw, 1.35rem) !important; 
@@ -208,7 +205,6 @@
       margin-top: 2px; 
     }
 
-    /* BARRA DO MEIO COM O BOTÃO TRIÂNGULO AO LADO DA CONTAGEM */
     .counter-bar { display: flex; justify-content: flex-end; align-items: center; padding: 0 4px; gap: 8px; height: 20px; }
     
     .sort-icon-btn {
@@ -227,7 +223,6 @@
     /* SEÇÃO INFERIOR DO CATÁLOGO - 1 LINHA DE CARDS */
     .catalog-section { height: 195px; min-height: 195px; width: 100%; overflow: hidden; flex-shrink: 0; touch-action: none; }
     
-    /* LARGURA ADAPTÁVEL PARA 7 CARDS NORMAIS OU 5 CARDS DE SETS */
     .card-row { 
       display: flex; 
       gap: 12px; 
@@ -252,7 +247,11 @@
       outline: none !important;
     }
 
-    .card.card-aspect-sets { width: 170px !important; min-width: 170px !important; }
+    /* CARD DEITADO DO MODO SETS (4 POR LINHA) */
+    .card.card-aspect-sets { 
+      width: 220px !important; 
+      min-width: 220px !important; 
+    }
 
     .card-top-photo {
       width: 100% !important;
@@ -454,27 +453,6 @@
   let lastSelectedMenuId = 'menuBtnHome'; 
   let lastSelectedBrandElem = null;
 
-  /* MAPA DE CORES AUTOMÁTICO DAS MARCAS */
-  const BRAND_COLORS = {
-    'carlsberg': '#005826',
-    'heineken': '#008234',
-    'budweiser': '#1d285a',
-    'brahma': '#e31b23',
-    'skol': '#fca311',
-    'stella artois': '#b81d24',
-    'corona': '#002b49',
-    'amstel': '#d32f2f',
-    'eisenbahn': '#3a2e2b',
-    'bohemia': '#8b1e0f',
-    'antarctica': '#0055a5',
-    'guinness': '#000000',
-    'kronenbourg 1664': '#0f2042',
-    'therezopolis': '#1b382b',
-    'wienbier': '#33261d',
-    'faxe': '#3a0000',
-    'zlaten dab': '#b38b00'
-  };
-
   let zoomLevel = 1.0; 
   let zoomState = 0;   
   let panX = 0;
@@ -542,7 +520,6 @@
     if (screen) screen.classList.add("hidden");
   }
 
-  /* CARREGAMENTO ULTRA RÁPIDO COM CACHE EM LOCALSTORAGE */
   async function fetchCatalogFromSheet() {
     if (!API_URL || API_URL.includes("COLE_AQUI")) return;
 
@@ -612,7 +589,7 @@
     const labelCountry = document.getElementById("labelCountry");
 
     if (currentTab === 'sets') {
-      cardsPerRow = 5; // 5 cards deitados por linha em Sets
+      cardsPerRow = 4; // Ajustado para exatamente 4 cards retangulares em Sets
       heroPhotos.classList.add("aspect-sets");
       labelCountry.innerText = "ORIGEM:";
     } else if (currentTab === 'ococ') {
@@ -645,7 +622,6 @@
         const isOcocVal = can.isOcoc;
         const isSetVal = can.isSet;
 
-        // Chave única combinando Cervejaria + País para permitir várias da mesma marca de países diferentes
         const uniqueKey = `${brandVal}_${countryVal}`;
 
         if ((!isSetVal || String(isSetVal).toLowerCase() === "false") && 
@@ -895,7 +871,7 @@
     }
   }
 
-  /* RENDERIZAÇÃO DOS CARDS NO INDEX.HTML COM D-PAD */
+  /* RENDERIZAÇÃO DOS CARDS COM CORREÇÃO DE FOCO EM SETS */
   function renderApp() {
     clearAllCardFocus();
     const row = document.getElementById("cardRow");
@@ -919,7 +895,6 @@
       const volumeText = can.volume || can.Volume || "";
       const flagUrl = getFlagUrlByCountry(countryRaw);
 
-      // BUSCA DINÂMICA DA COR DA MARCA
       let cardColor = can.brandColor || can.color;
       if (!cardColor || cardColor === "") {
         const brandKey = String(brandRaw).toLowerCase().trim();
@@ -965,7 +940,6 @@
       card.onkeydown = (e) => {
         if (document.getElementById("zoomModal").classList.contains("active") || document.getElementById("exitModal").classList.contains("active")) return;
 
-        // TECLADO DO CONTROLE REMOTO (D-PAD / TECLADO FISICO)
         if (e.key === "Enter" || e.key === " " || e.keyCode === 13) {
           e.preventDefault();
           openZoomModal(0);
@@ -1061,7 +1035,6 @@
       logoContainer.innerHTML = "";
     }
 
-    /* ATUALIZA O WALLPAPER DA MARCA NO PAINEL SUPERIOR */
     const wallpaperElem = document.getElementById("heroBrandWallpaper");
     const currentBrand = String(can.brewery || can.Cervejaria || "").toLowerCase().trim();
     let wallpaperUrl = "";
@@ -1133,7 +1106,6 @@
     }
   }
 
-  /* SISTEMA DE ZOOM CICLICO E PAN */
   function openZoomModal(index) {
     if (!zoomGallery || zoomGallery.length === 0) return;
     currentZoomIndex = index;
@@ -1190,7 +1162,6 @@
     focusCardSafely(activeLocalIndex);
   }
 
-  /* CONFIRMAÇÃO DE SAÍDA */
   function openExitModal() {
     closeMenu();
     document.getElementById("exitModal").classList.add("active");
@@ -1214,7 +1185,6 @@
     }
   }
 
-  /* GESTOS SWIPE */
   let touchStartX = 0;
   let touchStartY = 0;
 
@@ -1231,7 +1201,6 @@
     handleSwipe(touchStartX, touchStartY, touchEndX, touchEndY);
   }, { passive: true });
 
-  /* SCROLL DO MOUSE */
   catalogSection.addEventListener("wheel", (e) => {
     if (e.deltaY > 0) {
       if (((currentPage + 1) * cardsPerRow) < currentFiltered.length) {
@@ -1289,7 +1258,6 @@
     }
   }
 
-  /* NAVEGAÇÃO DO BOTÃO DE ORDENAÇÃO VIA TECLADO */
   const sortBtnElem = document.getElementById("sortOrderBtn");
   sortBtnElem.onkeydown = (e) => {
     if (e.key === "Enter" || e.key === " " || e.keyCode === 13) {
@@ -1304,7 +1272,6 @@
     }
   };
 
-  /* TECLADO E CONTROLE REMOTO GLOBAL */
   document.addEventListener("keydown", (e) => {
     const isZoomActive = document.getElementById("zoomModal").classList.contains("active");
     const isExitActive = document.getElementById("exitModal").classList.contains("active");
