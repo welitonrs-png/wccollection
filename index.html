@@ -14,7 +14,7 @@
 
     .app-container { display: flex; width: 100vw; height: 100vh; overflow: hidden; position: relative; background-color: #1a1e29; }
 
-    /* TELA DE CARREGAMENTO (SPLASH SCREEN) */
+    /* TELA DE CARREGAMENTO */
     .loading-screen {
       position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
       background-color: #1a1e29; z-index: 9999; display: flex;
@@ -23,9 +23,7 @@
     }
 
     .loading-screen.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
-
     .loading-logo { width: 180px; height: auto; object-fit: contain; animation: pulse 1.5s infinite ease-in-out; }
-
     .loading-text { color: #f39c12; font-size: 1.1rem; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; }
 
     .spinner {
@@ -38,7 +36,6 @@
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.9; } 50% { transform: scale(1.05); opacity: 1; } }
 
-    /* BOTÃO HAMBÚRGUER (EXCLUSIVO PARA CELULAR) */
     .mobile-menu-btn {
       display: none; position: fixed; top: 12px; left: 12px; z-index: 2000;
       background: rgba(26, 32, 46, 0.9); color: #f39c12; border: 1px solid #f39c12;
@@ -49,7 +46,6 @@
       .mobile-menu-btn { display: block; }
     }
 
-    /* MENU GAVETA DESLIZANTE */
     .sidebar-drawer {
       position: absolute; top: 0; left: -280px; width: 260px; height: 100vh;
       background: rgba(22, 27, 38, 0.98); backdrop-filter: blur(10px);
@@ -60,10 +56,8 @@
     }
     
     .sidebar-drawer.open { left: 0; }
-
     .sidebar-logo { width: 100%; height: 50px; object-fit: contain; margin-bottom: 16px; text-align: center; }
 
-    /* BOTÕES DO MENU */
     .cat-btn {
       display: flex; align-items: center; width: 100%; padding: 12px 18px; border-radius: 12px;
       background: transparent; color: #e2e8f0; font-size: 1.05rem; font-weight: 600; border: none;
@@ -85,127 +79,47 @@
     .brand-btn:focus, .brand-btn:hover { color: #ffffff !important; background: rgba(255,255,255,0.1) !important; }
 
     .menu-search-box { width: 100%; padding: 8px; background: #11141d; border: 1px solid #333d52; border-radius: 8px; color: #fff; font-size: 0.8rem; text-align: center; text-transform: uppercase; margin-bottom: 4px; pointer-events: none; }
-    .vk-container { display: grid; grid-template-columns: repeat(6, 1fr); gap: 2px; }
-    .vk-key { background: #11141d; border: 1px solid #2a3447; color: #a0aec0; padding: 8px 0; border-radius: 4px; font-size: 0.75rem; font-weight: bold; cursor: pointer; text-align: center; user-select: none; }
-    .vk-key:focus, .vk-key:hover { color: #fff; border-color: #fff; background: rgba(255,255,255,0.2); }
+    
+    .vk-container { display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; }
+    .vk-key { background: #11141d; border: 1px solid #2a3447; color: #a0aec0; padding: 8px 0; border-radius: 6px; font-size: 0.85rem; font-weight: bold; cursor: pointer; text-align: center; user-select: none; transition: all 0.15s ease; }
+    .vk-key:focus, .vk-key:hover { color: #fff; border-color: #f39c12; background: #f39c12; color: #1a1e29; box-shadow: 0 0 10px rgba(243, 156, 18, 0.5); }
     .vk-key-wide { grid-column: span 2; }
 
-    /* ÁREA PRINCIPAL */
     .main-area {
       flex: 1; display: flex; flex-direction: column; height: 100vh; padding: 10px 16px; gap: 6px;
-      overflow: hidden; background: #1a1e29; min-width: 0;
+      overflow: hidden; background: #1a1e29; min-width: 0; position: relative;
       transition: transform 0.25s cubic-bezier(0.1, 0.9, 0.2, 1);
     }
     .main-area.pushed { transform: translateX(260px); }
 
-    /* ÁREA SUPERIOR COM BUSCA E WALLPAPER */
     .hero-panel { 
       flex: 1; min-height: 0; background: transparent; border-radius: 12px; 
-      display: flex; padding: 8px 12px; gap: 20px; align-items: center; position: relative;
-      overflow: hidden;
+      display: flex; padding: 8px 12px; position: relative; align-items: flex-start; justify-content: flex-start;
+      overflow: visible; z-index: 50;
     }
 
-    /* CAMADA DE WALLPAPER DA MARCA DE FUNDO */
     .hero-brand-wallpaper {
-      position: absolute;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      opacity: 0;
-      transition: opacity 0.5s ease-in-out, background-image 0.5s ease-in-out;
-      z-index: 1;
-      pointer-events: none;
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      background-size: cover; background-position: center; background-repeat: no-repeat;
+      opacity: 0; transition: opacity 0.5s ease-in-out; z-index: 1; pointer-events: none;
     }
 
-    .hero-brand-wallpaper.active {
-      opacity: 0.25;
-    }
+    .hero-brand-wallpaper.active { opacity: 0.25; }
 
     .hero-panel::after {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; width: 100%; height: 100%;
+      content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
       background: linear-gradient(180deg, rgba(26, 30, 41, 0.4) 0%, rgba(26, 30, 41, 0.95) 100%);
-      z-index: 2;
-      pointer-events: none;
+      z-index: 2; pointer-events: none;
     }
 
     .hero-brand-logo-container {
-      position: absolute; 
-      top: 8px; 
-      right: 20px; 
-      width: 180px; 
-      height: 80px;
-      display: flex; 
-      justify-content: flex-end; 
-      align-items: flex-start; 
-      z-index: 20; 
-      pointer-events: none;
+      position: absolute; top: 8px; right: 20px; width: 180px; height: 80px;
+      display: flex; justify-content: flex-end; align-items: flex-start; z-index: 20; pointer-events: none;
     }
 
-    .hero-brand-logo-container img { 
-      max-width: 100%; 
-      max-height: 100%; 
-      object-fit: contain; 
-    }
+    .hero-brand-logo-container img { max-width: 100%; max-height: 100%; object-fit: contain; }
 
-    .hero-left-photos { height: 100%; aspect-ratio: 1 / 1; display: grid; grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(2, 1fr); gap: 8px; z-index: 10; position: relative; }
-    .hero-left-photos.aspect-sets { aspect-ratio: 4 / 3; }
-
-    .hero-photo-card { background: #ffffff; border-radius: 8px; padding: 4px; display: flex; justify-content: center; align-items: center; width: 100%; height: 100%; overflow: hidden; cursor: pointer; }
-    .hero-photo-card img { width: 100%; height: 100%; object-fit: contain; }
-
-    /* CONTAINER DE INFORMAÇÕES ALINHADO NO TOPO E NA BASE DO HERO */
-    .hero-right-info { 
-      flex: 1; 
-      height: 100%; 
-      display: flex; 
-      flex-direction: column; 
-      justify-content: space-between; 
-      color: #f39c12; 
-      text-transform: uppercase; 
-      font-style: italic; 
-      padding-right: 180px; 
-      z-index: 10; 
-      position: relative; 
-      box-sizing: border-box;
-    }
-
-    .hero-title { 
-      font-family: "Helvetica Now Display", "Helvetica Neue", Helvetica, Arial, sans-serif !important; 
-      font-size: clamp(1.3rem, 2.3vw, 1.8rem) !important; 
-      font-weight: 900 !important; 
-      line-height: 1.1; 
-      color: #f39c12; 
-      margin-bottom: 0; 
-      letter-spacing: 0.5px; 
-    }
-
-    .info-block { 
-      display: flex; 
-      flex-direction: column; 
-    }
-
-    .info-label { 
-      font-family: Helvetica, Arial, sans-serif !important; 
-      font-size: clamp(0.75rem, 1.0vw, 0.9rem) !important; 
-      font-weight: 900 !important; 
-      color: #f39c12; 
-      line-height: 1.1; 
-      letter-spacing: 0.5px; 
-    }
-
-    .info-val { 
-      font-family: Helvetica, Arial, sans-serif !important; 
-      font-size: clamp(1.0rem, 1.6vw, 1.35rem) !important; 
-      font-weight: 900 !important; 
-      color: #f39c12; 
-      line-height: 1.1; 
-      margin-top: 2px; 
-    }
-
-    .counter-bar { display: flex; justify-content: flex-end; align-items: center; padding: 0 4px; gap: 8px; height: 20px; }
+    .counter-bar { display: flex; justify-content: flex-end; align-items: center; padding: 0 4px; gap: 8px; height: 20px; z-index: 10; }
     
     .sort-icon-btn {
       background: transparent; color: #a0aec0; border: none; font-size: 0.9rem;
@@ -214,142 +128,69 @@
     }
     
     .sort-icon-btn:hover, .sort-icon-btn:focus, .sort-icon-btn.focused {
-      color: #f39c12 !important; background: transparent !important;
-      border: none !important; box-shadow: none !important; transform: scale(1.25);
+      color: #f39c12 !important; background: transparent !important; border: none !important; box-shadow: none !important; transform: scale(1.25);
     }
 
     .card-counter { font-size: 0.85rem; font-weight: 900; color: #f39c12; background: transparent; padding: 0; letter-spacing: 1px; }
 
-    /* SEÇÃO INFERIOR DO CATÁLOGO - 1 LINHA DE CARDS */
-    .catalog-section { height: 195px; min-height: 195px; width: 100%; overflow: hidden; flex-shrink: 0; touch-action: none; }
-    
-    .card-row { 
-      display: flex; 
-      gap: 12px; 
-      width: 100%; 
-      height: 100%; 
-      justify-content: flex-start; 
-      align-content: start; 
-    }
+    .catalog-section { height: 380px; min-height: 380px; width: 100%; overflow: hidden; flex-shrink: 0; touch-action: none; z-index: 5; }
+    .card-row { display: grid; grid-template-columns: repeat(7, 122px); grid-template-rows: repeat(2, 185px); gap: 10px 12px; width: 100%; height: 100%; justify-content: start; align-content: start; }
 
     .card {
-      width: 122px !important;
-      min-width: 122px !important;
-      height: 185px !important;
-      background: #ffffff !important;
-      border-radius: 10px !important;
-      overflow: hidden !important;
-      display: flex !important;
-      flex-direction: column !important;
-      border: 2px solid transparent !important;
-      cursor: pointer !important;
-      flex-shrink: 0 !important;
-      outline: none !important;
+      width: 122px !important; min-width: 122px !important; height: 185px !important;
+      background: #ffffff !important; border-radius: 10px !important; overflow: hidden !important;
+      display: flex !important; flex-direction: column !important; border: 2px solid transparent !important;
+      cursor: pointer !important; flex-shrink: 0 !important; outline: none !important;
     }
 
-    /* CARD DEITADO DO MODO SETS (4 POR LINHA) */
-    .card.card-aspect-sets { 
-      width: 220px !important; 
-      min-width: 220px !important; 
-    }
+    .card.card-aspect-sets { width: 170px !important; min-width: 170px !important; }
 
     .card-top-photo {
-      width: 100% !important;
-      height: 137px !important;
-      background: #ffffff !important;
-      display: flex !important;
-      justify-content: center !important;
-      align-items: center !important;
-      padding: 4px !important;
+      width: 100% !important; height: 137px !important; background: #ffffff !important;
+      display: flex !important; justify-content: center !important; align-items: center !important; padding: 4px !important;
     }
 
-    .card-top-photo img {
-      max-width: 100% !important;
-      max-height: 100% !important;
-      object-fit: contain !important;
-    }
+    .card-top-photo img { max-width: 100% !important; max-height: 100% !important; object-fit: contain !important; }
 
     .card-bottom-bar {
-      width: 100% !important;
-      height: 48px !important;
-      padding: 2px 5px 3px 5px !important;
-      display: flex !important;
-      flex-direction: column !important;
-      justify-content: space-between !important;
-      box-sizing: border-box !important;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
+      width: 100% !important; height: 48px !important; padding: 2px 5px 3px 5px !important;
+      display: flex !important; flex-direction: column !important; justify-content: space-between !important;
+      box-sizing: border-box !important; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
     }
 
     .card-bar-title {
       font-family: "Helvetica Now Display", "Helvetica Neue", Helvetica, Arial, sans-serif !important;
-      font-size: 0.75rem !important;
-      font-weight: 700 !important;
-      color: #ffffff !important;
-      white-space: nowrap !important;
-      overflow: hidden !important;
-      text-overflow: ellipsis !important;
-      text-transform: capitalize !important;
-      line-height: 1.1 !important;
-      margin-top: 3px !important;
+      font-size: 0.75rem !important; font-weight: 700 !important; color: #ffffff !important;
+      white-space: nowrap !important; overflow: hidden !important; text-overflow: ellipsis !important;
+      text-transform: capitalize !important; line-height: 1.1 !important; margin-top: 3px !important;
     }
 
-    .card-bar-details {
-      display: flex !important;
-      justify-content: space-between !important;
-      align-items: center !important;
-      width: 100% !important;
-      margin-bottom: 1px !important;
-    }
+    .card-bar-details { display: flex !important; justify-content: space-between !important; align-items: center !important; width: 100% !important; margin-bottom: 1px !important; }
 
     .card-bar-country {
-      display: flex !important;
-      align-items: center !important;
-      gap: 3px !important;
-      font-family: Helvetica, Arial, sans-serif !important;
-      font-size: 0.60rem !important;
-      font-weight: 400 !important;
-      color: #ffffff !important;
-      white-space: nowrap !important;
-      overflow: hidden !important;
-      text-transform: capitalize !important;
+      display: flex !important; align-items: center !important; gap: 3px !important;
+      font-family: Helvetica, Arial, sans-serif !important; font-size: 0.60rem !important;
+      font-weight: 400 !important; color: #ffffff !important; white-space: nowrap !important;
+      overflow: hidden !important; text-transform: capitalize !important;
     }
 
-    .card-bar-flag {
-      width: 13px !important;
-      height: 8px !important;
-      object-fit: cover !important;
-      border-radius: 2px !important;
-      flex-shrink: 0 !important;
-    }
+    .card-bar-flag { width: 13px !important; height: 8px !important; object-fit: cover !important; border-radius: 2px !important; flex-shrink: 0 !important; }
 
     .card-bar-vol {
-      background: rgba(0, 0, 0, 0.45) !important;
-      color: #ffffff !important;
-      font-family: Helvetica, Arial, sans-serif !important;
-      padding: 1px 4px !important;
-      border-radius: 4px !important;
-      font-size: 0.55rem !important;
-      font-weight: 400 !important;
-      white-space: nowrap !important;
-      flex-shrink: 0 !important;
+      background: rgba(0, 0, 0, 0.45) !important; color: #ffffff !important;
+      font-family: Helvetica, Arial, sans-serif !important; padding: 1px 4px !important;
+      border-radius: 4px !important; font-size: 0.55rem !important; font-weight: 400 !important;
+      white-space: nowrap !important; flex-shrink: 0 !important;
     }
 
-    .card.focused, .card:focus, .card:hover { 
-      border: 2px solid #f39c12 !important; 
-      box-shadow: 0 0 12px rgba(243, 156, 18, 0.6) !important; 
-      outline: none !important; 
-      z-index: 10 !important; 
+    .card.focused, .card:focus { 
+      border: 2px solid #f39c12 !important; box-shadow: 0 0 12px rgba(243, 156, 18, 0.6) !important; outline: none !important; z-index: 10 !important; 
     }
 
-    /* MODAL DE ZOOM E NAVEGAÇÃO */
     .zoom-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.95); z-index: 3000; display: none; justify-content: center; align-items: center; padding: 16px; overflow: hidden; }
     .zoom-modal.active { display: flex; }
-    .zoom-modal img { 
-      max-width: 85vw; max-height: 85vh; object-fit: contain; border-radius: 6px; cursor: pointer; 
-      transition: transform 0.15s ease-out; transform-origin: center center; 
-    }
+    .zoom-modal img { max-width: 85vw; max-height: 85vh; object-fit: contain; border-radius: 6px; cursor: pointer; transition: transform 0.15s ease-out; transform-origin: center center; }
 
-    /* MODAL VISUAL DE SAÍDA NATIVO */
     .exit-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); z-index: 4000; display: none; justify-content: center; align-items: center; }
     .exit-modal.active { display: flex; }
     .exit-box { background: #161b26; border: 2px solid #333d52; padding: 30px 40px; border-radius: 12px; display: flex; flex-direction: column; align-items: center; gap: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
@@ -361,7 +202,6 @@
 </head>
 <body>
 
-  <!-- TELA DE CARREGAMENTO (SPLASH SCREEN) -->
   <div class="loading-screen" id="loadingScreen">
     <img src="logo.png" alt="Logo" class="loading-logo">
     <div class="spinner"></div>
@@ -373,15 +213,16 @@
 
     <nav class="sidebar-drawer" id="sidebarDrawer">
       <img src="logo.png" alt="Logo" class="sidebar-logo">
+      
       <button class="cat-btn" id="menuBtnHome" onclick="switchTab('home')" tabindex="0">HOME / CATÁLOGO</button>
-      <button class="cat-btn" id="menuBtnByBrands" onclick="window.location.href='marcas.html'" tabindex="0">POR MARCAS</button>
+      
       <button class="cat-btn" id="menuBtnSearch" onclick="toggleSearchInline()" tabindex="0">PESQUISAR</button>
       <div class="inline-panel-container" id="searchInlineContainer">
         <input type="text" id="menuSearchInput" class="menu-search-box" placeholder="DIGITE PARA BUSCAR..." readonly tabindex="-1">
         <div class="vk-container" id="vkContainer"></div>
       </div>
 
-      <button class="cat-btn" id="menuBtnBrands" onclick="toggleBrandInline()" tabindex="0">MARCAS</button>
+      <button class="cat-btn" id="menuBtnBrands" onclick="window.location.href='marcas.html'" tabindex="0">MARCAS</button>
       <div class="inline-panel-container" id="brandInlineList"></div>
 
       <button class="cat-btn" id="menuBtnOcoc" onclick="switchTab('ococ')" tabindex="0">OCOC (PAÍSES)</button>
@@ -390,25 +231,8 @@
 
     <main class="main-area" id="mainArea" onclick="handleMainAreaClick()">
       <section class="hero-panel" id="heroPanel">
-        <!-- CAMADA DE WALLPAPER DA MARCA DE FUNDO -->
         <div class="hero-brand-wallpaper" id="heroBrandWallpaper"></div>
-
         <div class="hero-brand-logo-container" id="heroBrandLogo"></div>
-
-        <div class="hero-left-photos" id="heroPhotos">
-          <div class="hero-photo-card"><img src="" alt=""></div>
-          <div class="hero-photo-card"><img src="" alt=""></div>
-          <div class="hero-photo-card"><img src="" alt=""></div>
-          <div class="hero-photo-card"><img src="" alt=""></div>
-        </div>
-
-        <div class="hero-right-info">
-          <div class="hero-title" id="heroTitle">SELECIONE UMA LATA</div>
-          <div class="info-block"><span class="info-label" id="labelCountry">ORIGEM:</span><div class="info-val" id="heroCountry">-</div></div>
-          <div class="info-block"><span class="info-label">VOLUME:</span><div class="info-val" id="heroVolume">-</div></div>
-          <div class="info-block"><span class="info-label">ANO:</span><div class="info-val" id="heroYear">-</div></div>
-          <div class="info-block"><span class="info-label">CÓD. BARRAS:</span><div class="info-val" id="heroBarcode">-</div></div>
-        </div>
       </section>
 
       <div class="counter-bar">
@@ -422,12 +246,10 @@
     </main>
   </div>
 
-  <!-- MODAL DE ZOOM -->
   <div class="zoom-modal" id="zoomModal" onclick="closeZoomModal()">
     <img id="zoomImage" src="" alt="Imagem ampliada" onclick="event.stopPropagation(); toggleZoomStep();">
   </div>
 
-  <!-- MODAL DE SAÍDA DO APLICATIVO -->
   <div class="exit-modal" id="exitModal">
     <div class="exit-box">
       <div class="exit-title">TEM CERTEZA QUE QUER SAIR?</div>
@@ -445,9 +267,10 @@
   let zoomGallery = [];
   let currentZoomIndex = 0;
   let sortNewestFirst = true;
-
+  
   let currentTab = 'home';
   let cardsPerRow = 7;
+  let cardsPerPage = 14;
   let currentPage = 0;
   let activeLocalIndex = 0;
   let lastSelectedMenuId = 'menuBtnHome'; 
@@ -492,79 +315,22 @@
 
   function getFlagUrlByCountry(countryName) {
     if (!countryName) return '';
-    
     const name = String(countryName)
       .toLowerCase()
       .trim()
       .normalize("NFD")
       .replace(/[\u0300-\u036f]/g, "");
-
+    
     const countryCodes = {
-  // América do Sul
-  'brasil': 'br', 'brazil': 'br', 'argentina': 'ar', 'bolivia': 'bo', 'chile': 'cl', 
-  'colombia': 'co', 'equador': 'ec', 'ecuador': 'ec', 'guiana': 'gy', 'gyana': 'gy',
-  'guiana francesa': 'gf', 'paraguai': 'py', 'paraguay': 'py', 'peru': 'pe', 
-  'suriname': 'sr', 'uruguai': 'uy', 'uruguay': 'uy', 'venezuela': 've',
-
-  // América do Norte e Central
-  'antigua e barbuda': 'ag', 'bahamas': 'bs', 'barbados': 'bb', 'belize': 'bz', 
-  'canada': 'ca', 'costa rica': 'cr', 'cuba': 'cu', 'dominica': 'dm', 'el salvador': 'sv', 
-  'estados unidos': 'us', 'eua': 'us', 'usa': 'us', 'granada': 'gd', 'guatemala': 'gt', 
-  'haiti': 'ht', 'honduras': 'hn', 'jamaica': 'jm', 'mexico': 'mx', 'nicaragua': 'ni', 
-  'panama': 'pa', 'porto rico': 'pr', 'republica dominicana': 'do', 
-  'sao cristovao e nevis': 'kn', 'sao vicente e granadinas': 'vc', 'santa lucia': 'lc', 
-  'trinidad e tobago': 'tt',
-
-  // Europa
-  'albania': 'al', 'alemanha': 'de', 'germany': 'de', 'andorra': 'ad', 'armenia': 'am', 
-  'austria': 'at', 'azerbaijao': 'az', 'belgica': 'be', 'bielorrussia': 'by', 
-  'bosnia e herzegovina': 'ba', 'bulgaria': 'bg', 'chipre': 'cy', 'croacia': 'hr', 
-  'dinamarca': 'dk', 'eslovaquia': 'sk', 'eslovenia': 'si', 'espanha': 'es', 
-  'estonia': 'ee', 'finlandia': 'fi', 'franca': 'fr', 'france': 'fr', 'georgia': 'ge', 
-  'grecia': 'gr', 'holanda': 'nl', 'paises baixos': 'nl', 'netherlands': 'nl', 
-  'hungria': 'hu', 'irlanda': 'ie', 'islandia': 'is', 'italia': 'it', 'kosovo': 'xk', 
-  'letonia': 'lv', 'liechtenstein': 'li', 'lituania': 'lt', 'luxemburgo': 'lu', 
-  'macedonia do norte': 'mk', 'malta': 'mt', 'moldavia': 'md', 'monaco': 'mc', 
-  'montenegro': 'me', 'noruega': 'no', 'polonia': 'pl', 'portugal': 'pt', 
-  'reino unido': 'gb', 'uk': 'gb', 'inglaterra': 'gb', 'escocia': 'gb', 'paises de gales': 'gb', 
-  'republica tcheca': 'cz', 'tchequia': 'cz', 'romenia': 'ro', 'russia': 'ru', 
-  'san marino': 'sm', 'servia': 'rs', 'suecia': 'se', 'suica': 'ch', 'turquia': 'tr', 
-  'ucrania': 'ua', 'vaticano': 'va',
-
-  // Ásia
-  'afeganistao': 'af', 'arabia saudita': 'sa', 'bangladesh': 'bd', 'bahrein': 'bh', 
-  'brunei': 'bn', 'butao': 'bt', 'camboja': 'kh', 'catar': 'qa', 'qatar': 'qa', 
-  'cazaquistao': 'kz', 'china': 'cn', 'coreia do norte': 'kp', 'coreia do sul': 'kr', 
-  'emirados arabes unidos': 'ae', 'eau': 'ae', 'filipinas': 'ph', 'iemen': 'ye', 
-  'india': 'in', 'indonesia': 'id', 'iraque': 'iq', 'ira': 'ir', 'israel': 'il', 
-  'japao': 'jp', 'japan': 'jp', 'jordania': 'jo', 'kuwait': 'kw', 'laos': 'la', 
-  'libano': 'lb', 'malasia': 'my', 'maldivas': 'mv', 'mianmar': 'mm', 'mongolia': 'mn', 
-  'nepal': 'np', 'oman': 'om', 'paquistao': 'pk', 'quirguistao': 'kg', 'singapura': 'sg', 
-  'siria': 'sy', 'sri lanka': 'lk', 'tailandia': 'th', 'taiwan': 'tw', 'tajiquistao': 'tj', 
-  'timor leste': 'tl', 'turcomenistao': 'tm', 'uzbequistao': 'uz', 'vietna': 'vn',
-
-  // África
-  'africa do sul': 'za', 'angola': 'ao', 'algeria': 'dz', 'benin': 'bj', 'botsuana': 'bw', 
-  'burkina faso': 'bf', 'burundi': 'bi', 'cabo verde': 'cv', 'camaroes': 'cm', 
-  'chade': 'td', 'comores': 'km', 'congo': 'cg', 'costa do marfim': 'ci', 'djibout': 'dj', 
-  'egito': 'eg', 'eritreia': 'er', 'esuatini': 'sz', 'suazilandia': 'sz', 'etiopia': 'et', 
-  'gabao': 'ga', 'gambia': 'gm', 'gana': 'gh', 'guine': 'gn', 'guine bissau': 'gw', 
-  'guine equatorial': 'gq', 'ilha mauricio': 'mu', 'lesoto': 'ls', 'liberia': 'lr', 
-  'libia': 'ly', 'madagascar': 'mg', 'malawi': 'mw', 'mali': 'ml', 'marrocos': 'ma', 
-  'mauritania': 'mr', 'mocambique': 'mz', 'namibia': 'na', 'niger': 'ne', 'nigeria': 'ng', 
-  'quenia': 'ke', 'republica centro africana': 'cf', 'republica democratica do congo': 'cd', 
-  'ruanda': 'rw', 'sao tome e principe': 'st', 'senegal': 'sn', 'serra leoa': 'sl', 
-  'seichelas': 'sc', 'somalia': 'so', 'sudao': 'sd', 'sudao do sul': 'ss', 
-  'tanzania': 'tz', 'togo': 'tg', 'tunisia': 'tn', 'uganda': 'ug', 'zambia': 'zm', 
-  'zimbabue': 'zw',
-
-  // Oceania
-  'australia': 'au', 'fiji': 'fj', 'ilhas marechal': 'mh', 'ilhas salomao': 'sb', 
-  'kiribati': 'ki', 'micronesia': 'fm', 'nauru': 'nr', 'nova zelandia': 'nz', 
-  'palau': 'pw', 'papua nova guine': 'pg', 'samoa': 'ws', 'tonga': 'to', 
-  'tuvalu': 'tv', 'vanuatu': 'vu'
-};
-
+      'brasil': 'br', 'brazil': 'br', 'argentina': 'ar', 'bolivia': 'bo', 'chile': 'cl', 'colombia': 'co',
+      'equador': 'ec', 'ecuador': 'ec', 'paraguai': 'py', 'paraguay': 'py', 'peru': 'pe', 'uruguai': 'uy',
+      'uruguay': 'uy', 'venezuela': 've', 'estados unidos': 'us', 'eua': 'us', 'usa': 'us', 'canada': 'ca',
+      'mexico': 'mx', 'alemanha': 'de', 'germany': 'de', 'austria': 'at', 'belgica': 'be', 'espanha': 'es',
+      'franca': 'fr', 'france': 'fr', 'holanda': 'nl', 'netherlands': 'nl', 'irlanda': 'ie', 'italia': 'it',
+      'portugal': 'pt', 'reino unido': 'gb', 'uk': 'gb', 'inglaterra': 'gb', 'escocia': 'gb', 'suica': 'ch',
+      'dinamarca': 'dk', 'finlandia': 'fi', 'noruega': 'no', 'suecia': 'se', 'russia': 'ru', 'japao': 'jp',
+      'japan': 'jp', 'china': 'cn', 'australia': 'au'
+    };
 
     const code = countryCodes[name];
     if (code) return `https://flagcdn.com/w40/${code}.png`;
@@ -573,7 +339,9 @@
 
   function hideLoadingScreen() {
     const screen = document.getElementById("loadingScreen");
-    if (screen) screen.classList.add("hidden");
+    if (screen) {
+      screen.classList.add("hidden");
+    }
   }
 
   async function fetchCatalogFromSheet() {
@@ -603,7 +371,7 @@
         if (!cachedData) focusCardSafely(0);
       }
     } catch (err) {
-      console.error("Erro na atualização remota do catálogo:", err);
+      console.error("Erro na atualização remota:", err);
       hideLoadingScreen();
       if (!cachedData) focusCardSafely(0);
     }
@@ -636,31 +404,14 @@
       sortBtn.title = "Ordenação: Menor para Maior (Mais Antigos)";
     }
 
-    filterCatalog(document.getElementById("menuSearchInput").value);
+    processTabChange();
     focusCardSafely(0);
   }
 
   function processTabChange() {
-    const heroPhotos = document.getElementById("heroPhotos");
-    const labelCountry = document.getElementById("labelCountry");
-
-    if (currentTab === 'sets') {
-      cardsPerRow = 4; // Ajustado para exatamente 4 cards retangulares em Sets
-      heroPhotos.classList.add("aspect-sets");
-      labelCountry.innerText = "ORIGEM:";
-    } else if (currentTab === 'ococ') {
-      cardsPerRow = 7;
-      heroPhotos.classList.remove("aspect-sets");
-      labelCountry.innerText = "PAÍS / ORIGEM:";
-    } else {
-      cardsPerRow = 7;
-      heroPhotos.classList.remove("aspect-sets");
-      labelCountry.innerText = "ORIGEM:";
-    }
-
     buildBrandList();
     buildVirtualKeyboard();
-    filterCatalog(document.getElementById("menuSearchInput").value);
+    filterCatalogByBrand("");
   }
 
   function getBaseListForCurrentTab() {
@@ -700,44 +451,36 @@
     return list;
   }
 
+  /* LIMPA COMPLETAMENTE O FOCO NATIVO E VISUAL DA TELA */
   function clearAllCardFocus() {
-  // Remove o foco nativo do elemento ativo para não dar conflito na TV
-  if (document.activeElement && typeof document.activeElement.blur === 'function') {
-    document.activeElement.blur();
+    if (document.activeElement && typeof document.activeElement.blur === 'function') {
+      document.activeElement.blur();
+    }
+
+    document.querySelectorAll(".card").forEach(c => c.classList.remove("focused"));
+    document.querySelectorAll(".vk-key").forEach(k => k.classList.remove("focused"));
+
+    const sortBtn = document.getElementById("sortOrderBtn");
+    if (sortBtn) sortBtn.classList.remove("focused");
   }
 
-  // Remove a classe de destaque de todos os cards
-  document.querySelectorAll(".card").forEach(c => {
-    c.classList.remove("focused");
-  });
-
-  const sortBtn = document.getElementById("sortOrderBtn");
-  if (sortBtn) sortBtn.classList.remove("focused");
-}
-
-
   function focusCardSafely(targetIndex) {
-  closeMenu();
-  
-  requestAnimationFrame(() => {
-    const cards = document.querySelectorAll(".card");
-    if (cards.length > 0) {
-      const finalIdx = Math.min(Math.max(0, targetIndex), cards.length - 1);
-      
-      // Limpa rigorosamente qualquer outro card antes de focar o novo
-      clearAllCardFocus();
+    closeMenu();
+    
+    requestAnimationFrame(() => {
+      const cards = document.querySelectorAll(".card");
+      if (cards.length > 0) {
+        const finalIdx = Math.min(Math.max(0, targetIndex), cards.length - 1);
+        clearAllCardFocus();
 
-      activeLocalIndex = finalIdx;
-      const targetCard = cards[finalIdx];
-      
-      // Aplica o destaque e o foco real no mesmo milissegundo
-      targetCard.classList.add("focused");
-      targetCard.focus({ preventScroll: true });
-      updateCounter(finalIdx);
-    }
-  });
-}
-
+        activeLocalIndex = finalIdx;
+        const targetCard = cards[finalIdx];
+        targetCard.classList.add("focused");
+        targetCard.focus({ preventScroll: true });
+        updateCounter(finalIdx);
+      }
+    });
+  }
 
   function openMenu() {
     document.getElementById("sidebarDrawer").classList.add("open");
@@ -760,11 +503,8 @@
     }
 
     const targetElem = document.getElementById(lastSelectedMenuId);
-    if (targetElem) {
-      targetElem.focus();
-    } else {
-      document.getElementById("menuBtnHome").focus();
-    }
+    if (targetElem) targetElem.focus();
+    else document.getElementById("menuBtnHome").focus();
   }
 
   function closeMenu() {
@@ -775,11 +515,8 @@
   function toggleMenuMobile(e) {
     if(e) e.stopPropagation();
     const drawer = document.getElementById("sidebarDrawer");
-    if (drawer.classList.contains("open")) {
-      closeMenu();
-    } else {
-      openMenu();
-    }
+    if (drawer.classList.contains("open")) closeMenu();
+    else openMenu();
   }
 
   function handleMainAreaClick() {
@@ -846,7 +583,7 @@
     else if (key === 'DEL') input.value = input.value.slice(0, -1);
     else if (key === 'LIMPAR') input.value = '';
     else input.value += key;
-    filterCatalog(input.value);
+    filterCatalogByBrand(input.value);
   }
 
   function buildBrandList() {
@@ -866,7 +603,7 @@
       e.stopPropagation();
       lastSelectedMenuId = 'menuBtnBrands';
       lastSelectedBrandElem = allBtn;
-      filterCatalog(""); 
+      filterCatalogByBrand(""); 
       focusCardSafely(0); 
     };
 
@@ -887,7 +624,7 @@
         e.stopPropagation();
         lastSelectedMenuId = 'menuBtnBrands';
         lastSelectedBrandElem = btn;
-        filterCatalog(b); 
+        filterCatalogByBrand(b); 
         focusCardSafely(0); 
       };
 
@@ -902,48 +639,57 @@
     });
   }
 
-  function filterCatalog(query) {
+  function filterCatalogByBrand(query) {
     const val = query.toLowerCase().trim();
     const baseList = getBaseListForCurrentTab();
 
     currentFiltered = baseList.filter(can => {
       if (!val) return true;
-      return [
-        can.name || can.Nome,
-        can.brewery || can.Cervejaria,
-        can.country || can.Pais,
-        can.volume || can.Volume,
-        can.year || can.Ano,
-        can.barcode || can.Barcode
-      ].map(v => String(v || "").toLowerCase()).join(" ").includes(val);
+      const b = String(can.brewery || can.Cervejaria || "").toLowerCase();
+      return b.includes(val);
     });
 
     currentPage = 0;
     activeLocalIndex = 0;
     renderApp();
+    updateCounter(0);
+  }
 
-    if (currentFiltered.length > 0) {
-      updateHeroPanel(currentFiltered[0], 0);
-    } else {
-      document.getElementById("cardCounter").innerText = "0/0";
-      document.getElementById("heroTitle").innerText = "NENHUMA LATA ENCONTRADA";
-      document.getElementById("heroPhotos").innerHTML = "";
-      const wallpaperElem = document.getElementById("heroBrandWallpaper");
-      if (wallpaperElem) {
-        wallpaperElem.style.backgroundImage = "none";
-        wallpaperElem.classList.remove("active");
+  function updateCounter(localIndex) {
+    const total = currentFiltered.length;
+    const globalIndex = currentPage * cardsPerPage + localIndex;
+    const currentNum = total > 0 ? (globalIndex + 1) : 0;
+    
+    const counterElem = document.getElementById("cardCounter");
+    if (counterElem) {
+      counterElem.innerText = `${currentNum}/${total}`;
+    }
+
+    const currentCan = currentFiltered[globalIndex];
+    if (currentCan) {
+      let rawPhotos = [];
+      if (currentCan.images) rawPhotos = [currentCan.images.front, currentCan.images.left, currentCan.images.back, currentCan.images.right].filter(Boolean);
+      if (rawPhotos.length === 0) rawPhotos = [currentCan.ImgFront, currentCan.ImgLeft, currentCan.ImgBack, currentCan.ImgRight].filter(Boolean);
+      const logoUrl = currentCan.brandLogo || currentCan.BRAND_LOGO;
+      if (rawPhotos.length === 0 && logoUrl) rawPhotos.push(logoUrl);
+      zoomGallery = rawPhotos;
+
+      if (logoUrl) {
+        document.getElementById("heroBrandLogo").innerHTML = `<img src="${getOptimizedImageUrl(logoUrl, 400)}" alt="LOGO DA MARCA">`;
+      } else {
+        document.getElementById("heroBrandLogo").innerHTML = "";
       }
+    } else {
+      zoomGallery = [];
     }
   }
 
-  /* RENDERIZAÇÃO DOS CARDS COM CORREÇÃO DE FOCO NATIVA */
   function renderApp() {
-    clearAllCardFocus();
     const row = document.getElementById("cardRow");
     row.innerHTML = "";
 
-    const startIndex = currentPage * cardsPerRow;
-    const pageItems = currentFiltered.slice(startIndex, startIndex + cardsPerRow);
+    const startIndex = currentPage * cardsPerPage;
+    const pageItems = currentFiltered.slice(startIndex, startIndex + cardsPerPage);
 
     pageItems.forEach((can, localIndex) => {
       const globalIndex = startIndex + localIndex;
@@ -983,25 +729,24 @@
       card.dataset.globalIndex = globalIndex;
       
       card.onmouseenter = () => {
-  clearAllCardFocus();
-  card.classList.add("focused");
-  activeLocalIndex = localIndex;
-  updateCounter(localIndex);
-};
+        clearAllCardFocus();
+        card.classList.add("focused");
+        activeLocalIndex = localIndex;
+        updateCounter(localIndex);
+      };
 
-card.onfocus = () => {
-  if (document.getElementById("zoomModal").classList.contains("active") || document.getElementById("exitModal").classList.contains("active")) return;
-  
-  // Limpa os outros cards para garantir que só o card focado atual fique ativo
-  document.querySelectorAll(".card").forEach(c => {
-    if (c !== card) c.classList.remove("focused");
-  });
-  
-  card.classList.add("focused");
-  activeLocalIndex = localIndex;
-  updateCounter(localIndex);
-};
+      card.onfocus = () => {
+        if (document.getElementById("zoomModal").classList.contains("active") || document.getElementById("exitModal").classList.contains("active")) return;
+        
+        // NOVO: Garante remoção exata da classe dos outros cards
+        document.querySelectorAll(".card").forEach(c => {
+          if (c !== card) c.classList.remove("focused");
+        });
 
+        card.classList.add("focused");
+        activeLocalIndex = localIndex;
+        updateCounter(localIndex);
+      };
       
       card.onclick = (e) => {
         e.stopPropagation();
@@ -1023,7 +768,7 @@ card.onfocus = () => {
           e.stopPropagation();
           if (localIndex < pageItems.length - 1) {
             focusCardSafely(localIndex + 1);
-          } else if ((startIndex + cardsPerRow) < currentFiltered.length) {
+          } else if ((startIndex + cardsPerPage) < currentFiltered.length) {
             currentPage++;
             renderApp();
             focusCardSafely(0);
@@ -1036,7 +781,7 @@ card.onfocus = () => {
           } else if (currentPage > 0) {
             currentPage--;
             renderApp();
-            focusCardSafely(cardsPerRow - 1);
+            focusCardSafely(cardsPerPage - 1);
           } else {
             clearAllCardFocus();
             openMenu();
@@ -1044,18 +789,29 @@ card.onfocus = () => {
         } else if (key === "ArrowDown" || keyCode === 40) {
           e.preventDefault();
           e.stopPropagation();
-          if ((startIndex + cardsPerRow) < currentFiltered.length) {
+          if (localIndex < cardsPerRow) {
+            if (localIndex + cardsPerRow < pageItems.length) {
+              focusCardSafely(localIndex + cardsPerRow);
+            } else if ((startIndex + cardsPerPage) < currentFiltered.length) {
+              currentPage++;
+              renderApp();
+              focusCardSafely(0);
+            }
+          } else if ((startIndex + cardsPerPage) < currentFiltered.length) {
             currentPage++;
             renderApp();
-            focusCardSafely(Math.min(localIndex, currentFiltered.slice(currentPage * cardsPerRow).length - 1));
+            focusCardSafely(localIndex % cardsPerRow);
           }
         } else if (key === "ArrowUp" || keyCode === 38) {
           e.preventDefault();
           e.stopPropagation();
-          if (currentPage > 0) {
+          if (localIndex >= cardsPerRow) {
+            focusCardSafely(localIndex - cardsPerRow);
+          } else if (currentPage > 0) {
             currentPage--;
             renderApp();
-            focusCardSafely(localIndex);
+            const target = cardsPerRow + (localIndex % cardsPerRow);
+            focusCardSafely(target);
           } else {
             clearAllCardFocus();
             const sortBtn = document.getElementById("sortOrderBtn");
@@ -1087,104 +843,6 @@ card.onfocus = () => {
     });
   }
 
-  function updateHeroPanel(can, index = 0) {
-    if (!can) return;
-
-    let fallbackTitle = "SELECIONE UMA LATA";
-    if (currentTab === 'ococ') fallbackTitle = "SELECIONE UMA LATA (OCOC)";
-    if (currentTab === 'sets') fallbackTitle = "SELECIONE UM SET";
-
-    const titleVal = can.name || can.Nome || fallbackTitle;
-    const countryVal = can.country || can.Pais || "-";
-    const volumeVal = can.volume || can.Volume || "-";
-    const yearVal = can.year || can.Ano || "-";
-    const barcodeVal = can.barcode || can.Barcode || "-";
-
-    document.getElementById("heroTitle").innerText = String(titleVal).toUpperCase();
-    document.getElementById("heroCountry").innerText = String(countryVal).toUpperCase();
-    document.getElementById("heroVolume").innerText = String(volumeVal).toUpperCase();
-    document.getElementById("heroYear").innerText = yearVal;
-    document.getElementById("heroBarcode").innerText = barcodeVal;
-
-    const logoContainer = document.getElementById("heroBrandLogo");
-    const logoUrl = can.brandLogo || can.BRAND_LOGO;
-    if (logoUrl && String(logoUrl).trim() !== "") {
-      logoContainer.innerHTML = `<img src="${getOptimizedImageUrl(logoUrl, 400)}" alt="LOGO DA CERVEJARIA">`;
-    } else {
-      logoContainer.innerHTML = "";
-    }
-
-    const wallpaperElem = document.getElementById("heroBrandWallpaper");
-    const currentBrand = String(can.brewery || can.Cervejaria || "").toLowerCase().trim();
-    let wallpaperUrl = "";
-
-    if (currentBrand) {
-      const sameBrandCans = canCatalog.filter(c => {
-        const b = String(c.brewery || c.Cervejaria || "").toLowerCase().trim();
-        return b === currentBrand || b.includes(currentBrand);
-      });
-
-      const canWithWallpaper = sameBrandCans.find(c => {
-        const wp = c.brandWallpaper || c.wallpaper || c.BRANDWALLPAPER || c.WALLPAPER;
-        return wp && String(wp).trim() !== "";
-      });
-
-      if (canWithWallpaper) {
-        wallpaperUrl = canWithWallpaper.brandWallpaper || canWithWallpaper.wallpaper || canWithWallpaper.BRANDWALLPAPER || canWithWallpaper.WALLPAPER;
-      } else {
-        wallpaperUrl = logoUrl || can.ImgCover || can.cover;
-      }
-    }
-
-    if (wallpaperElem && wallpaperUrl && String(wallpaperUrl).trim() !== "") {
-      const fullImgUrl = getOptimizedImageUrl(wallpaperUrl, 1200);
-      wallpaperElem.style.backgroundImage = `url('${fullImgUrl}')`;
-      wallpaperElem.classList.add("active");
-    } else if (wallpaperElem) {
-      wallpaperElem.style.backgroundImage = "none";
-      wallpaperElem.classList.remove("active");
-    }
-
-    const total = currentFiltered.length;
-    const currentNum = total > 0 ? (index + 1) : 0;
-    document.getElementById("cardCounter").innerText = `${currentNum}/${total}`;
-
-    let rawPhotos = [];
-    if (can.images) {
-      rawPhotos = [can.images.front, can.images.left, can.images.back, can.images.right].filter(Boolean);
-    }
-    if (rawPhotos.length === 0) {
-      rawPhotos = [can.ImgFront, can.ImgLeft, can.ImgBack, can.ImgRight].filter(Boolean);
-    }
-
-    if (rawPhotos.length === 0 && logoUrl) {
-      rawPhotos.push(logoUrl);
-    }
-
-    zoomGallery = rawPhotos;
-
-    const photosContainer = document.getElementById("heroPhotos");
-    photosContainer.innerHTML = "";
-
-    const displayPhotos = rawPhotos.slice(0, 4);
-
-    if (displayPhotos.length > 0) {
-      displayPhotos.forEach((url, idx) => {
-        const optimizedUrl = getOptimizedImageUrl(url, 1000);
-        const photoCard = document.createElement("div");
-        photoCard.className = "hero-photo-card";
-        photoCard.innerHTML = `<img src="${optimizedUrl}" alt="FOTO ${idx+1}" loading="lazy" decoding="async">`;
-        photoCard.onclick = (e) => {
-          e.stopPropagation();
-          openZoomModal(idx);
-        };
-        photosContainer.appendChild(photoCard);
-      });
-    } else {
-      photosContainer.innerHTML = `<div class="hero-photo-card" style="grid-column: span 2; grid-row: span 2; color:#aaa; font-size:0.8rem;">SEM FOTOS</div>`;
-    }
-  }
-
   function openZoomModal(index) {
     if (!zoomGallery || zoomGallery.length === 0) return;
     currentZoomIndex = index;
@@ -1213,9 +871,7 @@ card.onfocus = () => {
     zoomState = (zoomState + 1) % 4;
 
     if (zoomState === 0) {
-      zoomLevel = 1.0;
-      panX = 0;
-      panY = 0;
+      zoomLevel = 1.0; panX = 0; panY = 0;
     } else if (zoomState === 1) {
       zoomLevel = 1.5;
     } else if (zoomState === 2) {
@@ -1282,7 +938,7 @@ card.onfocus = () => {
 
   catalogSection.addEventListener("wheel", (e) => {
     if (e.deltaY > 0) {
-      if (((currentPage + 1) * cardsPerRow) < currentFiltered.length) {
+      if (((currentPage + 1) * cardsPerPage) < currentFiltered.length) {
         currentPage++;
         renderApp();
         focusCardSafely(activeLocalIndex);
@@ -1303,7 +959,7 @@ card.onfocus = () => {
 
     if (Math.abs(diffY) > Math.abs(diffX)) {
       if (diffY < -threshold) {
-        if (((currentPage + 1) * cardsPerRow) < currentFiltered.length) {
+        if (((currentPage + 1) * cardsPerPage) < currentFiltered.length) {
           currentPage++;
           renderApp();
           focusCardSafely(activeLocalIndex);
@@ -1320,7 +976,7 @@ card.onfocus = () => {
         const cards = document.querySelectorAll(".card");
         if (activeLocalIndex < cards.length - 1) {
           focusCardSafely(activeLocalIndex + 1);
-        } else if (((currentPage + 1) * cardsPerRow) < currentFiltered.length) {
+        } else if (((currentPage + 1) * cardsPerPage) < currentFiltered.length) {
           currentPage++;
           renderApp();
           focusCardSafely(0);
@@ -1331,7 +987,7 @@ card.onfocus = () => {
         } else if (currentPage > 0) {
           currentPage--;
           renderApp();
-          focusCardSafely(cardsPerRow - 1);
+          focusCardSafely(cardsPerPage - 1);
         }
       }
     }
@@ -1362,35 +1018,23 @@ card.onfocus = () => {
         toggleZoomStep();
       } else if (zoomLevel > 1.0) {
         if (e.key === "ArrowLeft" || e.keyCode === 37) {
-          e.preventDefault();
-          panX += PAN_STEP;
-          applyZoomTransform();
+          e.preventDefault(); panX += PAN_STEP; applyZoomTransform();
         } else if (e.key === "ArrowRight" || e.keyCode === 39) {
-          e.preventDefault();
-          panX -= PAN_STEP;
-          applyZoomTransform();
+          e.preventDefault(); panX -= PAN_STEP; applyZoomTransform();
         } else if (e.key === "ArrowUp" || e.keyCode === 38) {
-          e.preventDefault();
-          panY += PAN_STEP;
-          applyZoomTransform();
+          e.preventDefault(); panY += PAN_STEP; applyZoomTransform();
         } else if (e.key === "ArrowDown" || e.keyCode === 40) {
-          e.preventDefault();
-          panY -= PAN_STEP;
-          applyZoomTransform();
+          e.preventDefault(); panY -= PAN_STEP; applyZoomTransform();
         } else if (e.key === "Escape" || e.key === "Back" || e.keyCode === 10009 || e.keyCode === 27) {
-          e.preventDefault();
-          closeZoomModal();
+          e.preventDefault(); closeZoomModal();
         }
       } else {
         if (e.key === "ArrowLeft" || e.keyCode === 37) {
-          e.preventDefault();
-          navigateZoom(-1);
+          e.preventDefault(); navigateZoom(-1);
         } else if (e.key === "ArrowRight" || e.keyCode === 39) {
-          e.preventDefault();
-          navigateZoom(1);
+          e.preventDefault(); navigateZoom(1);
         } else if (e.key === "ArrowUp" || e.key === "ArrowDown" || e.key === "Escape" || e.key === "Back" || e.keyCode === 10009 || e.keyCode === 27) {
-          e.preventDefault();
-          closeZoomModal();
+          e.preventDefault(); closeZoomModal();
         }
       }
     } else if (isExitActive) {
@@ -1402,8 +1046,7 @@ card.onfocus = () => {
         if (active === btnNo) btnYes.focus();
         else btnNo.focus();
       } else if (e.key === "Escape" || e.key === "Back" || e.keyCode === 10009 || e.keyCode === 27) {
-        e.preventDefault();
-        closeExitModal();
+        e.preventDefault(); closeExitModal();
       }
     } else {
       if (e.key === "Escape" || e.key === "Back" || e.keyCode === 10009 || e.keyCode === 27) {
@@ -1424,7 +1067,9 @@ card.onfocus = () => {
     }
   }, true);
 
-  window.onload = fetchCatalogFromSheet;
+  window.onload = () => {
+    fetchCatalogFromSheet();
+  };
 </script>
 </body>
 </html>
