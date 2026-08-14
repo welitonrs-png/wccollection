@@ -166,7 +166,7 @@
               type="color" 
               id="brandColorPicker" 
               style="width: 45px; height: 38px; border: 1px solid #333d52; border-radius: 6px; background: #0f121a; cursor: pointer;"
-              value="#008234"
+              value="#ffffff"
               onchange="document.getElementById('brandColor').value = this.value;"
             >
             <input 
@@ -174,8 +174,9 @@
               id="brandColor" 
               name="brandColor" 
               class="form-control" 
-              placeholder="#008234"
+              placeholder="Ex: #008234"
               autocomplete="off"
+              value=""
               oninput="if(this.value.length === 7) document.getElementById('brandColorPicker').value = this.value;"
             >
           </div>
@@ -379,9 +380,13 @@
     toggleSetFields();
     document.getElementById("setName").value = item.setName || "";
 
-    const savedColor = item.brandColor || item.color || "#008234";
+    const savedColor = item.brandColor || item.color || "";
     document.getElementById("brandColor").value = savedColor;
-    document.getElementById("brandColorPicker").value = savedColor;
+    if (savedColor) {
+      document.getElementById("brandColorPicker").value = savedColor;
+    } else {
+      document.getElementById("brandColorPicker").value = "#ffffff";
+    }
 
     setPhotoField("brandLogo", "prevLogo", item.BRAND_LOGO || item.brandLogo);
     setPhotoField("brandWallpaper", "prevWallpaper", item.brandWallpaper || item.wallpaper);
@@ -417,7 +422,12 @@
 
     if (!breweryInput) return;
     const typedBrewery = breweryInput.value.trim().toLowerCase();
-    if (!typedBrewery) return;
+    
+    if (!typedBrewery) {
+      if (colorInput) colorInput.value = "";
+      if (colorPicker) colorPicker.value = "#ffffff";
+      return;
+    }
 
     const match = canCatalog.find(item => {
       const b = String(item.brewery || item.Cervejaria || "").trim().toLowerCase();
@@ -439,6 +449,11 @@
           colorInput.value = foundColor;
           if (colorPicker) colorPicker.value = foundColor;
         }
+      }
+    } else {
+      if (colorInput && !document.getElementById("_rowNum").value) {
+        colorInput.value = "";
+        if (colorPicker) colorPicker.value = "#ffffff";
       }
     }
   }
@@ -566,8 +581,8 @@
     document.getElementById("ImgLeft").value = "";
     document.getElementById("ImgBack").value = "";
     document.getElementById("ImgRight").value = "";
-    document.getElementById("brandColor").value = "#008234";
-    document.getElementById("brandColorPicker").value = "#008234";
+    document.getElementById("brandColor").value = "";
+    document.getElementById("brandColorPicker").value = "#ffffff";
 
     document.getElementById("prevLogo").src = "";
     document.getElementById("prevWallpaper").src = "";
