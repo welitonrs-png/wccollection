@@ -176,13 +176,15 @@
     /* CONTAINER DE INFORMAÇÕES ALINHADO NO TOPO E NA BASE DO HERO */
     /* CONTAINER DAS INFORMAÇÕES DO HERO */
     .hero-right-info { 
+        /* CONTAINER PRINCIPAL DO HERO (DIREITA) */
+    .hero-right-info { 
       flex: 1; 
       height: 100%; 
       display: flex; 
       flex-direction: column; 
-      justify-content: flex-start; /* Alinha do topo para baixo */
+      justify-content: flex-start; /* Alinha tudo do topo para baixo */
       color: #f39c12; 
-      text-transform: uppercase; 
+      text-transform: capitalize; 
       font-style: italic; 
       padding-right: 180px; 
       z-index: 10; 
@@ -190,18 +192,21 @@
       box-sizing: border-box;
     }
 
-    /* Espaçamento maior após o Título da Cerveja */
+    /* ESPAÇAMENTO DE 20PX APÓS O TÍTULO PRINCIPAL */
     .hero-right-info h1, 
-    .hero-right-info .hero-title {
-      margin-bottom: 20px; /* Distância de 20px do título para a primeira informação */
+    .hero-right-info h2,
+    .hero-right-info .hero-title,
+    .hero-right-info > *:first-child {
+      margin-bottom: 20px !important;
     }
 
-    /* ESPAÇAMENTO FIXO DE 8PX ENTRE AS LINHAS DE INFORMAÇÕES */
-    .hero-right-info p,
-    .hero-right-info .hero-info-item {
-      margin: 0 0 15px 0; /* 8px de distância para a próxima linha */
+    /* ESPAÇAMENTO FIXO DE 8PX ENTRE TODOS OS ELEMENTOS DE INFORMAÇÃO */
+    .hero-right-info > * {
+      margin-top: 0;
+      margin-bottom: 8px !important; /* Força 8px abaixo de cada linha de informação */
       line-height: 1.2;
     }
+
 
 
     .hero-title { 
