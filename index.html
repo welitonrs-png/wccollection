@@ -240,26 +240,28 @@
     /* SEÇÃO INFERIOR DO CATÁLOGO - 1 LINHA DE CARDS */
         /* SEÇÃO INFERIOR DO CATÁLOGO */
 /* SEÇÃO INFERIOR DO CATÁLOGO - INDEX.HTML */
-.catalog-section { 
-  height: 195px; 
-  min-height: 195px; 
-  width: 100%; 
-  overflow: hidden; 
-  flex-shrink: 0; 
-  touch-action: none; 
-  display: flex;
-  justify-content: center; /* Centraliza a estrutura fixa de 7 colunas na TV */
-}
+    /* SEÇÃO DE CARDS NO INDEX.HTML */
+    .catalog-section { 
+      height: 195px; 
+      min-height: 195px; 
+      width: 100%; 
+      overflow: hidden; 
+      flex-shrink: 0; 
+      touch-action: none; 
+      display: flex;
+      justify-content: center;
+    }
 
-.card-row { 
-  display: flex; 
-  gap: 12px; 
-  width: 926px; /* LARGURA FIXA DE 7 CARDS: (7 x 122px) + (6 x 12px gap) */
-  max-width: 100%;
-  height: 100%; 
-  justify-content: flex-start; /* Força os cards a encostarem na esquerda da estrutura */
-  align-content: start; 
-}
+    .card-row { 
+      display: flex; 
+      gap: 12px; 
+      width: max-content; 
+      max-width: 100%;
+      height: 100%; 
+      justify-content: flex-start; 
+      align-content: start; 
+    }
+
     .card {
       width: 122px !important;
       min-width: 122px !important;
@@ -475,7 +477,7 @@
   
   let currentTab = 'home';
   let cardsPerRow = 7;
-  let cardsPerPage = 14;
+  let cardsPerPage = 7;
   let currentPage = 0;
   let activeLocalIndex = 0;
   let lastSelectedMenuId = 'menuBtnHome'; 
@@ -725,6 +727,38 @@
     const sortBtn = document.getElementById("sortOrderBtn");
     if (sortBtn) sortBtn.classList.remove("focused");
   }
+    function switchTab(tabName) {
+    currentTab = tabName;
+    lastSelectedBrandElem = null;
+    
+    // Configura a quantidade de cards por linha e por página conforme a aba
+    if (tabName === 'home') {
+      lastSelectedMenuId = 'menuBtnHome';
+      cardsPerRow = 7;
+      cardsPerPage = 7;
+    } else if (tabName === 'ococ') {
+      lastSelectedMenuId = 'menuBtnOcoc';
+      cardsPerRow = 7;
+      cardsPerPage = 7;
+    } else if (tabName === 'sets') {
+      lastSelectedMenuId = 'menuBtnSets';
+      cardsPerRow = 4;
+      cardsPerPage = 4;
+    }
+
+    const searchInput = document.getElementById("menuSearchInput");
+    if (searchInput) searchInput.value = "";
+    
+    const searchContainer = document.getElementById("searchInlineContainer");
+    if (searchContainer) searchContainer.classList.remove("active");
+    
+    const brandList = document.getElementById("brandInlineList");
+    if (brandList) brandList.classList.remove("active");
+    
+    processTabChange();
+    focusCardSafely(0);
+    }
+  
 
   function focusCardSafely(targetIndex) {
     closeMenu();
