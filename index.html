@@ -174,20 +174,35 @@
     .hero-photo-card img { width: 100%; height: 100%; object-fit: contain; }
 
     /* CONTAINER DE INFORMAÇÕES ALINHADO NO TOPO E NA BASE DO HERO */
-.hero-right-info { 
+    /* CONTAINER DAS INFORMAÇÕES DO HERO */
+    .hero-right-info { 
       flex: 1; 
       height: 100%; 
       display: flex; 
       flex-direction: column; 
-      justify-content: space-between; 
-      color: #e2e8f0; 
-      text-transform: uppercase; /* Altera de uppercase para capitalize */
+      justify-content: flex-start; /* Alinha do topo para baixo */
+      color: #f39c12; 
+      text-transform: capitalize; 
       font-style: italic; 
       padding-right: 180px; 
       z-index: 10; 
       position: relative; 
       box-sizing: border-box;
     }
+
+    /* Espaçamento maior após o Título da Cerveja */
+    .hero-right-info h1, 
+    .hero-right-info .hero-title {
+      margin-bottom: 20px; /* Distância de 20px do título para a primeira informação */
+    }
+
+    /* ESPAÇAMENTO FIXO DE 8PX ENTRE AS LINHAS DE INFORMAÇÕES */
+    .hero-right-info p,
+    .hero-right-info .hero-info-item {
+      margin: 0 0 8px 0; /* 8px de distância para a próxima linha */
+      line-height: 1.2;
+    }
+
 
     .hero-title { 
       font-family: 'Vialog 1450 Pro', sans-serif !important;
