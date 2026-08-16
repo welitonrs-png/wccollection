@@ -238,9 +238,7 @@
     .card-counter { font-size: 0.85rem; font-weight: 900; color: #f39c12; background: transparent; padding: 0; letter-spacing: 1px; }
 
     /* SEÇÃO INFERIOR DO CATÁLOGO - 1 LINHA DE CARDS */
-        /* SEÇÃO INFERIOR DO CATÁLOGO */
-/* SEÇÃO INFERIOR DO CATÁLOGO - INDEX.HTML */
-    /* SEÇÃO DE CARDS NO INDEX.HTML */
+    /* SEÇÃO INFERIOR DO CATÁLOGO */
     .catalog-section { 
       height: 195px; 
       min-height: 195px; 
@@ -249,18 +247,19 @@
       flex-shrink: 0; 
       touch-action: none; 
       display: flex;
-      justify-content: center;
+      justify-content: center; /* Centraliza a estrutura fixa na Smart TV */
     }
 
     .card-row { 
       display: flex; 
       gap: 12px; 
-      width: max-content; 
+      width: 926px; /* Largura fixa equivalente a 7 cards + gaps */
       max-width: 100%;
       height: 100%; 
-      justify-content: flex-start; 
+      justify-content: flex-start !important; /* Força os cards a começarem sempre da esquerda */
       align-content: start; 
     }
+
 
     .card {
       width: 122px !important;
