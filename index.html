@@ -477,7 +477,7 @@
   
   let currentTab = 'home';
   let cardsPerRow = 7;
-  let cardsPerPage = 7;
+  let cardsPerPage = 7; /* FIXADO EM 7 PARA EXIBIR APENAS 1 LINHA */
   let currentPage = 0;
   let activeLocalIndex = 0;
   let lastSelectedMenuId = 'menuBtnHome'; 
@@ -643,15 +643,26 @@
   function switchTab(tabName) {
     currentTab = tabName;
     lastSelectedBrandElem = null;
-    
-    if(tabName === 'home') lastSelectedMenuId = 'menuBtnHome';
-    else if(tabName === 'ococ') lastSelectedMenuId = 'menuBtnOcoc';
-    else if(tabName === 'sets') lastSelectedMenuId = 'menuBtnSets';
 
-    document.getElementById("menuSearchInput").value = "";
-    document.getElementById("searchInlineContainer").classList.remove("active");
-    document.getElementById("brandInlineList").classList.remove("active");
+    if (tabName === 'sets') {
+      cardsPerRow = 4;
+      cardsPerPage = 4;
+      lastSelectedMenuId = 'menuBtnSets';
+    } else {
+      cardsPerRow = 7;
+      cardsPerPage = 7;
+      lastSelectedMenuId = tabName === 'ococ' ? 'menuBtnOcoc' : 'menuBtnHome';
+    }
+
+    const searchInput = document.getElementById("menuSearchInput");
+    if (searchInput) searchInput.value = "";
     
+    const searchContainer = document.getElementById("searchInlineContainer");
+    if (searchContainer) searchContainer.classList.remove("active");
+    
+    const brandList = document.getElementById("brandInlineList");
+    if (brandList) brandList.classList.remove("active");
+
     processTabChange();
     focusCardSafely(0);
   }
@@ -659,16 +670,12 @@
   function toggleSortOrder() {
     sortNewestFirst = !sortNewestFirst;
     const sortBtn = document.getElementById("sortOrderBtn");
-    if (sortNewestFirst) {
-      sortBtn.innerText = "▼";
-      sortBtn.title = "Ordenação: Maior para Menor (Mais Novos)";
-    } else {
-      sortBtn.innerText = "▲";
-      sortBtn.title = "Ordenação: Menor para Maior (Mais Antigos)";
+    if (sortBtn) {
+      sortBtn.innerText = sortNewestFirst ? "▼" : "▲";
     }
 
     const currentSearchVal = document.getElementById("topBrandInput") ? document.getElementById("topBrandInput").value : "";
-    filterCatalogByBrand(currentSearchVal);
+    filterCatalog(currentSearchVal);
     focusCardSafely(0);
   }
 
@@ -677,7 +684,7 @@
     buildVirtualKeyboard();
     buildTopVirtualKeyboard();
     const currentSearchVal = document.getElementById("topBrandInput") ? document.getElementById("topBrandInput").value : "";
-    filterCatalogByBrand(currentSearchVal);
+    filterCatalog(currentSearchVal);
   }
 
   function getBaseListForCurrentTab() {
@@ -727,38 +734,6 @@
     const sortBtn = document.getElementById("sortOrderBtn");
     if (sortBtn) sortBtn.classList.remove("focused");
   }
-    function switchTab(tabName) {
-    currentTab = tabName;
-    lastSelectedBrandElem = null;
-    
-    // Configura a quantidade de cards por linha e por página conforme a aba
-    if (tabName === 'home') {
-      lastSelectedMenuId = 'menuBtnHome';
-      cardsPerRow = 7;
-      cardsPerPage = 7;
-    } else if (tabName === 'ococ') {
-      lastSelectedMenuId = 'menuBtnOcoc';
-      cardsPerRow = 7;
-      cardsPerPage = 7;
-    } else if (tabName === 'sets') {
-      lastSelectedMenuId = 'menuBtnSets';
-      cardsPerRow = 4;
-      cardsPerPage = 4;
-    }
-
-    const searchInput = document.getElementById("menuSearchInput");
-    if (searchInput) searchInput.value = "";
-    
-    const searchContainer = document.getElementById("searchInlineContainer");
-    if (searchContainer) searchContainer.classList.remove("active");
-    
-    const brandList = document.getElementById("brandInlineList");
-    if (brandList) brandList.classList.remove("active");
-    
-    processTabChange();
-    focusCardSafely(0);
-    }
-  
 
   function focusCardSafely(targetIndex) {
     closeMenu();
@@ -768,7 +743,6 @@
       const cards = document.querySelectorAll(".card");
       if (cards.length > 0) {
         const finalIdx = Math.min(Math.max(0, targetIndex), cards.length - 1);
-        
         clearAllCardFocus();
 
         activeLocalIndex = finalIdx;
@@ -886,7 +860,7 @@
     else if (key === 'DEL') input.value = input.value.slice(0, -1);
     else if (key === 'LIMPAR') input.value = '';
     else input.value += key;
-    filterCatalogByBrand(input.value);
+    filterCatalog(input.value);
   }
 
   function buildTopVirtualKeyboard() {
@@ -982,7 +956,7 @@
       closeAutocomplete();
     }
 
-    filterCatalogByBrand(input.value);
+    filterCatalog(input.value);
   }
 
   function openTopVkPanel() {
@@ -1044,7 +1018,7 @@
       lastSelectedMenuId = 'menuBtnBrands';
       lastSelectedBrandElem = allBtn;
       if (document.getElementById("topBrandInput")) document.getElementById("topBrandInput").value = "";
-      filterCatalogByBrand(""); 
+      filterCatalog(""); 
       focusCardSafely(0); 
     };
 
@@ -1066,7 +1040,7 @@
         lastSelectedMenuId = 'menuBtnBrands';
         lastSelectedBrandElem = btn;
         if (document.getElementById("topBrandInput")) document.getElementById("topBrandInput").value = b;
-        filterCatalogByBrand(b); 
+        filterCatalog(b); 
         focusCardSafely(0); 
       };
 
@@ -1081,9 +1055,18 @@
     });
   }
 
-  function filterCatalogByBrand(query) {
+  /* FUNÇÃO ÚNICA DE FILTRO E LIMITAÇÃO DE CARDS POR LINHA */
+  function filterCatalog(query) {
     const val = query ? query.toLowerCase().trim() : "";
     const baseList = getBaseListForCurrentTab();
+
+    if (currentTab === 'sets') {
+      cardsPerRow = 4;
+      cardsPerPage = 4;
+    } else {
+      cardsPerRow = 7;
+      cardsPerPage = 7;
+    }
 
     currentFiltered = baseList.filter(can => {
       if (!val) return true;
@@ -1240,7 +1223,7 @@
     const topBrandInput = document.getElementById("topBrandInput");
     if (topBrandInput) topBrandInput.value = brandName.toUpperCase();
     closeTopVkPanel();
-    filterCatalogByBrand(brandName);
+    filterCatalog(brandName);
     focusCardSafely(0);
   }
 
@@ -1379,29 +1362,18 @@
         } else if (key === "ArrowDown" || keyCode === 40) {
           e.preventDefault();
           e.stopPropagation();
-          if (localIndex < cardsPerRow) {
-            if (localIndex + cardsPerRow < pageItems.length) {
-              focusCardSafely(localIndex + cardsPerRow);
-            } else if ((startIndex + cardsPerPage) < currentFiltered.length) {
-              currentPage++;
-              renderApp();
-              focusCardSafely(0);
-            }
-          } else if ((startIndex + cardsPerPage) < currentFiltered.length) {
+          if ((startIndex + cardsPerPage) < currentFiltered.length) {
             currentPage++;
             renderApp();
-            focusCardSafely(localIndex % cardsPerRow);
+            focusCardSafely(0);
           }
         } else if (key === "ArrowUp" || keyCode === 38) {
           e.preventDefault();
           e.stopPropagation();
-          if (localIndex >= cardsPerRow) {
-            focusCardSafely(localIndex - cardsPerRow);
-          } else if (currentPage > 0) {
+          if (currentPage > 0) {
             currentPage--;
             renderApp();
-            const target = cardsPerRow + (localIndex % cardsPerRow);
-            focusCardSafely(target);
+            focusCardSafely(0);
           } else {
             clearAllCardFocus();
             openTopVkPanel();
