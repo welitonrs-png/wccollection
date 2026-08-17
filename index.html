@@ -91,7 +91,7 @@
     .vk-key-wide { grid-column: span 2; }
 
     /* ÁREA PRINCIPAL */
-.main-area {
+    .main-area {
       flex: 1; 
       display: flex; 
       flex-direction: column; 
@@ -99,29 +99,29 @@
       padding: 0 0 10px 0; 
       gap: 6px;
       overflow: hidden; 
-      background: transparent !important; /* Deixa o fundo transparecer */
+      background: transparent !important;
       min-width: 0; 
       position: relative;
-      z-index: 2; /* Fica acima do wallpaper */
+      z-index: 2;
       transition: transform 0.25s cubic-bezier(0.1, 0.9, 0.2, 1);
     }
     .main-area.pushed { transform: translateX(260px); }
 
     /* ÁREA SUPERIOR COM BUSCA E WALLPAPER */
-.hero-panel { 
+    .hero-panel { 
       flex: 1; 
       min-height: 0; 
       background: transparent !important; 
-      border-radius: 0; /* Zerado para encostar totalmente nos cantos */
+      border-radius: 0;
       display: flex; 
-      padding: 12px 16px; /* Ajuste interno para os elementos não grudarem na borda seca */
+      padding: 12px 16px; 
       gap: 20px; 
       align-items: center; 
       position: relative;
       overflow: hidden;
     }
 
-.hero-brand-wallpaper {
+    .hero-brand-wallpaper {
       position: absolute; 
       top: 0; 
       left: 0; 
@@ -134,8 +134,6 @@
       transition: opacity 0.5s ease-in-out; 
       z-index: 1; 
       pointer-events: none;
-
-      /* Gradiente apenas na esquerda (esfumaçado de 0% a 50%), limpo na base */
       -webkit-mask-image: linear-gradient(to right, transparent 0%, transparent 20%, black 50%, black 100%);
       mask-image: linear-gradient(to right, transparent 0%, transparent 20%, black 50%, black 100%);
     }
@@ -144,9 +142,9 @@
       opacity: 0.3;
     }
 
-.hero-panel::after {
-  content: none !important; /* Desativa a camada escura que ficava por cima */
-}
+    .hero-panel::after {
+      content: none !important;
+    }
 
     .hero-brand-logo-container {
       position: absolute; 
@@ -173,39 +171,14 @@
     .hero-photo-card { background: #ffffff; border-radius: 8px; padding: 4px; display: flex; justify-content: center; align-items: center; width: 100%; height: 100%; overflow: hidden; cursor: pointer; }
     .hero-photo-card img { width: 100%; height: 100%; object-fit: contain; }
 
-    /* CONTAINER DE INFORMAÇÕES ALINHADO NO TOPO E NA BASE DO HERO */
     /* CONTAINER DAS INFORMAÇÕES DO HERO */
     .hero-right-info { 
       flex: 1; 
       height: 100%; 
       display: flex; 
       flex-direction: column; 
-      justify-content: flex-start; /* Alinha tudo do topo para baixo */
-      color: #e2e8f0; 
-      text-transform: uppercase; 
-      font-style: italic; 
-      padding-right: 180px; 
-      z-index: 10; 
-      position: relative; 
-      box-sizing: border-box;
-    }
-
-    /* ESPAÇAMENTO DE 20PX APÓS O TÍTULO PRINCIPAL */
-    .hero-right-info h1, 
-    .hero-right-info h2,
-    .hero-right-info .hero-title,
-    .hero-right-info > *:first-child {
-      margin-bottom: 22px !important;
-    }
-
-/* CONTAINER PRINCIPAL DO HERO (LADO DIREITO) */
-    .hero-right-info { 
-      flex: 1; 
-      height: 100%; 
-      display: flex; 
-      flex-direction: column; 
       justify-content: flex-start; 
-      gap: 8px; /* DISTÂNCIA FIXA DE 8PX ENTRE CADA LINHA DE INFORMAÇÃO */
+      gap: 8px; 
       color: #e2e8f0; 
       font-style: italic; 
       padding-right: 180px; 
@@ -214,52 +187,43 @@
       box-sizing: border-box;
     }
 
-    /* ESPAÇAMENTO DE 20PX ABAIXO DO TÍTULO PRINCIPAL */
-    .hero-right-info h1 {
-      margin-bottom: 20px !important;
+    .hero-title { 
+      font-family: 'Vialog 1450 Pro', sans-serif !important;
+      font-style: italic;
+      font-size: clamp(2rem, 2.3vw, 2.5rem) !important; 
+      font-weight: 900 !important; 
+      line-height: 1.1; 
+      color: #e2e8f0; 
+      margin-bottom: 12px !important; 
+      letter-spacing: 0.5px; 
     }
 
     /* LINHA DE INFORMAÇÃO: RÓTULO E VALOR LADO A LADO */
     .hero-info-row {
       display: flex;
       flex-direction: row;
-      align-items: baseline; /* Alinha o texto na mesma linha */
-      gap: 10px;            /* Espaço entre o rótulo ("ORIGEM:") e a resposta ("Brasil") */
+      align-items: baseline;
+      gap: 10px;
     }
 
-    /* ESTILO DO RÓTULO (ex: "ORIGEM:") - Menor */
+    /* ESTILO DO RÓTULO (ex: "ORIGEM:") */
     .info-label {
-      font-size: 0.85rem;   /* Ajuste o tamanho do título se preferir */
+      font-size: 0.85rem;
       font-weight: 700;
-      color: #e2e8f0;       /* Cor mais suave para o título */
+      color: #e2e8f0;
       text-transform: uppercase;
     }
 
-    /* ESTILO DO VALOR (ex: "Brasil") - Maior e destacado */
+    /* ESTILO DO VALOR (ex: "Brasil") */
     .info-value {
-      font-size: 1.2rem;    /* Ajuste o tamanho da resposta se preferir */
+      font-size: 1.2rem;
       font-weight: bold;
-      color: #e2e8f0;       /* Cor amarela/dourada para o valor */
+      color: #e2e8f0;
       text-transform: uppercase;
     }
 
-    .hero-title { 
-      font-family: 'Vialog 1450 Pro', sans-serif !important;
-  font-style: italic;
-      font-size: clamp(2rem, 2.3vw, 2.5rem) !important; 
-      font-weight: 900 !important; 
-      line-height: 1.1; 
-      color: #e2e8f0; 
-      margin-bottom: 0; 
-      letter-spacing: 0.5px; 
-    }
-
-    .info-block { 
-      display: flex; 
-      flex-direction: column; 
-    }
     /* Estilo para a descrição da marca no Hero */
-.hero-brand-desc {
+    .hero-brand-desc {
       margin-top: 10px;
       font-size: 0.9rem;
       line-height: 1.3;
@@ -270,6 +234,7 @@
       -webkit-line-clamp: 5;
       -webkit-box-orient: vertical;
       overflow: hidden;
+      text-transform: none;
     }
 
     .counter-bar { display: flex; justify-content: flex-end; align-items: center; padding: 0 4px; gap: 8px; height: 20px; }
@@ -287,7 +252,6 @@
 
     .card-counter { font-size: 0.85rem; font-weight: 900; color: #f39c12; background: transparent; padding: 0; letter-spacing: 1px; }
 
-    /* SEÇÃO INFERIOR DO CATÁLOGO - 1 LINHA DE CARDS */
     /* SEÇÃO INFERIOR DO CATÁLOGO */
     .catalog-section { 
       height: 195px; 
@@ -297,19 +261,18 @@
       flex-shrink: 0; 
       touch-action: none; 
       display: flex;
-      justify-content: center; /* Centraliza a estrutura fixa na Smart TV */
+      justify-content: center;
     }
 
     .card-row { 
       display: flex; 
       gap: 12px; 
-      width: 926px; /* Largura fixa equivalente a 7 cards + gaps */
+      width: 926px; 
       max-width: 100%;
       height: 100%; 
-      justify-content: flex-start !important; /* Força os cards a começarem sempre da esquerda */
+      justify-content: flex-start !important; 
       align-content: start; 
     }
-
 
     .card {
       width: 122px !important;
@@ -446,7 +409,7 @@
   </div>
 
   <div class="app-container">
-     <div class="hero-brand-wallpaper" id="heroBrandWallpaper"></div>
+    <div class="hero-brand-wallpaper" id="heroBrandWallpaper"></div>
     <button class="mobile-menu-btn" onclick="toggleMenuMobile(event)">☰</button>
 
     <nav class="sidebar-drawer" id="sidebarDrawer">
@@ -468,45 +431,41 @@
 
     <main class="main-area" id="mainArea" onclick="handleMainAreaClick()">
       <section class="hero-panel" id="heroPanel">
-        <!-- CAMADA DE WALLPAPER DA MARCA DE FUNDO -->
-       
-
         <div class="hero-brand-logo-container" id="heroBrandLogo"></div>
 
         <div class="hero-left-photos" id="heroPhotos">
-          <div class="hero-photo-card"><img src="" alt=""></div>
-          <div class="hero-photo-card"><img src="" alt=""></div>
-          <div class="hero-photo-card"><img src="" alt=""></div>
-          <div class="hero-photo-card"><img src="" alt=""></div>
+          <div class="hero-photo-card"><img src="" alt="" id="heroPhoto1"></div>
+          <div class="hero-photo-card"><img src="" alt="" id="heroPhoto2"></div>
+          <div class="hero-photo-card"><img src="" alt="" id="heroPhoto3"></div>
+          <div class="hero-photo-card"><img src="" alt="" id="heroPhoto4"></div>
         </div>
 
-<div class="hero-right-info">
-  <h1 id="heroTitle">Selecione uma lata</h1>
+        <div class="hero-right-info">
+          <h1 class="hero-title" id="heroTitle">Selecione uma lata</h1>
 
-  <div class="hero-info-row">
-    <span class="info-label">ORIGEM:</span>
-    <span class="info-value" id="heroCountry">-</span>
-  </div>
+          <div class="hero-info-row">
+            <span class="info-label">ORIGEM:</span>
+            <span class="info-value" id="heroCountry">-</span>
+          </div>
 
-  <div class="hero-info-row">
-    <span class="info-label">VOLUME:</span>
-    <span class="info-value" id="heroVolume">-</span>
-  </div>
+          <div class="hero-info-row">
+            <span class="info-label">VOLUME:</span>
+            <span class="info-value" id="heroVolume">-</span>
+          </div>
 
-  <div class="hero-info-row">
-    <span class="info-label">ANO:</span>
-    <span class="info-value" id="heroYear">-</span>
-  </div>
+          <div class="hero-info-row">
+            <span class="info-label">ANO:</span>
+            <span class="info-value" id="heroYear">-</span>
+          </div>
 
-  <div class="hero-info-row">
-    <span class="info-label">CÓD. BARRAS:</span>
-    <span class="info-value" id="heroBarcode">-</span>
-  </div>
+          <div class="hero-info-row">
+            <span class="info-label">CÓD. BARRAS:</span>
+            <span class="info-value" id="heroBarcode">-</span>
+          </div>
 
-  <!-- Parágrafo da Descrição da Marca -->
-  <div class="hero-brand-desc" id="heroBrandDescription"></div>
-</div>
-        
+          <!-- Parágrafo da Descrição da Marca -->
+          <div class="hero-brand-desc" id="heroBrandDescription"></div>
+        </div>
       </section>
 
       <div class="counter-bar">
@@ -1150,7 +1109,7 @@
     updateHeroPanel(currentFiltered[0], 0);
   }
 
-function updateHeroPanel(can, localIndex = 0) {
+  function updateHeroPanel(can, localIndex = 0) {
     if (!can) return;
 
     let fallbackTitle = "Selecione uma lata";
@@ -1163,7 +1122,7 @@ function updateHeroPanel(can, localIndex = 0) {
     const yearVal = can.year || can.Ano || "-";
     const barcodeVal = can.barcode || can.Barcode || "-";
 
-    // Busca a descrição da marca na própria lata ou procura em outra lata da mesma marca
+    // Pega a descrição da coluna "brandDesc" da própria lata ou de outra da mesma cervejaria
     let brandDescVal = can.brandDesc || can.descricao || can.DESCRICAO || "";
     if (!brandDescVal && (can.brewery || can.Cervejaria)) {
       const brandKey = String(can.brewery || can.Cervejaria).toLowerCase().trim();
@@ -1190,6 +1149,22 @@ function updateHeroPanel(can, localIndex = 0) {
     if (heroYear) heroYear.innerText = yearVal;
     if (heroBarcode) heroBarcode.innerText = barcodeVal;
     if (heroDesc) heroDesc.innerText = brandDescVal || "";
+
+    // Atualiza fotos da lata no quadrante esquerdo
+    const photo1 = document.getElementById("heroPhoto1");
+    const photo2 = document.getElementById("heroPhoto2");
+    const photo3 = document.getElementById("heroPhoto3");
+    const photo4 = document.getElementById("heroPhoto4");
+
+    const img1 = can.ImgCover || can.ImgFront || can.brandLogo || "";
+    const img2 = can.ImgFront || can.ImgCover || "";
+    const img3 = can.ImgLeft || can.ImgCover || "";
+    const img4 = can.ImgBack || can.ImgRight || can.ImgCover || "";
+
+    if (photo1) photo1.src = getOptimizedImageUrl(img1, 300);
+    if (photo2) photo2.src = getOptimizedImageUrl(img2, 300);
+    if (photo3) photo3.src = getOptimizedImageUrl(img3, 300);
+    if (photo4) photo4.src = getOptimizedImageUrl(img4, 300);
 
     updateBrandLogoHeader(can.brewery || can.Cervejaria);
   }
@@ -1721,6 +1696,5 @@ function updateHeroPanel(can, localIndex = 0) {
   };
 </script>
 
-  
 </body>
 </html>
