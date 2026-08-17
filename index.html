@@ -185,8 +185,6 @@
       z-index: 10; 
       position: relative; 
       box-sizing: border-box;
-
- 
     }
 
     .hero-title { 
@@ -198,8 +196,6 @@
       color: #e2e8f0; 
       margin-bottom: 12px !important; 
       letter-spacing: 0.5px; 
-          text-transform: uppercase;
-
     }
 
     /* LINHA DE INFORMAÇÃO: RÓTULO E VALOR LADO A LADO */
@@ -210,12 +206,12 @@
       gap: 10px;
     }
 
-    /* ESTILO DO RÓTULO (ex: "ORIGEM:") */
+    /* ESTILO DO RÓTULO (ex: "Origem:") - Apenas primeira letra maiúscula */
     .info-label {
       font-size: 0.85rem;
       font-weight: 700;
       color: #e2e8f0;
-      text-transform: capitalize;
+      text-transform: none;
     }
 
     /* ESTILO DO VALOR (ex: "Brasil") */
@@ -448,22 +444,22 @@
           <h1 class="hero-title" id="heroTitle">Selecione uma lata</h1>
 
           <div class="hero-info-row">
-            <span class="info-label">ORIGEM:</span>
+            <span class="info-label">Origem:</span>
             <span class="info-value" id="heroCountry">-</span>
           </div>
 
           <div class="hero-info-row">
-            <span class="info-label">VOLUME:</span>
+            <span class="info-label">Volume:</span>
             <span class="info-value" id="heroVolume">-</span>
           </div>
 
           <div class="hero-info-row">
-            <span class="info-label">ANO:</span>
+            <span class="info-label">Ano:</span>
             <span class="info-value" id="heroYear">-</span>
           </div>
 
           <div class="hero-info-row">
-            <span class="info-label">CÓD. BARRAS:</span>
+            <span class="info-label">Cód. Barras:</span>
             <span class="info-value" id="heroBarcode">-</span>
           </div>
 
