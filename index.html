@@ -258,6 +258,19 @@
       display: flex; 
       flex-direction: column; 
     }
+    /* Estilo para a descrição da marca no Hero */
+    .hero-brand-desc {
+      margin-top: 10px;       /* Distância das outras informações acima */
+      font-size: 0.95rem;     /* Tamanho menor para caber bem as 4-5 linhas */
+      line-height: 1.4;       /* Espaçamento agradável entre as linhas do texto */
+      color: #cbd5e1;         /* Cor um pouco mais suave (cinza claro) */
+      font-style: normal;     /* Texto normal (opcional, para diferenciar do itálico) */
+      max-width: 600px;       /* Limita a largura para não invadir a tela toda */
+      display: -webkit-box;
+      -webkit-line-clamp: 5;  /* Garante no máximo 5 linhas visíveis */
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
 
     .counter-bar { display: flex; justify-content: flex-end; align-items: center; padding: 0 4px; gap: 8px; height: 20px; }
     
@@ -494,6 +507,7 @@
     <span class="info-label">CÓD. BARRAS:</span>
     <span class="info-value" id="heroBarcode">-</span>
   </div>
+  <div class="hero-brand-desc" id="heroBrandDescription"></div>
 </div>
       </section>
 
@@ -1138,30 +1152,39 @@
     updateHeroPanel(currentFiltered[0], 0);
   }
 
-  function updateHeroPanel(can, localIndex = 0) {
+ function updateHeroPanel(can, localIndex = 0) {
     if (!can) return;
 
-    let fallbackTitle = "Selecione uma lata";
-    if (currentTab === 'ococ') fallbackTitle = "Selecione uma lata (OCOC)";
-    if (currentTab === 'sets') fallbackTitle = "Selecione um set";
+    // ... (suas variáveis de título, país, volume, etc. continuam aqui) ...
 
-    const titleVal = can.name || can.Nome || fallbackTitle;
-    const countryVal = can.country || can.Pais || "-";
-    const volumeVal = can.volume || can.Volume || "-";
-    const yearVal = can.year || can.Ano || "-";
-    const barcodeVal = can.barcode || can.Barcode || "-";
+    // PEGA A DESCRIÇÃO DA MARCA DA LATA ATUAL OU BUSCA DA MESMA MARCA NO CATÁLOGO
+    let brandDescVal = can.brandDesc || can.descricao || "";
+    
+    // Se a lata atual não tiver o texto preenchido, o sistema busca na primeira lata cadastrada da mesma marca
+    if (!brandDescVal && (can.brewery || can.Cervejaria)) {
+      const brandKey = String(can.brewery || can.Cervejaria).toLowerCase().trim();
+      const parentCan = canCatalog.find(c => {
+        const b = String(c.brewery || c.Cervejaria || "").toLowerCase().trim();
+        const desc = c.brandDesc || c.descricao;
+        return b === brandKey && desc && String(desc).trim() !== "";
+      });
+      if (parentCan) {
+        brandDescVal = parentCan.brandDesc || parentCan.descricao;
+      }
+    }
 
-    const heroTitle = document.getElementById("heroTitle");
-    const heroCountry = document.getElementById("heroCountry");
-    const heroVolume = document.getElementById("heroVolume");
-    const heroYear = document.getElementById("heroYear");
-    const heroBarcode = document.getElementById("heroBarcode");
+    // Preenche os campos normais...
+    document.getElementById("heroTitle").innerText = formatCapitalizedText(titleVal);
+    document.getElementById("heroCountry").innerText = formatCapitalizedText(countryVal);
+    document.getElementById("heroVolume").innerText = formatCapitalizedText(volumeVal);
+    document.getElementById("heroYear").innerText = yearVal;
+    document.getElementById("heroBarcode").innerText = barcodeVal;
 
-    if (heroTitle) heroTitle.innerText = formatCapitalizedText(titleVal);
-    if (heroCountry) heroCountry.innerText = formatCapitalizedText(countryVal);
-    if (heroVolume) heroVolume.innerText = formatCapitalizedText(volumeVal);
-    if (heroYear) heroYear.innerText = yearVal;
-    if (heroBarcode) heroBarcode.innerText = barcodeVal;
+    // PREENCHE A DESCRIÇÃO DA MARCA NA TELA
+    const descElem = document.getElementById("heroBrandDescription");
+    if (descElem) {
+      descElem.innerText = brandDescVal || "";
+    }
 
     updateBrandLogoHeader(can.brewery || can.Cervejaria);
   }
