@@ -1439,8 +1439,15 @@
             renderApp();
             focusCardSafely(0);
           } else {
+            /* FOCA NO BOTÃO DO TRIÂNGULO EM VEZ DE IR DIRETO PRO TECLADO */
             clearAllCardFocus();
-            openTopVkPanel();
+            const sortBtn = document.getElementById("sortOrderBtn");
+            if (sortBtn) {
+              sortBtn.classList.add("focused");
+              sortBtn.focus();
+            } else {
+              openTopVkPanel();
+            }
           }
         }
       };
@@ -1616,6 +1623,7 @@
     }
   }
 
+  /* NAVEGAÇÃO DO BOTÃO DO TRIÂNGULO DA CONTAGEM */
   const sortBtnElem = document.getElementById("sortOrderBtn");
   if (sortBtnElem) {
     sortBtnElem.onkeydown = (e) => {
@@ -1624,7 +1632,11 @@
         toggleSortOrder();
       } else if (e.key === "ArrowDown" || e.keyCode === 40) {
         e.preventDefault();
-        focusCardSafely(0);
+        focusCardSafely(activeLocalIndex); /* VOLTA O FOCO PARA OS CARDS */
+      } else if (e.key === "ArrowUp" || e.keyCode === 38) {
+        e.preventDefault();
+        clearAllCardFocus();
+        openTopVkPanel(); /* SOBE PARA O TECLADO / BUSCA SUPERIOR */
       } else if (e.key === "ArrowLeft" || e.keyCode === 37) {
         e.preventDefault();
         openMenu();
