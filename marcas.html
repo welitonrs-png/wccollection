@@ -379,7 +379,6 @@
       </div>
     </div>
   </div>
-
 <script>
   const API_URL = "https://script.google.com/macros/s/AKfycbwP4kTpSrGJllmlWjQp1YmD1Th5jiw1oUtX5cAJAZj9txy-eNi6_EYyLPG_Q0_coyT9/exec";
   let canCatalog = [];
@@ -561,9 +560,14 @@
     else if(tabName === 'ococ') lastSelectedMenuId = 'menuBtnOcoc';
     else if(tabName === 'sets') lastSelectedMenuId = 'menuBtnSets';
 
-    document.getElementById("menuSearchInput").value = "";
-    document.getElementById("searchInlineContainer").classList.remove("active");
-    document.getElementById("brandInlineList").classList.remove("active");
+    const searchInput = document.getElementById("menuSearchInput");
+    if (searchInput) searchInput.value = "";
+
+    const searchContainer = document.getElementById("searchInlineContainer");
+    if (searchContainer) searchContainer.classList.remove("active");
+
+    const brandList = document.getElementById("brandInlineList");
+    if (brandList) brandList.classList.remove("active");
     
     processTabChange();
     focusCardSafely(0);
@@ -572,15 +576,18 @@
   function toggleSortOrder() {
     sortNewestFirst = !sortNewestFirst;
     const sortBtn = document.getElementById("sortOrderBtn");
-    if (sortNewestFirst) {
-      sortBtn.innerText = "▼";
-      sortBtn.title = "Ordenação: Maior para Menor (Mais Novos)";
-    } else {
-      sortBtn.innerText = "▲";
-      sortBtn.title = "Ordenação: Menor para Maior (Mais Antigos)";
+    if (sortBtn) {
+      if (sortNewestFirst) {
+        sortBtn.innerText = "▼";
+        sortBtn.title = "Ordenação: Maior para Menor (Mais Novos)";
+      } else {
+        sortBtn.innerText = "▲";
+        sortBtn.title = "Ordenação: Menor para Maior (Mais Antigos)";
+      }
     }
 
-    const currentSearchVal = document.getElementById("topBrandInput").value;
+    const inputElem = document.getElementById("topBrandInput");
+    const currentSearchVal = inputElem ? inputElem.value : "";
     filterCatalogByBrand(currentSearchVal);
     focusCardSafely(0);
   }
@@ -589,7 +596,8 @@
     buildBrandList();
     buildVirtualKeyboard();
     buildTopVirtualKeyboard();
-    const currentSearchVal = document.getElementById("topBrandInput").value;
+    const inputElem = document.getElementById("topBrandInput");
+    const currentSearchVal = inputElem ? inputElem.value : "";
     filterCatalogByBrand(currentSearchVal);
   }
 
@@ -653,9 +661,11 @@
 
         activeLocalIndex = finalIdx;
         const targetCard = cards[finalIdx];
-        targetCard.classList.add("focused");
-        targetCard.focus({ preventScroll: true });
-        updateCounter(finalIdx);
+        if (targetCard) {
+          targetCard.classList.add("focused");
+          targetCard.focus({ preventScroll: true });
+          updateCounter(finalIdx);
+        }
       }
     });
   }
@@ -666,12 +676,12 @@
     
     if (lastSelectedMenuId === 'menuBtnBrands') {
       const brandContainer = document.getElementById("brandInlineList");
-      brandContainer.classList.add("active");
+      if (brandContainer) brandContainer.classList.add("active");
 
-      if (lastSelectedBrandElem && brandContainer.contains(lastSelectedBrandElem)) {
+      if (brandContainer && lastSelectedBrandElem && brandContainer.contains(lastSelectedBrandElem)) {
         lastSelectedBrandElem.focus();
         return;
-      } else {
+      } else if (brandContainer) {
         const firstBrand = brandContainer.querySelector(".brand-btn");
         if (firstBrand) {
           firstBrand.focus();
@@ -682,23 +692,29 @@
 
     const targetElem = document.getElementById(lastSelectedMenuId);
     if (targetElem) targetElem.focus();
-    else document.getElementById("menuBtnHome").focus();
+    else {
+      const homeBtn = document.getElementById("menuBtnHome");
+      if (homeBtn) homeBtn.focus();
+    }
   }
 
   function closeMenu() {
-    document.getElementById("sidebarDrawer").classList.remove("open");
-    document.getElementById("mainArea").classList.remove("pushed");
+    const drawer = document.getElementById("sidebarDrawer");
+    const mainArea = document.getElementById("mainArea");
+    if (drawer) drawer.classList.remove("open");
+    if (mainArea) mainArea.classList.remove("pushed");
   }
 
   function toggleMenuMobile(e) {
     if(e) e.stopPropagation();
     const drawer = document.getElementById("sidebarDrawer");
-    if (drawer.classList.contains("open")) closeMenu();
+    if (drawer && drawer.classList.contains("open")) closeMenu();
     else openMenu();
   }
 
   function handleMainAreaClick() {
-    if (document.getElementById("sidebarDrawer").classList.contains("open")) {
+    const drawer = document.getElementById("sidebarDrawer");
+    if (drawer && drawer.classList.contains("open")) {
       closeMenu();
     }
   }
@@ -706,29 +722,38 @@
   function toggleSearchInline() {
     lastSelectedMenuId = 'menuBtnSearch';
     lastSelectedBrandElem = null;
-    document.getElementById("brandInlineList").classList.remove("active");
+    const brandList = document.getElementById("brandInlineList");
+    if (brandList) brandList.classList.remove("active");
+    
     const container = document.getElementById("searchInlineContainer");
-    container.classList.toggle("active");
-    if(container.classList.contains("active")) {
-      const firstVk = document.getElementById("vkContainer").querySelector(".vk-key");
-      if(firstVk) firstVk.focus();
+    if (container) {
+      container.classList.toggle("active");
+      if(container.classList.contains("active")) {
+        const vkContainer = document.getElementById("vkContainer");
+        const firstVk = vkContainer ? vkContainer.querySelector(".vk-key") : null;
+        if(firstVk) firstVk.focus();
+      }
     }
   }
 
   function toggleBrandInline() {
     lastSelectedMenuId = 'menuBtnBrands';
+    const searchContainer = document.getElementById("searchInlineContainer");
+    if (searchContainer) searchContainer.classList.remove("active");
+
     const container = document.getElementById("brandInlineList");
-    document.getElementById("searchInlineContainer").classList.remove("active");
-    container.classList.toggle("active");
-    
-    if(container.classList.contains("active")) {
-      const firstBrand = container.querySelector(".brand-btn");
-      if(firstBrand) firstBrand.focus();
+    if (container) {
+      container.classList.toggle("active");
+      if(container.classList.contains("active")) {
+        const firstBrand = container.querySelector(".brand-btn");
+        if(firstBrand) firstBrand.focus();
+      }
     }
   }
 
   function buildVirtualKeyboard() {
     const container = document.getElementById("vkContainer");
+    if (!container) return;
     container.innerHTML = "";
     vkKeys.forEach((k, index) => {
       const btn = document.createElement("button");
@@ -757,6 +782,7 @@
 
   function handleVkPress(key) {
     const input = document.getElementById("menuSearchInput");
+    if (!input) return;
     if (key === 'ESPAÇO') input.value += ' ';
     else if (key === 'DEL') input.value = input.value.slice(0, -1);
     else if (key === 'LIMPAR') input.value = '';
@@ -843,6 +869,8 @@
 
   function handleTopVkPress(key) {
     const input = document.getElementById("topBrandInput");
+    if (!input) return;
+
     if (key === 'ESPAÇO') input.value += ' ';
     else if (key === 'DEL') input.value = input.value.slice(0, -1);
     else if (key === 'LIMPAR') input.value = '';
@@ -901,6 +929,8 @@
 
   function buildBrandList() {
     const brandContainer = document.getElementById("brandInlineList");
+    if (!brandContainer) return;
+
     brandContainer.innerHTML = "";
     const baseList = getBaseListForCurrentTab();
     const brands = [...new Set(baseList.map(c => c.brewery || c.Cervejaria).filter(Boolean))].sort();
@@ -916,7 +946,8 @@
       e.stopPropagation();
       lastSelectedMenuId = 'menuBtnBrands';
       lastSelectedBrandElem = allBtn;
-      document.getElementById("topBrandInput").value = "";
+      const inputElem = document.getElementById("topBrandInput");
+      if (inputElem) inputElem.value = "";
       filterCatalogByBrand(""); 
       focusCardSafely(0); 
     };
@@ -938,7 +969,8 @@
         e.stopPropagation();
         lastSelectedMenuId = 'menuBtnBrands';
         lastSelectedBrandElem = btn;
-        document.getElementById("topBrandInput").value = b;
+        const inputElem = document.getElementById("topBrandInput");
+        if (inputElem) inputElem.value = b;
         filterCatalogByBrand(b); 
         focusCardSafely(0); 
       };
@@ -955,7 +987,7 @@
   }
 
   function filterCatalogByBrand(query) {
-    const val = query.toLowerCase().trim();
+    const val = query ? query.toLowerCase().trim() : "";
     const baseList = getBaseListForCurrentTab();
 
     currentFiltered = baseList.filter(can => {
@@ -976,7 +1008,7 @@
     const wallpaperElem = document.getElementById("heroBrandWallpaper");
 
     if (!brandQuery || String(brandQuery).trim() === "") {
-      logoContainer.innerHTML = "";
+      if (logoContainer) logoContainer.innerHTML = "";
       if (wallpaperElem) {
         wallpaperElem.style.backgroundImage = "none";
         wallpaperElem.classList.remove("active");
@@ -992,10 +1024,12 @@
 
     if (matchCan) {
       const logoUrl = matchCan.brandLogo || matchCan.BRAND_LOGO;
-      if (logoUrl && String(logoUrl).trim() !== "") {
-        logoContainer.innerHTML = `<img src="${getOptimizedImageUrl(logoUrl, 400)}" alt="LOGO DA MARCA">`;
-      } else {
-        logoContainer.innerHTML = "";
+      if (logoContainer) {
+        if (logoUrl && String(logoUrl).trim() !== "") {
+          logoContainer.innerHTML = `<img src="${getOptimizedImageUrl(logoUrl, 400)}" alt="LOGO DA MARCA">`;
+        } else {
+          logoContainer.innerHTML = "";
+        }
       }
 
       let wallpaperUrl = "";
@@ -1024,7 +1058,7 @@
         wallpaperElem.classList.remove("active");
       }
     } else {
-      logoContainer.innerHTML = "";
+      if (logoContainer) logoContainer.innerHTML = "";
       if (wallpaperElem) {
         wallpaperElem.style.backgroundImage = "none";
         wallpaperElem.classList.remove("active");
@@ -1033,21 +1067,24 @@
   }
 
   const topBrandInput = document.getElementById("topBrandInput");
-  const brandAutocompleteList = document.getElementById("brandAutocompleteList");
-
-  topBrandInput.addEventListener("click", (e) => {
-    e.stopPropagation();
-    openTopVkPanel();
-  });
-
-  topBrandInput.addEventListener("keydown", (e) => {
-    if (e.key === "Enter" || e.keyCode === 13) {
-      e.preventDefault();
+  if (topBrandInput) {
+    topBrandInput.addEventListener("click", (e) => {
+      e.stopPropagation();
       openTopVkPanel();
-    }
-  });
+    });
+
+    topBrandInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.keyCode === 13) {
+        e.preventDefault();
+        openTopVkPanel();
+      }
+    });
+  }
 
   function renderAutocompleteDropdown(matches) {
+    const brandAutocompleteList = document.getElementById("brandAutocompleteList");
+    if (!brandAutocompleteList) return;
+
     brandAutocompleteList.innerHTML = "";
     if (matches.length === 0) {
       closeAutocomplete();
@@ -1079,7 +1116,8 @@
           if (prev) {
             prev.focus();
           } else {
-            const keys = document.getElementById("topVkContainer").querySelectorAll(".vk-key");
+            const vkContainer = document.getElementById("topVkContainer");
+            const keys = vkContainer ? vkContainer.querySelectorAll(".vk-key") : [];
             if (keys.length > 0) keys[keys.length - 1].focus();
           }
         }
@@ -1092,15 +1130,19 @@
   }
 
   function selectBrandFromAutocomplete(brandName) {
-    topBrandInput.value = brandName.toUpperCase();
+    const inputElem = document.getElementById("topBrandInput");
+    if (inputElem) inputElem.value = brandName.toUpperCase();
     closeTopVkPanel();
     filterCatalogByBrand(brandName);
     focusCardSafely(0);
   }
 
   function closeAutocomplete() {
-    brandAutocompleteList.innerHTML = "";
-    brandAutocompleteList.classList.remove("active");
+    const brandAutocompleteList = document.getElementById("brandAutocompleteList");
+    if (brandAutocompleteList) {
+      brandAutocompleteList.innerHTML = "";
+      brandAutocompleteList.classList.remove("active");
+    }
   }
 
   function updateCounter(localIndex) {
@@ -1122,8 +1164,12 @@
       if (rawPhotos.length === 0 && logoUrl) rawPhotos.push(logoUrl);
       zoomGallery = rawPhotos;
 
-      if (!topBrandInput.value.trim() && logoUrl) {
-        document.getElementById("heroBrandLogo").innerHTML = `<img src="${getOptimizedImageUrl(logoUrl, 400)}" alt="LOGO DA MARCA">`;
+      const inputElem = document.getElementById("topBrandInput");
+      const currentInputVal = inputElem ? inputElem.value.trim() : "";
+      const heroBrandLogo = document.getElementById("heroBrandLogo");
+
+      if (!currentInputVal && logoUrl && heroBrandLogo) {
+        heroBrandLogo.innerHTML = `<img src="${getOptimizedImageUrl(logoUrl, 400)}" alt="LOGO DA MARCA">`;
       }
     } else {
       zoomGallery = [];
@@ -1133,6 +1179,7 @@
   function renderApp() {
     clearAllCardFocus();
     const row = document.getElementById("cardRow");
+    if (!row) return;
     row.innerHTML = "";
 
     const startIndex = currentPage * cardsPerPage;
@@ -1255,8 +1302,15 @@
             const target = cardsPerRow + (localIndex % cardsPerRow);
             focusCardSafely(target);
           } else {
+            /* FOCA NO BOTÃO DO TRIÂNGULO DA CONTAGEM */
             clearAllCardFocus();
-            openTopVkPanel();
+            const sortBtn = document.getElementById("sortOrderBtn");
+            if (sortBtn) {
+              sortBtn.classList.add("focused");
+              sortBtn.focus();
+            } else {
+              openTopVkPanel();
+            }
           }
         }
       };
@@ -1286,7 +1340,7 @@
     currentZoomIndex = index;
     resetZoomTransform();
     const imgElem = document.getElementById("zoomImage");
-    imgElem.src = getOptimizedImageUrl(zoomGallery[currentZoomIndex], 1200);
+    if (imgElem) imgElem.src = getOptimizedImageUrl(zoomGallery[currentZoomIndex], 1200);
     document.getElementById("zoomModal").classList.add("active");
   }
 
@@ -1326,7 +1380,7 @@
     currentZoomIndex = (currentZoomIndex + direction + zoomGallery.length) % zoomGallery.length;
     resetZoomTransform();
     const imgElem = document.getElementById("zoomImage");
-    imgElem.src = getOptimizedImageUrl(zoomGallery[currentZoomIndex], 1200);
+    if (imgElem) imgElem.src = getOptimizedImageUrl(zoomGallery[currentZoomIndex], 1200);
   }
 
   function closeZoomModal() {
@@ -1338,7 +1392,8 @@
   function openExitModal() {
     closeMenu();
     document.getElementById("exitModal").classList.add("active");
-    document.getElementById("exitBtnNo").focus();
+    const btnNo = document.getElementById("exitBtnNo");
+    if (btnNo) btnNo.focus();
   }
 
   function closeExitModal() {
@@ -1362,33 +1417,34 @@
   let touchStartY = 0;
 
   const catalogSection = document.getElementById("catalogSection");
+  if (catalogSection) {
+    catalogSection.addEventListener("touchstart", (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+      touchStartY = e.changedTouches[0].screenY;
+    }, { passive: true });
 
-  catalogSection.addEventListener("touchstart", (e) => {
-    touchStartX = e.changedTouches[0].screenX;
-    touchStartY = e.changedTouches[0].screenY;
-  }, { passive: true });
+    catalogSection.addEventListener("touchend", (e) => {
+      const touchEndX = e.changedTouches[0].screenX;
+      const touchEndY = e.changedTouches[0].screenY;
+      handleSwipe(touchStartX, touchStartY, touchEndX, touchEndY);
+    }, { passive: true });
 
-  catalogSection.addEventListener("touchend", (e) => {
-    const touchEndX = e.changedTouches[0].screenX;
-    const touchEndY = e.changedTouches[0].screenY;
-    handleSwipe(touchStartX, touchStartY, touchEndX, touchEndY);
-  }, { passive: true });
-
-  catalogSection.addEventListener("wheel", (e) => {
-    if (e.deltaY > 0) {
-      if (((currentPage + 1) * cardsPerPage) < currentFiltered.length) {
-        currentPage++;
-        renderApp();
-        focusCardSafely(activeLocalIndex);
+    catalogSection.addEventListener("wheel", (e) => {
+      if (e.deltaY > 0) {
+        if (((currentPage + 1) * cardsPerPage) < currentFiltered.length) {
+          currentPage++;
+          renderApp();
+          focusCardSafely(activeLocalIndex);
+        }
+      } else if (e.deltaY < 0) {
+        if (currentPage > 0) {
+          currentPage--;
+          renderApp();
+          focusCardSafely(activeLocalIndex);
+        }
       }
-    } else if (e.deltaY < 0) {
-      if (currentPage > 0) {
-        currentPage--;
-        renderApp();
-        focusCardSafely(activeLocalIndex);
-      }
-    }
-  }, { passive: true });
+    }, { passive: true });
+  }
 
   function handleSwipe(startX, startY, endX, endY) {
     const diffX = endX - startX;
@@ -1431,24 +1487,36 @@
     }
   }
 
+  /* NAVEGAÇÃO DO BOTÃO DO TRIÂNGULO DA CONTAGEM */
   const sortBtnElem = document.getElementById("sortOrderBtn");
-  sortBtnElem.onkeydown = (e) => {
-    if (e.key === "Enter" || e.key === " " || e.keyCode === 13) {
-      e.preventDefault();
-      toggleSortOrder();
-    } else if (e.key === "ArrowDown" || e.keyCode === 40) {
-      e.preventDefault();
-      focusCardSafely(0);
-    } else if (e.key === "ArrowLeft" || e.keyCode === 37) {
-      e.preventDefault();
-      openMenu();
-    }
-  };
+  if (sortBtnElem) {
+    sortBtnElem.onkeydown = (e) => {
+      if (e.key === "Enter" || e.key === " " || e.keyCode === 13) {
+        e.preventDefault();
+        toggleSortOrder();
+      } else if (e.key === "ArrowDown" || e.keyCode === 40) {
+        e.preventDefault();
+        focusCardSafely(activeLocalIndex); /* RETORNA O FOCO PARA OS CARDS */
+      } else if (e.key === "ArrowUp" || e.keyCode === 38) {
+        e.preventDefault();
+        clearAllCardFocus();
+        openTopVkPanel(); /* SOBE O FOCO PARA A BUSCA / TECLADO SUPERIOR */
+      } else if (e.key === "ArrowLeft" || e.keyCode === 37) {
+        e.preventDefault();
+        openMenu();
+      }
+    };
+  }
 
   document.addEventListener("keydown", (e) => {
-    const isZoomActive = document.getElementById("zoomModal").classList.contains("active");
-    const isExitActive = document.getElementById("exitModal").classList.contains("active");
-    const isMenuOpen = document.getElementById("sidebarDrawer").classList.contains("open");
+    const zoomModal = document.getElementById("zoomModal");
+    const exitModal = document.getElementById("exitModal");
+    const sidebarDrawer = document.getElementById("sidebarDrawer");
+    const topVkPanel = document.getElementById("topVkPanel");
+
+    const isZoomActive = zoomModal ? zoomModal.classList.contains("active") : false;
+    const isExitActive = exitModal ? exitModal.classList.contains("active") : false;
+    const isMenuOpen = sidebarDrawer ? sidebarDrawer.classList.contains("open") : false;
 
     if (isZoomActive) {
       if (e.key === "Enter" || e.key === " " || e.keyCode === 13) {
@@ -1481,8 +1549,8 @@
         const active = document.activeElement;
         const btnNo = document.getElementById("exitBtnNo");
         const btnYes = document.getElementById("exitBtnYes");
-        if (active === btnNo) btnYes.focus();
-        else btnNo.focus();
+        if (active === btnNo && btnYes) btnYes.focus();
+        else if (btnNo) btnNo.focus();
       } else if (e.key === "Escape" || e.key === "Back" || e.keyCode === 10009 || e.keyCode === 27) {
         e.preventDefault(); closeExitModal();
       }
@@ -1492,7 +1560,7 @@
         if (isMenuOpen) {
           closeMenu();
           focusCardSafely(activeLocalIndex);
-        } else if (document.getElementById("topVkPanel").classList.contains("active")) {
+        } else if (topVkPanel && topVkPanel.classList.contains("active")) {
           closeTopVkPanel();
           focusCardSafely(activeLocalIndex);
         } else {
@@ -1512,5 +1580,6 @@
     fetchCatalogFromSheet();
   };
 </script>
+
 </body>
 </html>
