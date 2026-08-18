@@ -1113,6 +1113,7 @@
     updateHeroPanel(currentFiltered[0], 0);
   }
 
+  
   function updateHeroPanel(can, localIndex = 0) {
     if (!can) return;
 
@@ -1154,16 +1155,16 @@
     if (heroBarcode) heroBarcode.innerText = barcodeVal;
     if (heroDesc) heroDesc.innerText = brandDescVal || "";
 
-    // Atualiza fotos da lata no quadrante esquerdo
+    // Atualiza fotos da lata no quadrante esquerdo na ordem correta (Frente, Esquerda, Trás, Direita)
     const photo1 = document.getElementById("heroPhoto1");
     const photo2 = document.getElementById("heroPhoto2");
     const photo3 = document.getElementById("heroPhoto3");
     const photo4 = document.getElementById("heroPhoto4");
 
-    const img1 = can.ImgCover || can.ImgFront || can.brandLogo || "";
-    const img2 = can.ImgFront || can.ImgCover || "";
-    const img3 = can.ImgLeft || can.ImgCover || "";
-    const img4 = can.ImgBack || can.ImgRight || can.ImgCover || "";
+    const img1 = can.ImgFront || can.front || can.ImgCover || "";
+    const img2 = can.ImgLeft || can.left || "";
+    const img3 = can.ImgBack || can.back || "";
+    const img4 = can.ImgRight || can.right || "";
 
     if (photo1) photo1.src = getOptimizedImageUrl(img1, 300);
     if (photo2) photo2.src = getOptimizedImageUrl(img2, 300);
