@@ -106,9 +106,7 @@
 
     .vk-key-wide { grid-column: span 2; }
 
-    /* ÁREA PRINCIPAL */
-  /* ÁREA PRINCIPAL: Removemos o padding do topo e das laterais */
-.main-area {
+    .main-area {
       flex: 1; 
       display: flex; 
       flex-direction: column; 
@@ -116,28 +114,27 @@
       padding: 0 0 10px 0; 
       gap: 6px;
       overflow: hidden; 
-      background: transparent !important; /* Deixa o fundo transparecer */
+      background: transparent !important;
       min-width: 0; 
       position: relative;
-      z-index: 2; /* Fica acima do wallpaper */
+      z-index: 2;
       transition: transform 0.25s cubic-bezier(0.1, 0.9, 0.2, 1);
     }
     .main-area.pushed { transform: translateX(260px); }
 
-  .hero-panel { 
+    .hero-panel { 
       flex: 1; 
       min-height: 0; 
       background: transparent !important; 
-      border-radius: 0; /* Zerado para encostar totalmente nos cantos */
+      border-radius: 0;
       display: flex; 
-      padding: 12px 16px; /* Ajuste interno para os elementos não grudarem na borda seca */
+      padding: 12px 16px; 
       gap: 20px; 
       align-items: center; 
       position: relative;
       overflow: hidden;
     }
 
-/* WALLPAPER EM TELA CHEIA (SEM GRADIENTE INFERIOR) */
     .hero-brand-wallpaper {
       position: absolute; 
       top: 0; 
@@ -151,12 +148,9 @@
       transition: opacity 0.5s ease-in-out; 
       z-index: 1; 
       pointer-events: none;
-
-      /* Mantém apenas a transição gradiente na esquerda */
       -webkit-mask-image: linear-gradient(to right, transparent 0%, transparent 20%, black 50%, black 100%);
       mask-image: linear-gradient(to right, transparent 0%, transparent 20%, black 50%, black 100%);
     }
-
 
     .hero-brand-wallpaper.active { opacity: 0.6; }
 
@@ -214,34 +208,42 @@
 
     .hero-brand-logo-container img { max-width: 100%; max-height: 100%; object-fit: contain; }
 
-    .counter-bar { display: flex; justify-content: flex-end; align-items: center; padding: 0 4px; gap: 8px; height: 20px; z-index: 10; }
+    .counter-bar { display: flex; justify-content: flex-end; align-items: center; padding: 0 4px; gap: 8px; height: 24px; z-index: 10; }
     
-    .sort-icon-btn {
-      background: transparent; color: #a0aec0; border: none; font-size: 0.9rem;
-      cursor: pointer; padding: 0; display: flex; align-items: center;
-      justify-content: center; transition: color 0.2s ease, transform 0.2s ease; outline: none;
-    }
-    
-    .sort-icon-btn:hover, .sort-icon-btn:focus, .sort-icon-btn.focused {
-      color: #f39c12 !important; background: transparent !important; border: none !important; box-shadow: none !important; transform: scale(1.25);
+    .sort-dropdown {
+      background: rgba(22, 27, 38, 0.9);
+      color: #a0aec0;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 6px;
+      padding: 2px 6px;
+      font-size: 0.8rem;
+      font-weight: bold;
+      outline: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
     }
 
-   .card-counter { font-size: 0.85rem; font-weight: 900; color: #e2e8f0; background: transparent; padding: 0; letter-spacing: 1px; }
+    .sort-dropdown:hover, .sort-dropdown:focus, .sort-dropdown.focused {
+      color: #f39c12 !important;
+      border-color: #f39c12 !important;
+      background: #11141d !important;
+      box-shadow: 0 0 10px rgba(243, 156, 18, 0.3);
+    }
+
+    .card-counter { font-size: 0.85rem; font-weight: 900; color: #e2e8f0; background: transparent; padding: 0; letter-spacing: 1px; }
 
     .catalog-section { height: 380px; min-height: 380px; width: 100%; overflow: hidden; flex-shrink: 0; touch-action: none; z-index: 5; }
-   /* SEÇÃO INFERIOR DO CATÁLOGO - MARCAS.HTML */
-.card-row { 
-  display: grid; 
-  grid-template-columns: repeat(7, 122px); 
-  grid-template-rows: repeat(2, 185px); 
-  gap: 10px 12px; 
-  width: fit-content; /* Faz a grade ter o tamanho exato dos 7 cards */
-  margin: 0 auto;     /* Centraliza o bloco inteiro de 7 colunas na tela */
-  justify-content: start; /* Garante que itens incompletos fiquem à esquerda */
-  align-content: start; 
-}
 
-
+    .card-row { 
+      display: grid; 
+      grid-template-columns: repeat(7, 122px); 
+      grid-template-rows: repeat(2, 185px); 
+      gap: 10px 12px; 
+      width: fit-content;
+      margin: 0 auto; 
+      justify-content: start;
+      align-content: start; 
+    }
 
     .card {
       width: 122px !important; min-width: 122px !important; height: 185px !important;
@@ -290,13 +292,12 @@
       white-space: nowrap !important; flex-shrink: 0 !important;
     }
 
-.card.focused, .card:focus, .card:hover { 
-  border: 2px solid #f39c12 !important; 
-  outline: none !important; 
-  z-index: 10 !important; 
-  transform: none !important; /* Garante que o card não mude de tamanho */
-
-}
+    .card.focused, .card:focus, .card:hover { 
+      border: 2px solid #f39c12 !important; 
+      outline: none !important; 
+      z-index: 10 !important; 
+      transform: none !important;
+    }
 
     .zoom-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.95); z-index: 3000; display: none; justify-content: center; align-items: center; padding: 16px; overflow: hidden; }
     .zoom-modal.active { display: flex; }
@@ -343,7 +344,7 @@
 
     <main class="main-area" id="mainArea" onclick="handleMainAreaClick()">
       <section class="hero-panel" id="heroPanel">
-               <div class="brand-search-wrapper" onclick="event.stopPropagation();">
+        <div class="brand-search-wrapper" onclick="event.stopPropagation();">
           <input type="text" id="topBrandInput" class="brand-search-input" placeholder="BUSCAR MARCA..." readonly tabindex="0">
           
           <div class="top-vk-panel" id="topVkPanel">
@@ -356,7 +357,12 @@
       </section>
 
       <div class="counter-bar">
-        <button class="sort-icon-btn" id="sortOrderBtn" onclick="toggleSortOrder()" tabindex="0" title="Alternar Ordenação">▼</button>
+        <select id="sortSelect" class="sort-dropdown" onchange="handleSortChange(this.value)" tabindex="0">
+          <option value="newest">▼ MAIS RECENTES</option>
+          <option value="oldest">▲ MAIS ANTIGOS</option>
+          <option value="az">A ➔ Z</option>
+          <option value="za">Z ➔ A</option>
+        </select>
         <div class="card-counter" id="cardCounter">0/0</div>
       </div>
 
@@ -385,7 +391,7 @@
   let currentFiltered = [];
   let zoomGallery = [];
   let currentZoomIndex = 0;
-  let sortNewestFirst = true;
+  let currentSortMode = 'newest';
   
   let currentTab = 'home';
   let cardsPerRow = 7;
@@ -573,19 +579,8 @@
     focusCardSafely(0);
   }
 
-  function toggleSortOrder() {
-    sortNewestFirst = !sortNewestFirst;
-    const sortBtn = document.getElementById("sortOrderBtn");
-    if (sortBtn) {
-      if (sortNewestFirst) {
-        sortBtn.innerText = "▼";
-        sortBtn.title = "Ordenação: Maior para Menor (Mais Novos)";
-      } else {
-        sortBtn.innerText = "▲";
-        sortBtn.title = "Ordenação: Menor para Maior (Mais Antigos)";
-      }
-    }
-
+  function handleSortChange(value) {
+    currentSortMode = value;
     const inputElem = document.getElementById("topBrandInput");
     const currentSearchVal = inputElem ? inputElem.value : "";
     filterCatalogByBrand(currentSearchVal);
@@ -624,7 +619,7 @@
           ococMap.set(uniqueKey, can);
         }
       });
-      list = Array.from(ococMap.values()).sort((a,b) => String(a.country || a.Pais).localeCompare(String(b.country || b.Pais)));
+      list = Array.from(ococMap.values());
     } else if (currentTab === 'sets') {
       list = canCatalog.filter(can => {
         const val = can.isSet;
@@ -632,10 +627,29 @@
       });
     }
 
-    if (sortNewestFirst && currentTab !== 'ococ') {
-      return [...list].reverse();
+    return applySorting(list);
+  }
+
+  function applySorting(list) {
+    const copy = [...list];
+    if (currentSortMode === 'newest') {
+      return copy.reverse();
+    } else if (currentSortMode === 'oldest') {
+      return copy;
+    } else if (currentSortMode === 'az') {
+      return copy.sort((a, b) => {
+        const nameA = String(a.brewery || a.Cervejaria || a.name || a.Nome || "").toLowerCase();
+        const nameB = String(b.brewery || b.Cervejaria || b.name || b.Nome || "").toLowerCase();
+        return nameA.localeCompare(nameB, 'pt-BR');
+      });
+    } else if (currentSortMode === 'za') {
+      return copy.sort((a, b) => {
+        const nameA = String(a.brewery || a.Cervejaria || a.name || a.Nome || "").toLowerCase();
+        const nameB = String(b.brewery || b.Cervejaria || b.name || b.Nome || "").toLowerCase();
+        return nameB.localeCompare(nameA, 'pt-BR');
+      });
     }
-    return list;
+    return copy;
   }
 
   function clearAllCardFocus() {
@@ -645,8 +659,8 @@
     document.querySelectorAll(".card").forEach(c => c.classList.remove("focused"));
     document.querySelectorAll(".vk-key").forEach(k => k.classList.remove("focused"));
 
-    const sortBtn = document.getElementById("sortOrderBtn");
-    if (sortBtn) sortBtn.classList.remove("focused");
+    const sortSelect = document.getElementById("sortSelect");
+    if (sortSelect) sortSelect.classList.remove("focused");
   }
 
   function focusCardSafely(targetIndex) {
@@ -1200,16 +1214,16 @@
       const volumeText = can.volume || can.Volume || "";
       const flagUrl = getFlagUrlByCountry(countryRaw);
 
-      let cardColor = can.brandColor || can.color;
+      let cardColor = can.brandColor || can.brandcolor || can.BRANDCOLOR || can.corMarca || can.color;
       if (!cardColor || cardColor === "") {
         const brandKey = String(brandRaw).toLowerCase().trim();
         const sameBrandCan = canCatalog.find(c => {
           const b = String(c.brewery || c.Cervejaria || "").toLowerCase().trim();
-          const cColor = c.brandColor || c.color;
+          const cColor = c.brandColor || c.brandcolor || c.BRANDCOLOR || c.corMarca || c.color;
           return b === brandKey && cColor && String(cColor).trim() !== "";
         });
         if (sameBrandCan) {
-          cardColor = sameBrandCan.brandColor || sameBrandCan.color;
+          cardColor = sameBrandCan.brandColor || sameBrandCan.brandcolor || sameBrandCan.BRANDCOLOR || sameBrandCan.corMarca || sameBrandCan.color;
         }
       }
       if (!cardColor) {
@@ -1302,12 +1316,11 @@
             const target = cardsPerRow + (localIndex % cardsPerRow);
             focusCardSafely(target);
           } else {
-            /* FOCA NO BOTÃO DO TRIÂNGULO DA CONTAGEM */
             clearAllCardFocus();
-            const sortBtn = document.getElementById("sortOrderBtn");
-            if (sortBtn) {
-              sortBtn.classList.add("focused");
-              sortBtn.focus();
+            const sortSelect = document.getElementById("sortSelect");
+            if (sortSelect) {
+              sortSelect.classList.add("focused");
+              sortSelect.focus();
             } else {
               openTopVkPanel();
             }
@@ -1319,7 +1332,7 @@
         <div class="card-top-photo">
           <img src="${frontImg}" alt="${brandFormatted}" loading="lazy" decoding="async">
         </div>
-        <div class="card-bottom-bar" style="background-color: ${cardColor};">
+        <div class="card-bottom-bar" style="background-color: ${cardColor} !important;">
           <div class="card-bar-title">${brandFormatted}</div>
           <div class="card-bar-details">
             <div class="card-bar-country">
@@ -1487,20 +1500,17 @@
     }
   }
 
-  /* NAVEGAÇÃO DO BOTÃO DO TRIÂNGULO DA CONTAGEM */
-  const sortBtnElem = document.getElementById("sortOrderBtn");
-  if (sortBtnElem) {
-    sortBtnElem.onkeydown = (e) => {
-      if (e.key === "Enter" || e.key === " " || e.keyCode === 13) {
+  /* NAVEGAÇÃO DO DROPDOWN DE ORDENAÇÃO */
+  const sortSelectElem = document.getElementById("sortSelect");
+  if (sortSelectElem) {
+    sortSelectElem.onkeydown = (e) => {
+      if (e.key === "ArrowDown" || e.keyCode === 40) {
         e.preventDefault();
-        toggleSortOrder();
-      } else if (e.key === "ArrowDown" || e.keyCode === 40) {
-        e.preventDefault();
-        focusCardSafely(activeLocalIndex); /* RETORNA O FOCO PARA OS CARDS */
+        focusCardSafely(activeLocalIndex);
       } else if (e.key === "ArrowUp" || e.keyCode === 38) {
         e.preventDefault();
         clearAllCardFocus();
-        openTopVkPanel(); /* SOBE O FOCO PARA A BUSCA / TECLADO SUPERIOR */
+        openTopVkPanel();
       } else if (e.key === "ArrowLeft" || e.keyCode === 37) {
         e.preventDefault();
         openMenu();
