@@ -107,6 +107,12 @@
           </div>
         </div>
 
+        <!-- CAMPO DESCRIÇÃO DA MARCA (brandDesc) -->
+        <div class="form-group">
+          <label for="brandDesc">DESCRIÇÃO DA MARCA (brandDesc):</label>
+          <textarea id="brandDesc" name="brandDesc" class="form-control" rows="3" placeholder="Digite a história ou descrição da marca/cervejaria..."></textarea>
+        </div>
+
         <div class="form-row-3">
           <div class="form-group">
             <label for="Volume">VOLUME:</label>
@@ -355,7 +361,7 @@
   function filterTable() {
     const query = document.getElementById("tableSearch").value.toLowerCase().trim();
     const filtered = canCatalog.filter(can => {
-      return [can.Nome, can.Cervejaria, can.Pais, can.Volume, can.Ano, can.Barcode]
+      return [can.Nome, can.Cervejaria, can.Pais, can.Volume, can.Ano, can.Barcode, can.brandDesc, can.descricao]
         .map(v => String(v || "").toLowerCase())
         .join(" ")
         .includes(query);
@@ -371,6 +377,7 @@
     document.getElementById("Nome").value = item.Nome || item.name || "";
     document.getElementById("Cervejaria").value = item.Cervejaria || item.brewery || "";
     document.getElementById("Pais").value = item.Pais || item.country || "";
+    document.getElementById("brandDesc").value = item.brandDesc || item.descricao || item.DESCRICAO || "";
     document.getElementById("Volume").value = item.Volume || "";
     document.getElementById("Ano").value = item.Ano || item.year || "";
     document.getElementById("Barcode").value = item.Barcode || "";
@@ -412,9 +419,10 @@
     document.getElementById("setNameContainer").style.display = isChecked ? "flex" : "none";
   }
 
-  /* AUTOPREENCHE LOGO, WALLPAPER E COR DA MARCA SE JA CADASTRADOS */
+  /* AUTOPREENCHE LOGO, WALLPAPER, COR E DESCRIÇÃO DA MARCA SE JA CADASTRADOS */
   function autoFillBrandWallpaper() {
     const breweryInput = document.getElementById("Cervejaria");
+    const descInput = document.getElementById("brandDesc");
     const wallpaperInput = document.getElementById("brandWallpaper");
     const logoInput = document.getElementById("brandLogo");
     const colorInput = document.getElementById("brandColor");
@@ -435,6 +443,10 @@
     });
 
     if (match) {
+      if (descInput && !descInput.value.trim()) {
+        const foundDesc = match.brandDesc || match.descricao || match.DESCRICAO;
+        if (foundDesc) descInput.value = foundDesc;
+      }
       if (wallpaperInput && !wallpaperInput.value.trim()) {
         const foundWp = match.brandWallpaper || match.wallpaper || match.BRANDWALLPAPER || match.WALLPAPER;
         if (foundWp) setPhotoField("brandWallpaper", "prevWallpaper", foundWp);
@@ -509,6 +521,7 @@
       Nome: document.getElementById("Nome").value,
       Cervejaria: document.getElementById("Cervejaria").value,
       Pais: document.getElementById("Pais").value,
+      brandDesc: document.getElementById("brandDesc").value.trim(),
       Volume: document.getElementById("Volume").value,
       Ano: document.getElementById("Ano").value,
       Barcode: document.getElementById("Barcode").value,
@@ -576,6 +589,7 @@
   function resetForm() {
     document.getElementById("canForm").reset();
     document.getElementById("_rowNum").value = "";
+    document.getElementById("brandDesc").value = "";
     document.getElementById("ImgCover").value = "";
     document.getElementById("ImgFront").value = "";
     document.getElementById("ImgLeft").value = "";
