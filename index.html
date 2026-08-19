@@ -195,10 +195,9 @@
       color: #bdbdbd; 
       margin-bottom: 12px !important; 
       letter-spacing: 0.5px; 
-           text-transform: uppercase;
+      text-transform: uppercase;
     }
 
-    /* LINHA DE INFORMAÇÃO: RÓTULO E VALOR LADO A LADO */
     .hero-info-row {
       display: flex;
       flex-direction: row;
@@ -206,7 +205,6 @@
       gap: 6px;
     }
 
-    /* ESTILO DO RÓTULO (ex: "Origem:") - Apenas primeira letra maiúscula */
     .info-label {
       font-size: 0.85rem;
       font-weight: 700;
@@ -214,7 +212,6 @@
       text-transform: none;
     }
 
-    /* ESTILO DO VALOR (ex: "Brasil") */
     .info-value {
       font-size: 1.2rem;
       font-weight: bold;
@@ -223,7 +220,6 @@
       text-transform: uppercase;
     }
 
-    /* Estilo para a descrição da marca no Hero */
     .hero-brand-desc {
       margin-top: 10px;
       font-size: 0.9rem;
@@ -238,17 +234,26 @@
       text-transform: none;
     }
 
-    .counter-bar { display: flex; justify-content: flex-end; align-items: center; padding: 0 4px; gap: 8px; height: 20px; }
+    .counter-bar { display: flex; justify-content: flex-end; align-items: center; padding: 0 4px; gap: 8px; height: 24px; }
     
-    .sort-icon-btn {
-      background: transparent; color: #a0aec0; border: none; font-size: 0.9rem;
-      cursor: pointer; padding: 0; display: flex; align-items: center;
-      justify-content: center; transition: color 0.2s ease, transform 0.2s ease; outline: none;
+    .sort-dropdown {
+      background: rgba(22, 27, 38, 0.9);
+      color: #a0aec0;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 6px;
+      padding: 2px 6px;
+      font-size: 0.8rem;
+      font-weight: bold;
+      outline: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
     }
-    
-    .sort-icon-btn:hover, .sort-icon-btn:focus, .sort-icon-btn.focused {
-      color: #f39c12 !important; background: transparent !important;
-      border: none !important; box-shadow: none !important; transform: scale(1.25);
+
+    .sort-dropdown:hover, .sort-dropdown:focus, .sort-dropdown.focused {
+      color: #f39c12 !important;
+      border-color: #f39c12 !important;
+      background: #11141d !important;
+      box-shadow: 0 0 10px rgba(243, 156, 18, 0.3);
     }
 
     .card-counter { font-size: 0.85rem; font-weight: 900; color: #e2e8f0; background: transparent; padding: 0; letter-spacing: 1px; }
@@ -376,14 +381,12 @@
       flex-shrink: 0 !important;
     }
 
-.card.focused, .card:focus, .card:hover { 
-  border: 2px solid #f39c12 !important; 
-  outline: none !important; 
-  z-index: 10 !important; 
-  transform: none !important; /* Garante que o card não mude de tamanho */
-
-   
-}
+    .card.focused, .card:focus, .card:hover { 
+      border: 2px solid #f39c12 !important; 
+      outline: none !important; 
+      z-index: 10 !important; 
+      transform: none !important;
+    }
 
     /* MODAL DE ZOOM E NAVEGAÇÃO */
     .zoom-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.95); z-index: 3000; display: none; justify-content: center; align-items: center; padding: 16px; overflow: hidden; }
@@ -467,13 +470,17 @@
             <span class="info-value" id="heroBarcode">-</span>
           </div>
 
-          <!-- Parágrafo da Descrição da Marca -->
           <div class="hero-brand-desc" id="heroBrandDescription"></div>
         </div>
       </section>
 
       <div class="counter-bar">
-        <button class="sort-icon-btn" id="sortOrderBtn" onclick="toggleSortOrder()" tabindex="0" title="Alternar Ordenação">▼</button>
+        <select id="sortSelect" class="sort-dropdown" onchange="handleSortChange(this.value)" tabindex="0">
+          <option value="newest">▼ MAIS RECENTES</option>
+          <option value="oldest">▲ MAIS ANTIGOS</option>
+          <option value="az">A ➔ Z</option>
+          <option value="za">Z ➔ A</option>
+        </select>
         <div class="card-counter" id="cardCounter">0/0</div>
       </div>
 
@@ -505,11 +512,11 @@
   let currentFiltered = [];
   let zoomGallery = [];
   let currentZoomIndex = 0;
-  let sortNewestFirst = true;
+  let currentSortMode = 'newest';
   
   let currentTab = 'home';
   let cardsPerRow = 7;
-  let cardsPerPage = 7; /* FIXADO EM 7 PARA EXIBIR APENAS 1 LINHA */
+  let cardsPerPage = 7;
   let currentPage = 0;
   let activeLocalIndex = 0;
   let lastSelectedMenuId = 'menuBtnHome'; 
@@ -699,13 +706,8 @@
     focusCardSafely(0);
   }
 
-  function toggleSortOrder() {
-    sortNewestFirst = !sortNewestFirst;
-    const sortBtn = document.getElementById("sortOrderBtn");
-    if (sortBtn) {
-      sortBtn.innerText = sortNewestFirst ? "▼" : "▲";
-    }
-
+  function handleSortChange(value) {
+    currentSortMode = value;
     const currentSearchVal = document.getElementById("topBrandInput") ? document.getElementById("topBrandInput").value : "";
     filterCatalog(currentSearchVal);
     focusCardSafely(0);
@@ -742,7 +744,7 @@
           ococMap.set(uniqueKey, can);
         }
       });
-      list = Array.from(ococMap.values()).sort((a,b) => String(a.country || a.Pais).localeCompare(String(b.country || b.Pais)));
+      list = Array.from(ococMap.values());
     } else if (currentTab === 'sets') {
       list = canCatalog.filter(can => {
         const val = can.isSet;
@@ -750,10 +752,29 @@
       });
     }
 
-    if (sortNewestFirst && currentTab !== 'ococ') {
-      return [...list].reverse();
+    return applySorting(list);
+  }
+
+  function applySorting(list) {
+    const copy = [...list];
+    if (currentSortMode === 'newest') {
+      return copy.reverse();
+    } else if (currentSortMode === 'oldest') {
+      return copy;
+    } else if (currentSortMode === 'az') {
+      return copy.sort((a, b) => {
+        const nameA = String(a.brewery || a.Cervejaria || a.name || a.Nome || "").toLowerCase();
+        const nameB = String(b.brewery || b.Cervejaria || b.name || b.Nome || "").toLowerCase();
+        return nameA.localeCompare(nameB, 'pt-BR');
+      });
+    } else if (currentSortMode === 'za') {
+      return copy.sort((a, b) => {
+        const nameA = String(a.brewery || a.Cervejaria || a.name || a.Nome || "").toLowerCase();
+        const nameB = String(b.brewery || b.Cervejaria || b.name || b.Nome || "").toLowerCase();
+        return nameB.localeCompare(nameA, 'pt-BR');
+      });
     }
-    return list;
+    return copy;
   }
 
   function clearAllCardFocus() {
@@ -763,8 +784,8 @@
     document.querySelectorAll(".card").forEach(c => c.classList.remove("focused"));
     document.querySelectorAll(".vk-key").forEach(k => k.classList.remove("focused"));
 
-    const sortBtn = document.getElementById("sortOrderBtn");
-    if (sortBtn) sortBtn.classList.remove("focused");
+    const sortSelect = document.getElementById("sortSelect");
+    if (sortSelect) sortSelect.classList.remove("focused");
   }
 
   function focusCardSafely(targetIndex) {
@@ -1087,7 +1108,6 @@
     });
   }
 
-  /* FUNÇÃO ÚNICA DE FILTRO E LIMITAÇÃO DE CARDS POR LINHA */
   function filterCatalog(query) {
     const val = query ? query.toLowerCase().trim() : "";
     const baseList = getBaseListForCurrentTab();
@@ -1113,7 +1133,6 @@
     updateHeroPanel(currentFiltered[0], 0);
   }
 
-  
   function updateHeroPanel(can, localIndex = 0) {
     if (!can) return;
 
@@ -1127,7 +1146,6 @@
     const yearVal = can.year || can.Ano || "-";
     const barcodeVal = can.barcode || can.Barcode || "-";
 
-    // Pega a descrição da coluna "brandDesc" da própria lata ou de outra da mesma cervejaria
     let brandDescVal = can.brandDesc || can.descricao || can.DESCRICAO || "";
     if (!brandDescVal && (can.brewery || can.Cervejaria)) {
       const brandKey = String(can.brewery || can.Cervejaria).toLowerCase().trim();
@@ -1155,7 +1173,6 @@
     if (heroBarcode) heroBarcode.innerText = barcodeVal;
     if (heroDesc) heroDesc.innerText = brandDescVal || "";
 
-    // Atualiza fotos da lata no quadrante esquerdo na ordem correta (Frente, Esquerda, Trás, Direita)
     const photo1 = document.getElementById("heroPhoto1");
     const photo2 = document.getElementById("heroPhoto2");
     const photo3 = document.getElementById("heroPhoto3");
@@ -1349,16 +1366,16 @@
       const volumeText = can.volume || can.Volume || "";
       const flagUrl = getFlagUrlByCountry(countryRaw);
 
-      let cardColor = can.brandColor || can.color;
+      let cardColor = can.brandColor || can.brandcolor || can.BRANDCOLOR || can.corMarca || can.color;
       if (!cardColor || cardColor === "") {
         const brandKey = String(brandRaw).toLowerCase().trim();
         const sameBrandCan = canCatalog.find(c => {
           const b = String(c.brewery || c.Cervejaria || "").toLowerCase().trim();
-          const cColor = c.brandColor || c.color;
+          const cColor = c.brandColor || c.brandcolor || c.BRANDCOLOR || c.corMarca || c.color;
           return b === brandKey && cColor && String(cColor).trim() !== "";
         });
         if (sameBrandCan) {
-          cardColor = sameBrandCan.brandColor || sameBrandCan.color;
+          cardColor = sameBrandCan.brandColor || sameBrandCan.brandcolor || sameBrandCan.BRANDCOLOR || sameBrandCan.corMarca || sameBrandCan.color;
         }
       }
       if (!cardColor) {
@@ -1440,12 +1457,11 @@
             renderApp();
             focusCardSafely(0);
           } else {
-            /* FOCA NO BOTÃO DO TRIÂNGULO EM VEZ DE IR DIRETO PRO TECLADO */
             clearAllCardFocus();
-            const sortBtn = document.getElementById("sortOrderBtn");
-            if (sortBtn) {
-              sortBtn.classList.add("focused");
-              sortBtn.focus();
+            const sortSelect = document.getElementById("sortSelect");
+            if (sortSelect) {
+              sortSelect.classList.add("focused");
+              sortSelect.focus();
             } else {
               openTopVkPanel();
             }
@@ -1457,7 +1473,7 @@
         <div class="card-top-photo">
           <img src="${frontImg}" alt="${brandFormatted}" loading="lazy" decoding="async">
         </div>
-        <div class="card-bottom-bar" style="background-color: ${cardColor};">
+        <div class="card-bottom-bar" style="background-color: ${cardColor} !important;">
           <div class="card-bar-title">${brandFormatted}</div>
           <div class="card-bar-details">
             <div class="card-bar-country">
@@ -1624,20 +1640,17 @@
     }
   }
 
-  /* NAVEGAÇÃO DO BOTÃO DO TRIÂNGULO DA CONTAGEM */
-  const sortBtnElem = document.getElementById("sortOrderBtn");
-  if (sortBtnElem) {
-    sortBtnElem.onkeydown = (e) => {
-      if (e.key === "Enter" || e.key === " " || e.keyCode === 13) {
+  /* NAVEGAÇÃO DO DROPDOWN DE ORDENAÇÃO */
+  const sortSelectElem = document.getElementById("sortSelect");
+  if (sortSelectElem) {
+    sortSelectElem.onkeydown = (e) => {
+      if (e.key === "ArrowDown" || e.keyCode === 40) {
         e.preventDefault();
-        toggleSortOrder();
-      } else if (e.key === "ArrowDown" || e.keyCode === 40) {
-        e.preventDefault();
-        focusCardSafely(activeLocalIndex); /* VOLTA O FOCO PARA OS CARDS */
+        focusCardSafely(activeLocalIndex);
       } else if (e.key === "ArrowUp" || e.keyCode === 38) {
         e.preventDefault();
         clearAllCardFocus();
-        openTopVkPanel(); /* SOBE PARA O TECLADO / BUSCA SUPERIOR */
+        openTopVkPanel();
       } else if (e.key === "ArrowLeft" || e.keyCode === 37) {
         e.preventDefault();
         openMenu();
