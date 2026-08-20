@@ -294,20 +294,18 @@
       align-content: start; 
     }
 
-    .card {
-      width: 122px !important;
-      min-width: 122px !important;
-      height: 185px !important;
-      background: #ffffff !important;
-      border-radius: 10px !important;
-      overflow: hidden !important;
-      display: flex !important;
-      flex-direction: column !important;
-      border: 2px solid transparent !important;
-      cursor: pointer !important;
-      flex-shrink: 0 !important;
-      outline: none !important;
-    }
+.card {
+  width: 122px !important;
+  height: 185px !important;
+  background: #ffffff !important;
+  border-radius: 12px !important;
+  overflow: hidden !important;
+  display: flex !important;
+  flex-direction: column !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3) !important;
+  transition: all 0.25s ease-in-out !important;
+  outline: none !important;
 
     .card.card-aspect-sets { 
       width: 220px !important; 
@@ -395,12 +393,13 @@
       flex-shrink: 0 !important;
     }
 
-    .card.focused, .card:focus, .card:hover { 
-      border: 2px solid #f39c12 !important; 
-      outline: none !important; 
-      z-index: 10 !important; 
-      transform: none !important;
-    }
+   .card.focused, .card:focus {
+  border: 2px solid #ff9d00 !important;
+  box-shadow: 0 0 18px rgba(255, 157, 0, 0.8), 
+              0 0 35px rgba(255, 157, 0, 0.4) !important;
+  transform: scale(1.03) !important; /* Leve pulso sem quebrar a grade */
+  z-index: 10 !important;
+}
 
     /* MODAL DE ZOOM E NAVEGAÇÃO */
     .zoom-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.95); z-index: 3000; display: none; justify-content: center; align-items: center; padding: 16px; overflow: hidden; }
