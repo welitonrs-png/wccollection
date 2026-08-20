@@ -1122,23 +1122,31 @@
     });
   }
 
-  function filterCatalog(query) {
+    function filterCatalog(query) {
     const val = query ? query.toLowerCase().trim() : "";
     const baseList = getBaseListForCurrentTab();
 
-    if (currentTab === 'sets') {
-      cardsPerRow = 4;
-      cardsPerPage = 4;
-    } else {
-      cardsPerRow = 7;
-      cardsPerPage = 7;
-    }
-
     currentFiltered = baseList.filter(can => {
       if (!val) return true;
-      const b = String(can.brewery || can.Cervejaria || "").toLowerCase();
-      return b.includes(val);
+
+      const name = String(can.name || can.Nome || "").toLowerCase();
+      const brewery = String(can.brewery || can.Cervejaria || "").toLowerCase();
+      const country = String(can.country || can.Pais || "").toLowerCase();
+      const barcode = String(can.barcode || can.Barcode || "").toLowerCase();
+
+      return name.includes(val) || 
+             brewery.includes(val) || 
+             country.includes(val) || 
+             barcode.includes(val);
     });
+
+    activeIndex = 0;
+    renderCatalogGrid();
+    if (currentFiltered.length > 0) {
+      focusCard(0);
+    }
+  }
+
 
     currentPage = 0;
     activeLocalIndex = 0;
