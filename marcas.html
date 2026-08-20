@@ -1204,163 +1204,151 @@
     }
   }
 
-  function renderApp() {
-    clearAllCardFocus();
-    const row = document.getElementById("cardRow");
-    if (!row) return;
-    row.innerHTML = "";
+function renderApp() {
+  clearAllCardFocus();
+  const row = document.getElementById("cardRow");
+  if (!row) return;
+  row.innerHTML = "";
 
-    const startIndex = currentPage * cardsPerPage;
-    const pageItems = currentFiltered.slice(startIndex, startIndex + cardsPerPage);
+  const startIndex = currentPage * cardsPerPage;
+  const pageItems = currentFiltered.slice(startIndex, startIndex + cardsPerPage);
 
-    pageItems.forEach((can, localIndex) => {
-      const globalIndex = startIndex + localIndex;
+  pageItems.forEach((can, localIndex) => {
+    const globalIndex = startIndex + localIndex;
 
-      const rawImg = can.ImgCover || can.cover || can.ImgFront || can.front || can.brandLogo;
-      const frontImg = getOptimizedImageUrl(rawImg, 400);
+    const rawImg = can.ImgCover || can.cover || can.ImgFront || can.front || can.brandLogo;
+    const frontImg = getOptimizedImageUrl(rawImg, 400);
 
-      const brandRaw = can.brewery || can.Cervejaria || can.name || "Cerveja";
-      const brandFormatted = formatCapitalizedText(brandRaw);
+    const brandRaw = can.brewery || can.Cervejaria || can.name || "Cerveja";
+    const brandFormatted = formatCapitalizedText(brandRaw);
 
-      const countryRaw = can.country || can.Pais || "";
-      const countryFormatted = formatCapitalizedText(countryRaw);
+    const countryRaw = can.country || can.Pais || "";
+    const countryFormatted = formatCapitalizedText(countryRaw);
 
-      const volumeText = can.volume || can.Volume || "";
-      const flagUrl = getFlagUrlByCountry(countryRaw);
+    const volumeText = can.volume || can.Volume || "";
+    const flagUrl = getFlagUrlByCountry(countryRaw);
 
-      let cardColor = can.brandColor || can.brandcolor || can.BRANDCOLOR || can.corMarca || can.color;
-      if (!cardColor || cardColor === "") {
-        const brandKey = String(brandRaw).toLowerCase().trim();
-        const sameBrandCan = canCatalog.find(c => {
-          const b = String(c.brewery || c.Cervejaria || "").toLowerCase().trim();
-          const cColor = c.brandColor || c.brandcolor || c.BRANDCOLOR || c.corMarca || c.color;
-          return b === brandKey && cColor && String(cColor).trim() !== "";
-        });
-        if (sameBrandCan) {
-          cardColor = sameBrandCan.brandColor || sameBrandCan.brandcolor || sameBrandCan.BRANDCOLOR || sameBrandCan.corMarca || sameBrandCan.color;
-        }
+    let cardColor = can.brandColor || can.brandcolor || can.BRANDCOLOR || can.corMarca || can.color;
+    if (!cardColor || cardColor === "") {
+      const brandKey = String(brandRaw).toLowerCase().trim();
+      const sameBrandCan = canCatalog.find(c => {
+        const b = String(c.brewery || c.Cervejaria || "").toLowerCase().trim();
+        const cColor = c.brandColor || c.brandcolor || c.BRANDCOLOR || c.corMarca || c.color;
+        return b === brandKey && cColor && String(cColor).trim() !== "";
+      });
+      if (sameBrandCan) {
+        cardColor = sameBrandCan.brandColor || sameBrandCan.brandcolor || sameBrandCan.BRANDCOLOR || sameBrandCan.corMarca || sameBrandCan.color;
       }
-      if (!cardColor) {
-        cardColor = "#008234";
-      }
+    }
+    if (!cardColor) {
+      cardColor = "#008234";
+    }
 
-      const card = document.createElement("div");
-      card.className = `card ${currentTab === 'sets' ? 'card-aspect-sets' : ''}`;
-      card.tabIndex = 0;
-      card.dataset.localIndex = localIndex;
-      card.dataset.globalIndex = globalIndex;
-      
-      card.onmouseenter = () => {
-        clearAllCardFocus();
-        card.classList.add("focused");
-        activeLocalIndex = localIndex;
-        updateCounter(localIndex);
-      };
+    const card = document.createElement("div");
+    card.className = `card ${currentTab === 'sets' ? 'card-aspect-sets' : ''}`;
+    card.tabIndex = 0;
+    card.dataset.localIndex = localIndex;
+    card.dataset.globalIndex = globalIndex;
 
-      card.onfocus = () => {
-        if (document.getElementById("zoomModal").classList.contains("active") || document.getElementById("exitModal").classList.contains("active")) return;
-        clearAllCardFocus();
-        card.classList.add("focused");
-        activeLocalIndex = localIndex;
-        updateCounter(localIndex);
-      };
+    // Gerenciamento de foco corrigido para TV e Mouse
+    card.onfocus = () => {
+      if (document.getElementById("zoomModal")?.classList.contains("active") || 
+          document.getElementById("exitModal")?.classList.contains("active")) return;
       
-      card.onclick = (e) => {
-        e.stopPropagation();
+      document.querySelectorAll(".card").forEach(c => c.classList.remove("focused"));
+      card.classList.add("focused");
+      activeLocalIndex = localIndex;
+      updateCounter(localIndex);
+    };
+
+    card.onmouseenter = () => {
+      card.focus();
+    };
+    
+    card.onclick = (e) => {
+      e.stopPropagation();
+      openZoomModal(0);
+    };
+
+    card.onkeydown = (e) => {
+      if (document.getElementById("zoomModal")?.classList.contains("active") || 
+          document.getElementById("exitModal")?.classList.contains("active")) return;
+
+      const key = e.key;
+      const keyCode = e.keyCode;
+
+      if (key === "Enter" || key === " " || keyCode === 13) {
+        e.preventDefault();
         openZoomModal(0);
-      };
-
-      card.onkeydown = (e) => {
-        if (document.getElementById("zoomModal").classList.contains("active") || document.getElementById("exitModal").classList.contains("active")) return;
-
-        const key = e.key;
-        const keyCode = e.keyCode;
-
-        if (key === "Enter" || key === " " || keyCode === 13) {
-          e.preventDefault();
-          e.stopPropagation();
-          openZoomModal(0);
-        } else if (key === "ArrowRight" || keyCode === 39) {
-          e.preventDefault();
-          e.stopPropagation();
-          if (localIndex < pageItems.length - 1) {
-            focusCardSafely(localIndex + 1);
-          } else if ((startIndex + cardsPerPage) < currentFiltered.length) {
-            currentPage++;
-            renderApp();
-            focusCardSafely(0);
-          }
-        } else if (key === "ArrowLeft" || keyCode === 37) {
-          e.preventDefault();
-          e.stopPropagation();
-          if (localIndex > 0) {
-            focusCardSafely(localIndex - 1);
-          } else if (currentPage > 0) {
-            currentPage--;
-            renderApp();
-            focusCardSafely(cardsPerPage - 1);
+      } else if (key === "ArrowRight" || keyCode === 39) {
+        e.preventDefault();
+        if (localIndex < pageItems.length - 1) {
+          focusCardSafely(localIndex + 1);
+        } else if ((startIndex + cardsPerPage) < currentFiltered.length) {
+          currentPage++;
+          renderApp();
+          focusCardSafely(0);
+        }
+      } else if (key === "ArrowLeft" || keyCode === 37) {
+        e.preventDefault();
+        if (localIndex > 0) {
+          focusCardSafely(localIndex - 1);
+        } else if (currentPage > 0) {
+          currentPage--;
+          renderApp();
+          focusCardSafely(cardsPerPage - 1);
+        } else {
+          openMenu();
+        }
+      } else if (key === "ArrowDown" || keyCode === 40) {
+        e.preventDefault();
+        const nextIdx = localIndex + cardsPerRow;
+        if (nextIdx < pageItems.length) {
+          focusCardSafely(nextIdx);
+        } else if ((startIndex + cardsPerPage) < currentFiltered.length) {
+          currentPage++;
+          renderApp();
+          focusCardSafely(localIndex % cardsPerRow);
+        }
+      } else if (key === "ArrowUp" || keyCode === 38) {
+        e.preventDefault();
+        if (localIndex >= cardsPerRow) {
+          focusCardSafely(localIndex - cardsPerRow);
+        } else if (currentPage > 0) {
+          currentPage--;
+          renderApp();
+          focusCardSafely(pageItems.length - cardsPerRow + (localIndex % cardsPerRow));
+        } else {
+          const sortSelect = document.getElementById("sortSelect");
+          if (sortSelect) {
+            sortSelect.classList.add("focused");
+            sortSelect.focus();
           } else {
-            clearAllCardFocus();
-            openMenu();
-          }
-        } else if (key === "ArrowDown" || keyCode === 40) {
-          e.preventDefault();
-          e.stopPropagation();
-          if (localIndex < cardsPerRow) {
-            if (localIndex + cardsPerRow < pageItems.length) {
-              focusCardSafely(localIndex + cardsPerRow);
-            } else if ((startIndex + cardsPerPage) < currentFiltered.length) {
-              currentPage++;
-              renderApp();
-              focusCardSafely(0);
-            }
-          } else if ((startIndex + cardsPerPage) < currentFiltered.length) {
-            currentPage++;
-            renderApp();
-            focusCardSafely(localIndex % cardsPerRow);
-          }
-        } else if (key === "ArrowUp" || keyCode === 38) {
-          e.preventDefault();
-          e.stopPropagation();
-          if (localIndex >= cardsPerRow) {
-            focusCardSafely(localIndex - cardsPerRow);
-          } else if (currentPage > 0) {
-            currentPage--;
-            renderApp();
-            const target = cardsPerRow + (localIndex % cardsPerRow);
-            focusCardSafely(target);
-          } else {
-            clearAllCardFocus();
-            const sortSelect = document.getElementById("sortSelect");
-            if (sortSelect) {
-              sortSelect.classList.add("focused");
-              sortSelect.focus();
-            } else {
-              openTopVkPanel();
-            }
+            openTopVkPanel();
           }
         }
-      };
+      }
+    };
 
-      card.innerHTML = `
-        <div class="card-top-photo">
-          <img src="${frontImg}" alt="${brandFormatted}" loading="lazy" decoding="async">
-        </div>
-        <div class="card-bottom-bar" style="background-color: ${cardColor} !important;">
-          <div class="card-bar-title">${brandFormatted}</div>
-          <div class="card-bar-details">
-            <div class="card-bar-country">
-              ${flagUrl ? `<img src="${flagUrl}" class="card-bar-flag" alt="${countryFormatted}" loading="lazy">` : ''}
-              <span>${countryFormatted}</span>
-            </div>
-            ${volumeText ? `<div class="card-bar-vol">${volumeText}</div>` : ''}
+    card.innerHTML = `
+      <div class="card-top-photo">
+        <img src="${frontImg}" alt="${brandFormatted}" loading="lazy" decoding="async">
+      </div>
+      <div class="card-bottom-bar" style="background-color: ${cardColor} !important;">
+        <div class="card-bar-title">${brandFormatted}</div>
+        <div class="card-bar-details">
+          <div class="card-bar-country">
+            ${flagUrl ? `<img src="${flagUrl}" class="card-bar-flag" alt="${countryFormatted}" loading="lazy">` : ''}
+            <span>${countryFormatted}</span>
           </div>
+          ${volumeText ? `<div class="card-bar-vol">${volumeText}</div>` : ''}
         </div>
-      `;
+      </div>
+    `;
 
-      row.appendChild(card);
-    });
-  }
+    row.appendChild(card);
+  });
+}
 
   function openZoomModal(index) {
     if (!zoomGallery || zoomGallery.length === 0) return;
