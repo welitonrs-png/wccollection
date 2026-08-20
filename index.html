@@ -236,39 +236,39 @@
 
     .counter-bar { display: flex; justify-content: flex-end; align-items: center; padding: 0 4px; gap: 8px; height: 24px; }
     
-.sort-dropdown {
-  background: transparent;
-  color: #e2e8f0;
-  border: none;
-  border-radius: 12px;
-  padding: 8px 16px;
-  font-size: 0.95rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  cursor: pointer;
-  outline: none;
-  transition: all 0.2s ease;
-  appearance: none; /* Remove a seta padrão do sistema em alguns navegadores */
-  -webkit-appearance: none;
-}
+    .sort-dropdown {
+      background: transparent;
+      color: #e2e8f0;
+      border: none;
+      border-radius: 12px;
+      padding: 8px 16px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      cursor: pointer;
+      outline: none;
+      transition: all 0.2s ease;
+      appearance: none;
+      -webkit-appearance: none;
+    }
 
-/* Estado Normal / Padrão (Sem foco) */
-.sort-dropdown option {
-  background-color: #161b26;
-  color: #e2e8f0;
-  font-weight: 600;
-}
+    /* Estado Normal / Padrão (Sem foco) */
+    .sort-dropdown option {
+      background-color: #161b26;
+      color: #e2e8f0;
+      font-weight: 600;
+    }
 
-/* Estado Selecionado / Focado (Efeito Pill Branca da imagem) */
-.sort-dropdown:focus, 
-.sort-dropdown.focused, 
-.sort-dropdown:hover {
-  background: #ffffff !important;
-  color: #1a1f2c !important;
-  font-weight: 800 !important;
-  box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2);
-  outline: none !important;
-}
+    /* Estado Selecionado / Focado (Efeito Pill Branca) */
+    .sort-dropdown:focus, 
+    .sort-dropdown.focused, 
+    .sort-dropdown:hover {
+      background: #ffffff !important;
+      color: #1a1f2c !important;
+      font-weight: 800 !important;
+      box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2);
+      outline: none !important;
+    }
 
     .card-counter { font-size: 0.85rem; font-weight: 900; color: #e2e8f0; background: transparent; padding: 0; letter-spacing: 1px; }
 
@@ -648,7 +648,7 @@
   }
 
   async function fetchCatalogFromSheet() {
-    if (!API_URL || API_URL.includes("COLE_AQUI")) return;
+    if (!API_URL) return;
 
     const cachedData = localStorage.getItem("beercan_catalog_cache");
     if (cachedData) {
@@ -722,7 +722,8 @@
 
   function handleSortChange(value) {
     currentSortMode = value;
-    const currentSearchVal = document.getElementById("topBrandInput") ? document.getElementById("topBrandInput").value : "";
+    const searchInput = document.getElementById("menuSearchInput");
+    const currentSearchVal = searchInput ? searchInput.value : "";
     filterCatalog(currentSearchVal);
     focusCardSafely(0);
   }
@@ -730,8 +731,8 @@
   function processTabChange() {
     buildBrandList();
     buildVirtualKeyboard();
-    buildTopVirtualKeyboard();
-    const currentSearchVal = document.getElementById("topBrandInput") ? document.getElementById("topBrandInput").value : "";
+    const searchInput = document.getElementById("menuSearchInput");
+    const currentSearchVal = searchInput ? searchInput.value : "";
     filterCatalog(currentSearchVal);
   }
 
@@ -792,9 +793,6 @@
   }
 
   function clearAllCardFocus() {
-    const topInput = document.getElementById("topBrandInput");
-    if (topInput) topInput.classList.remove("focused");
-
     document.querySelectorAll(".card").forEach(c => c.classList.remove("focused"));
     document.querySelectorAll(".vk-key").forEach(k => k.classList.remove("focused"));
 
@@ -804,7 +802,6 @@
 
   function focusCardSafely(targetIndex) {
     closeMenu();
-    closeTopVkPanel();
     
     setTimeout(() => {
       const cards = document.querySelectorAll(".card");
@@ -930,142 +927,6 @@
     filterCatalog(input.value);
   }
 
-  function buildTopVirtualKeyboard() {
-    const container = document.getElementById("topVkContainer");
-    if (!container) return;
-    container.innerHTML = "";
-
-    vkKeys.forEach((k, index) => {
-      const btn = document.createElement("button");
-      btn.className = `vk-key ${ (k === 'ESPAÇO' || k === 'DEL' || k === 'LIMPAR') ? 'vk-key-wide' : '' }`;
-      btn.tabIndex = 0; 
-      btn.innerText = k;
-      btn.dataset.vkIndex = index;
-
-      const triggerKeyPress = () => {
-        handleTopVkPress(k);
-        setTimeout(() => {
-          btn.focus();
-          btn.classList.add("focused");
-        }, 10);
-      };
-
-      btn.onclick = (e) => {
-        e.stopPropagation();
-        triggerKeyPress();
-      };
-
-      btn.onfocus = () => {
-        document.querySelectorAll("#topVkContainer .vk-key").forEach(el => el.classList.remove("focused"));
-        btn.classList.add("focused");
-      };
-
-      btn.onkeydown = (e) => {
-        const cols = 6;
-        const total = vkKeys.length;
-
-        if (e.key === "Enter" || e.keyCode === 13) {
-          e.preventDefault();
-          e.stopPropagation();
-          triggerKeyPress();
-        } else if (e.key === "ArrowRight" || e.keyCode === 39) {
-          e.preventDefault();
-          if (index < total - 1) {
-            const nextBtn = container.children[index + 1];
-            if (nextBtn) nextBtn.focus();
-          }
-        } else if (e.key === "ArrowLeft" || e.keyCode === 37) {
-          e.preventDefault();
-          if (index > 0) {
-            const prevBtn = container.children[index - 1];
-            if (prevBtn) prevBtn.focus();
-          }
-        } else if (e.key === "ArrowDown" || e.keyCode === 40) {
-          e.preventDefault();
-          if (index + cols < total) {
-            const downBtn = container.children[index + cols];
-            if (downBtn) downBtn.focus();
-          } else {
-            const autocomplete = document.getElementById("brandAutocompleteList");
-            const firstItem = autocomplete ? autocomplete.querySelector(".autocomplete-item") : null;
-            if (firstItem) firstItem.focus();
-          }
-        } else if (e.key === "ArrowUp" || e.keyCode === 38) {
-          e.preventDefault();
-          if (index - cols >= 0) {
-            const upBtn = container.children[index - cols];
-            if (upBtn) upBtn.focus();
-          }
-        } else if (e.key === "Escape" || e.keyCode === 27) {
-          e.preventDefault();
-          closeTopVkPanel();
-          focusCardSafely(0);
-        }
-      };
-
-      container.appendChild(btn);
-    });
-  }
-
-  function handleTopVkPress(key) {
-    const input = document.getElementById("topBrandInput");
-    if (!input) return;
-    if (key === 'ESPAÇO') input.value += ' ';
-    else if (key === 'DEL') input.value = input.value.slice(0, -1);
-    else if (key === 'LIMPAR') input.value = '';
-    else input.value += key;
-
-    const val = input.value.toLowerCase().trim();
-    if (val) {
-      const matches = registeredBrands.filter(b => b.toLowerCase().includes(val));
-      renderAutocompleteDropdown(matches);
-    } else {
-      closeAutocomplete();
-    }
-
-    filterCatalog(input.value);
-  }
-
-  function openTopVkPanel() {
-    const panel = document.getElementById("topVkPanel");
-    const input = document.getElementById("topBrandInput");
-    if (!panel || !input) return;
-
-    if (panel.parentNode !== document.body) {
-      document.body.appendChild(panel);
-    }
-
-    const rect = input.getBoundingClientRect();
-
-    Object.assign(panel.style, {
-      position: "fixed",
-      top: `${rect.bottom + 6}px`,
-      left: `${rect.left}px`,
-      right: "auto",
-      width: "420px",
-      zIndex: "99999",
-      boxShadow: "0 10px 30px rgba(0,0,0,0.85)"
-    });
-
-    panel.classList.add("active");
-    
-    setTimeout(() => {
-      const firstKey = panel.querySelector(".vk-key");
-      if (firstKey) {
-        firstKey.focus();
-        firstKey.classList.add("focused");
-      }
-    }, 50);
-  }
-
-  function closeTopVkPanel() {
-    const panel = document.getElementById("topVkPanel");
-    if (panel) {
-      panel.classList.remove("active");
-    }
-    closeAutocomplete();
-  }
-
   function buildBrandList() {
     const brandContainer = document.getElementById("brandInlineList");
     if (!brandContainer) return;
@@ -1084,7 +945,6 @@
       e.stopPropagation();
       lastSelectedMenuId = 'menuBtnBrands';
       lastSelectedBrandElem = allBtn;
-      if (document.getElementById("topBrandInput")) document.getElementById("topBrandInput").value = "";
       filterCatalog(""); 
       focusCardSafely(0); 
     };
@@ -1106,7 +966,6 @@
         e.stopPropagation();
         lastSelectedMenuId = 'menuBtnBrands';
         lastSelectedBrandElem = btn;
-        if (document.getElementById("topBrandInput")) document.getElementById("topBrandInput").value = b;
         filterCatalog(b); 
         focusCardSafely(0); 
       };
@@ -1122,7 +981,7 @@
     });
   }
 
-    function filterCatalog(query) {
+  function filterCatalog(query) {
     const val = query ? query.toLowerCase().trim() : "";
     const baseList = getBaseListForCurrentTab();
 
@@ -1140,19 +999,13 @@
              barcode.includes(val);
     });
 
-    activeIndex = 0;
-    renderCatalogGrid();
-    if (currentFiltered.length > 0) {
-      focusCard(0);
-    }
-  }
-
-
     currentPage = 0;
     activeLocalIndex = 0;
     renderApp();
     updateCounter(0);
-    updateHeroPanel(currentFiltered[0], 0);
+    if (currentFiltered.length > 0) {
+      updateHeroPanel(currentFiltered[0], 0);
+    }
   }
 
   function updateHeroPanel(can, localIndex = 0) {
@@ -1273,69 +1126,6 @@
         wallpaperElem.style.backgroundImage = "none";
         wallpaperElem.classList.remove("active");
       }
-    }
-  }
-
-  function renderAutocompleteDropdown(matches) {
-    const brandAutocompleteList = document.getElementById("brandAutocompleteList");
-    if (!brandAutocompleteList) return;
-    brandAutocompleteList.innerHTML = "";
-    
-    if (matches.length === 0) {
-      closeAutocomplete();
-      return;
-    }
-
-    matches.forEach((brand) => {
-      const item = document.createElement("div");
-      item.className = "autocomplete-item";
-      item.innerText = brand.toUpperCase();
-      item.tabIndex = 0;
-      
-      item.onclick = (e) => {
-        e.stopPropagation();
-        selectBrandFromAutocomplete(brand);
-      };
-
-      item.onkeydown = (e) => {
-        if (e.key === "Enter" || e.keyCode === 13) {
-          e.preventDefault();
-          selectBrandFromAutocomplete(brand);
-        } else if (e.key === "ArrowDown" || e.keyCode === 40) {
-          e.preventDefault();
-          const next = item.nextElementSibling;
-          if (next) next.focus();
-        } else if (e.key === "ArrowUp" || e.keyCode === 38) {
-          e.preventDefault();
-          const prev = item.previousElementSibling;
-          if (prev) {
-            prev.focus();
-          } else {
-            const keys = document.getElementById("topVkContainer").querySelectorAll(".vk-key");
-            if (keys.length > 0) keys[keys.length - 1].focus();
-          }
-        }
-      };
-
-      brandAutocompleteList.appendChild(item);
-    });
-
-    brandAutocompleteList.classList.add("active");
-  }
-
-  function selectBrandFromAutocomplete(brandName) {
-    const topBrandInput = document.getElementById("topBrandInput");
-    if (topBrandInput) topBrandInput.value = brandName.toUpperCase();
-    closeTopVkPanel();
-    filterCatalog(brandName);
-    focusCardSafely(0);
-  }
-
-  function closeAutocomplete() {
-    const brandAutocompleteList = document.getElementById("brandAutocompleteList");
-    if (brandAutocompleteList) {
-      brandAutocompleteList.innerHTML = "";
-      brandAutocompleteList.classList.remove("active");
     }
   }
 
@@ -1484,8 +1274,6 @@
             if (sortSelect) {
               sortSelect.classList.add("focused");
               sortSelect.focus();
-            } else {
-              openTopVkPanel();
             }
           }
         }
@@ -1672,7 +1460,6 @@
       } else if (e.key === "ArrowUp" || e.keyCode === 38) {
         e.preventDefault();
         clearAllCardFocus();
-        openTopVkPanel();
       } else if (e.key === "ArrowLeft" || e.keyCode === 37) {
         e.preventDefault();
         openMenu();
@@ -1727,9 +1514,6 @@
         if (isMenuOpen) {
           closeMenu();
           focusCardSafely(activeLocalIndex);
-        } else if (document.getElementById("topVkPanel") && document.getElementById("topVkPanel").classList.contains("active")) {
-          closeTopVkPanel();
-          focusCardSafely(activeLocalIndex);
         } else {
           openExitModal();
         }
@@ -1745,6 +1529,7 @@
 
   window.onload = () => {
     fetchCatalogFromSheet();
+    setTimeout(hideLoadingScreen, 7000); // Garante a remoção do carregando após 7s se houver falha de rede
   };
 </script>
 
