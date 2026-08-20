@@ -394,11 +394,14 @@
       flex-shrink: 0 !important;
     }
 
-   .card.focused, .card:focus {
-  border: 2px solid #ff9d00 !important;
-  box-shadow: 0 0 18px rgba(255, 157, 0, 0.8), 
-              0 0 35px rgba(255, 157, 0, 0.4) !important;
-  transform: scale(1.03) !important; /* Leve pulso sem quebrar a grade */
+/* Card focado/selecionado com Gradiente Dourado Brilhante */
+.card.focused, .card:focus {
+  border: 2px solid transparent !important;
+  background-image: linear-gradient(#ffffff, #ffffff), 
+                    linear-gradient(135deg, #ffe066, #f39c12, #ff5500) !important;
+  background-origin: border-box !important;
+  background-clip: content-box, border-box !important;
+  box-shadow: 0 8px 20px rgba(243, 156, 18, 0.5) !important;
   z-index: 10 !important;
 }
 
