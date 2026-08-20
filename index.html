@@ -294,19 +294,20 @@
       align-content: start; 
     }
 
-.card {
-  width: 122px !important;
-  height: 185px !important;
-  background: #ffffff !important;
-  border-radius: 12px !important;
-  overflow: hidden !important;
-  display: flex !important;
-  flex-direction: column !important;
-  border: 1px solid rgba(255, 255, 255, 0.15) !important;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3) !important;
-  transition: all 0.25s ease-in-out !important;
-  outline: none !important;
-}
+    .card {
+      width: 122px !important;
+      min-width: 122px !important;
+      height: 185px !important;
+      background: #ffffff !important;
+      border-radius: 10px !important;
+      overflow: hidden !important;
+      display: flex !important;
+      flex-direction: column !important;
+      border: 2px solid transparent !important;
+      cursor: pointer !important;
+      flex-shrink: 0 !important;
+      outline: none !important;
+    }
 
     .card.card-aspect-sets { 
       width: 220px !important; 
@@ -394,7 +395,6 @@
       flex-shrink: 0 !important;
     }
 
-/* Card focado/selecionado com Gradiente Dourado Brilhante */
 /* Card focado/selecionado em Branco Luminoso */
 .card.focused, .card:focus {
   border: 2.5px solid #ffffff !important;
