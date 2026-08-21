@@ -252,14 +252,12 @@
       -webkit-appearance: none;
     }
 
-    /* Estado Normal / Padrão (Sem foco) */
     .sort-dropdown option {
       background-color: #161b26;
       color: #e2e8f0;
       font-weight: 600;
     }
 
-    /* Estado Selecionado / Focado (Efeito Pill Branca) */
     .sort-dropdown:focus, 
     .sort-dropdown.focused, 
     .sort-dropdown:hover {
@@ -453,17 +451,14 @@
       height: 106px !important;
     }
 
-    /* Força os primeiros 7 cards a ficarem na 1ª linha */
     .card-row.brand-mode-grid .card:nth-child(-n+7) {
       grid-row: 1;
     }
 
-    /* O 8º card em diante é empurrado para as linhas de baixo */
     .card-row.brand-mode-grid .card:nth-child(n+8) {
       grid-row: auto;
     }
 
-    /* Reserva as colunas 8 e 9 para o Logo */
     .brand-overlay-logo {
       grid-column: 8 / span 2;
       grid-row: 1;
@@ -483,7 +478,6 @@
       object-fit: contain;
     }
 
-    /* AJUSTES PROPORCIONAIS DE TEXTO EXCLUSIVOS DO MODO MARCA / PESQUISA */
     .card-row.brand-mode-grid .card-bottom-bar {
       height: 35px !important;
       padding: 2px 4px 2px 4px !important;
@@ -1331,13 +1325,12 @@
         openZoomModal(0);
       };
 
-       card.onkeydown = (e) => {
+      card.onkeydown = (e) => {
         if (document.getElementById("zoomModal").classList.contains("active") || document.getElementById("exitModal").classList.contains("active")) return;
 
         const key = e.key;
         const keyCode = e.keyCode;
 
-        // Calcula a coluna atual do card focado
         const currentColumn = isSearchingOrBrand 
           ? (localIndex < 7 ? localIndex : (localIndex - 7) % 9)
           : localIndex % cardsPerRow;
@@ -1358,16 +1351,14 @@
           e.preventDefault();
           if (localIndex === 0) {
             if (currentPage > 0) {
-              // Se estiver no card 0 de uma página seguinte, volta para o último card da página anterior
               currentPage--;
               renderApp();
               focusCardSafely(cardsPerPage - 1);
             } else {
-              // Só abre o menu se for o primeiro card absoluto (Página 0, Card 0)
+              clearAllCardFocus();
               openMenu();
             }
           } else if (localIndex > 0) {
-            // Volta para o card anterior (último da linha de cima caso seja o início de uma linha)
             focusCardSafely(localIndex - 1);
           }
         } else if (key === "ArrowDown" || keyCode === 40) {
@@ -1415,13 +1406,11 @@
             } else if (localIndex >= 16) {
               focusCardSafely(localIndex - 9);
             } else if (currentPage > 0) {
-              // Se estiver na primeira linha de uma página avançada, sobe para a mesma coluna na última linha da página anterior
               currentPage--;
               renderApp();
               const targetIdx = cardsPerPage - 9 + currentColumn;
               focusCardSafely(Math.min(targetIdx, cardsPerPage - 1));
             } else {
-              // Só vai para o menu de ordenação se estiver na primeira linha da PRIMEIRA página
               const sortSelect = document.getElementById("sortSelect");
               if (sortSelect) {
                 sortSelect.classList.add("focused");
@@ -1448,7 +1437,6 @@
           }
         }
       };
-
 
       card.innerHTML = `
         <div class="card-top-photo">
