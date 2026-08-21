@@ -452,10 +452,16 @@
       height: 100px !important;
     }
 
+    /* Força os primeiros 7 cards a ficarem na 1ª linha */
     .card-row.brand-mode-grid .card:nth-child(-n+7) {
       grid-row: 1;
     }
+    /* O 8º card em diante é empurrado obrigatoriamente para as linhas de baixo */
+    .card-row.brand-mode-grid .card:nth-child(n+8) {
+      grid-row: auto;
+    }
 
+    /* Reserva SEMPRE as colunas 8 e 9 da 1ª linha para o Logo */
     .brand-overlay-logo {
       grid-column: 8 / span 2;
       grid-row: 1;
@@ -1370,17 +1376,27 @@
       row.appendChild(card);
     });
 
+// Inserção do Logo no modo marca/pesquisa
     if (isSearchingOrBrand && currentFiltered.length > 0) {
-      const matchCan = currentFiltered[0];
-      const logoUrl = matchCan ? (matchCan.brandLogo || matchCan.BRAND_LOGO) : null;
+      // Procura em todos os itens filtrados por uma imagem de logo/capa disponível
+      const canWithLogo = currentFiltered.find(c => 
+        c.brandLogo || c.BRAND_LOGO || c.ImgCover || c.cover
+      );
+
+      const logoUrl = canWithLogo 
+        ? (canWithLogo.brandLogo || canWithLogo.BRAND_LOGO || canWithLogo.ImgCover || canWithLogo.cover)
+        : null;
+
+      // Cria a div do logo (mesmo se não houver logo, o espaço ficará preservado garantindo os 7 cards)
+      const logoDiv = document.createElement("div");
+      logoDiv.className = "brand-overlay-logo";
+      
       if (logoUrl) {
-        const logoDiv = document.createElement("div");
-        logoDiv.className = "brand-overlay-logo";
         logoDiv.innerHTML = `<img src="${getOptimizedImageUrl(logoUrl, 400)}" alt="Logo">`;
-        row.appendChild(logoDiv);
       }
+      
+      row.appendChild(logoDiv);
     }
-  }
 
   function openZoomModal(index) {
     if (!zoomGallery || zoomGallery.length === 0) return;
