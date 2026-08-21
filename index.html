@@ -422,8 +422,7 @@
     .exit-btn { padding: 10px 24px; border-radius: 8px; font-weight: bold; font-size: 1rem; border: none; cursor: pointer; text-transform: uppercase; background: #2a3447; color: #a0aec0; transition: all 0.15s ease; }
     .exit-btn:focus, .exit-btn:hover { background: #ffffff; color: #1a1f2c; box-shadow: 0 0 15px rgba(255,255,255,0.3); outline: none; }
 
-    /* MODO ESPECIAL DE MARCA / PESQUISA NO INDEX */
-/* MODO ESPECIAL DE MARCA / PESQUISA NO INDEX (AUMENTADO EM +4PX) */
+    /* MODO ESPECIAL DE MARCA / PESQUISA NO INDEX (AUMENTADO EM +4PX) */
     .main-area.brand-mode #heroPanel {
       display: none !important;
     }
@@ -436,8 +435,8 @@
 
     .card-row.brand-mode-grid {
       display: grid !important;
-      grid-template-columns: repeat(9, 95px) !important; /* Aumentado de 90px para 94px */
-      grid-template-rows: repeat(3, 141px) !important;   /* Altura ajustada proporcionalmente */
+      grid-template-columns: repeat(9, 95px) !important;
+      grid-template-rows: repeat(3, 141px) !important;
       gap: 8px 8px !important;
       width: fit-content !important;
       position: relative !important;
@@ -447,6 +446,7 @@
       width: 95px !important;
       min-width: 95px !important;
       height: 141px !important;
+      border-radius: 7px !important;
     }
 
     .card-row.brand-mode-grid .card-top-photo {
@@ -463,7 +463,7 @@
       grid-row: auto;
     }
 
-    /* Reserva as colunas 8 e 9 para o Logo com a nova largura (94px * 2 + gap = 196px) */
+    /* Reserva as colunas 8 e 9 para o Logo */
     .brand-overlay-logo {
       grid-column: 8 / span 2;
       grid-row: 1;
@@ -482,39 +482,34 @@
       max-height: 100%;
       object-fit: contain;
     }
+
     /* AJUSTES PROPORCIONAIS DE TEXTO EXCLUSIVOS DO MODO MARCA / PESQUISA */
+    .card-row.brand-mode-grid .card-bottom-bar {
+      height: 35px !important;
+      padding: 2px 4px 2px 4px !important;
+    }
 
-/* AJUSTES PROPORCIONAIS DE TEXTO EXCLUSIVOS DO MODO MARCA / PESQUISA (+4PX) */
+    .card-row.brand-mode-grid .card-bar-title {
+      font-size: 0.60rem !important;
+      line-height: 1.05 !important;
+      margin-top: 1px !important;
+    }
 
-.card-row.brand-mode-grid .card-bottom-bar {
-  height: 35px !important;
-  padding: 2px 4px 2px 4px !important;
-}
+    .card-row.brand-mode-grid .card-bar-country {
+      font-size: 0.52rem !important;
+      gap: 3px !important;
+    }
 
-.card-row.brand-mode-grid .card-bar-title {
-  font-size: 0.60rem !important; /* Leve aumento para acompanhar a nova largura */
-  line-height: 1.05 !important;
-  margin-top: 1px !important;
-}
+    .card-row.brand-mode-grid .card-bar-flag {
+      width: 11px !important;
+      height: 7px !important;
+    }
 
-.card-row.brand-mode-grid .card-bar-country {
-  font-size: 0.52rem !important;
-  gap: 3px !important;
-}
-
-.card-row.brand-mode-grid .card-bar-flag {
-  width: 11px !important;
-  height: 7px !important;
-}
-
-.card-row.brand-mode-grid .card-bar-vol {
-  font-size: 0.48rem !important;
-  padding: 1px 3px !important;
-  border-radius: 3px !important;
-}
-    .card-row.brand-mode-grid .card {
-  border-radius: 7px !important; /* Ajuste o valor conforme preferir (ex: 4px, 5px ou 6px) */
-}
+    .card-row.brand-mode-grid .card-bar-vol {
+      font-size: 0.48rem !important;
+      padding: 1px 3px !important;
+      border-radius: 3px !important;
+    }
   </style>
 </head>
 <body>
@@ -533,7 +528,7 @@
     <nav class="sidebar-drawer" id="sidebarDrawer">
       <img src="logo.png" alt="Logo" class="sidebar-logo">
       <button class="cat-btn" id="menuBtnHome" onclick="switchTab('home')" tabindex="0">HOME / CATÁLOGO</button>
-       <button class="cat-btn" id="menuBtnByBrands" onclick="window.location.href='marcas.html'" tabindex="0" style="display: none;">CATÁLOGO DE MARCAS</button>
+      <button class="cat-btn" id="menuBtnByBrands" onclick="window.location.href='marcas.html'" tabindex="0" style="display: none;">CATÁLOGO DE MARCAS</button>
       <button class="cat-btn" id="menuBtnSearch" onclick="toggleSearchInline()" tabindex="0">PESQUISAR</button>
       <div class="inline-panel-container" id="searchInlineContainer">
         <input type="text" id="menuSearchInput" class="menu-search-box" placeholder="DIGITE PARA BUSCAR..." readonly tabindex="-1">
@@ -618,7 +613,7 @@
   </div>
 
   <script>
-const API_URL = "https://script.google.com/macros/s/AKfycbwP4kTpSrGJllmlWjQp1YmD1Th5jiw1oUtX5cAJAZj9txy-eNi6_EYyLPG_Q0_coyT9/exec";
+  const API_URL = "https://script.google.com/macros/s/AKfycbwP4kTpSrGJllmlWjQp1YmD1Th5jiw1oUtX5cAJAZj9txy-eNi6_EYyLPG_Q0_coyT9/exec";
   let canCatalog = [];
   let currentFiltered = [];
   let zoomGallery = [];
@@ -1336,7 +1331,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbwP4kTpSrGJllmlWjQp1YmD
         openZoomModal(0);
       };
 
-                  card.onkeydown = (e) => {
+      card.onkeydown = (e) => {
         if (document.getElementById("zoomModal").classList.contains("active") || document.getElementById("exitModal").classList.contains("active")) return;
 
         const key = e.key;
@@ -1361,9 +1356,8 @@ const API_URL = "https://script.google.com/macros/s/AKfycbwP4kTpSrGJllmlWjQp1YmD
           }
         } else if (key === "ArrowLeft" || keyCode === 37) {
           e.preventDefault();
-          // SE FOR O PRIMEIRA CARD DA PÁGINA OU O PRIMEIRO CARD DE QUALQUER LINHA NA ESQUERDA:
           if (localIndex === 0) {
-            openMenu(); // Abre diretamente o menu lateral
+            openMenu();
           } else if (localIndex > 0) {
             focusCardSafely(localIndex - 1);
           }
@@ -1372,8 +1366,12 @@ const API_URL = "https://script.google.com/macros/s/AKfycbwP4kTpSrGJllmlWjQp1YmD
           
           if (isSearchingOrBrand) {
             if (localIndex < 7) {
-              const target = Math.min(localIndex, pageItems.length - 1);
-              focusCardSafely(target);
+              const target = localIndex + 7;
+              if (target < pageItems.length) {
+                focusCardSafely(target);
+              } else if (pageItems.length > 7) {
+                focusCardSafely(pageItems.length - 1);
+              }
             } else {
               const nextIdx = localIndex + 9;
               if (nextIdx < pageItems.length) {
@@ -1434,8 +1432,6 @@ const API_URL = "https://script.google.com/macros/s/AKfycbwP4kTpSrGJllmlWjQp1YmD
           }
         }
       };
-
-
 
       card.innerHTML = `
         <div class="card-top-photo">
@@ -1696,7 +1692,5 @@ const API_URL = "https://script.google.com/macros/s/AKfycbwP4kTpSrGJllmlWjQp1YmD
     setTimeout(hideLoadingScreen, 7000);
   };
  </script>
-   
-
 </body>
 </html>
