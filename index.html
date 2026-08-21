@@ -583,8 +583,8 @@
     </div>
   </div>
 
-<script>
-  const API_URL = "https://script.google.com/macros/s/AKfycbwP4kTpSrGJllmlWjQp1YmD1Th5jiw1oUtX5cAJAZj9txy-eNi6_EYyLPG_Q0_coyT9/exec";
+  <script>
+const API_URL = "https://script.google.com/macros/s/AKfycbwP4kTpSrGJllmlWjQp1YmD1Th5jiw1oUtX5cAJAZj9txy-eNi6_EYyLPG_Q0_coyT9/exec";
   let canCatalog = [];
   let currentFiltered = [];
   let zoomGallery = [];
@@ -1150,15 +1150,17 @@
     if (photo3) photo3.src = getOptimizedImageUrl(img3, 300);
     if (photo4) photo4.src = getOptimizedImageUrl(img4, 300);
 
-    updateBrandLogoHeader(can.brewery || can.Cervejaria);
+    updateBrandLogoHeader(can.brewery || can.Cervejaria, can);
   }
 
-  function updateBrandLogoHeader(brandQuery) {
+  function updateBrandLogoHeader(brandQuery, currentCan) {
     const logoContainer = document.getElementById("heroBrandLogo");
     const wallpaperElem = document.getElementById("heroBrandWallpaper");
+    const gridOverlayLogo = document.querySelector(".brand-overlay-logo");
 
     if (!brandQuery || String(brandQuery).trim() === "") {
       if (logoContainer) logoContainer.innerHTML = "";
+      if (gridOverlayLogo) gridOverlayLogo.innerHTML = "";
       if (wallpaperElem) {
         wallpaperElem.style.backgroundImage = "none";
         wallpaperElem.classList.remove("active");
@@ -1166,53 +1168,60 @@
       return;
     }
 
+    let logoUrl = currentCan ? (currentCan.brandLogo || currentCan.BRAND_LOGO) : null;
+    
+    if (!logoUrl) {
+      const queryLower = String(brandQuery).toLowerCase().trim();
+      const matchCan = canCatalog.find(c => {
+        const b = String(c.brewery || c.Cervejaria || "").toLowerCase().trim();
+        return (b === queryLower || b.includes(queryLower)) && (c.brandLogo || c.BRAND_LOGO);
+      });
+      if (matchCan) {
+        logoUrl = matchCan.brandLogo || matchCan.BRAND_LOGO;
+      }
+    }
+
+    if (logoContainer) {
+      if (logoUrl && String(logoUrl).trim() !== "") {
+        logoContainer.innerHTML = `<img src="${getOptimizedImageUrl(logoUrl, 400)}" alt="LOGO DA MARCA">`;
+      } else {
+        logoContainer.innerHTML = "";
+      }
+    }
+
+    if (gridOverlayLogo) {
+      if (logoUrl && String(logoUrl).trim() !== "") {
+        gridOverlayLogo.innerHTML = `<img src="${getOptimizedImageUrl(logoUrl, 400)}" alt="Logo">`;
+      } else {
+        gridOverlayLogo.innerHTML = "";
+      }
+    }
+
     const queryLower = String(brandQuery).toLowerCase().trim();
-    const matchCan = canCatalog.find(c => {
+    let wallpaperUrl = "";
+    const sameBrandCans = canCatalog.filter(c => {
       const b = String(c.brewery || c.Cervejaria || "").toLowerCase().trim();
       return b === queryLower || b.includes(queryLower);
     });
 
-    if (matchCan) {
-      const logoUrl = matchCan.brandLogo || matchCan.BRAND_LOGO;
-      if (logoContainer) {
-        if (logoUrl && String(logoUrl).trim() !== "") {
-          logoContainer.innerHTML = `<img src="${getOptimizedImageUrl(logoUrl, 400)}" alt="LOGO DA MARCA">`;
-        } else {
-          logoContainer.innerHTML = "";
-        }
-      }
+    const canWithWallpaper = sameBrandCans.find(c => {
+      const wp = c.brandWallpaper || c.wallpaper || c.BRANDWALLPAPER || c.WALLPAPER;
+      return wp && String(wp).trim() !== "";
+    });
 
-      let wallpaperUrl = "";
-      const sameBrandCans = canCatalog.filter(c => {
-        const b = String(c.brewery || c.Cervejaria || "").toLowerCase().trim();
-        return b === queryLower || b.includes(queryLower);
-      });
+    if (canWithWallpaper) {
+      wallpaperUrl = canWithWallpaper.brandWallpaper || canWithWallpaper.wallpaper || canWithWallpaper.BRANDWALLPAPER || canWithWallpaper.WALLPAPER;
+    } else if (currentCan) {
+      wallpaperUrl = currentCan.brandLogo || currentCan.BRAND_LOGO || currentCan.ImgCover || currentCan.cover;
+    }
 
-      const canWithWallpaper = sameBrandCans.find(c => {
-        const wp = c.brandWallpaper || c.wallpaper || c.BRANDWALLPAPER || c.WALLPAPER;
-        return wp && String(wp).trim() !== "";
-      });
-
-      if (canWithWallpaper) {
-        wallpaperUrl = canWithWallpaper.brandWallpaper || canWithWallpaper.wallpaper || canWithWallpaper.BRANDWALLPAPER || canWithWallpaper.WALLPAPER;
-      } else {
-        wallpaperUrl = matchCan.brandLogo || matchCan.BRAND_LOGO || matchCan.ImgCover || matchCan.cover;
-      }
-
-      if (wallpaperElem && wallpaperUrl && String(wallpaperUrl).trim() !== "") {
-        const fullImgUrl = getOptimizedImageUrl(wallpaperUrl, 1200);
-        wallpaperElem.style.backgroundImage = `url('${fullImgUrl}')`;
-        wallpaperElem.classList.add("active");
-      } else if (wallpaperElem) {
-        wallpaperElem.style.backgroundImage = "none";
-        wallpaperElem.classList.remove("active");
-      }
-    } else {
-      if (logoContainer) logoContainer.innerHTML = "";
-      if (wallpaperElem) {
-        wallpaperElem.style.backgroundImage = "none";
-        wallpaperElem.classList.remove("active");
-      }
+    if (wallpaperElem && wallpaperUrl && String(wallpaperUrl).trim() !== "") {
+      const fullImgUrl = getOptimizedImageUrl(wallpaperUrl, 1200);
+      wallpaperElem.style.backgroundImage = `url('${fullImgUrl}')`;
+      wallpaperElem.classList.add("active");
+    } else if (wallpaperElem) {
+      wallpaperElem.style.backgroundImage = "none";
+      wallpaperElem.classList.remove("active");
     }
   }
 
@@ -1377,23 +1386,9 @@
       row.appendChild(card);
     });
 
-    // Inserção do Logo no modo marca/pesquisa
     if (isSearchingOrBrand && currentFiltered.length > 0) {
-      const canWithLogo = currentFiltered.find(c => 
-        c.brandLogo || c.BRAND_LOGO || c.ImgCover || c.cover
-      );
-
-      const logoUrl = canWithLogo 
-        ? (canWithLogo.brandLogo || canWithLogo.BRAND_LOGO || canWithLogo.ImgCover || canWithLogo.cover)
-        : null;
-
       const logoDiv = document.createElement("div");
       logoDiv.className = "brand-overlay-logo";
-      
-      if (logoUrl) {
-        logoDiv.innerHTML = `<img src="${getOptimizedImageUrl(logoUrl, 400)}" alt="Logo">`;
-      }
-      
       row.appendChild(logoDiv);
     }
   }
@@ -1630,7 +1625,8 @@
     fetchCatalogFromSheet();
     setTimeout(hideLoadingScreen, 7000);
   };
-</script>
+ </script>
+   
 
 </body>
 </html>
