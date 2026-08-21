@@ -246,18 +246,28 @@
 
     .card-counter { font-size: 0.85rem; font-weight: 900; color: #e2e8f0; background: transparent; padding: 0; letter-spacing: 1px; }
 
-    .catalog-section { height: 380px; min-height: 380px; width: 100%; overflow: hidden; flex-shrink: 0; touch-action: none; z-index: 5; }
-
-    .card-row { 
-      display: grid; 
-      grid-template-columns: repeat(7, 122px); 
-      grid-template-rows: repeat(2, 185px); 
-      gap: 10px 12px; 
-      width: fit-content;
-      margin: 0 auto; 
-      justify-content: start;
-      align-content: start; 
-    }
+     /* Aumentada a altura do container para acomodar a 3ª linha */
+  .catalog-section { 
+    height: 575px !important; 
+    min-height: 575px !important; 
+    width: 100%; 
+    overflow: hidden; 
+    flex-shrink: 0; 
+    touch-action: none; 
+    z-index: 5; 
+    display: flex; 
+    justify-content: center; 
+  }
+ /* Atualizado para 3 linhas na grade */
+  .card-row { 
+    display: grid; 
+    grid-template-columns: repeat(7, 122px); 
+    grid-template-rows: repeat(3, 185px); 
+    gap: 10px 12px; 
+    width: fit-content; 
+    justify-content: start; 
+    align-content: start; 
+  }
 
     .card {
       width: 122px !important; min-width: 122px !important; height: 185px !important;
@@ -409,7 +419,7 @@
   
   let currentTab = 'home';
   let cardsPerRow = 7;
-  let cardsPerPage = 14;
+  let cardsPerPage = 21;
   let currentPage = 0;
   let activeLocalIndex = 0;
   let lastSelectedMenuId = 'menuBtnHome'; 
