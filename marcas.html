@@ -248,10 +248,9 @@
 
      /* Aumentada a altura do container para acomodar a 3ª linha */
 
-  /* Ajuste da altura total da seção */
   .catalog-section { 
-    height: 500px !important; 
-    min-height: 500px !important; 
+    height: 450px !important; 
+    min-height: 450px !important; 
     width: 100%; 
     overflow: hidden; 
     flex-shrink: 0; 
@@ -261,23 +260,11 @@
     justify-content: center; 
   }
 
-  /* Ajuste da grade para 9 colunas de 100px e 3 linhas de 150px */
-  .card-row { 
-    display: grid; 
-    grid-template-columns: repeat(9, 100px); 
-    grid-template-rows: repeat(3, 150px); 
-    gap: 8px 10px; 
-    width: fit-content; 
-    margin: 0 auto;
-    justify-content: start; 
-    align-content: start; 
-  }
-
-  /* Ajuste do tamanho do card */
+  /* Ajuste do tamanho dos cards */
   .card { 
-    width: 100px !important; 
-    min-width: 100px !important; 
-    height: 150px !important; 
+    width: 90px !important; 
+    min-width: 90px !important; 
+    height: 135px !important; 
     background: #ffffff !important; 
     border-radius: 8px !important; 
     overflow: hidden !important;
@@ -288,16 +275,28 @@
     outline: none !important; 
   }
 
-  /* Ajuste da área da foto do card (proporcional) */
+  /* Ajuste da grade para 9 colunas de 90px e menor gap */
+  .card-row { 
+    display: grid; 
+    grid-template-columns: repeat(9, 90px); 
+    grid-template-rows: repeat(3, 135px); 
+    gap: 8px 8px; 
+    width: 100%; 
+    justify-content: center; /* Centraliza melhor o grid na tela */
+    padding: 0 20px;         /* Margem de segurança nas laterais da TV */
+  }
+
+  /* Ajuste proporcional da imagem dentro do card */
   .card-top-photo { 
     width: 100% !important; 
-    height: 110px !important; 
+    height: 100px !important; 
     background: #ffffff !important; 
     display: flex !important; 
     justify-content: center !important; 
     align-items: center !important; 
     padding: 2px !important; 
   }
+
 
 
     .card.card-aspect-sets { width: 170px !important; min-width: 170px !important; }
