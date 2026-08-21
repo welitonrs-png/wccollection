@@ -248,8 +248,10 @@
 
      /* Aumentada a altura do container para acomodar a 3ª linha */
   .catalog-section { 
-    height: 575px !important; 
-    min-height: 575px !important; 
+  /* Aumentada a altura para acomodar as 3 linhas */
+  .catalog-section { 
+    height: 600px !important; 
+    min-height: 600px !important; 
     width: 100%; 
     overflow: hidden; 
     flex-shrink: 0; 
@@ -258,16 +260,19 @@
     display: flex; 
     justify-content: center; 
   }
- /* Atualizado para 3 linhas na grade */
+
+  /* Ajustada a grade para 9 colunas e 3 linhas */
   .card-row { 
     display: grid; 
-    grid-template-columns: repeat(7, 122px); 
+    grid-template-columns: repeat(9, 122px); 
     grid-template-rows: repeat(3, 185px); 
     gap: 10px 12px; 
     width: fit-content; 
-    justify-content: start; 
+    margin: 0 auto;
+    justify-content: start;
     align-content: start; 
   }
+
 
     .card {
       width: 122px !important; min-width: 122px !important; height: 185px !important;
