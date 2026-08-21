@@ -481,6 +481,39 @@
       max-height: 100%;
       object-fit: contain;
     }
+    /* AJUSTES PROPORCIONAIS DE TEXTO EXCLUSIVOS DO MODO MARCA / PESQUISA */
+
+/* Ajusta a barra inferior do card para o tamanho menor */
+.card-row.brand-mode-grid .card-bottom-bar {
+  height: 35px !important;
+  padding: 1px 3px 2px 3px !important;
+}
+
+/* Reduz e ajusta o nome da marca/cerveja */
+.card-row.brand-mode-grid .card-bar-title {
+  font-size: 0.58rem !important;
+  line-height: 1 !important;
+  margin-top: 1px !important;
+}
+
+/* Reduz o texto do país */
+.card-row.brand-mode-grid .card-bar-country {
+  font-size: 0.50rem !important;
+  gap: 2px !important;
+}
+
+/* Reduz a bandeira proporcionalmente */
+.card-row.brand-mode-grid .card-bar-flag {
+  width: 10px !important;
+  height: 6px !important;
+}
+
+/* Reduz a pill do volume */
+.card-row.brand-mode-grid .card-bar-vol {
+  font-size: 0.45rem !important;
+  padding: 0px 3px !important;
+  border-radius: 3px !important;
+}
   </style>
 </head>
 <body>
