@@ -1336,14 +1336,16 @@ const API_URL = "https://script.google.com/macros/s/AKfycbwP4kTpSrGJllmlWjQp1YmD
         openZoomModal(0);
       };
 
-            card.onkeydown = (e) => {
+                  card.onkeydown = (e) => {
         if (document.getElementById("zoomModal").classList.contains("active") || document.getElementById("exitModal").classList.contains("active")) return;
 
         const key = e.key;
         const keyCode = e.keyCode;
 
         // Calcula a coluna atual do card focado
-        const currentColumn = localIndex % cardsPerRow;
+        const currentColumn = isSearchingOrBrand 
+          ? (localIndex < 7 ? localIndex : (localIndex - 7) % 9)
+          : localIndex % cardsPerRow;
 
         if (key === "Enter" || key === " " || keyCode === 13) {
           e.preventDefault();
@@ -1359,20 +1361,16 @@ const API_URL = "https://script.google.com/macros/s/AKfycbwP4kTpSrGJllmlWjQp1YmD
           }
         } else if (key === "ArrowLeft" || keyCode === 37) {
           e.preventDefault();
-          if (localIndex > 0) {
+          // SE FOR O PRIMEIRA CARD DA PÁGINA OU O PRIMEIRO CARD DE QUALQUER LINHA NA ESQUERDA:
+          if (localIndex === 0) {
+            openMenu(); // Abre diretamente o menu lateral
+          } else if (localIndex > 0) {
             focusCardSafely(localIndex - 1);
-          } else if (currentPage > 0) {
-            currentPage--;
-            renderApp();
-            focusCardSafely(cardsPerPage - 1);
-          } else {
-            openMenu();
           }
         } else if (key === "ArrowDown" || keyCode === 40) {
           e.preventDefault();
           
           if (isSearchingOrBrand) {
-            // Lógica para grade de pesquisa/marcas (linha de 7 + linhas de 9)
             if (localIndex < 7) {
               const target = Math.min(localIndex, pageItems.length - 1);
               focusCardSafely(target);
@@ -1381,7 +1379,6 @@ const API_URL = "https://script.google.com/macros/s/AKfycbwP4kTpSrGJllmlWjQp1YmD
               if (nextIdx < pageItems.length) {
                 focusCardSafely(nextIdx);
               } else if (localIndex < pageItems.length - 1) {
-                // Se a última linha tiver menos cards, foca no último disponível
                 focusCardSafely(pageItems.length - 1);
               } else if ((startIndex + cardsPerPage) < currentFiltered.length) {
                 currentPage++;
@@ -1390,12 +1387,10 @@ const API_URL = "https://script.google.com/macros/s/AKfycbwP4kTpSrGJllmlWjQp1YmD
               }
             }
           } else {
-            // Lógica padrão para Home, OCOC e Sets (mesmo alinhamento de coluna)
             const nextIdx = localIndex + cardsPerRow;
             if (nextIdx < pageItems.length) {
               focusCardSafely(nextIdx);
             } else if (localIndex < pageItems.length - 1 && Math.floor(localIndex / cardsPerRow) < Math.floor((pageItems.length - 1) / cardsPerRow)) {
-              // Se houver uma linha abaixo mas a coluna correspondente não existir (linha incompleta), vai para o último card da linha
               focusCardSafely(pageItems.length - 1);
             } else if ((startIndex + cardsPerPage) < currentFiltered.length) {
               currentPage++;
@@ -1420,14 +1415,12 @@ const API_URL = "https://script.google.com/macros/s/AKfycbwP4kTpSrGJllmlWjQp1YmD
               }
             }
           } else {
-            // Lógica padrão para Home, OCOC e Sets
             if (localIndex >= cardsPerRow) {
               const prevIdx = localIndex - cardsPerRow;
               focusCardSafely(prevIdx);
             } else if (currentPage > 0) {
               currentPage--;
               renderApp();
-              // Ajusta o foco para a mesma coluna na página anterior
               const lastRowStart = Math.floor((cardsPerPage - 1) / cardsPerRow) * cardsPerRow;
               const targetIdx = Math.min(lastRowStart + currentColumn, cardsPerPage - 1);
               focusCardSafely(targetIdx);
@@ -1441,6 +1434,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbwP4kTpSrGJllmlWjQp1YmD
           }
         }
       };
+
 
 
       card.innerHTML = `
