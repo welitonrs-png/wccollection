@@ -395,15 +395,15 @@
       flex-shrink: 0 !important;
     }
 
-.card.focused, .card:focus {
-  border: 2px solid transparent !important;
-  background-image: linear-gradient(#ffffff, #ffffff), 
-                    linear-gradient(135deg, #ffe066, #f39c12, #ff5500) !important;
-  background-origin: border-box !important;
-  background-clip: content-box, border-box !important;
-  box-shadow: 0 6px 10px rgba(243, 156, 18, 0.5) !important;
-  z-index: 10 !important;
-}
+    .card.focused, .card:focus {
+      border: 2px solid transparent !important;
+      background-image: linear-gradient(#ffffff, #ffffff), 
+                        linear-gradient(135deg, #ffe066, #f39c12, #ff5500) !important;
+      background-origin: border-box !important;
+      background-clip: content-box, border-box !important;
+      box-shadow: 0 6px 10px rgba(243, 156, 18, 0.5) !important;
+      z-index: 10 !important;
+    }
 
     /* MODAL DE ZOOM E NAVEGAÇÃO */
     .zoom-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.95); z-index: 3000; display: none; justify-content: center; align-items: center; padding: 16px; overflow: hidden; }
@@ -421,6 +421,59 @@
     .exit-buttons { display: flex; gap: 16px; }
     .exit-btn { padding: 10px 24px; border-radius: 8px; font-weight: bold; font-size: 1rem; border: none; cursor: pointer; text-transform: uppercase; background: #2a3447; color: #a0aec0; transition: all 0.15s ease; }
     .exit-btn:focus, .exit-btn:hover { background: #ffffff; color: #1a1f2c; box-shadow: 0 0 15px rgba(255,255,255,0.3); outline: none; }
+
+    /* MODO ESPECIAL DE MARCA / PESQUISA NO INDEX */
+    .main-area.brand-mode #heroPanel {
+      display: none !important;
+    }
+
+    .catalog-section.brand-mode {
+      height: 440px !important;
+      min-height: 440px !important;
+      margin-top: 10px !important;
+    }
+
+    .card-row.brand-mode-grid {
+      display: grid !important;
+      grid-template-columns: repeat(9, 90px) !important;
+      grid-template-rows: repeat(3, 135px) !important;
+      gap: 8px 8px !important;
+      width: fit-content !important;
+      position: relative !important;
+    }
+
+    .card-row.brand-mode-grid .card {
+      width: 90px !important;
+      min-width: 90px !important;
+      height: 135px !important;
+    }
+
+    .card-row.brand-mode-grid .card-top-photo {
+      height: 100px !important;
+    }
+
+    .card-row.brand-mode-grid .card:nth-child(-n+7) {
+      grid-row: 1;
+    }
+
+    .brand-overlay-logo {
+      grid-column: 8 / span 2;
+      grid-row: 1;
+      width: 188px;
+      height: 135px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 8px;
+      z-index: 20;
+      pointer-events: none;
+    }
+
+    .brand-overlay-logo img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
   </style>
 </head>
 <body>
@@ -548,6 +601,32 @@
   const PAN_STEP = 60;
 
   const vkKeys = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','1','2','3','4','5','6','7','8','9','0','ESPAÇO','DEL','LIMPAR'];
+
+  function setBrandModeLayout(active) {
+    const mainArea = document.getElementById("mainArea");
+    const catalogSection = document.getElementById("catalogSection");
+    const cardRow = document.getElementById("cardRow");
+
+    if (active) {
+      if (mainArea) mainArea.classList.add("brand-mode");
+      if (catalogSection) catalogSection.classList.add("brand-mode");
+      if (cardRow) cardRow.classList.add("brand-mode-grid");
+      cardsPerRow = 9;
+      cardsPerPage = 25;
+    } else {
+      if (mainArea) mainArea.classList.remove("brand-mode");
+      if (catalogSection) catalogSection.classList.remove("brand-mode");
+      if (cardRow) cardRow.classList.remove("brand-mode-grid");
+      
+      if (currentTab === 'sets') {
+        cardsPerRow = 4;
+        cardsPerPage = 4;
+      } else {
+        cardsPerRow = 7;
+        cardsPerPage = 7;
+      }
+    }
+  }
 
   function fixDriveUrl(url) {
     if (!url) return '';
@@ -700,13 +779,11 @@
     currentTab = tabName;
     lastSelectedBrandElem = null;
 
+    setBrandModeLayout(false);
+
     if (tabName === 'sets') {
-      cardsPerRow = 4;
-      cardsPerPage = 4;
       lastSelectedMenuId = 'menuBtnSets';
     } else {
-      cardsPerRow = 7;
-      cardsPerPage = 7;
       lastSelectedMenuId = tabName === 'ococ' ? 'menuBtnOcoc' : 'menuBtnHome';
     }
 
@@ -1163,6 +1240,11 @@
     if (!row) return;
     row.innerHTML = "";
 
+    const searchInput = document.getElementById("menuSearchInput");
+    const isSearchingOrBrand = (searchInput && searchInput.value.trim() !== "") || lastSelectedBrandElem !== null;
+
+    setBrandModeLayout(isSearchingOrBrand);
+
     const startIndex = currentPage * cardsPerPage;
     const pageItems = currentFiltered.slice(startIndex, startIndex + cardsPerPage);
 
@@ -1181,43 +1263,24 @@
       const volumeText = can.volume || can.Volume || "";
       const flagUrl = getFlagUrlByCountry(countryRaw);
 
-      let cardColor = can.brandColor || can.brandcolor || can.BRANDCOLOR || can.corMarca || can.color;
-      if (!cardColor || cardColor === "") {
-        const brandKey = String(brandRaw).toLowerCase().trim();
-        const sameBrandCan = canCatalog.find(c => {
-          const b = String(c.brewery || c.Cervejaria || "").toLowerCase().trim();
-          const cColor = c.brandColor || c.brandcolor || c.BRANDCOLOR || c.corMarca || c.color;
-          return b === brandKey && cColor && String(cColor).trim() !== "";
-        });
-        if (sameBrandCan) {
-          cardColor = sameBrandCan.brandColor || sameBrandCan.brandcolor || sameBrandCan.BRANDCOLOR || sameBrandCan.corMarca || sameBrandCan.color;
-        }
-      }
-      if (!cardColor) {
-        cardColor = "#008234";
-      }
+      let cardColor = can.brandColor || can.brandcolor || can.BRANDCOLOR || can.corMarca || can.color || "#008234";
 
       const card = document.createElement("div");
       card.className = `card ${currentTab === 'sets' ? 'card-aspect-sets' : ''}`;
       card.tabIndex = 0;
       card.dataset.localIndex = localIndex;
       card.dataset.globalIndex = globalIndex;
-      
-      card.onmouseenter = () => {
-        clearAllCardFocus();
+
+      card.onfocus = () => {
+        if (document.getElementById("zoomModal").classList.contains("active") || document.getElementById("exitModal").classList.contains("active")) return;
+        document.querySelectorAll(".card").forEach(c => c.classList.remove("focused"));
         card.classList.add("focused");
         activeLocalIndex = localIndex;
         updateCounter(localIndex);
       };
 
-      card.onfocus = () => {
-        if (document.getElementById("zoomModal").classList.contains("active") || document.getElementById("exitModal").classList.contains("active")) return;
-        clearAllCardFocus();
-        card.classList.add("focused");
-        activeLocalIndex = localIndex;
-        updateCounter(localIndex);
-      };
-      
+      card.onmouseenter = () => { card.focus(); };
+
       card.onclick = (e) => {
         e.stopPropagation();
         openZoomModal(0);
@@ -1231,11 +1294,9 @@
 
         if (key === "Enter" || key === " " || keyCode === 13) {
           e.preventDefault();
-          e.stopPropagation();
           openZoomModal(0);
         } else if (key === "ArrowRight" || keyCode === 39) {
           e.preventDefault();
-          e.stopPropagation();
           if (localIndex < pageItems.length - 1) {
             focusCardSafely(localIndex + 1);
           } else if ((startIndex + cardsPerPage) < currentFiltered.length) {
@@ -1245,7 +1306,6 @@
           }
         } else if (key === "ArrowLeft" || keyCode === 37) {
           e.preventDefault();
-          e.stopPropagation();
           if (localIndex > 0) {
             focusCardSafely(localIndex - 1);
           } else if (currentPage > 0) {
@@ -1253,26 +1313,35 @@
             renderApp();
             focusCardSafely(cardsPerPage - 1);
           } else {
-            clearAllCardFocus();
             openMenu();
           }
         } else if (key === "ArrowDown" || keyCode === 40) {
           e.preventDefault();
-          e.stopPropagation();
-          if ((startIndex + cardsPerPage) < currentFiltered.length) {
-            currentPage++;
-            renderApp();
-            focusCardSafely(0);
+          if (isSearchingOrBrand && localIndex < 7) {
+            const target = Math.min(localIndex + 7, pageItems.length - 1);
+            focusCardSafely(target);
+          } else {
+            const nextIdx = localIndex + cardsPerRow;
+            if (nextIdx < pageItems.length) {
+              focusCardSafely(nextIdx);
+            } else if ((startIndex + cardsPerPage) < currentFiltered.length) {
+              currentPage++;
+              renderApp();
+              focusCardSafely(0);
+            }
           }
         } else if (key === "ArrowUp" || keyCode === 38) {
           e.preventDefault();
-          e.stopPropagation();
-          if (currentPage > 0) {
+          if (isSearchingOrBrand && localIndex >= 7 && localIndex < 16) {
+            const target = Math.min(localIndex - 7, 6);
+            focusCardSafely(target);
+          } else if (localIndex >= cardsPerRow) {
+            focusCardSafely(localIndex - cardsPerRow);
+          } else if (currentPage > 0) {
             currentPage--;
             renderApp();
             focusCardSafely(0);
           } else {
-            clearAllCardFocus();
             const sortSelect = document.getElementById("sortSelect");
             if (sortSelect) {
               sortSelect.classList.add("focused");
@@ -1300,6 +1369,17 @@
 
       row.appendChild(card);
     });
+
+    if (isSearchingOrBrand && currentFiltered.length > 0) {
+      const matchCan = currentFiltered[0];
+      const logoUrl = matchCan ? (matchCan.brandLogo || matchCan.BRAND_LOGO) : null;
+      if (logoUrl) {
+        const logoDiv = document.createElement("div");
+        logoDiv.className = "brand-overlay-logo";
+        logoDiv.innerHTML = `<img src="${getOptimizedImageUrl(logoUrl, 400)}" alt="Logo">`;
+        row.appendChild(logoDiv);
+      }
+    }
   }
 
   function openZoomModal(index) {
@@ -1532,7 +1612,7 @@
 
   window.onload = () => {
     fetchCatalogFromSheet();
-    setTimeout(hideLoadingScreen, 7000); // Garante a remoção do carregando após 7s se houver falha de rede
+    setTimeout(hideLoadingScreen, 7000);
   };
 </script>
 
