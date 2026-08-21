@@ -248,9 +248,10 @@
 
      /* Aumentada a altura do container para acomodar a 3ª linha */
 
+  /* Ajuste da altura total da seção */
   .catalog-section { 
-    height: 600px !important; 
-    min-height: 600px !important; 
+    height: 500px !important; 
+    min-height: 500px !important; 
     width: 100%; 
     overflow: hidden; 
     flex-shrink: 0; 
@@ -260,32 +261,48 @@
     justify-content: center; 
   }
 
-  /* Ajustada a grade para 9 colunas e 3 linhas */
+  /* Ajuste da grade para 9 colunas de 100px e 3 linhas de 150px */
   .card-row { 
     display: grid; 
-    grid-template-columns: repeat(9, 122px); 
-    grid-template-rows: repeat(3, 185px); 
-    gap: 10px 12px; 
+    grid-template-columns: repeat(9, 100px); 
+    grid-template-rows: repeat(3, 150px); 
+    gap: 8px 10px; 
     width: fit-content; 
     margin: 0 auto;
-    justify-content: start;
+    justify-content: start; 
     align-content: start; 
   }
 
+  /* Ajuste do tamanho do card */
+  .card { 
+    width: 100px !important; 
+    min-width: 100px !important; 
+    height: 150px !important; 
+    background: #ffffff !important; 
+    border-radius: 8px !important; 
+    overflow: hidden !important;
+    display: flex !important; 
+    flex-direction: column !important; 
+    border: 2px solid transparent !important;
+    cursor: pointer !important; 
+    outline: none !important; 
+  }
 
-    .card {
-      width: 122px !important; min-width: 122px !important; height: 185px !important;
-      background: #ffffff !important; border-radius: 10px !important; overflow: hidden !important;
-      display: flex !important; flex-direction: column !important; border: 2px solid transparent !important;
-      cursor: pointer !important; flex-shrink: 0 !important; outline: none !important;
-    }
+  /* Ajuste da área da foto do card (proporcional) */
+  .card-top-photo { 
+    width: 100% !important; 
+    height: 110px !important; 
+    background: #ffffff !important; 
+    display: flex !important; 
+    justify-content: center !important; 
+    align-items: center !important; 
+    padding: 2px !important; 
+  }
+
 
     .card.card-aspect-sets { width: 170px !important; min-width: 170px !important; }
 
-    .card-top-photo {
-      width: 100% !important; height: 137px !important; background: #ffffff !important;
-      display: flex !important; justify-content: center !important; align-items: center !important; padding: 4px !important;
-    }
+
 
     .card-top-photo img { max-width: 100% !important; max-height: 100% !important; object-fit: contain !important; }
 
