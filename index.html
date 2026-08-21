@@ -423,6 +423,7 @@
     .exit-btn:focus, .exit-btn:hover { background: #ffffff; color: #1a1f2c; box-shadow: 0 0 15px rgba(255,255,255,0.3); outline: none; }
 
     /* MODO ESPECIAL DE MARCA / PESQUISA NO INDEX */
+/* MODO ESPECIAL DE MARCA / PESQUISA NO INDEX (AUMENTADO EM +4PX) */
     .main-area.brand-mode #heroPanel {
       display: none !important;
     }
@@ -435,21 +436,21 @@
 
     .card-row.brand-mode-grid {
       display: grid !important;
-      grid-template-columns: repeat(9, 90px) !important;
-      grid-template-rows: repeat(3, 135px) !important;
+      grid-template-columns: repeat(9, 94px) !important; /* Aumentado de 90px para 94px */
+      grid-template-rows: repeat(3, 141px) !important;   /* Altura ajustada proporcionalmente */
       gap: 8px 8px !important;
       width: fit-content !important;
       position: relative !important;
     }
 
     .card-row.brand-mode-grid .card {
-      width: 90px !important;
-      min-width: 90px !important;
-      height: 135px !important;
+      width: 94px !important;
+      min-width: 94px !important;
+      height: 141px !important;
     }
 
     .card-row.brand-mode-grid .card-top-photo {
-      height: 100px !important;
+      height: 106px !important;
     }
 
     /* Força os primeiros 7 cards a ficarem na 1ª linha */
@@ -457,17 +458,17 @@
       grid-row: 1;
     }
 
-    /* O 8º card em diante é empurrado obrigatoriamente para as linhas de baixo */
+    /* O 8º card em diante é empurrado para as linhas de baixo */
     .card-row.brand-mode-grid .card:nth-child(n+8) {
       grid-row: auto;
     }
 
-    /* Reserva SEMPRE as colunas 8 e 9 da 1ª linha para o Logo */
+    /* Reserva as colunas 8 e 9 para o Logo com a nova largura (94px * 2 + gap = 196px) */
     .brand-overlay-logo {
       grid-column: 8 / span 2;
       grid-row: 1;
-      width: 188px;
-      height: 135px;
+      width: 196px;
+      height: 141px;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -483,35 +484,32 @@
     }
     /* AJUSTES PROPORCIONAIS DE TEXTO EXCLUSIVOS DO MODO MARCA / PESQUISA */
 
-/* Ajusta a barra inferior do card para o tamanho menor */
+/* AJUSTES PROPORCIONAIS DE TEXTO EXCLUSIVOS DO MODO MARCA / PESQUISA (+4PX) */
+
 .card-row.brand-mode-grid .card-bottom-bar {
   height: 35px !important;
-  padding: 1px 3px 2px 3px !important;
+  padding: 2px 4px 2px 4px !important;
 }
 
-/* Reduz e ajusta o nome da marca/cerveja */
 .card-row.brand-mode-grid .card-bar-title {
-  font-size: 0.58rem !important;
-  line-height: 1 !important;
+  font-size: 0.60rem !important; /* Leve aumento para acompanhar a nova largura */
+  line-height: 1.05 !important;
   margin-top: 1px !important;
 }
 
-/* Reduz o texto do país */
 .card-row.brand-mode-grid .card-bar-country {
-  font-size: 0.50rem !important;
-  gap: 2px !important;
+  font-size: 0.52rem !important;
+  gap: 3px !important;
 }
 
-/* Reduz a bandeira proporcionalmente */
 .card-row.brand-mode-grid .card-bar-flag {
-  width: 10px !important;
-  height: 6px !important;
+  width: 11px !important;
+  height: 7px !important;
 }
 
-/* Reduz a pill do volume */
 .card-row.brand-mode-grid .card-bar-vol {
-  font-size: 0.45rem !important;
-  padding: 0px 3px !important;
+  font-size: 0.48rem !important;
+  padding: 1px 3px !important;
   border-radius: 3px !important;
 }
   </style>
