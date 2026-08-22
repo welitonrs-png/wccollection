@@ -404,15 +404,19 @@
       flex-shrink: 0 !important;
     }
 
-    .card.focused, .card:focus {
-      border: 2px solid transparent !important;
-      background-image: linear-gradient(#ffffff, #ffffff), 
-                        linear-gradient(135deg, #ffe066, #f39c12, #ff5500) !important;
-      background-origin: border-box !important;
-      background-clip: content-box, border-box !important;
-      box-shadow: 0 6px 10px rgba(243, 156, 18, 0.5) !important;
+        .card.focused, .card:focus {
+      border: 2px solid #888888 !important; /* Cor da borda cinza */
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4) !important;
       z-index: 10 !important;
+      outline: none !important;
     }
+
+    /* Altera o fundo das informações (barra inferior) para cinza quando o card é focado */
+    .card.focused .card-bottom-bar, 
+    .card:focus .card-bottom-bar {
+      background-color: #555555 !important; /* Cor cinza da barra inferior */
+    }
+
 
     /* MODAL DE ZOOM E NAVEGAÇÃO */
     .zoom-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.95); z-index: 3000; display: none; justify-content: center; align-items: center; padding: 16px; overflow: hidden; }
