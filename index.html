@@ -474,24 +474,30 @@
     }
 
 /* CENTRALIZAÇÃO DA LOGO NO MODO MARCA / PESQUISA */
-.brand-overlay-logo {
-  grid-column: 8 / span 2;
-  grid-row: 1;
-  width: 196px;
-  height: 141px;
-  display: flex;
-  justify-content: center !important; /* Centraliza horizontalmente */
-  align-items: center !important;     /* Centraliza verticalmente */
-  padding: 8px;
-  z-index: 20;
-  pointer-events: none;
-}
+    /* CARD FIXO DA LOGO NO MODO MARCA / PESQUISA */
+    .brand-overlay-logo {
+      grid-column: 8 / span 2; /* Ocupa a 8ª e 9ª coluna */
+      grid-row: 1;
+      width: 198px !important; /* Largura equivalente a 2 cards + gap */
+      height: 141px !important;
+      background: #ffffff !important; /* Fundo branco idêntico aos cards */
+      border-radius: 7px !important; /* Arredondamento idêntico aos cards */
+      display: flex !important;
+      justify-content: center !important;
+      align-items: center !important;
+      padding: 12px !important;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2) !important;
+      z-index: 5;
+      pointer-events: none; /* Inativo para foco de controle */
+      box-sizing: border-box !important;
+    }
 
-.brand-overlay-logo img {
-  max-width: 100%;
-  max-height: 100% !important;
-  object-fit: contain;
-}
+    .brand-overlay-logo img {
+      max-width: 100% !important;
+      max-height: 100% !important;
+      object-fit: contain !important;
+    }
+
 
 
 
