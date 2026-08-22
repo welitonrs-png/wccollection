@@ -473,30 +473,30 @@
       grid-row: auto;
     }
 
-/* CENTRALIZAÇÃO DA LOGO NO MODO MARCA / PESQUISA */
-    /* CARD FIXO DA LOGO NO MODO MARCA / PESQUISA */
+    /* CARD FIXO DA LOGO NO MODO MARCA / PESQUISA (LOGO REDUZIDA) */
     .brand-overlay-logo {
-      grid-column: 8 / span 2; /* Ocupa a 8ª e 9ª coluna */
+      grid-column: 8 / span 2;
       grid-row: 1;
-      width: 198px !important; /* Largura equivalente a 2 cards + gap */
+      width: 198px !important;
       height: 141px !important;
-      background: #ffffff !important; /* Fundo branco idêntico aos cards */
-      border-radius: 7px !important; /* Arredondamento idêntico aos cards */
+      background: #ffffff !important;
+      border-radius: 7px !important;
       display: flex !important;
       justify-content: center !important;
       align-items: center !important;
-      padding: 12px !important;
+      padding: 16px !important; /* Aumentado para dar mais respiro em volta */
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2) !important;
       z-index: 5;
-      pointer-events: none; /* Inativo para foco de controle */
+      pointer-events: none;
       box-sizing: border-box !important;
     }
 
     .brand-overlay-logo img {
-      max-width: 100% !important;
-      max-height: 100% !important;
+      max-width: 80% !important;  /* Reduzido para 80% da área útil do card */
+      max-height: 80% !important; /* Reduzido para 80% da área útil do card */
       object-fit: contain !important;
     }
+
 
 
 
