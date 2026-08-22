@@ -363,11 +363,6 @@
       margin-top: 3px !important;
     }
     
-  .card-bar-title.focused,  
-  .card-bar-title:focus,
-  .card-bar-title:hover{
-        color: #ffffff !important;
-      }
         
     .card-bar-details {
       display: flex !important;
@@ -411,21 +406,38 @@
     }
 
     /* ESTADO SELECIONADO / FOCADO / HOVER (BORDA E RODAPÉ CINZA) */
+        /* ESTADO SELECIONADO / FOCADO / HOVER (BORDA E RODAPÉ CINZA) */
     .card.focused, 
     .card:focus,
     .card:hover {
-      border: 2px solid #888888 !important; /* Cor da borda cinza */
+      border: 2px solid #888888 !important;
       box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4) !important;
       z-index: 10 !important;
       outline: none !important;
     }
 
-    /* FORÇA A BARRA INFERIOR A FICAR CINZA AO SELECIONAR OU PASSAR O MOUSE */
+    /* FORÇA A BARRA INFERIOR E TODOS OS TEXTOS INTERNOS A FICAREM BRANCOS NO FOCO */
     .card.focused .card-bottom-bar, 
     .card:focus .card-bottom-bar,
     .card:hover .card-bottom-bar {
-      background-color: #888888 !important; /* Sobrescreve a cor da marca por cinza */
+      background-color: #888888 !important;
     }
+
+    .card.focused .card-bar-title,
+    .card:focus .card-bar-title,
+    .card:hover .card-bar-title,
+    .card.focused .card-bar-country,
+    .card:focus .card-bar-country,
+    .card:hover .card-bar-country,
+    .card.focused .card-bar-country span,
+    .card:focus .card-bar-country span,
+    .card:hover .card-bar-country span,
+    .card.focused .card-bar-vol,
+    .card:focus .card-bar-vol,
+    .card:hover .card-bar-vol {
+      color: #ffffff !important;
+    }
+
 
     /* MODAL DE ZOOM E NAVEGAÇÃO */
     .zoom-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.95); z-index: 3000; display: none; justify-content: center; align-items: center; padding: 16px; overflow: hidden; }
