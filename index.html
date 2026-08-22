@@ -234,8 +234,19 @@
       text-transform: none;
     }
 
-    .counter-bar { display: flex; justify-content: flex-end; align-items: center; padding: 0 4px; gap: 8px; height: 24px; }
-    
+    /* ALINHAMENTO DA BARRA DE CONTADOR/ORDENAÇÃO COM OS CARDS NA HOME */
+.counter-bar { 
+  display: flex; 
+  justify-content: flex-end; 
+  align-items: center; 
+  padding: 0; 
+  gap: 8px; 
+  height: 24px; 
+  width: 926px; /* Mesma largura exata do container de cards (.card-row) */
+  max-width: 100%;
+  margin: 0 auto; /* Centraliza junto com o catálogo */
+}
+
     .sort-dropdown {
       background: transparent;
       color: #e2e8f0;
@@ -462,25 +473,26 @@
       grid-row: auto;
     }
 
-        /* Ajusta a logo no modo marca/pesquisa para o mesmo tamanho da página Home (80px) */
-    .brand-overlay-logo {
-      grid-column: 8 / span 2;
-      grid-row: 1;
-      width: 196px;
-      height: 141px;
-      display: flex;
-      justify-content: flex-end; /* Alinha à direita igual na Home */
-      align-items: flex-start;  /* Alinha ao topo igual na Home */
-      padding: 4px 8px;
-      z-index: 20;
-      pointer-events: none;
-    }
+/* CENTRALIZAÇÃO DA LOGO NO MODO MARCA / PESQUISA */
+.brand-overlay-logo {
+  grid-column: 8 / span 2;
+  grid-row: 1;
+  width: 196px;
+  height: 141px;
+  display: flex;
+  justify-content: center !important; /* Centraliza horizontalmente */
+  align-items: center !important;     /* Centraliza verticalmente */
+  padding: 8px;
+  z-index: 20;
+  pointer-events: none;
+}
 
-    .brand-overlay-logo img {
-      max-width: 100%;
-      max-height: 80px !important; /* Mesma altura máxima da logo na Home */
-      object-fit: contain;
-    }
+.brand-overlay-logo img {
+  max-width: 100%;
+  max-height: 100% !important;
+  object-fit: contain;
+}
+
 
 
     .card-row.brand-mode-grid .card-bottom-bar {
