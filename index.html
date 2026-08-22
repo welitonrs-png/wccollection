@@ -339,49 +339,59 @@
       object-fit: contain !important;
     }
 
-    /* ESTILO 1: FROSTED GLASS */
-/* ESTILO 2: PILLS / TAGS FLUTUANTES */
-/* ESTILO 3: ACCENT LINE ESQUERDA */
-.card-bottom-bar {
-  width: 100% !important;
-  height: 48px !important;
-  padding: 4px 6px 4px 8px !important;
-  display: flex !important;
-  flex-direction: column !important;
-  justify-content: space-between !important;
-  background: #161b26 !important;
-  border-left: 3px solid #f39c12 !important; /* Linha de destaque */
-}
+    /* ESTILO DA OPÇÃO 2: PILL / TAG FLUTUANTE (CORES ATUALIZADAS) */
+    .card-bottom-bar {
+      width: 100% !important;
+      height: 48px !important;
+      padding: 4px 5px !important;
+      display: flex !important;
+      flex-direction: column !important;
+      justify-content: space-between !important;
+      box-sizing: border-box !important;
+      background: #1a1f2c !important; /* Fundo escuro nativo */
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
+    }
 
-.card-bar-title {
-  font-size: 0.72rem !important;
-  font-weight: 800 !important;
-  color: #888888 !important;
-  line-height: 1.1 !important;
-}
+    .card-bar-title {
+      font-family: "Helvetica Now Display", "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+      font-size: 0.72rem !important;
+      font-weight: 700 !important;
+      color: #888888 !important; /* Texto título cinza */
+      white-space: nowrap !important;
+      overflow: hidden !important;
+      text-overflow: ellipsis !important;
+      text-transform: capitalize !important;
+      line-height: 1.1 !important;
+      margin-top: 1px !important;
+    }
+        
+    .card-bar-details {
+      display: flex !important;
+      justify-content: space-between !important;
+      align-items: center !important;
+      width: 100% !important;
+      margin-bottom: 1px !important;
+    }
 
-.card-bar-details {
-  display: flex !important;
-  justify-content: space-between !important;
-  align-items: center !important;
-}
+    .card-bar-country {
+      display: flex !important;
+      align-items: center !important;
+      gap: 4px !important;
+      font-family: Helvetica, Arial, sans-serif !important;
+      font-size: 0.58rem !important;
+      font-weight: 500 !important;
+      color: #888888 !important;
+      background: #282a2d !important; /* Pill estilo container cinza escuro */
+      padding: 2px 6px !important;
+      border-radius: 10px !important;
+      white-space: nowrap !important;
+      overflow: hidden !important;
+      text-transform: capitalize !important;
+    }
 
-.card-bar-country {
-  font-size: 0.55rem !important;
-  color: #888888 !important;
-  display: flex !important;
-  align-items: center !important;
-  gap: 3px !important;
-}
-
-.card-bar-vol {
-  background: rgba(255, 255, 255, 0.08) !important;
-  color: #888888 !important;
-  padding: 1px 4px !important;
-  border-radius: 3px !important;
-  font-size: 0.52rem !important;
-}
-
+    .card-bar-country span {
+      color: #888888 !important;
+    }
 
     .card-bar-flag {
       width: 13px !important;
@@ -391,10 +401,19 @@
       flex-shrink: 0 !important;
     }
 
-    
+    .card-bar-vol {
+      background: #282a2d !important; /* Pill estilo container cinza escuro */
+      color: #888888 !important;
+      font-family: Helvetica, Arial, sans-serif !important;
+      padding: 2px 6px !important;
+      border-radius: 10px !important;
+      font-size: 0.55rem !important;
+      font-weight: 600 !important;
+      white-space: nowrap !important;
+      flex-shrink: 0 !important;
+    }
 
-    /* ESTADO SELECIONADO / FOCADO / HOVER (BORDA E RODAPÉ CINZA) */
-        /* ESTADO SELECIONADO / FOCADO / HOVER (BORDA E RODAPÉ CINZA) */
+    /* ESTADO SELECIONADO / FOCADO / HOVER */
     .card.focused, 
     .card:focus,
     .card:hover {
@@ -404,13 +423,14 @@
       outline: none !important;
     }
 
-    /* FORÇA A BARRA INFERIOR E TODOS OS TEXTOS INTERNOS A FICAREM BRANCOS NO FOCO */
+    /* FORÇA A BARRA INFERIOR A FICAR CINZA NO FOCO */
     .card.focused .card-bottom-bar, 
     .card:focus .card-bottom-bar,
     .card:hover .card-bottom-bar {
       background-color: #888888 !important;
     }
 
+    /* FORÇA TODOS OS TEXTOS INTERNOS E PILLS A FICAREM BRANCOS NO FOCO */
     .card.focused .card-bar-title,
     .card:focus .card-bar-title,
     .card:hover .card-bar-title,
@@ -424,8 +444,8 @@
     .card:focus .card-bar-vol,
     .card:hover .card-bar-vol {
       color: #ffffff !important;
+      background: transparent !important; /* Remove o fundo da pill para integrar no foco */
     }
-
 
     /* MODAL DE ZOOM E NAVEGAÇÃO */
     .zoom-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.95); z-index: 3000; display: none; justify-content: center; align-items: center; padding: 16px; overflow: hidden; }
@@ -525,6 +545,7 @@
     .card-row.brand-mode-grid .card-bar-country {
       font-size: 0.52rem !important;
       gap: 3px !important;
+      padding: 1px 4px !important;
     }
 
     .card-row.brand-mode-grid .card-bar-flag {
@@ -534,8 +555,8 @@
 
     .card-row.brand-mode-grid .card-bar-vol {
       font-size: 0.48rem !important;
-      padding: 1px 3px !important;
-      border-radius: 3px !important;
+      padding: 1px 4px !important;
+      border-radius: 8px !important;
     }
   </style>
 </head>
@@ -1335,8 +1356,6 @@
       const volumeText = can.volume || can.Volume || "";
       const flagUrl = getFlagUrlByCountry(countryRaw);
 
-      let cardColor = can.brandColor || can.brandcolor || can.BRANDCOLOR || can.corMarca || can.color || "#008234";
-
       const card = document.createElement("div");
       card.className = `card ${currentTab === 'sets' ? 'card-aspect-sets' : ''}`;
       card.tabIndex = 0;
@@ -1475,7 +1494,7 @@
         <div class="card-top-photo">
           <img src="${frontImg}" alt="${brandFormatted}" loading="lazy" decoding="async">
         </div>
-        <div class="card-bottom-bar" style="background-color: ${cardColor};">
+        <div class="card-bottom-bar">
           <div class="card-bar-title">${brandFormatted}</div>
           <div class="card-bar-details">
             <div class="card-bar-country">
