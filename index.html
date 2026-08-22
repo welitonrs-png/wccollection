@@ -404,18 +404,19 @@
       flex-shrink: 0 !important;
     }
 
-          .card.focused, .card:focus {
-      border: 2px solid #888888 !important; /* Cor da borda cinza */
+    .card.focused, .card:focus {
+      border: 2px solid #888888 !important; /* Borda cinza */
       box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4) !important;
       z-index: 10 !important;
       outline: none !important;
     }
 
-    /* Altera o fundo das informações (barra inferior) para cinza quando o card é focado */
+    /* Aplica exatamente a mesma cor da borda no fundo das informações */
     .card.focused .card-bottom-bar, 
     .card:focus .card-bottom-bar {
-      background-color: #555555 !important; /* Cor cinza da barra inferior */
+      background-color: #888888 !important; /* Mesma cor da borda */
     }
+
 
 
     /* MODAL DE ZOOM E NAVEGAÇÃO */
