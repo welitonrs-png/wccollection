@@ -339,51 +339,50 @@
       object-fit: contain !important;
     }
 
-    .card-bottom-bar {
-      width: 100% !important;
-      height: 48px !important;
-      padding: 2px 5px 3px 5px !important;
-      display: flex !important;
-      flex-direction: column !important;
-      justify-content: space-between !important;
-      box-sizing: border-box !important;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
-    }
+    /* ESTILO 1: FROSTED GLASS */
+.card-bottom-bar {
+  width: 100% !important;
+  height: 48px !important;
+  padding: 4px 6px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  background: rgba(22, 27, 38, 0.85) !important;
+  backdrop-filter: blur(8px) !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.15) !important;
+}
 
-    .card-bar-title {
-      font-family: "Helvetica Now Display", "Helvetica Neue", Helvetica, Arial, sans-serif !important;
-      font-size: 0.75rem !important;
-      font-weight: 700 !important;
-      color: #888888 !important;
-      white-space: nowrap !important;
-      overflow: hidden !important;
-      text-overflow: ellipsis !important;
-      text-transform: capitalize !important;
-      line-height: 1.1 !important;
-      margin-top: 3px !important;
-    }
-    
-        
-    .card-bar-details {
-      display: flex !important;
-      justify-content: space-between !important;
-      align-items: center !important;
-      width: 100% !important;
-      margin-bottom: 1px !important;
-    }
+.card-bar-title {
+  font-size: 0.72rem !important;
+  font-weight: 800 !important;
+  color: #888888 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+}
 
-    .card-bar-country {
-      display: flex !important;
-      align-items: center !important;
-      gap: 3px !important;
-      font-family: Helvetica, Arial, sans-serif !important;
-      font-size: 0.60rem !important;
-      font-weight: 400 !important;
-      color: #888888 !important;
-      white-space: nowrap !important;
-      overflow: hidden !important;
-      text-transform: capitalize !important;
-    }
+.card-bar-details {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+}
+
+.card-bar-country {
+  font-size: 0.58rem !important;
+  color: #888888 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+}
+
+.card-bar-vol {
+  background: rgba(243, 156, 18, 0.2) !important;
+  color: #f39c12 !important;
+  font-weight: bold !important;
+  padding: 1px 5px !important;
+  border-radius: 4px !important;
+  font-size: 0.55rem !important;
+}
+
 
     .card-bar-flag {
       width: 13px !important;
@@ -393,17 +392,7 @@
       flex-shrink: 0 !important;
     }
 
-    .card-bar-vol {
-      background: rgba(0, 0, 0, 0.45) !important;
-      color: #ffffff !important;
-      font-family: Helvetica, Arial, sans-serif !important;
-      padding: 1px 4px !important;
-      border-radius: 4px !important;
-      font-size: 0.55rem !important;
-      font-weight: 400 !important;
-      white-space: nowrap !important;
-      flex-shrink: 0 !important;
-    }
+    
 
     /* ESTADO SELECIONADO / FOCADO / HOVER (BORDA E RODAPÉ CINZA) */
         /* ESTADO SELECIONADO / FOCADO / HOVER (BORDA E RODAPÉ CINZA) */
