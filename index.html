@@ -420,15 +420,15 @@
     }
 
 
-    /* ESTADO SELECIONADO / FOCADO / HOVER */
-    .card.focused, 
-    .card:focus,
-    .card:hover {
-      border: 2px solid #888888 !important;
-      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4) !important;
-      z-index: 10 !important;
-      outline: none !important;
-    }
+.card.focused, .card:focus {
+  border: 2px solid transparent !important;
+  background-image: linear-gradient(#ffffff, #ffffff), 
+                    linear-gradient(135deg, #ffe066, #f39c12, #ff5500) !important;
+  background-origin: border-box !important;
+  background-clip: content-box, border-box !important;
+  box-shadow: 0 8px 10px rgba(243, 156, 18, 0.5) !important;
+  z-index: 10 !important;
+}
 
     /* FORÇA A BARRA INFERIOR A FICAR CINZA NO FOCO */
     .card.focused .card-bottom-bar, 
