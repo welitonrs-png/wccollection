@@ -217,7 +217,7 @@
       font-weight: bold;
       font-style: italic;
       color: #e2e8f0;
-    text-transform: uppercase;
+      text-transform: uppercase;
     }
 
     .hero-brand-desc {
@@ -339,7 +339,7 @@
       object-fit: contain !important;
     }
 
-        /* ESTILO DA OPÇÃO 2: PILL / TAG FLUTUANTE (ALINHAMENTO AJUSTADO) */
+    /* ESTILO DA OPÇÃO 2: PILL / TAG FLUTUANTE (ALINHAMENTO AJUSTADO) */
     .card-bottom-bar {
       width: 100% !important;
       height: 48px !important;
@@ -419,16 +419,15 @@
       margin-left: auto !important; /* Força o volume a colar no extremo direito */
     }
 
-
-.card.focused, .card:focus {
-  border: 2px solid transparent !important;
-  background-image: linear-gradient(#ffffff, #ffffff), 
-                    linear-gradient(135deg, #ffe066, #f39c12, #ff5500) !important;
-  background-origin: border-box !important;
-  background-clip: content-box, border-box !important;
-  box-shadow: 0 8px 10px rgba(243, 156, 18, 0.5) !important;
-  z-index: 10 !important;
-}
+    .card.focused, .card:focus {
+      border: 2px solid transparent !important;
+      background-image: linear-gradient(#ffffff, #ffffff), 
+                        linear-gradient(135deg, #ffe066, #f39c12, #ff5500) !important;
+      background-origin: border-box !important;
+      background-clip: content-box, border-box !important;
+      box-shadow: 0 8px 10px rgba(243, 156, 18, 0.5) !important;
+      z-index: 10 !important;
+    }
 
     /* FORÇA A BARRA INFERIOR A FICAR CINZA NO FOCO */
     .card.focused .card-bottom-bar, 
@@ -1322,8 +1321,8 @@
     const currentCan = currentFiltered[globalIndex];
     if (currentCan) {
       let rawPhotos = [];
-      if (currentCan.images) rawPhotos = [currentCan.images.front, currentCan.images.left, currentCan.images.back, currentCan.images.right].filter(Boolean);
-      if (rawPhotos.length === 0) rawPhotos = [currentCan.ImgFront, currentCan.ImgLeft, currentCan.ImgBack, currentCan.ImgRight].filter(Boolean);
+      if (currentCan.images) rawPhotos = [currentCan.images.front, currentCan.images.left, currentCan.images.back, currentCan.images.right, currentCan.images.top, currentCan.images.bottom].filter(Boolean);
+      if (rawPhotos.length === 0) rawPhotos = [currentCan.ImgFront || currentCan.front, currentCan.ImgLeft || currentCan.left, currentCan.ImgBack || currentCan.back, currentCan.ImgRight || currentCan.right, currentCan.ImgTop || currentCan.top || currentCan.tampa, currentCan.ImgBottom || currentCan.bottom || currentCan.fundo].filter(Boolean);
       const logoUrl = currentCan.brandLogo || currentCan.BRAND_LOGO;
       if (rawPhotos.length === 0 && logoUrl) rawPhotos.push(logoUrl);
       zoomGallery = rawPhotos;
