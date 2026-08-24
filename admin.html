@@ -191,7 +191,7 @@
           </small>
         </div>
 
-        <!-- FOTOS DA LATINHA (CAPA, FRENTE, LADOS, TRÁS) -->
+        <!-- FOTOS DA LATINHA (CAPA, FRENTE, LADOS, TRÁS, TAMPA, FUNDO) -->
         <div class="form-group">
           <label>FOTOS DA LATA (URL OU UPLOAD):</label>
           <div class="photo-upload-grid">
@@ -228,6 +228,20 @@
               <img id="prevRight" class="photo-preview" src="">
               <input type="hidden" id="ImgRight" name="ImgRight">
               <input type="file" id="fileRight" accept="image/*" class="btn-file" onchange="uploadImage(this, 'ImgRight', 'prevRight')">
+            </div>
+
+            <div class="photo-box">
+              <label>6. TAMPA</label>
+              <img id="prevTop" class="photo-preview" src="">
+              <input type="hidden" id="ImgTop" name="ImgTop">
+              <input type="file" id="fileTop" accept="image/*" class="btn-file" onchange="uploadImage(this, 'ImgTop', 'prevTop')">
+            </div>
+
+            <div class="photo-box">
+              <label>7. FUNDO</label>
+              <img id="prevBottom" class="photo-preview" src="">
+              <input type="hidden" id="ImgBottom" name="ImgBottom">
+              <input type="file" id="fileBottom" accept="image/*" class="btn-file" onchange="uploadImage(this, 'ImgBottom', 'prevBottom')">
             </div>
           </div>
         </div>
@@ -403,6 +417,8 @@
     setPhotoField("ImgLeft", "prevLeft", item.ImgLeft);
     setPhotoField("ImgBack", "prevBack", item.ImgBack);
     setPhotoField("ImgRight", "prevRight", item.ImgRight);
+    setPhotoField("ImgTop", "prevTop", item.ImgTop || item.top || item.tampa);
+    setPhotoField("ImgBottom", "prevBottom", item.ImgBottom || item.bottom || item.fundo);
 
     document.getElementById("formTitle").innerText = `EDITAR LATA #${item.ID || ''}`;
     document.getElementById("btnDelete").style.display = "block";
@@ -535,7 +551,9 @@
       ImgFront: fixDriveUrl(frontValue),
       ImgLeft: fixDriveUrl(document.getElementById("ImgLeft").value),
       ImgBack: fixDriveUrl(document.getElementById("ImgBack").value),
-      ImgRight: fixDriveUrl(document.getElementById("ImgRight").value)
+      ImgRight: fixDriveUrl(document.getElementById("ImgRight").value),
+      ImgTop: fixDriveUrl(document.getElementById("ImgTop").value),
+      ImgBottom: fixDriveUrl(document.getElementById("ImgBottom").value)
     };
 
     try {
@@ -595,6 +613,8 @@
     document.getElementById("ImgLeft").value = "";
     document.getElementById("ImgBack").value = "";
     document.getElementById("ImgRight").value = "";
+    document.getElementById("ImgTop").value = "";
+    document.getElementById("ImgBottom").value = "";
     document.getElementById("brandColor").value = "";
     document.getElementById("brandColorPicker").value = "#ffffff";
 
@@ -605,6 +625,8 @@
     document.getElementById("prevLeft").src = "";
     document.getElementById("prevBack").src = "";
     document.getElementById("prevRight").src = "";
+    document.getElementById("prevTop").src = "";
+    document.getElementById("prevBottom").src = "";
 
     document.getElementById("formTitle").innerText = "CADASTRAR NOVA LATA";
     document.getElementById("btnDelete").style.display = "none";
