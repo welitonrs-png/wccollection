@@ -426,8 +426,6 @@
       background-origin: border-box !important;
       background-clip: content-box, border-box !important;
       z-index: 10 !important;
-      
-
     }
 
     /* FORÇA A BARRA INFERIOR A FICAR CINZA NO FOCO */
@@ -440,6 +438,7 @@
     /* FORÇA TODOS OS TEXTOS INTERNOS E PILLS A FICAREM BRANCOS NO FOCO */
     .card.focused .card-bar-title,
     .card:focus .card-bar-title,
+    .card:hover .card-bar-title,
     .card:hover .card-bar-title,
     .card.focused .card-bar-country,
     .card:focus .card-bar-country,
@@ -692,6 +691,19 @@
   const PAN_STEP = 60;
 
   const vkKeys = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','1','2','3','4','5','6','7','8','9','0','ESPAÇO','DEL','LIMPAR'];
+
+  /* FUNÇÃO PARA COMUNICAÇÃO COM O ANDROID TV (HOMESCREEN CHANNELS) */
+  function notificarHomeTV(can) {
+    if (!can) return;
+    if (typeof PonteAndroid !== "undefined" && PonteAndroid.atualizarUltimaLata) {
+      const titulo = can.name || can.Nome || "Lata de Cerveja";
+      const marca = can.brewery || can.Cervejaria || "WCCollection";
+      const imagem = getOptimizedImageUrl(can.ImgCover || can.cover || can.ImgFront || can.brandLogo, 400);
+      const id = String(can.barcode || can.Barcode || can.id || "0");
+
+      PonteAndroid.atualizarUltimaLata(titulo, marca, imagem, id);
+    }
+  }
 
   function setBrandModeLayout(active) {
     const mainArea = document.getElementById("mainArea");
@@ -1329,6 +1341,7 @@
       zoomGallery = rawPhotos;
 
       updateHeroPanel(currentCan, localIndex);
+      notificarHomeTV(currentCan);
     } else {
       zoomGallery = [];
     }
