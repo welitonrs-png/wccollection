@@ -162,27 +162,27 @@
   </div>
 
   <script>
-    // 🔑 DEFINE A SUA SENHA AQUI (Mesma senha definida no Code.gs):
-    const SENHA_ADMIN = "87431285";
+    function getAdminPass() {
+      return sessionStorage.getItem("wccollection_admin_pass") || "";
+    }
 
     function verificarSessaoAdmin() {
-      if (sessionStorage.getItem("wccollection_admin_auth") === "true") {
+      if (getAdminPass()) {
         const overlay = document.getElementById("adminAuthOverlay");
         if (overlay) overlay.style.display = "none";
       }
     }
 
     function validarSenhaAdmin() {
-      const inputVal = document.getElementById("adminPassInput").value;
+      const inputVal = document.getElementById("adminPassInput").value.trim();
       const errorMsg = document.getElementById("authErrorMsg");
 
-      if (inputVal === SENHA_ADMIN) {
-        sessionStorage.setItem("wccollection_admin_auth", "true");
+      if (inputVal !== "") {
+        sessionStorage.setItem("wccollection_admin_pass", inputVal);
         document.getElementById("adminAuthOverlay").style.display = "none";
+        if (typeof loadCatalog === "function") loadCatalog();
       } else {
         errorMsg.style.display = "block";
-        document.getElementById("adminPassInput").value = "";
-        document.getElementById("adminPassInput").focus();
       }
     }
 
@@ -603,7 +603,7 @@
     }
   }
 
-  /* UPLOAD DE IMAGEM BASE64 -> GOOGLE DRIVE COM SENHA */
+  /* UPLOAD DE IMAGEM BASE64 -> GOOGLE DRIVE COM SENHA DINÂMICA DA SESSÃO */
   function uploadImage(fileInput, hiddenId, prevId) {
     const file = fileInput.files[0];
     if (!file) return;
@@ -616,7 +616,7 @@
       try {
         const payload = { 
           action: "upload_photo", 
-          adminPass: SENHA_ADMIN,
+          adminPass: getAdminPass(), // 🔒 Envia a senha digitada pelo usuário na tela
           base64: base64Data, 
           fileName: file.name 
         };
@@ -631,7 +631,7 @@
           updatePreview(hiddenId, prevId);
           showStatus("Imagem enviada com sucesso!", false);
         } else {
-          showStatus(result.error || "Falha ao enviar imagem.", true);
+          showStatus(result.error || "Acesso negado: Senha incorreta.", true);
         }
       } catch (err) {
         console.error(err);
@@ -641,7 +641,7 @@
     reader.readAsDataURL(file);
   }
 
-  /* SALVAR/EDITAR COM SENHA */
+  /* SALVAR/EDITAR COM SENHA DINÂMICA DA SESSÃO */
   async function handleFormSubmit(e) {
     e.preventDefault();
     const btnSave = document.getElementById("btnSave");
@@ -656,7 +656,7 @@
 
     const formData = {
       action: actionType,
-      adminPass: SENHA_ADMIN,
+      adminPass: getAdminPass(), // 🔒 Envia a senha digitada pelo usuário na tela
       _rowNum: rowNum,
       Nome: document.getElementById("Nome").value,
       Cervejaria: document.getElementById("Cervejaria").value,
@@ -692,7 +692,7 @@
         resetForm();
         await loadCatalog();
       } else {
-        showStatus(result.error || "Erro ao salvar item.", true);
+        showStatus(result.error || "Acesso negado: Senha incorreta.", true);
       }
     } catch (err) {
       console.error(err);
@@ -703,7 +703,7 @@
     }
   }
 
-  /* EXCLUIR COM SENHA */
+  /* EXCLUIR COM SENHA DINÂMICA DA SESSÃO */
   async function deleteCurrentItem() {
     const rowNum = document.getElementById("_rowNum").value;
     if (!rowNum || !confirm("Tem certeza que deseja excluir esta lata permanentemente?")) return;
@@ -711,7 +711,7 @@
     try {
       const payload = { 
         action: "delete", 
-        adminPass: SENHA_ADMIN,
+        adminPass: getAdminPass(), // 🔒 Envia a senha digitada pelo usuário na tela
         _rowNum: rowNum 
       };
       const res = await fetch(API_URL, {
@@ -725,7 +725,7 @@
         resetForm();
         await loadCatalog();
       } else {
-        showStatus(result.error || "Erro ao excluir lata.", true);
+        showStatus(result.error || "Acesso negado: Senha incorreta.", true);
       }
     } catch (err) {
       console.error(err);
