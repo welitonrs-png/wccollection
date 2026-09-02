@@ -75,9 +75,126 @@
     #statusMsg { position: fixed; bottom: 20px; right: 20px; padding: 12px 20px; border-radius: 8px; font-weight: bold; display: none; z-index: 9999; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
     .status-success { background: #2ecc71; color: #1a1e29; }
     .status-error { background: #e74c3c; color: #ffffff; }
+
+    /* ESTILO DO OVERLAY DE AUTENTICAÇÃO */
+    #adminAuthOverlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: #0f121a;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 99999;
+      font-family: inherit;
+    }
+    .auth-card {
+      background-color: #161b26;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+      text-align: center;
+      max-width: 380px;
+      width: 90%;
+      color: #ffffff;
+      border: 1px solid #333d52;
+    }
+    .auth-card h2 {
+      margin-bottom: 10px;
+      font-size: 1.3rem;
+      color: #f39c12;
+      text-transform: uppercase;
+    }
+    .auth-card input {
+      width: 100%;
+      padding: 12px;
+      margin: 15px 0;
+      border-radius: 6px;
+      border: 1px solid #333d52;
+      background-color: #0f121a;
+      color: #fff;
+      font-size: 1rem;
+      box-sizing: border-box;
+      outline: none;
+      text-align: center;
+    }
+    .auth-card input:focus {
+      border-color: #f39c12;
+    }
+    .auth-card button {
+      width: 100%;
+      padding: 12px;
+      background-color: #f39c12;
+      color: #1a1e29;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      font-size: 0.95rem;
+      cursor: pointer;
+      text-transform: uppercase;
+      transition: background 0.2s;
+    }
+    .auth-card button:hover {
+      background-color: #e08e0b;
+    }
+    .auth-error {
+      color: #e74c3c;
+      font-size: 0.85rem;
+      margin-top: 10px;
+      display: none;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
+
+  <!-- OVERLAY DE AUTENTICAÇÃO -->
+  <div id="adminAuthOverlay">
+    <div class="auth-card">
+      <h2>ÁREA RESTRITA</h2>
+      <p style="font-size: 0.85rem; color: #a0aec0;">Digite a senha de administrador para acessar o painel:</p>
+      <input type="password" id="adminPassInput" placeholder="Sua senha" autofocus />
+      <button onclick="validarSenhaAdmin()">ACESSAR PAINEL</button>
+      <div id="authErrorMsg" class="auth-error">Senha incorreta! Tente novamente.</div>
+    </div>
+  </div>
+
+  <script>
+    // 🔑 DEFINE A SUA SENHA AQUI:
+    const SENHA_ADMIN = "12345";
+
+    function verificarSessaoAdmin() {
+      if (sessionStorage.getItem("wccollection_admin_auth") === "true") {
+        const overlay = document.getElementById("adminAuthOverlay");
+        if (overlay) overlay.style.display = "none";
+      }
+    }
+
+    function validarSenhaAdmin() {
+      const inputVal = document.getElementById("adminPassInput").value;
+      const errorMsg = document.getElementById("authErrorMsg");
+
+      if (inputVal === SENHA_ADMIN) {
+        sessionStorage.setItem("wccollection_admin_auth", "true");
+        document.getElementById("adminAuthOverlay").style.display = "none";
+      } else {
+        errorMsg.style.display = "block";
+        document.getElementById("adminPassInput").value = "";
+        document.getElementById("adminPassInput").focus();
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      document.getElementById("adminPassInput")?.addEventListener("keydown", function(e) {
+        if (e.key === "Enter") {
+          validarSenhaAdmin();
+        }
+      });
+      verificarSessaoAdmin();
+    });
+  </script>
 
   <header>
     <h1>PAINEL DE ADMINISTRAÇÃO - COLEÇÃO DE LATAS</h1>
@@ -286,8 +403,6 @@
   <div id="statusMsg"></div>
 
 <script>
- 
-  
   const API_URL = "https://script.google.com/macros/s/AKfycbwP4kTpSrGJllmlWjQp1YmD1Th5jiw1oUtX5cAJAZj9txy-eNi6_EYyLPG_Q0_coyT9/exec";
   let canCatalog = [];
 
