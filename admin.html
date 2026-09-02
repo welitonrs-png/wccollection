@@ -156,12 +156,14 @@
       <h2>ÁREA RESTRITA</h2>
       <p style="font-size: 0.85rem; color: #a0aec0;">Digite a senha de administrador para acessar o painel:</p>
       <input type="password" id="adminPassInput" placeholder="Sua senha" autofocus />
-      <button onclick="validarSenhaAdmin()">ACESSAR PAINEL</button>
+      <button id="authBtn" onclick="validarSenhaAdmin()">ACESSAR PAINEL</button>
       <div id="authErrorMsg" class="auth-error">Senha incorreta! Tente novamente.</div>
     </div>
   </div>
 
   <script>
+    const API_URL = "https://script.google.com/macros/s/AKfycbwP4kTpSrGJllmlWjQp1YmD1Th5jiw1oUtX5cAJAZj9txy-eNi6_EYyLPG_Q0_coyT9/exec";
+
     function getAdminPass() {
       return sessionStorage.getItem("wccollection_admin_pass") || "";
     }
@@ -173,16 +175,45 @@
       }
     }
 
-    function validarSenhaAdmin() {
+    async function validarSenhaAdmin() {
       const inputVal = document.getElementById("adminPassInput").value.trim();
       const errorMsg = document.getElementById("authErrorMsg");
+      const authBtn = document.getElementById("authBtn");
 
-      if (inputVal !== "") {
-        sessionStorage.setItem("wccollection_admin_pass", inputVal);
-        document.getElementById("adminAuthOverlay").style.display = "none";
-        if (typeof loadCatalog === "function") loadCatalog();
-      } else {
+      if (!inputVal) {
+        errorMsg.innerText = "Por favor, digite a senha.";
         errorMsg.style.display = "block";
+        return;
+      }
+
+      authBtn.disabled = true;
+      authBtn.innerText = "VERIFICANDO...";
+      errorMsg.style.display = "none";
+
+      try {
+        const res = await fetch(API_URL, {
+          method: "POST",
+          body: JSON.stringify({ action: "test_pass", adminPass: inputVal })
+        });
+        const result = await res.json();
+
+        if (result.success) {
+          sessionStorage.setItem("wccollection_admin_pass", inputVal);
+          document.getElementById("adminAuthOverlay").style.display = "none";
+          if (typeof loadCatalog === "function") loadCatalog();
+        } else {
+          errorMsg.innerText = "Senha incorreta! Tente novamente.";
+          errorMsg.style.display = "block";
+          document.getElementById("adminPassInput").value = "";
+          document.getElementById("adminPassInput").focus();
+        }
+      } catch (err) {
+        console.error(err);
+        errorMsg.innerText = "Erro de conexão ao validar senha.";
+        errorMsg.style.display = "block";
+      } finally {
+        authBtn.disabled = false;
+        authBtn.innerText = "ACESSAR PAINEL";
       }
     }
 
@@ -403,7 +434,6 @@
   <div id="statusMsg"></div>
 
 <script>
-  const API_URL = "https://script.google.com/macros/s/AKfycbwP4kTpSrGJllmlWjQp1YmD1Th5jiw1oUtX5cAJAZj9txy-eNi6_EYyLPG_Q0_coyT9/exec";
   let canCatalog = [];
 
   function fixDriveUrl(url) {
@@ -552,7 +582,6 @@
     document.getElementById("setNameContainer").style.display = isChecked ? "flex" : "none";
   }
 
-  /* AUTOPREENCHE LOGO, WALLPAPER, COR E DESCRIÇÃO DA MARCA SE JA CADASTRADOS */
   function autoFillBrandWallpaper() {
     const breweryInput = document.getElementById("Cervejaria");
     const descInput = document.getElementById("brandDesc");
@@ -603,7 +632,6 @@
     }
   }
 
-  /* UPLOAD DE IMAGEM BASE64 -> GOOGLE DRIVE COM SENHA DINÂMICA DA SESSÃO */
   function uploadImage(fileInput, hiddenId, prevId) {
     const file = fileInput.files[0];
     if (!file) return;
@@ -616,7 +644,7 @@
       try {
         const payload = { 
           action: "upload_photo", 
-          adminPass: getAdminPass(), // 🔒 Envia a senha digitada pelo usuário na tela
+          adminPass: getAdminPass(),
           base64: base64Data, 
           fileName: file.name 
         };
@@ -641,7 +669,6 @@
     reader.readAsDataURL(file);
   }
 
-  /* SALVAR/EDITAR COM SENHA DINÂMICA DA SESSÃO */
   async function handleFormSubmit(e) {
     e.preventDefault();
     const btnSave = document.getElementById("btnSave");
@@ -656,7 +683,7 @@
 
     const formData = {
       action: actionType,
-      adminPass: getAdminPass(), // 🔒 Envia a senha digitada pelo usuário na tela
+      adminPass: getAdminPass(),
       _rowNum: rowNum,
       Nome: document.getElementById("Nome").value,
       Cervejaria: document.getElementById("Cervejaria").value,
@@ -703,7 +730,6 @@
     }
   }
 
-  /* EXCLUIR COM SENHA DINÂMICA DA SESSÃO */
   async function deleteCurrentItem() {
     const rowNum = document.getElementById("_rowNum").value;
     if (!rowNum || !confirm("Tem certeza que deseja excluir esta lata permanentemente?")) return;
@@ -711,7 +737,7 @@
     try {
       const payload = { 
         action: "delete", 
-        adminPass: getAdminPass(), // 🔒 Envia a senha digitada pelo usuário na tela
+        adminPass: getAdminPass(),
         _rowNum: rowNum 
       };
       const res = await fetch(API_URL, {
