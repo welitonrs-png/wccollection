@@ -162,8 +162,8 @@
   </div>
 
   <script>
-    // 🔑 DEFINE A SUA SENHA AQUI:
-    const SENHA_ADMIN = "87431285";
+    // 🔑 DEFINE A SUA SENHA AQUI (Mesma senha definida no Code.gs):
+    const SENHA_ADMIN = "12345";
 
     function verificarSessaoAdmin() {
       if (sessionStorage.getItem("wccollection_admin_auth") === "true") {
@@ -603,7 +603,7 @@
     }
   }
 
-  /* UPLOAD DE IMAGEM BASE64 -> GOOGLE DRIVE */
+  /* UPLOAD DE IMAGEM BASE64 -> GOOGLE DRIVE COM SENHA */
   function uploadImage(fileInput, hiddenId, prevId) {
     const file = fileInput.files[0];
     if (!file) return;
@@ -614,7 +614,12 @@
     reader.onload = async (e) => {
       const base64Data = e.target.result;
       try {
-        const payload = { action: "upload_photo", base64: base64Data, fileName: file.name };
+        const payload = { 
+          action: "upload_photo", 
+          adminPass: SENHA_ADMIN,
+          base64: base64Data, 
+          fileName: file.name 
+        };
         const res = await fetch(API_URL, {
           method: "POST",
           body: JSON.stringify(payload)
@@ -626,7 +631,7 @@
           updatePreview(hiddenId, prevId);
           showStatus("Imagem enviada com sucesso!", false);
         } else {
-          showStatus("Falha ao enviar imagem.", true);
+          showStatus(result.error || "Falha ao enviar imagem.", true);
         }
       } catch (err) {
         console.error(err);
@@ -636,6 +641,7 @@
     reader.readAsDataURL(file);
   }
 
+  /* SALVAR/EDITAR COM SENHA */
   async function handleFormSubmit(e) {
     e.preventDefault();
     const btnSave = document.getElementById("btnSave");
@@ -650,6 +656,7 @@
 
     const formData = {
       action: actionType,
+      adminPass: SENHA_ADMIN,
       _rowNum: rowNum,
       Nome: document.getElementById("Nome").value,
       Cervejaria: document.getElementById("Cervejaria").value,
@@ -696,12 +703,17 @@
     }
   }
 
+  /* EXCLUIR COM SENHA */
   async function deleteCurrentItem() {
     const rowNum = document.getElementById("_rowNum").value;
     if (!rowNum || !confirm("Tem certeza que deseja excluir esta lata permanentemente?")) return;
 
     try {
-      const payload = { action: "delete", _rowNum: rowNum };
+      const payload = { 
+        action: "delete", 
+        adminPass: SENHA_ADMIN,
+        _rowNum: rowNum 
+      };
       const res = await fetch(API_URL, {
         method: "POST",
         body: JSON.stringify(payload)
