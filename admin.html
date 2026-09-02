@@ -286,23 +286,7 @@
   <div id="statusMsg"></div>
 
 <script>
-  (function protegerAdmin() {
-    const SENHA_CORRETA = "SuaSenhaAqui123"; // 🔑 Altere para a senha desejada
-
-    // Verifica se já autenticou nesta sessão
-    if (sessionStorage.getItem("admin_autenticado") === "true") {
-      return;
-    }
-
-    let tentativa = prompt("Digite a senha para acessar o painel administrativo:");
-
-    if (tentativa === SENHA_CORRETA) {
-      sessionStorage.setItem("admin_autenticado", "true");
-    } else {
-      alert("Senha incorreta! Acesso negado.");
-      window.location.href = "index.html"; // Redireciona para o catálogo principal
-    }
-  })();
+ 
   
   const API_URL = "https://script.google.com/macros/s/AKfycbwP4kTpSrGJllmlWjQp1YmD1Th5jiw1oUtX5cAJAZj9txy-eNi6_EYyLPG_Q0_coyT9/exec";
   let canCatalog = [];
