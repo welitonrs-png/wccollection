@@ -566,84 +566,39 @@
       border-radius: 8px !important;
     }
 
-    /* ==========================================================================
-       AJUSTES RESPONSIVOS PARA TELAS GRANDES (FULL HD 1080p & 4K 2160p)
-       ========================================================================== */
-
-    /* FULL HD (1920px em diante) */
+    /* AJUSTES RESPONSIVOS FULL HD (1920px+) E 4K (2560px+) */
     @media screen and (min-width: 1920px) {
-      .sidebar-drawer {
-        width: 380px;
-        left: -400px;
-        padding: 40px 24px;
-        gap: 14px;
-      }
+      .sidebar-drawer { width: 380px; left: -400px; padding: 40px 24px; gap: 14px; }
       .main-area.pushed { transform: translateX(380px); }
       .sidebar-logo { height: 75px; margin-bottom: 24px; }
-
-      .cat-btn {
-        font-size: 1.35rem;
-        padding: 18px 24px;
-        border-radius: 16px;
-      }
+      .cat-btn { font-size: 1.35rem; padding: 18px 24px; border-radius: 16px; }
       .brand-btn { font-size: 1.1rem; padding: 12px 18px; }
       .menu-search-box { font-size: 1.1rem; padding: 12px; }
       .vk-key { font-size: 1rem; padding: 12px 0; }
-
       .hero-panel { padding: 24px 40px; gap: 36px; }
       .hero-brand-logo-container { width: 280px; height: 130px; top: 30px; right: 40px; }
-      
       .hero-title { font-size: 3.5rem !important; margin-bottom: 20px !important; }
       .info-label { font-size: 1.1rem; }
       .info-value { font-size: 1.4rem; }
       .hero-brand-desc { font-size: 1.2rem; line-height: 1.5; max-width: 900px; }
-
-      .counter-bar {
-        width: 1480px;
-        height: 40px;
-        gap: 16px;
-      }
+      .counter-bar { width: 1480px; height: 40px; gap: 16px; }
       .sort-dropdown { font-size: 1.3rem; padding: 10px 24px; }
       .card-counter { font-size: 1.3rem; }
-
       .catalog-section { height: 300px; min-height: 300px; }
       .card-row { width: 1480px; gap: 20px; }
-
-      .card {
-        width: 194px !important;
-        min-width: 194px !important;
-        height: 285px !important;
-        border-radius: 14px !important;
-      }
-      .card.card-aspect-sets {
-        width: 350px !important;
-        min-width: 350px !important;
-      }
+      .card { width: 194px !important; min-width: 194px !important; height: 285px !important; border-radius: 14px !important; }
+      .card.card-aspect-sets { width: 350px !important; min-width: 350px !important; }
       .card-top-photo { height: 210px !important; padding: 6px !important; }
-
       .card-bottom-bar { height: 75px !important; padding: 8px 10px !important; }
       .card-bar-title { font-size: 1.1rem !important; margin-top: 2px !important; }
       .card-bar-country { font-size: 0.9rem !important; gap: 6px !important; padding: 3px 8px !important; }
       .card-bar-flag { width: 20px !important; height: 12px !important; }
       .card-bar-vol { font-size: 0.85rem !important; padding: 3px 8px !important; }
-
-      /* MODO MARCA EM FULL HD */
       .catalog-section.brand-mode { height: 620px !important; min-height: 620px !important; }
-      .card-row.brand-mode-grid {
-        grid-template-columns: repeat(9, 150px) !important;
-        grid-template-rows: repeat(3, 220px) !important;
-        gap: 12px !important;
-      }
-      .card-row.brand-mode-grid .card {
-        width: 150px !important;
-        min-width: 150px !important;
-        height: 220px !important;
-      }
+      .card-row.brand-mode-grid { grid-template-columns: repeat(9, 150px) !important; grid-template-rows: repeat(3, 220px) !important; gap: 12px !important; }
+      .card-row.brand-mode-grid .card { width: 150px !important; min-width: 150px !important; height: 220px !important; }
       .card-row.brand-mode-grid .card-top-photo { height: 165px !important; }
-      .brand-overlay-logo {
-        width: 312px !important;
-        height: 220px !important;
-      }
+      .brand-overlay-logo { width: 312px !important; height: 220px !important; }
       .card-row.brand-mode-grid .card-bottom-bar { height: 55px !important; }
       .card-row.brand-mode-grid .card-bar-title { font-size: 0.95rem !important; }
       .card-row.brand-mode-grid .card-bar-country { font-size: 0.8rem !important; }
@@ -651,67 +606,38 @@
       .card-row.brand-mode-grid .card-bar-vol { font-size: 0.75rem !important; }
     }
 
-    /* ULTRA HD / 4K (2560px em diante) */
     @media screen and (min-width: 2560px) {
       .sidebar-drawer { width: 520px; left: -540px; padding: 60px 32px; gap: 20px; }
       .main-area.pushed { transform: translateX(520px); }
       .sidebar-logo { height: 110px; margin-bottom: 32px; }
-
       .cat-btn { font-size: 1.8rem; padding: 24px 32px; border-radius: 20px; }
       .brand-btn { font-size: 1.4rem; padding: 16px 24px; }
       .menu-search-box { font-size: 1.5rem; padding: 16px; }
       .vk-key { font-size: 1.3rem; padding: 16px 0; }
-
       .hero-panel { padding: 40px 60px; gap: 50px; }
       .hero-brand-logo-container { width: 420px; height: 180px; top: 40px; right: 60px; }
-      
       .hero-title { font-size: 5rem !important; margin-bottom: 30px !important; }
       .info-label { font-size: 1.6rem; }
       .info-value { font-size: 2rem; }
       .hero-brand-desc { font-size: 1.7rem; line-height: 1.6; max-width: 1300px; }
-
       .counter-bar { width: 2100px; height: 60px; gap: 24px; }
       .sort-dropdown { font-size: 1.8rem; padding: 14px 32px; }
       .card-counter { font-size: 1.8rem; }
-
       .catalog-section { height: 420px; min-height: 420px; }
       .card-row { width: 2100px; gap: 28px; }
-
-      .card {
-        width: 275px !important;
-        min-width: 275px !important;
-        height: 400px !important;
-        border-radius: 20px !important;
-      }
-      .card.card-aspect-sets {
-        width: 500px !important;
-        min-width: 500px !important;
-      }
+      .card { width: 275px !important; min-width: 275px !important; height: 400px !important; border-radius: 20px !important; }
+      .card.card-aspect-sets { width: 500px !important; min-width: 500px !important; }
       .card-top-photo { height: 295px !important; padding: 10px !important; }
-
       .card-bottom-bar { height: 105px !important; padding: 12px 16px !important; }
       .card-bar-title { font-size: 1.5rem !important; }
       .card-bar-country { font-size: 1.2rem !important; gap: 8px !important; padding: 4px 12px !important; }
       .card-bar-flag { width: 28px !important; height: 18px !important; }
       .card-bar-vol { font-size: 1.1rem !important; padding: 4px 12px !important; }
-
-      /* MODO MARCA EM 4K */
       .catalog-section.brand-mode { height: 900px !important; min-height: 900px !important; }
-      .card-row.brand-mode-grid {
-        grid-template-columns: repeat(9, 210px) !important;
-        grid-template-rows: repeat(3, 310px) !important;
-        gap: 18px !important;
-      }
-      .card-row.brand-mode-grid .card {
-        width: 210px !important;
-        min-width: 210px !important;
-        height: 310px !important;
-      }
+      .card-row.brand-mode-grid { grid-template-columns: repeat(9, 210px) !important; grid-template-rows: repeat(3, 310px) !important; gap: 18px !important; }
+      .card-row.brand-mode-grid .card { width: 210px !important; min-width: 210px !important; height: 310px !important; }
       .card-row.brand-mode-grid .card-top-photo { height: 230px !important; }
-      .brand-overlay-logo {
-        width: 438px !important;
-        height: 310px !important;
-      }
+      .brand-overlay-logo { width: 438px !important; height: 310px !important; }
       .card-row.brand-mode-grid .card-bottom-bar { height: 80px !important; }
       .card-row.brand-mode-grid .card-bar-title { font-size: 1.3rem !important; }
       .card-row.brand-mode-grid .card-bar-country { font-size: 1.1rem !important; }
@@ -1758,7 +1684,7 @@
   }
 
   function confirmExit() {
-    if (typeof PonteAndroid !== "undefined") {
+    if (typeof PonteAndroid !== "undefined" && PonteAndroid.fecharApp) {
       PonteAndroid.fecharApp();
     } else if (window.navigator && window.navigator.app && window.navigator.app.exitApp) {
       window.navigator.app.exitApp();
@@ -1860,16 +1786,18 @@
     };
   }
 
+  /* 🎯 OUVINTE GLOBAL DE NAVEGAÇÃO E TECLA VOLTAR DA SMART TV */
   document.addEventListener("keydown", (e) => {
     const isZoomActive = document.getElementById("zoomModal").classList.contains("active");
     const isExitActive = document.getElementById("exitModal").classList.contains("active");
     const isMenuOpen = document.getElementById("sidebarDrawer").classList.contains("open");
 
+    // Reconhece nativamente todos os códigos para a tecla "Voltar" (Android TV, Tizen, webOS)
+    const isBackKey = (e.key === "Escape" || e.key === "Back" || e.key === "Backspace" || e.keyCode === 4 || e.keyCode === 10009 || e.keyCode === 27);
+
     if (isZoomActive) {
       if (e.key === "Enter" || e.key === " " || e.keyCode === 13) {
-        e.preventDefault();
-        e.stopPropagation();
-        toggleZoomStep();
+        e.preventDefault(); e.stopPropagation(); toggleZoomStep();
       } else if (zoomLevel > 1.0) {
         if (e.key === "ArrowLeft" || e.keyCode === 37) {
           e.preventDefault(); e.stopPropagation(); panX += PAN_STEP; applyZoomTransform();
@@ -1879,7 +1807,7 @@
           e.preventDefault(); e.stopPropagation(); panY += PAN_STEP; applyZoomTransform();
         } else if (e.key === "ArrowDown" || e.keyCode === 40) {
           e.preventDefault(); e.stopPropagation(); panY -= PAN_STEP; applyZoomTransform();
-        } else if (e.key === "Escape" || e.key === "Back" || e.keyCode === 10009 || e.keyCode === 27) {
+        } else if (isBackKey) {
           e.preventDefault(); e.stopPropagation(); closeZoomModal();
         }
       } else {
@@ -1887,40 +1815,35 @@
           e.preventDefault(); e.stopPropagation(); navigateZoom(-1);
         } else if (e.key === "ArrowRight" || e.keyCode === 39) {
           e.preventDefault(); e.stopPropagation(); navigateZoom(1);
-        } else if (e.key === "ArrowUp" || e.key === "ArrowDown" || e.key === "Escape" || e.key === "Back" || e.keyCode === 10009 || e.keyCode === 27) {
-          e.preventDefault(); 
-          e.stopPropagation(); 
-          closeZoomModal();
+        } else if (e.key === "ArrowUp" || e.key === "ArrowDown" || isBackKey) {
+          e.preventDefault(); e.stopPropagation(); closeZoomModal();
         }
       }
     } else if (isExitActive) {
       if (e.key === "ArrowLeft" || e.key === "ArrowRight" || e.keyCode === 37 || e.keyCode === 39) {
-        e.preventDefault();
-        e.stopPropagation();
+        e.preventDefault(); e.stopPropagation();
         const active = document.activeElement;
         const btnNo = document.getElementById("exitBtnNo");
         const btnYes = document.getElementById("exitBtnYes");
         if (active === btnNo) btnYes.focus();
         else btnNo.focus();
-      } else if (e.key === "Escape" || e.key === "Back" || e.keyCode === 10009 || e.keyCode === 27) {
+      } else if (isBackKey) {
         e.preventDefault(); e.stopPropagation(); closeExitModal();
       }
     } else {
-      if (e.key === "Escape" || e.key === "Back" || e.keyCode === 10009 || e.keyCode === 27) {
-        e.preventDefault();
-        e.stopPropagation();
+      if (isBackKey) {
+        e.preventDefault(); e.stopPropagation();
         if (isMenuOpen) {
           closeMenu();
           focusCardSafely(activeLocalIndex);
         } else {
-          openExitModal();
+          openExitModal(); // 🚀 Dispara a abertura da modal de confirmação de saída
         }
       }
 
       const activeElem = document.activeElement;
       if (activeElem && (activeElem.classList.contains("cat-btn") || activeElem.classList.contains("brand-btn")) && (e.key === "ArrowRight" || e.keyCode === 39)) {
-        e.preventDefault();
-        e.stopPropagation();
+        e.preventDefault(); e.stopPropagation();
         focusCardSafely(activeLocalIndex);
       }
     }
