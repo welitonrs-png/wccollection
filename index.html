@@ -1929,11 +1929,11 @@
   }, true);
 
   window.onload = () => {
-    // ⏱️ Exibe o Spinner e o Texto "CARREGANDO CATÁLOGO..." obrigatoriamente após 5 segundos (5000ms)
+    // ⏱️ Exibe o Spinner e o Texto "CARREGANDO CATÁLOGO..." obrigatoriamente após 1 segundos (1000ms)
     setTimeout(() => {
       const extraElem = document.getElementById("loadingExtra");
       if (extraElem) extraElem.classList.add("visible");
-    }, 5000);
+    }, 1000);
 
     fetchCatalogFromSheet();
     setTimeout(hideLoadingScreen, 7000);
