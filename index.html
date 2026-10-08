@@ -439,12 +439,10 @@
       background-color: #F19711 !important;
     }
 
+/* Título e textos internos do card selecionado */
     .card.focused .card-bar-title,
     .card:focus .card-bar-title,
     .card:hover .card-bar-title,
-    .card.focused .card-bar-country,
-    .card:focus .card-bar-country,
-    .card:hover .card-bar-country,
     .card.focused .card-bar-country span,
     .card:focus .card-bar-country span,
     .card:hover .card-bar-country span,
@@ -452,7 +450,16 @@
     .card:focus .card-bar-vol,
     .card:hover .card-bar-vol {
       color: #ffffff !important;
-      background: transparent !important;
+    }
+
+    /* Pílulas de País e Volume com fundo destacado no card selecionado */
+    .card.focused .card-bar-country,
+    .card:focus .card-bar-country,
+    .card:hover .card-bar-country,
+    .card.focused .card-bar-vol,
+    .card:focus .card-bar-vol,
+    .card:hover .card-bar-vol {
+      background: rgba(0, 0, 0, 0.18) !important; /* Cria o tom mais escuro em contraste com o laranja */
     }
 
     /* MODAL DE ZOOM E NAVEGAÇÃO COM WALLPAPER DA MARCA NO FUNDO */
