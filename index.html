@@ -450,11 +450,11 @@
       background: rgba(0, 0, 0, 0.18) !important;
     }
 
-    /* 🏷️ CARDS DE MARCAS (COM LOGO E PAINEL COM DESCRIÇÃO) */
+    /* 🏷️ CARDS DE MARCAS (COM LOGO E SOMENTE NOME DA MARCA) */
     .brand-grid-card {
       width: 172px !important;
       min-width: 172px !important;
-      height: 140px !important;
+      height: 115px !important;
       background: #ffffff !important;
       border-radius: 10px !important;
       display: flex !important;
@@ -470,7 +470,7 @@
 
     .brand-grid-card-logo {
       width: 100% !important;
-      height: 85px !important;
+      height: 82px !important;
       background: #ffffff !important;
       display: flex !important;
       justify-content: center !important;
@@ -486,36 +486,25 @@
 
     .brand-grid-card-info {
       width: 100% !important;
-      height: 55px !important;
+      height: 33px !important;
       background: #1a1f2c !important;
-      padding: 4px 6px !important;
+      padding: 0 6px !important;
       display: flex !important;
-      flex-direction: column !important;
-      justify-content: flex-start !important;
+      align-items: center !important;
+      justify-content: center !important;
       box-sizing: border-box !important;
     }
 
     .brand-grid-card-title {
       font-size: 0.72rem !important;
       font-weight: 700 !important;
-      color: #f39c12 !important;
+      color: #888888 !important;
       white-space: nowrap !important;
       overflow: hidden !important;
       text-overflow: ellipsis !important;
       text-transform: uppercase !important;
-      line-height: 1.1 !important;
-      margin-bottom: 2px !important;
-    }
-
-    .brand-grid-card-desc {
-      font-size: 0.58rem !important;
-      color: #a0aec0 !important;
-      line-height: 1.15 !important;
-      display: -webkit-box !important;
-      -webkit-line-clamp: 2 !important;
-      -webkit-box-orient: vertical !important;
-      overflow: hidden !important;
-      text-transform: none !important;
+      text-align: center !important;
+      line-height: 1 !important;
     }
 
     .brand-grid-card.focused, .brand-grid-card:focus, .brand-grid-card:hover {
@@ -533,10 +522,7 @@
 
     .brand-grid-card.focused .brand-grid-card-title,
     .brand-grid-card:focus .brand-grid-card-title,
-    .brand-grid-card:hover .brand-grid-card-title,
-    .brand-grid-card.focused .brand-grid-card-desc,
-    .brand-grid-card:focus .brand-grid-card-desc,
-    .brand-grid-card:hover .brand-grid-card-desc {
+    .brand-grid-card:hover .brand-grid-card-title {
       color: #ffffff !important;
     }
 
@@ -556,7 +542,7 @@
     .card-row.all-brands-grid {
       display: grid !important;
       grid-template-columns: repeat(5, 172px) !important;
-      grid-auto-rows: 140px !important;
+      grid-auto-rows: 115px !important;
       gap: 14px 16px !important;
       width: fit-content !important;
       position: relative !important;
@@ -718,13 +704,12 @@
       .catalog-section { height: 300px; min-height: 300px; }
       .card-row { width: 1480px; gap: 20px; }
       .card { width: 194px !important; min-width: 194px !important; height: 285px !important; border-radius: 14px !important; }
-      .brand-grid-card { width: 260px !important; min-width: 260px !important; height: 200px !important; border-radius: 16px !important; }
-      .brand-grid-card-logo { height: 120px !important; }
-      .brand-grid-card-info { height: 80px !important; padding: 8px 10px !important; }
-      .brand-grid-card-title { font-size: 1.1rem !important; }
-      .brand-grid-card-desc { font-size: 0.85rem !important; }
+      .brand-grid-card { width: 260px !important; min-width: 260px !important; height: 170px !important; border-radius: 16px !important; }
+      .brand-grid-card-logo { height: 122px !important; }
+      .brand-grid-card-info { height: 48px !important; padding: 0 10px !important; }
+      .brand-grid-card-title { font-size: 1.05rem !important; }
       .catalog-section.all-brands-mode { height: 680px !important; min-height: 680px !important; padding-top: 16px !important; }
-      .card-row.all-brands-grid { grid-template-columns: repeat(5, 260px) !important; grid-auto-rows: 200px !important; gap: 24px !important; padding-top: 8px !important; }
+      .card-row.all-brands-grid { grid-template-columns: repeat(5, 260px) !important; grid-auto-rows: 170px !important; gap: 24px !important; padding-top: 8px !important; }
       .card.card-aspect-sets { width: 350px !important; min-width: 350px !important; }
       .card-top-photo { height: 210px !important; padding: 6px !important; }
       .card-bottom-bar { height: 75px !important; padding: 8px 10px !important; }
@@ -764,13 +749,12 @@
       .catalog-section { height: 420px; min-height: 420px; }
       .card-row { width: 2100px; gap: 28px; }
       .card { width: 275px !important; min-width: 275px !important; height: 400px !important; border-radius: 20px !important; }
-      .brand-grid-card { width: 380px !important; min-width: 380px !important; height: 280px !important; border-radius: 24px !important; }
-      .brand-grid-card-logo { height: 170px !important; }
-      .brand-grid-card-info { height: 110px !important; padding: 12px 16px !important; }
-      .brand-grid-card-title { font-size: 1.5rem !important; }
-      .brand-grid-card-desc { font-size: 1.1rem !important; }
+      .brand-grid-card { width: 380px !important; min-width: 380px !important; height: 240px !important; border-radius: 24px !important; }
+      .brand-grid-card-logo { height: 172px !important; }
+      .brand-grid-card-info { height: 68px !important; padding: 0 16px !important; }
+      .brand-grid-card-title { font-size: 1.4rem !important; }
       .catalog-section.all-brands-mode { height: 960px !important; min-height: 960px !important; padding-top: 24px !important; }
-      .card-row.all-brands-grid { grid-template-columns: repeat(5, 380px) !important; grid-auto-rows: 280px !important; gap: 36px !important; padding-top: 12px !important; }
+      .card-row.all-brands-grid { grid-template-columns: repeat(5, 380px) !important; grid-auto-rows: 240px !important; gap: 36px !important; padding-top: 12px !important; }
       .card.card-aspect-sets { width: 500px !important; min-width: 500px !important; }
       .card-top-photo { height: 295px !important; padding: 10px !important; }
       .card-bottom-bar { height: 105px !important; padding: 12px 16px !important; }
@@ -1435,7 +1419,7 @@
     }
   }
 
-  /* 🏢 RENDERIZA OS CARDS DE MARCAS (5 HORIZONTAIS COM LOGO E DESCRIÇÃO) */
+  /* 🏢 RENDERIZA OS CARDS DE MARCAS (5 HORIZONTAIS COM LOGO E SOMENTE NOME DA MARCA) */
   function renderBrandCardsGrid() {
     clearAllCardFocus();
     const mainArea = document.getElementById("mainArea");
@@ -1465,7 +1449,6 @@
       const queryLower = String(brandName).toLowerCase().trim();
       
       let logoUrl = "";
-      let brandDesc = "";
 
       const matchCan = canCatalog.find(c => {
         const b = String(c.brewery || c.Cervejaria || "").toLowerCase().trim();
@@ -1477,15 +1460,6 @@
       } else {
         const canCover = canCatalog.find(c => String(c.brewery || c.Cervejaria || "").toLowerCase().trim() === queryLower);
         if (canCover) logoUrl = canCover.ImgCover || canCover.cover || canCover.ImgFront;
-      }
-
-      const matchDesc = canCatalog.find(c => {
-        const b = String(c.brewery || c.Cervejaria || "").toLowerCase().trim();
-        const desc = c.brandDesc || c.descricao || c.DESCRICAO;
-        return b === queryLower && desc && String(desc).trim() !== "";
-      });
-      if (matchDesc) {
-        brandDesc = matchDesc.brandDesc || matchDesc.descricao || matchDesc.DESCRICAO;
       }
 
       const card = document.createElement("div");
@@ -1563,7 +1537,6 @@
         </div>
         <div class="brand-grid-card-info">
           <div class="brand-grid-card-title">${brandFormatted}</div>
-          <div class="brand-grid-card-desc">${brandDesc ? brandDesc : ''}</div>
         </div>
       `;
 
