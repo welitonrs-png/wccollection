@@ -111,6 +111,26 @@
     }
     .main-area.pushed { transform: translateX(260px); }
 
+    /* WALLPAPER DE FUNDO RESTAURADO */
+    .hero-brand-wallpaper {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      opacity: 0;
+      transition: opacity 0.4s ease-in-out;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .hero-brand-wallpaper.active {
+      opacity: 0.18;
+    }
+
     /* ÁREA SUPERIOR */
     .hero-panel { 
       flex: 1; 
@@ -123,10 +143,6 @@
       align-items: center; 
       position: relative;
       overflow: hidden;
-    }
-
-    .hero-brand-wallpaper {
-      display: none !important;
     }
 
     .hero-brand-logo-container {
@@ -1427,12 +1443,19 @@
     }
   }
 
-  /* 🏢 RENDERIZA OS CARDS DE MARCAS (3 LINHAS COM CONTAGEM TOTAL SIMPLES) */
+  /* 🏢 RENDERIZA OS CARDS DE MARCAS (OCULTA WALLPAPER APENAS NESTE MODO) */
   function renderBrandCardsGrid() {
     clearAllCardFocus();
     const mainArea = document.getElementById("mainArea");
     const catalogSection = document.getElementById("catalogSection");
     const row = document.getElementById("cardRow");
+    const wallpaperElem = document.getElementById("heroBrandWallpaper");
+
+    if (wallpaperElem) {
+      wallpaperElem.style.backgroundImage = "none";
+      wallpaperElem.classList.remove("active");
+    }
+
     if (!row) return;
     row.innerHTML = "";
 
@@ -1632,32 +1655,42 @@
     updateBrandLogoHeader(can.brewery || can.Cervejaria, can);
   }
 
+  /* RESTAURAÇÃO DO WALLPAPER DA MARCA NO FUNDO DA TELA */
   function updateBrandLogoHeader(brandQuery, currentCan) {
     const logoContainer = document.getElementById("heroBrandLogo");
     const wallpaperElem = document.getElementById("heroBrandWallpaper");
     const gridOverlayLogo = document.querySelector(".brand-overlay-logo");
 
-    if (wallpaperElem) {
-      wallpaperElem.style.backgroundImage = "none";
-      wallpaperElem.classList.remove("active");
+    if (isAllBrandsGridMode) {
+      if (wallpaperElem) {
+        wallpaperElem.style.backgroundImage = "none";
+        wallpaperElem.classList.remove("active");
+      }
+      return;
     }
 
     if (!brandQuery || String(brandQuery).trim() === "") {
       if (logoContainer) logoContainer.innerHTML = "";
       if (gridOverlayLogo) gridOverlayLogo.innerHTML = "";
+      if (wallpaperElem) {
+        wallpaperElem.style.backgroundImage = "none";
+        wallpaperElem.classList.remove("active");
+      }
       return;
     }
 
     let logoUrl = currentCan ? (currentCan.brandLogo || currentCan.BRAND_LOGO) : null;
-    
-    if (!logoUrl) {
+    let wallpaperUrl = currentCan ? (currentCan.wallpaper || currentCan.WALLPAPER || currentCan.brandWallpaper) : null;
+
+    if (!logoUrl || !wallpaperUrl) {
       const queryLower = String(brandQuery).toLowerCase().trim();
       const matchCan = canCatalog.find(c => {
         const b = String(c.brewery || c.Cervejaria || "").toLowerCase().trim();
-        return (b === queryLower || b.includes(queryLower)) && (c.brandLogo || c.BRAND_LOGO);
+        return (b === queryLower || b.includes(queryLower)) && (c.brandLogo || c.BRAND_LOGO || c.wallpaper || c.WALLPAPER);
       });
       if (matchCan) {
-        logoUrl = matchCan.brandLogo || matchCan.BRAND_LOGO;
+        if (!logoUrl) logoUrl = matchCan.brandLogo || matchCan.BRAND_LOGO;
+        if (!wallpaperUrl) wallpaperUrl = matchCan.wallpaper || matchCan.WALLPAPER || matchCan.brandWallpaper;
       }
     }
 
@@ -1674,6 +1707,17 @@
         gridOverlayLogo.innerHTML = `<img src="${getOptimizedImageUrl(logoUrl, 400)}" alt="Logo">`;
       } else {
         gridOverlayLogo.innerHTML = "";
+      }
+    }
+
+    if (wallpaperElem) {
+      const bgImg = wallpaperUrl || logoUrl || (currentCan ? (currentCan.ImgFront || currentCan.front || currentCan.ImgCover) : null);
+      if (bgImg && String(bgImg).trim() !== "") {
+        wallpaperElem.style.backgroundImage = `url('${getOptimizedImageUrl(bgImg, 1200)}')`;
+        wallpaperElem.classList.add("active");
+      } else {
+        wallpaperElem.style.backgroundImage = "none";
+        wallpaperElem.classList.remove("active");
       }
     }
   }
