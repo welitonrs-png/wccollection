@@ -26,7 +26,6 @@
 
     .loading-logo { width: 360px; max-width: 80vw; height: auto; object-fit: contain; }
 
-    /* MENSAGEM E SPINNER EXIBIDOS DE IMEDIATO */
     .loading-extra-content {
       display: flex; flex-direction: column; align-items: center; gap: 15px;
       opacity: 1; pointer-events: auto;
@@ -239,7 +238,7 @@
       text-transform: none;
     }
 
-    /* ALINHAMENTO DA BARRA DE CONTADOR/ORDENAÇÃO COM OS CARDS NA HOME */
+    /* BARRA DE CONTADOR/ORDENAÇÃO */
     .counter-bar { 
       display: flex; 
       justify-content: flex-end; 
@@ -247,9 +246,9 @@
       padding: 0; 
       gap: 8px; 
       height: 24px; 
-      width: 926px; /* Mesma largura exata do container de cards (.card-row) */
+      width: 926px; 
       max-width: 100%;
-      margin: 0 auto; /* Centraliza junto com o catálogo */
+      margin: 0 auto;
     }
 
     .sort-dropdown {
@@ -344,7 +343,6 @@
       object-fit: contain !important;
     }
 
-    /* ESTILO DA OPÇÃO 2: PILL / TAG FLUTUANTE */
     .card-bottom-bar {
       width: 100% !important;
       height: 48px !important;
@@ -439,7 +437,7 @@
       background-color: #F19711 !important;
     }
 
-    /* 🎯 AJUSTE DE CONTRASTE: TÍTULO E TEXTOS NO CARD SELECIONADO */
+    /* CONTRASTE NO CARD SELECIONADO */
     .card.focused .card-bar-title,
     .card:focus .card-bar-title,
     .card:hover .card-bar-title,
@@ -452,7 +450,6 @@
       color: #ffffff !important;
     }
 
-    /* 🎯 AJUSTE DE CONTRASTE: PÍLULAS DE PAÍS E VOLUME COM DESTACADO EM TOM ESCURO NO CARD SELECIONADO */
     .card.focused .card-bar-country,
     .card:focus .card-bar-country,
     .card:hover .card-bar-country,
@@ -462,21 +459,21 @@
       background: rgba(0, 0, 0, 0.18) !important;
     }
 
-    /* CARDS DE NAVEGAÇÃO DE MARCA HORIZONTAIS (5 POR LINHA) */
+    /* 🏷️ CARDS DE NAVEGAÇÃO DE MARCAS HORIZONTAIS (SOMENTE LOGO, 5 POR LINHA) */
     .brand-grid-card {
       width: 172px !important;
       min-width: 172px !important;
-      height: 110px !important;
+      height: 105px !important;
       background: #ffffff !important;
-      border-radius: 12px !important;
+      border-radius: 10px !important;
       display: flex !important;
       justify-content: center !important;
       align-items: center !important;
-      padding: 12px !important;
+      padding: 10px !important;
       cursor: pointer !important;
       border: 3px solid transparent !important;
       outline: none !important;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3) !important;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3) !important;
       transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease !important;
       box-sizing: border-box !important;
     }
@@ -490,11 +487,11 @@
     .brand-grid-card.focused, .brand-grid-card:focus, .brand-grid-card:hover {
       border-color: #f39c12 !important;
       transform: scale(1.05) !important;
-      box-shadow: 0 0 22px rgba(243, 156, 18, 0.8) !important;
+      box-shadow: 0 0 20px rgba(243, 156, 18, 0.7) !important;
       z-index: 10 !important;
     }
 
-    /* MODO DE GRID DE MARCAS (5 CARDS HORIZONTAIS POR LINHA) */
+    /* MODO DE GRID DE MARCAS (5 POR LINHA) */
     .catalog-section.all-brands-mode {
       height: 480px !important;
       min-height: 480px !important;
@@ -504,15 +501,15 @@
     .card-row.all-brands-grid {
       display: grid !important;
       grid-template-columns: repeat(5, 172px) !important;
-      grid-auto-rows: 110px !important;
-      gap: 16px 16px !important;
+      grid-auto-rows: 105px !important;
+      gap: 14px 16px !important;
       width: fit-content !important;
       position: relative !important;
       justify-content: center !important;
       margin: 0 auto !important;
     }
 
-    /* MODAL DE ZOOM E NAVEGAÇÃO COM WALLPAPER DA MARCA NO FUNDO */
+    /* MODAL DE ZOOM */
     .zoom-modal { 
       position: fixed; 
       top: 0; 
@@ -544,7 +541,7 @@
       filter: drop-shadow(0 10px 25px rgba(0, 0, 0, 0.8));
     }
 
-    /* MODAL VISUAL DE SAÍDA NATIVO */
+    /* MODAL DE SAÍDA */
     .exit-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); z-index: 4000; display: none; justify-content: center; align-items: center; }
     .exit-modal.active { display: flex; }
     .exit-box { background: #161b26; border: 2px solid #333d52; padding: 30px 40px; border-radius: 12px; display: flex; flex-direction: column; align-items: center; gap: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
@@ -553,7 +550,7 @@
     .exit-btn { padding: 10px 24px; border-radius: 8px; font-weight: bold; font-size: 1rem; border: none; cursor: pointer; text-transform: uppercase; background: #2a3447; color: #a0aec0; transition: all 0.15s ease; }
     .exit-btn:focus, .exit-btn:hover { background: #ffffff; color: #1a1f2c; box-shadow: 0 0 15px rgba(255,255,255,0.3); outline: none; }
 
-    /* MODO ESPECIAL DE MARCA / PESQUISA NO INDEX */
+    /* MODO ESPECIAL DE MARCA / PESQUISA */
     .main-area.brand-mode #heroPanel {
       display: none !important;
     }
@@ -647,7 +644,7 @@
       border-radius: 8px !important;
     }
 
-    /* AJUSTES RESPONSIVOS FULL HD (1920px+) E 4K (2560px+) */
+    /* RESPONSIVIDADE FULL HD (1280px+) E 4K (2560px+) */
     @media screen and (min-width: 1280px) {
       .sidebar-drawer { width: 380px; left: -400px; padding: 40px 24px; gap: 14px; }
       .main-area.pushed { transform: translateX(380px); }
@@ -860,7 +857,6 @@
 
   const vkKeys = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','1','2','3','4','5','6','7','8','9','0','ESPAÇO','DEL','LIMPAR'];
 
-  /* FUNÇÃO PARA COMUNICAÇÃO COM O ANDROID TV (HOMESCREEN CHANNELS) */
   function notificarHomeTV(can) {
     if (!can) return;
     if (typeof PonteAndroid !== "undefined" && PonteAndroid.atualizarUltimaLata) {
@@ -1370,7 +1366,7 @@
     }
   }
 
-  /* 🏢 RENDERIZA A GRID DE CARDS HORIZONTAIS (5 POR LINHA, SOMENTE LOGO) */
+  /* 🏢 RENDERIZA OS CARDS DE MARCAS (5 HORIZONTAIS POR LINHA, SOMENTE LOGO) */
   function renderBrandCardsGrid() {
     clearAllCardFocus();
     const catalogSection = document.getElementById("catalogSection");
@@ -1836,7 +1832,6 @@
     }
   }
 
-  /* 🖼️ ABRE O LIGHTBOX APLICANDO O WALLPAPER DA MARCA NO FUNDO */
   function openZoomModal(index) {
     if (!zoomGallery || zoomGallery.length === 0) return;
     currentZoomIndex = index;
@@ -2022,7 +2017,6 @@
     }
   }
 
-  /* NAVEGAÇÃO DO DROPDOWN DE ORDENAÇÃO */
   const sortSelectElem = document.getElementById("sortSelect");
   if (sortSelectElem) {
     sortSelectElem.onkeydown = (e) => {
@@ -2039,13 +2033,11 @@
     };
   }
 
-  /* 🎯 OUVINTE GLOBAL DE NAVEGAÇÃO E TECLA VOLTAR DA SMART TV */
   document.addEventListener("keydown", (e) => {
     const isZoomActive = document.getElementById("zoomModal").classList.contains("active");
     const isExitActive = document.getElementById("exitModal").classList.contains("active");
     const isMenuOpen = document.getElementById("sidebarDrawer").classList.contains("open");
 
-    // Reconhece nativamente todos os códigos para a tecla "Voltar" (Android TV, Tizen, webOS)
     const isBackKey = (e.key === "Escape" || e.key === "Back" || e.key === "Backspace" || e.keyCode === 4 || e.keyCode === 10009 || e.keyCode === 27);
 
     if (isZoomActive) {
@@ -2109,5 +2101,3 @@
   </script>
 </body>
 </html>
-
-The brand cards are now horizontally oriented, contain only the brand logo, and display in a 5-column grid layout when clicking "TODAS AS MARCAS".
