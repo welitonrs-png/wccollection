@@ -274,6 +274,7 @@
       letter-spacing: 1px;
       line-height: 1.2;
       display: inline-block;
+      text-transform: uppercase;
     }
 
     /* SEÇÃO INFERIOR DO CATÁLOGO */
@@ -1421,7 +1422,7 @@
     }
   }
 
-  /* 🏢 RENDERIZA OS CARDS DE MARCAS (3 LINHAS DE 5 COLUNAS COM NAVEGAÇÃO DE PÁGINAS) */
+  /* 🏢 RENDERIZA OS CARDS DE MARCAS (3 LINHAS COM CONTAGEM TOTAL SIMPLES) */
   function renderBrandCardsGrid() {
     clearAllCardFocus();
     const mainArea = document.getElementById("mainArea");
@@ -1448,11 +1449,10 @@
     const startIndex = currentPage * brandsPerPage;
     const pageBrands = uniqueBrands.slice(startIndex, startIndex + brandsPerPage);
 
+    // 🎯 EXIBE APENAS O TOTAL DE MARCAS ENCONTRADAS
     const counterElem = document.getElementById("cardCounter");
     if (counterElem) {
-      const currentStart = uniqueBrands.length > 0 ? startIndex + 1 : 0;
-      const currentEnd = Math.min(startIndex + brandsPerPage, uniqueBrands.length);
-      counterElem.innerText = `MARCAS: ${currentStart}-${currentEnd} / ${uniqueBrands.length}`;
+      counterElem.innerText = `Total de marcas: ${uniqueBrands.length}`;
     }
 
     pageBrands.forEach((brandName, localIndex) => {
