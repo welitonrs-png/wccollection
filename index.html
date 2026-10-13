@@ -111,7 +111,7 @@
     }
     .main-area.pushed { transform: translateX(260px); }
 
-    /* WALLPAPER DE FUNDO RESTAURADO */
+    /* WALLPAPER DE FUNDO DA TELA PRINCIPAL */
     .hero-brand-wallpaper {
       position: absolute;
       top: 0;
@@ -574,7 +574,7 @@
       padding-top: 6px !important;
     }
 
-    /* MODAL DE ZOOM */
+    /* MODAL DE ZOOM (LIGHTBOX COM WALLPAPER) */
     .zoom-modal { 
       position: fixed; 
       top: 0; 
@@ -582,6 +582,9 @@
       width: 100vw; 
       height: 100vh; 
       background-color: rgba(10, 12, 16, 0.95); 
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
       z-index: 3000; 
       display: none; 
       justify-content: center; 
@@ -589,8 +592,23 @@
       padding: 16px; 
       overflow: hidden; 
     }
+
+    .zoom-modal::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(10, 12, 16, 0.82);
+      z-index: 1;
+    }
+
     .zoom-modal.active { display: flex; }
+
     .zoom-modal img { 
+      position: relative;
+      z-index: 2;
       max-width: 85vw; 
       max-height: 85vh; 
       object-fit: contain; 
@@ -1655,7 +1673,7 @@
     updateBrandLogoHeader(can.brewery || can.Cervejaria, can);
   }
 
-  /* RESTAURAÇÃO DO WALLPAPER DA MARCA NO FUNDO DA TELA */
+  /* RESTAURAÇÃO DO WALLPAPER DA MARCA NO FUNDO DA TELA E NO LIGHTBOX */
   function updateBrandLogoHeader(brandQuery, currentCan) {
     const logoContainer = document.getElementById("heroBrandLogo");
     const wallpaperElem = document.getElementById("heroBrandWallpaper");
@@ -1944,6 +1962,7 @@
     }
   }
 
+  /* 🔎 MODAL DE ZOOM COM SUPORTE AO WALLPAPER DE FUNDO NO LIGHTBOX */
   function openZoomModal(index) {
     if (!zoomGallery || zoomGallery.length === 0) return;
     currentZoomIndex = index;
@@ -1957,7 +1976,28 @@
     }
 
     if (modalElem) {
-      modalElem.style.backgroundImage = "none";
+      const globalIndex = currentPage * cardsPerPage + activeLocalIndex;
+      const currentCan = currentFiltered[globalIndex];
+
+      let wallpaperUrl = currentCan ? (currentCan.wallpaper || currentCan.WALLPAPER || currentCan.brandWallpaper || currentCan.brandLogo || currentCan.BRAND_LOGO) : null;
+
+      if (!wallpaperUrl && currentCan && (currentCan.brewery || currentCan.Cervejaria)) {
+        const brandKey = String(currentCan.brewery || currentCan.Cervejaria).toLowerCase().trim();
+        const parentCan = canCatalog.find(c => {
+          const b = String(c.brewery || c.Cervejaria || "").toLowerCase().trim();
+          return b === brandKey && (c.wallpaper || c.WALLPAPER || c.brandWallpaper || c.brandLogo || c.BRAND_LOGO);
+        });
+        if (parentCan) {
+          wallpaperUrl = parentCan.wallpaper || parentCan.WALLPAPER || parentCan.brandWallpaper || parentCan.brandLogo || parentCan.BRAND_LOGO;
+        }
+      }
+
+      if (wallpaperUrl && String(wallpaperUrl).trim() !== "") {
+        modalElem.style.backgroundImage = `url('${getOptimizedImageUrl(wallpaperUrl, 1200)}')`;
+      } else {
+        modalElem.style.backgroundImage = "none";
+      }
+
       modalElem.classList.add("active");
     }
   }
