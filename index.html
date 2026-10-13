@@ -450,20 +450,20 @@
       background: rgba(0, 0, 0, 0.18) !important;
     }
 
-    /* 🏷️ CARDS DE MARCAS (COM LOGO E SOMENTE NOME DA MARCA) */
+    /* 🏷️ CARDS DE MARCAS (PADRONIZADO COM O MESMO FOCO/BORDA DOS CARDS NORMAIS) */
     .brand-grid-card {
       width: 172px !important;
       min-width: 172px !important;
       height: 115px !important;
       background: #ffffff !important;
-      border-radius: 7px !important;
+      border-radius: 10px !important;
       display: flex !important;
       flex-direction: column !important;
       overflow: hidden !important;
       cursor: pointer !important;
       border: 2px solid transparent !important;
       outline: none !important;
-
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3) !important;
       box-sizing: border-box !important;
     }
 
@@ -507,8 +507,11 @@
     }
 
     .brand-grid-card.focused, .brand-grid-card:focus, .brand-grid-card:hover {
-      border-color: #f39c12 !important;
-  
+      border: 2px solid transparent !important;
+      background-image: linear-gradient(#ffffff, #ffffff), 
+                        linear-gradient(135deg, #ffe066, #f39c12, #ff5500) !important;
+      background-origin: border-box !important;
+      background-clip: content-box, border-box !important;
       z-index: 10 !important;
     }
 
@@ -1417,7 +1420,7 @@
     }
   }
 
-  /* 🏢 RENDERIZA OS CARDS DE MARCAS (5 HORIZONTAIS COM LOGO E SOMENTE NOME DA MARCA) */
+  /* 🏢 RENDERIZA OS CARDS DE MARCAS (PADRONIZADO COM O DESIGN DOS CARDS NORMAIS) */
   function renderBrandCardsGrid() {
     clearAllCardFocus();
     const mainArea = document.getElementById("mainArea");
