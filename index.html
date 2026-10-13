@@ -217,7 +217,7 @@
       text-transform: none;
     }
 
-    /* BARRA DE CONTADOR/ORDENAÇÃO (CORRIGIDO CORTE INFERIOR) */
+    /* BARRA DE CONTADOR/ORDENAÇÃO */
     .counter-bar { 
       display: flex; 
       justify-content: flex-end; 
@@ -450,7 +450,7 @@
       background: rgba(0, 0, 0, 0.18) !important;
     }
 
-    /* 🏷️ CARDS DE MARCAS (FORMATO HORIZONTAL) */
+    /* 🏷️ CARDS DE MARCAS (FORMATO HORIZONTAL E LOGO REDUZIDA EM ~30%) */
     .brand-grid-card {
       width: 172px !important;
       min-width: 172px !important;
@@ -470,8 +470,8 @@
     }
 
     .brand-grid-card img {
-      max-width: 100% !important;
-      max-height: 100% !important;
+      max-width: 70% !important;
+      max-height: 70% !important;
       object-fit: contain !important;
     }
 
@@ -1369,7 +1369,7 @@
     }
   }
 
-  /* 🏢 RENDERIZA OS CARDS DE MARCAS (5 HORIZONTAIS POR LINHA, SOMENTE LOGO) */
+  /* 🏢 RENDERIZA OS CARDS DE MARCAS (5 HORIZONTAIS POR LINHA, SOMENTE LOGO REDUZIDA) */
   function renderBrandCardsGrid() {
     clearAllCardFocus();
     const mainArea = document.getElementById("mainArea");
