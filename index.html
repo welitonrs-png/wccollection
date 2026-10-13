@@ -439,7 +439,7 @@
       background-color: #F19711 !important;
     }
 
-/* Título e textos internos do card selecionado */
+    /* 🎯 AJUSTE DE CONTRASTE: TÍTULO E TEXTOS NO CARD SELECIONADO */
     .card.focused .card-bar-title,
     .card:focus .card-bar-title,
     .card:hover .card-bar-title,
@@ -452,14 +452,59 @@
       color: #ffffff !important;
     }
 
-    /* Pílulas de País e Volume com fundo destacado no card selecionado */
+    /* 🎯 AJUSTE DE CONTRASTE: PÍLULAS DE PAÍS E VOLUME COM DESTACADO EM TOM ESCURO NO CARD SELECIONADO */
     .card.focused .card-bar-country,
     .card:focus .card-bar-country,
     .card:hover .card-bar-country,
     .card.focused .card-bar-vol,
     .card:focus .card-bar-vol,
     .card:hover .card-bar-vol {
-      background: rgba(0, 0, 0, 0.05) !important; /* Cria o tom mais escuro em contraste com o laranja */
+      background: rgba(0, 0, 0, 0.18) !important;
+    }
+
+    /* CARDS DE NAVEGAÇÃO DE MARCA (GRID "TODAS AS MARCAS") */
+    .brand-grid-card {
+      width: 122px !important;
+      min-width: 122px !important;
+      height: 185px !important;
+      background: #ffffff !important;
+      border-radius: 10px !important;
+      display: flex !important;
+      flex-direction: column !important;
+      justify-content: center !important;
+      align-items: center !important;
+      padding: 12px !important;
+      cursor: pointer !important;
+      border: 2px solid transparent !important;
+      outline: none !important;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3) !important;
+      transition: transform 0.15s ease, border-color 0.15s ease !important;
+    }
+
+    .brand-grid-card img {
+      max-width: 100% !important;
+      max-height: 80% !important;
+      object-fit: contain !important;
+    }
+
+    .brand-grid-card .brand-card-name {
+      font-size: 0.75rem !important;
+      font-weight: 800 !important;
+      color: #1a1f2c !important;
+      text-transform: uppercase !important;
+      text-align: center !important;
+      margin-top: 8px !important;
+      white-space: nowrap !important;
+      overflow: hidden !important;
+      text-overflow: ellipsis !important;
+      width: 100% !important;
+    }
+
+    .brand-grid-card.focused, .brand-grid-card:focus, .brand-grid-card:hover {
+      border: 2px solid #f39c12 !important;
+      transform: scale(1.03) !important;
+      box-shadow: 0 0 20px rgba(243, 156, 18, 0.6) !important;
+      z-index: 10 !important;
     }
 
     /* MODAL DE ZOOM E NAVEGAÇÃO COM WALLPAPER DA MARCA NO FUNDO */
@@ -527,7 +572,8 @@
       position: relative !important;
     }
 
-    .card-row.brand-mode-grid .card {
+    .card-row.brand-mode-grid .card,
+    .card-row.brand-mode-grid .brand-grid-card {
       width: 95px !important;
       min-width: 95px !important;
       height: 141px !important;
@@ -538,11 +584,13 @@
       height: 106px !important;
     }
 
-    .card-row.brand-mode-grid .card:nth-child(-n+7) {
+    .card-row.brand-mode-grid .card:nth-child(-n+7),
+    .card-row.brand-mode-grid .brand-grid-card:nth-child(-n+7) {
       grid-row: 1;
     }
 
-    .card-row.brand-mode-grid .card:nth-child(n+8) {
+    .card-row.brand-mode-grid .card:nth-child(n+8),
+    .card-row.brand-mode-grid .brand-grid-card:nth-child(n+8) {
       grid-row: auto;
     }
 
@@ -617,7 +665,7 @@
       .card-counter { font-size: 1.3rem; }
       .catalog-section { height: 300px; min-height: 300px; }
       .card-row { width: 1480px; gap: 20px; }
-      .card { width: 194px !important; min-width: 194px !important; height: 285px !important; border-radius: 14px !important; }
+      .card, .brand-grid-card { width: 194px !important; min-width: 194px !important; height: 285px !important; border-radius: 14px !important; }
       .card.card-aspect-sets { width: 350px !important; min-width: 350px !important; }
       .card-top-photo { height: 210px !important; padding: 6px !important; }
       .card-bottom-bar { height: 75px !important; padding: 8px 10px !important; }
@@ -627,7 +675,7 @@
       .card-bar-vol { font-size: 0.85rem !important; padding: 3px 8px !important; }
       .catalog-section.brand-mode { height: 620px !important; min-height: 620px !important; }
       .card-row.brand-mode-grid { grid-template-columns: repeat(9, 150px) !important; grid-template-rows: repeat(3, 220px) !important; gap: 12px !important; }
-      .card-row.brand-mode-grid .card { width: 150px !important; min-width: 150px !important; height: 220px !important; }
+      .card-row.brand-mode-grid .card, .card-row.brand-mode-grid .brand-grid-card { width: 150px !important; min-width: 150px !important; height: 220px !important; }
       .card-row.brand-mode-grid .card-top-photo { height: 165px !important; }
       .brand-overlay-logo { width: 312px !important; height: 220px !important; }
       .card-row.brand-mode-grid .card-bottom-bar { height: 55px !important; }
@@ -656,7 +704,7 @@
       .card-counter { font-size: 1.8rem; }
       .catalog-section { height: 420px; min-height: 420px; }
       .card-row { width: 2100px; gap: 28px; }
-      .card { width: 275px !important; min-width: 275px !important; height: 400px !important; border-radius: 20px !important; }
+      .card, .brand-grid-card { width: 275px !important; min-width: 275px !important; height: 400px !important; border-radius: 20px !important; }
       .card.card-aspect-sets { width: 500px !important; min-width: 500px !important; }
       .card-top-photo { height: 295px !important; padding: 10px !important; }
       .card-bottom-bar { height: 105px !important; padding: 12px 16px !important; }
@@ -666,7 +714,7 @@
       .card-bar-vol { font-size: 1.1rem !important; padding: 4px 12px !important; }
       .catalog-section.brand-mode { height: 900px !important; min-height: 900px !important; }
       .card-row.brand-mode-grid { grid-template-columns: repeat(9, 210px) !important; grid-template-rows: repeat(3, 310px) !important; gap: 18px !important; }
-      .card-row.brand-mode-grid .card { width: 210px !important; min-width: 210px !important; height: 310px !important; }
+      .card-row.brand-mode-grid .card, .card-row.brand-mode-grid .brand-grid-card { width: 210px !important; min-width: 210px !important; height: 310px !important; }
       .card-row.brand-mode-grid .card-top-photo { height: 230px !important; }
       .brand-overlay-logo { width: 438px !important; height: 310px !important; }
       .card-row.brand-mode-grid .card-bottom-bar { height: 80px !important; }
@@ -794,6 +842,7 @@
   let activeLocalIndex = 0;
   let lastSelectedMenuId = 'menuBtnHome'; 
   let lastSelectedBrandElem = null;
+  let isAllBrandsGridMode = false;
 
   let registeredBrands = [];
 
@@ -994,6 +1043,7 @@
   function switchTab(tabName) {
     currentTab = tabName;
     lastSelectedBrandElem = null;
+    isAllBrandsGridMode = false;
 
     setBrandModeLayout(false);
 
@@ -1089,7 +1139,7 @@
   }
 
   function clearAllCardFocus() {
-    document.querySelectorAll(".card").forEach(c => c.classList.remove("focused"));
+    document.querySelectorAll(".card, .brand-grid-card").forEach(c => c.classList.remove("focused"));
     document.querySelectorAll(".vk-key").forEach(k => k.classList.remove("focused"));
 
     const sortSelect = document.getElementById("sortSelect");
@@ -1100,7 +1150,7 @@
     closeMenu();
     
     setTimeout(() => {
-      const cards = document.querySelectorAll(".card");
+      const cards = document.querySelectorAll(".card, .brand-grid-card");
       if (cards.length > 0) {
         const finalIdx = Math.min(Math.max(0, targetIndex), cards.length - 1);
         clearAllCardFocus();
@@ -1163,6 +1213,7 @@
   function toggleSearchInline() {
     lastSelectedMenuId = 'menuBtnSearch';
     lastSelectedBrandElem = null;
+    isAllBrandsGridMode = false;
     document.getElementById("brandInlineList").classList.remove("active");
     const container = document.getElementById("searchInlineContainer");
     container.classList.toggle("active");
@@ -1220,6 +1271,7 @@
     else if (key === 'DEL') input.value = input.value.slice(0, -1);
     else if (key === 'LIMPAR') input.value = '';
     else input.value += key;
+    isAllBrandsGridMode = false;
     filterCatalog(input.value);
   }
 
@@ -1241,7 +1293,8 @@
       e.stopPropagation();
       lastSelectedMenuId = 'menuBtnBrands';
       lastSelectedBrandElem = allBtn;
-      filterCatalog(""); 
+      isAllBrandsGridMode = true; // Ativa exibição da grid com cards de marcas
+      renderBrandCardsGrid();
       focusCardSafely(0); 
     };
 
@@ -1262,6 +1315,7 @@
         e.stopPropagation();
         lastSelectedMenuId = 'menuBtnBrands';
         lastSelectedBrandElem = btn;
+        isAllBrandsGridMode = false;
         filterCatalog(b); 
         focusCardSafely(0); 
       };
@@ -1278,6 +1332,7 @@
   }
 
   function filterCatalog(query) {
+    isAllBrandsGridMode = false;
     const val = query ? query.toLowerCase().trim() : "";
     const baseList = getBaseListForCurrentTab();
 
@@ -1302,6 +1357,121 @@
     if (currentFiltered.length > 0) {
       updateHeroPanel(currentFiltered[0], 0);
     }
+  }
+
+  /* 🏢 RENDERIZA A GRID DE CARDS COM AS LOGOS DE "TODAS AS MARCAS" */
+  function renderBrandCardsGrid() {
+    clearAllCardFocus();
+    const row = document.getElementById("cardRow");
+    if (!row) return;
+    row.innerHTML = "";
+
+    setBrandModeLayout(true);
+
+    const baseList = getBaseListForCurrentTab();
+    const uniqueBrands = [...new Set(baseList.map(c => c.brewery || c.Cervejaria).filter(Boolean))].sort();
+
+    const counterElem = document.getElementById("cardCounter");
+    if (counterElem) counterElem.innerText = `MARCAS: ${uniqueBrands.length}`;
+
+    uniqueBrands.forEach((brandName, localIndex) => {
+      const queryLower = String(brandName).toLowerCase().trim();
+      
+      let logoUrl = "";
+      const matchCan = canCatalog.find(c => {
+        const b = String(c.brewery || c.Cervejaria || "").toLowerCase().trim();
+        return b === queryLower && (c.brandLogo || c.BRAND_LOGO);
+      });
+
+      if (matchCan) {
+        logoUrl = matchCan.brandLogo || matchCan.BRAND_LOGO;
+      } else {
+        const canCover = canCatalog.find(c => String(c.brewery || c.Cervejaria || "").toLowerCase().trim() === queryLower);
+        if (canCover) logoUrl = canCover.ImgCover || canCover.cover || canCover.ImgFront;
+      }
+
+      const card = document.createElement("div");
+      card.className = "brand-grid-card";
+      card.tabIndex = 0;
+      card.dataset.localIndex = localIndex;
+
+      card.onfocus = () => {
+        if (document.getElementById("zoomModal").classList.contains("active") || document.getElementById("exitModal").classList.contains("active")) return;
+        document.querySelectorAll(".brand-grid-card").forEach(c => c.classList.remove("focused"));
+        card.classList.add("focused");
+        activeLocalIndex = localIndex;
+        updateBrandLogoHeader(brandName, matchCan);
+      };
+
+      card.onmouseenter = () => { card.focus(); };
+
+      card.onclick = (e) => {
+        e.stopPropagation();
+        filterCatalog(brandName);
+        focusCardSafely(0);
+      };
+
+      card.onkeydown = (e) => {
+        if (document.getElementById("zoomModal").classList.contains("active") || document.getElementById("exitModal").classList.contains("active")) return;
+
+        const key = e.key;
+        const keyCode = e.keyCode;
+        const currentColumn = localIndex < 7 ? localIndex : (localIndex - 7) % 9;
+
+        if (key === "Enter" || key === " " || keyCode === 13) {
+          e.preventDefault();
+          filterCatalog(brandName);
+          focusCardSafely(0);
+        } else if (key === "ArrowRight" || keyCode === 39) {
+          e.preventDefault();
+          if (localIndex < uniqueBrands.length - 1) {
+            focusCardSafely(localIndex + 1);
+          }
+        } else if (key === "ArrowLeft" || keyCode === 37) {
+          e.preventDefault();
+          if (localIndex === 0) {
+            clearAllCardFocus();
+            openMenu();
+          } else {
+            focusCardSafely(localIndex - 1);
+          }
+        } else if (key === "ArrowDown" || keyCode === 40) {
+          e.preventDefault();
+          if (localIndex < 7) {
+            const target = localIndex + 7;
+            if (target < uniqueBrands.length) focusCardSafely(target);
+            else focusCardSafely(uniqueBrands.length - 1);
+          } else {
+            const nextIdx = localIndex + 9;
+            if (nextIdx < uniqueBrands.length) focusCardSafely(nextIdx);
+            else if (localIndex < uniqueBrands.length - 1) focusCardSafely(uniqueBrands.length - 1);
+          }
+        } else if (key === "ArrowUp" || keyCode === 38) {
+          e.preventDefault();
+          if (localIndex >= 7 && localIndex < 16) {
+            const target = Math.min(currentColumn, 6);
+            focusCardSafely(target);
+          } else if (localIndex >= 16) {
+            focusCardSafely(localIndex - 9);
+          } else {
+            const sortSelect = document.getElementById("sortSelect");
+            if (sortSelect) {
+              sortSelect.classList.add("focused");
+              sortSelect.focus();
+            }
+          }
+        }
+      };
+
+      const imgFormatted = logoUrl ? getOptimizedImageUrl(logoUrl, 300) : 'wccollection.png';
+
+      card.innerHTML = `
+        <img src="${imgFormatted}" alt="${brandName}" loading="lazy" decoding="async">
+        <div class="brand-card-name">${formatCapitalizedText(brandName)}</div>
+      `;
+
+      row.appendChild(card);
+    });
   }
 
   function updateHeroPanel(can, localIndex = 0) {
@@ -1435,6 +1605,8 @@
   }
 
   function updateCounter(localIndex) {
+    if (isAllBrandsGridMode) return;
+
     const total = currentFiltered.length;
     const globalIndex = currentPage * cardsPerPage + localIndex;
     const currentNum = total > 0 ? (globalIndex + 1) : 0;
@@ -1461,6 +1633,11 @@
   }
 
   function renderApp() {
+    if (isAllBrandsGridMode) {
+      renderBrandCardsGrid();
+      return;
+    }
+
     clearAllCardFocus();
     const row = document.getElementById("cardRow");
     if (!row) return;
@@ -1815,7 +1992,7 @@
       }
     } else {
       if (diffX < -threshold) {
-        const cards = document.querySelectorAll(".card");
+        const cards = document.querySelectorAll(".card, .brand-grid-card");
         if (activeLocalIndex < cards.length - 1) {
           focusCardSafely(activeLocalIndex + 1);
         } else if (((currentPage + 1) * cardsPerPage) < currentFiltered.length) {
@@ -1903,7 +2080,7 @@
           closeMenu();
           focusCardSafely(activeLocalIndex);
         } else {
-          openExitModal(); // 🚀 Dispara a abertura da modal de confirmação de saída
+          openExitModal();
         }
       }
 
