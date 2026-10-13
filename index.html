@@ -450,7 +450,7 @@
       background: rgba(0, 0, 0, 0.18) !important;
     }
 
-    /* 🏷️ CARDS DE MARCAS (PADRONIZADO COM O MESMO FOCO/BORDA DOS CARDS NORMAIS) */
+    /* 🏷️ CARDS DE MARCAS (3 LINHAS VISÍVEIS) */
     .brand-grid-card {
       width: 172px !important;
       min-width: 172px !important;
@@ -527,10 +527,10 @@
       color: #ffffff !important;
     }
 
-    /* MODO DE GRID DE MARCAS */
+    /* MODO DE GRID DE MARCAS (EXATAMENTE 3 LINHAS) */
     .catalog-section.all-brands-mode {
-      height: 520px !important;
-      min-height: 520px !important;
+      height: 400px !important;
+      min-height: 400px !important;
       margin-top: 0px !important;
       padding-top: 12px !important;
       overflow: visible !important;
@@ -543,7 +543,7 @@
     .card-row.all-brands-grid {
       display: grid !important;
       grid-template-columns: repeat(5, 172px) !important;
-      grid-auto-rows: 115px !important;
+      grid-template-rows: repeat(3, 115px) !important;
       gap: 14px 16px !important;
       width: fit-content !important;
       position: relative !important;
@@ -709,8 +709,8 @@
       .brand-grid-card-logo { height: 122px !important; }
       .brand-grid-card-info { height: 48px !important; padding: 0 10px !important; }
       .brand-grid-card-title { font-size: 1.05rem !important; }
-      .catalog-section.all-brands-mode { height: 680px !important; min-height: 680px !important; padding-top: 16px !important; }
-      .card-row.all-brands-grid { grid-template-columns: repeat(5, 260px) !important; grid-auto-rows: 170px !important; gap: 24px !important; padding-top: 8px !important; }
+      .catalog-section.all-brands-mode { height: 580px !important; min-height: 580px !important; padding-top: 16px !important; }
+      .card-row.all-brands-grid { grid-template-columns: repeat(5, 260px) !important; grid-template-rows: repeat(3, 170px) !important; gap: 24px !important; padding-top: 8px !important; }
       .card.card-aspect-sets { width: 350px !important; min-width: 350px !important; }
       .card-top-photo { height: 210px !important; padding: 6px !important; }
       .card-bottom-bar { height: 75px !important; padding: 8px 10px !important; }
@@ -754,8 +754,8 @@
       .brand-grid-card-logo { height: 172px !important; }
       .brand-grid-card-info { height: 68px !important; padding: 0 16px !important; }
       .brand-grid-card-title { font-size: 1.4rem !important; }
-      .catalog-section.all-brands-mode { height: 960px !important; min-height: 960px !important; padding-top: 24px !important; }
-      .card-row.all-brands-grid { grid-template-columns: repeat(5, 380px) !important; grid-auto-rows: 240px !important; gap: 36px !important; padding-top: 12px !important; }
+      .catalog-section.all-brands-mode { height: 820px !important; min-height: 820px !important; padding-top: 24px !important; }
+      .card-row.all-brands-grid { grid-template-columns: repeat(5, 380px) !important; grid-template-rows: repeat(3, 240px) !important; gap: 36px !important; padding-top: 12px !important; }
       .card.card-aspect-sets { width: 500px !important; min-width: 500px !important; }
       .card-top-photo { height: 295px !important; padding: 10px !important; }
       .card-bottom-bar { height: 105px !important; padding: 12px 16px !important; }
@@ -1347,6 +1347,7 @@
       lastSelectedMenuId = 'menuBtnBrands';
       lastSelectedBrandElem = allBtn;
       isAllBrandsGridMode = true;
+      currentPage = 0;
       renderBrandCardsGrid();
       focusCardSafely(0); 
     };
@@ -1420,7 +1421,7 @@
     }
   }
 
-  /* 🏢 RENDERIZA OS CARDS DE MARCAS (PADRONIZADO COM O DESIGN DOS CARDS NORMAIS) */
+  /* 🏢 RENDERIZA OS CARDS DE MARCAS (3 LINHAS DE 5 COLUNAS COM NAVEGAÇÃO DE PÁGINAS) */
   function renderBrandCardsGrid() {
     clearAllCardFocus();
     const mainArea = document.getElementById("mainArea");
@@ -1443,12 +1444,19 @@
     const baseList = getBaseListForCurrentTab();
     const uniqueBrands = [...new Set(baseList.map(c => c.brewery || c.Cervejaria).filter(Boolean))].sort();
 
-    const counterElem = document.getElementById("cardCounter");
-    if (counterElem) counterElem.innerText = `MARCAS: ${uniqueBrands.length}`;
+    const brandsPerPage = 15; // 5 colunas x 3 linhas = 15 por página
+    const startIndex = currentPage * brandsPerPage;
+    const pageBrands = uniqueBrands.slice(startIndex, startIndex + brandsPerPage);
 
-    uniqueBrands.forEach((brandName, localIndex) => {
+    const counterElem = document.getElementById("cardCounter");
+    if (counterElem) {
+      const currentStart = uniqueBrands.length > 0 ? startIndex + 1 : 0;
+      const currentEnd = Math.min(startIndex + brandsPerPage, uniqueBrands.length);
+      counterElem.innerText = `MARCAS: ${currentStart}-${currentEnd} / ${uniqueBrands.length}`;
+    }
+
+    pageBrands.forEach((brandName, localIndex) => {
       const queryLower = String(brandName).toLowerCase().trim();
-      
       let logoUrl = "";
 
       const matchCan = canCatalog.find(c => {
@@ -1496,29 +1504,48 @@
           focusCardSafely(0);
         } else if (key === "ArrowRight" || keyCode === 39) {
           e.preventDefault();
-          if (localIndex < uniqueBrands.length - 1) {
+          if (localIndex < pageBrands.length - 1) {
             focusCardSafely(localIndex + 1);
+          } else if ((startIndex + brandsPerPage) < uniqueBrands.length) {
+            currentPage++;
+            renderBrandCardsGrid();
+            focusCardSafely(0);
           }
         } else if (key === "ArrowLeft" || keyCode === 37) {
           e.preventDefault();
           if (localIndex % cols === 0) {
-            clearAllCardFocus();
-            openMenu();
+            if (currentPage > 0 && localIndex === 0) {
+              currentPage--;
+              renderBrandCardsGrid();
+              focusCardSafely(brandsPerPage - 1);
+            } else {
+              clearAllCardFocus();
+              openMenu();
+            }
           } else if (localIndex > 0) {
             focusCardSafely(localIndex - 1);
           }
         } else if (key === "ArrowDown" || keyCode === 40) {
           e.preventDefault();
           const nextIdx = localIndex + cols;
-          if (nextIdx < uniqueBrands.length) {
+          if (nextIdx < pageBrands.length) {
             focusCardSafely(nextIdx);
-          } else if (localIndex < uniqueBrands.length - 1) {
-            focusCardSafely(uniqueBrands.length - 1);
+          } else if ((startIndex + brandsPerPage) < uniqueBrands.length) {
+            currentPage++;
+            renderBrandCardsGrid();
+            const targetCol = localIndex % cols;
+            focusCardSafely(targetCol);
           }
         } else if (key === "ArrowUp" || keyCode === 38) {
           e.preventDefault();
           if (localIndex >= cols) {
             focusCardSafely(localIndex - cols);
+          } else if (currentPage > 0) {
+            currentPage--;
+            renderBrandCardsGrid();
+            const targetCol = localIndex % cols;
+            const lastRowStart = Math.floor((brandsPerPage - 1) / cols) * cols;
+            focusCardSafely(Math.min(lastRowStart + targetCol, brandsPerPage - 1));
           } else {
             const sortSelect = document.getElementById("sortSelect");
             if (sortSelect) {
@@ -1975,7 +2002,15 @@
 
     catalogSection.addEventListener("wheel", (e) => {
       if (e.deltaY > 0) {
-        if (((currentPage + 1) * cardsPerPage) < currentFiltered.length) {
+        if (isAllBrandsGridMode) {
+          const baseList = getBaseListForCurrentTab();
+          const uniqueBrands = [...new Set(baseList.map(c => c.brewery || c.Cervejaria).filter(Boolean))];
+          if (((currentPage + 1) * 15) < uniqueBrands.length) {
+            currentPage++;
+            renderBrandCardsGrid();
+            focusCardSafely(activeLocalIndex);
+          }
+        } else if (((currentPage + 1) * cardsPerPage) < currentFiltered.length) {
           currentPage++;
           renderApp();
           focusCardSafely(activeLocalIndex);
@@ -1983,7 +2018,8 @@
       } else if (e.deltaY < 0) {
         if (currentPage > 0) {
           currentPage--;
-          renderApp();
+          if (isAllBrandsGridMode) renderBrandCardsGrid();
+          else renderApp();
           focusCardSafely(activeLocalIndex);
         }
       }
@@ -1997,7 +2033,15 @@
 
     if (Math.abs(diffY) > Math.abs(diffX)) {
       if (diffY < -threshold) {
-        if (((currentPage + 1) * cardsPerPage) < currentFiltered.length) {
+        if (isAllBrandsGridMode) {
+          const baseList = getBaseListForCurrentTab();
+          const uniqueBrands = [...new Set(baseList.map(c => c.brewery || c.Cervejaria).filter(Boolean))];
+          if (((currentPage + 1) * 15) < uniqueBrands.length) {
+            currentPage++;
+            renderBrandCardsGrid();
+            focusCardSafely(activeLocalIndex);
+          }
+        } else if (((currentPage + 1) * cardsPerPage) < currentFiltered.length) {
           currentPage++;
           renderApp();
           focusCardSafely(activeLocalIndex);
@@ -2005,7 +2049,8 @@
       } else if (diffY > threshold) {
         if (currentPage > 0) {
           currentPage--;
-          renderApp();
+          if (isAllBrandsGridMode) renderBrandCardsGrid();
+          else renderApp();
           focusCardSafely(activeLocalIndex);
         }
       }
@@ -2014,6 +2059,14 @@
         const cards = document.querySelectorAll(".card, .brand-grid-card");
         if (activeLocalIndex < cards.length - 1) {
           focusCardSafely(activeLocalIndex + 1);
+        } else if (isAllBrandsGridMode) {
+          const baseList = getBaseListForCurrentTab();
+          const uniqueBrands = [...new Set(baseList.map(c => c.brewery || c.Cervejaria).filter(Boolean))];
+          if (((currentPage + 1) * 15) < uniqueBrands.length) {
+            currentPage++;
+            renderBrandCardsGrid();
+            focusCardSafely(0);
+          }
         } else if (((currentPage + 1) * cardsPerPage) < currentFiltered.length) {
           currentPage++;
           renderApp();
@@ -2024,8 +2077,13 @@
           focusCardSafely(activeLocalIndex - 1);
         } else if (currentPage > 0) {
           currentPage--;
-          renderApp();
-          focusCardSafely(cardsPerPage - 1);
+          if (isAllBrandsGridMode) {
+            renderBrandCardsGrid();
+            focusCardSafely(14);
+          } else {
+            renderApp();
+            focusCardSafely(cardsPerPage - 1);
+          }
         }
       }
     }
