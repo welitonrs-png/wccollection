@@ -111,7 +111,7 @@
     }
     .main-area.pushed { transform: translateX(260px); }
 
-    /* ÁREA SUPERIOR COM BUSCA E WALLPAPER */
+    /* ÁREA SUPERIOR */
     .hero-panel { 
       flex: 1; 
       min-height: 0; 
@@ -126,28 +126,7 @@
     }
 
     .hero-brand-wallpaper {
-      position: absolute; 
-      top: 0; 
-      left: 0; 
-      width: 100vw; 
-      height: 100vh;
-      background-size: cover; 
-      background-position: center; 
-      background-repeat: no-repeat;
-      opacity: 0; 
-      transition: opacity 0.5s ease-in-out; 
-      z-index: 1; 
-      pointer-events: none;
-      -webkit-mask-image: linear-gradient(to right, transparent 0%, transparent 20%, black 50%, black 100%);
-      mask-image: linear-gradient(to right, transparent 0%, transparent 20%, black 50%, black 100%);
-    }
-
-    .hero-brand-wallpaper.active {
-      opacity: 0.3;
-    }
-
-    .hero-panel::after {
-      content: none !important;
+      display: none !important;
     }
 
     .hero-brand-logo-container {
@@ -290,7 +269,7 @@
       height: 195px; 
       min-height: 195px; 
       width: 100%; 
-      overflow: hidden; 
+      overflow: visible; 
       flex-shrink: 0; 
       touch-action: none; 
       display: flex;
@@ -459,7 +438,7 @@
       background: rgba(0, 0, 0, 0.18) !important;
     }
 
-    /* 🏷️ CARDS DE NAVEGAÇÃO DE MARCAS HORIZONTAIS (SOMENTE LOGO, 5 POR LINHA) */
+    /* 🏷️ CARDS DE MARCAS (FORMATO HORIZONTAL) */
     .brand-grid-card {
       width: 172px !important;
       min-width: 172px !important;
@@ -491,16 +470,16 @@
       z-index: 10 !important;
     }
 
-    /* MODO DE GRID DE MARCAS (5 POR LINHA) */
+    /* MODO DE GRID DE MARCAS (5 POR LINHA COM PADDING SUPERIOR CORRIGIDO) */
     .catalog-section.all-brands-mode {
-      height: 480px !important;
-      min-height: 480px !important;
-      margin-top: 10px !important;
+      height: 500px !important;
+      min-height: 500px !important;
+      margin-top: 0px !important;
+      padding-top: 12px !important;
+      overflow: visible !important;
     }
 
-    /* OCULTAR PAINEL SUPERIOR (HERO) NO MODO TODAS AS MARCAS */
-    .main-area:has(.catalog-section.all-brands-mode) #heroPanel,
-    .catalog-section.all-brands-mode ~ #heroPanel {
+    .main-area.all-brands-mode #heroPanel {
       display: none !important;
     }
 
@@ -513,6 +492,7 @@
       position: relative !important;
       justify-content: center !important;
       margin: 0 auto !important;
+      padding-top: 6px !important;
     }
 
     /* MODAL DE ZOOM */
@@ -522,18 +502,13 @@
       left: 0; 
       width: 100vw; 
       height: 100vh; 
-      background-color: rgba(10, 12, 16, 0.88); 
-      background-size: cover; 
-      background-position: center; 
-      background-repeat: no-repeat; 
-      background-blend-mode: overlay; 
+      background-color: rgba(10, 12, 16, 0.95); 
       z-index: 3000; 
       display: none; 
       justify-content: center; 
       align-items: center; 
       padding: 16px; 
       overflow: hidden; 
-      transition: background-image 0.3s ease;
     }
     .zoom-modal.active { display: flex; }
     .zoom-modal img { 
@@ -557,8 +532,7 @@
     .exit-btn:focus, .exit-btn:hover { background: #ffffff; color: #1a1f2c; box-shadow: 0 0 15px rgba(255,255,255,0.3); outline: none; }
 
     /* MODO ESPECIAL DE MARCA / PESQUISA */
-    .main-area.brand-mode #heroPanel,
-    .main-area.all-brands-mode #heroPanel {
+    .main-area.brand-mode #heroPanel {
       display: none !important;
     }
 
@@ -566,11 +540,12 @@
       height: 440px !important;
       min-height: 440px !important;
       margin-top: 10px !important;
+      padding-top: 6px !important;
     }
     
     .main-area.brand-mode .counter-bar,
     .main-area.all-brands-mode .counter-bar {
-      margin-top: 30px !important;
+      margin-top: 20px !important;
     }
 
     .card-row.brand-mode-grid {
@@ -674,7 +649,8 @@
       .card-row { width: 1480px; gap: 20px; }
       .card { width: 194px !important; min-width: 194px !important; height: 285px !important; border-radius: 14px !important; }
       .brand-grid-card { width: 260px !important; min-width: 260px !important; height: 150px !important; border-radius: 16px !important; }
-      .card-row.all-brands-grid { grid-template-columns: repeat(5, 260px) !important; grid-auto-rows: 150px !important; gap: 24px !important; }
+      .catalog-section.all-brands-mode { height: 640px !important; min-height: 640px !important; padding-top: 16px !important; }
+      .card-row.all-brands-grid { grid-template-columns: repeat(5, 260px) !important; grid-auto-rows: 150px !important; gap: 24px !important; padding-top: 8px !important; }
       .card.card-aspect-sets { width: 350px !important; min-width: 350px !important; }
       .card-top-photo { height: 210px !important; padding: 6px !important; }
       .card-bottom-bar { height: 75px !important; padding: 8px 10px !important; }
@@ -682,7 +658,7 @@
       .card-bar-country { font-size: 0.9rem !important; gap: 6px !important; padding: 3px 8px !important; }
       .card-bar-flag { width: 20px !important; height: 12px !important; }
       .card-bar-vol { font-size: 0.85rem !important; padding: 3px 8px !important; }
-      .catalog-section.brand-mode, .catalog-section.all-brands-mode { height: 620px !important; min-height: 620px !important; }
+      .catalog-section.brand-mode { height: 620px !important; min-height: 620px !important; }
       .card-row.brand-mode-grid { grid-template-columns: repeat(9, 150px) !important; grid-template-rows: repeat(3, 220px) !important; gap: 12px !important; }
       .card-row.brand-mode-grid .card { width: 150px !important; min-width: 150px !important; height: 220px !important; }
       .card-row.brand-mode-grid .card-top-photo { height: 165px !important; }
@@ -715,7 +691,8 @@
       .card-row { width: 2100px; gap: 28px; }
       .card { width: 275px !important; min-width: 275px !important; height: 400px !important; border-radius: 20px !important; }
       .brand-grid-card { width: 380px !important; min-width: 380px !important; height: 220px !important; border-radius: 24px !important; }
-      .card-row.all-brands-grid { grid-template-columns: repeat(5, 380px) !important; grid-auto-rows: 220px !important; gap: 36px !important; }
+      .catalog-section.all-brands-mode { height: 920px !important; min-height: 920px !important; padding-top: 24px !important; }
+      .card-row.all-brands-grid { grid-template-columns: repeat(5, 380px) !important; grid-auto-rows: 220px !important; gap: 36px !important; padding-top: 12px !important; }
       .card.card-aspect-sets { width: 500px !important; min-width: 500px !important; }
       .card-top-photo { height: 295px !important; padding: 10px !important; }
       .card-bottom-bar { height: 105px !important; padding: 12px 16px !important; }
@@ -723,7 +700,7 @@
       .card-bar-country { font-size: 1.2rem !important; gap: 8px !important; padding: 4px 12px !important; }
       .card-bar-flag { width: 28px !important; height: 18px !important; }
       .card-bar-vol { font-size: 1.1rem !important; padding: 4px 12px !important; }
-      .catalog-section.brand-mode, .catalog-section.all-brands-mode { height: 900px !important; min-height: 900px !important; }
+      .catalog-section.brand-mode { height: 900px !important; min-height: 900px !important; }
       .card-row.brand-mode-grid { grid-template-columns: repeat(9, 210px) !important; grid-template-rows: repeat(3, 310px) !important; gap: 18px !important; }
       .card-row.brand-mode-grid .card { width: 210px !important; min-width: 210px !important; height: 310px !important; }
       .card-row.brand-mode-grid .card-top-photo { height: 230px !important; }
@@ -1559,13 +1536,14 @@
     const wallpaperElem = document.getElementById("heroBrandWallpaper");
     const gridOverlayLogo = document.querySelector(".brand-overlay-logo");
 
+    if (wallpaperElem) {
+      wallpaperElem.style.backgroundImage = "none";
+      wallpaperElem.classList.remove("active");
+    }
+
     if (!brandQuery || String(brandQuery).trim() === "") {
       if (logoContainer) logoContainer.innerHTML = "";
       if (gridOverlayLogo) gridOverlayLogo.innerHTML = "";
-      if (wallpaperElem) {
-        wallpaperElem.style.backgroundImage = "none";
-        wallpaperElem.classList.remove("active");
-      }
       return;
     }
 
@@ -1596,33 +1574,6 @@
       } else {
         gridOverlayLogo.innerHTML = "";
       }
-    }
-
-    const queryLower = String(brandQuery).toLowerCase().trim();
-    let wallpaperUrl = "";
-    const sameBrandCans = canCatalog.filter(c => {
-      const b = String(c.brewery || c.Cervejaria || "").toLowerCase().trim();
-      return b === queryLower || b.includes(queryLower);
-    });
-
-    const canWithWallpaper = sameBrandCans.find(c => {
-      const wp = c.brandWallpaper || c.wallpaper || c.BRANDWALLPAPER || c.WALLPAPER;
-      return wp && String(wp).trim() !== "";
-    });
-
-    if (canWithWallpaper) {
-      wallpaperUrl = canWithWallpaper.brandWallpaper || canWithWallpaper.wallpaper || canWithWallpaper.BRANDWALLPAPER || canWithWallpaper.WALLPAPER;
-    } else if (currentCan) {
-      wallpaperUrl = currentCan.brandLogo || currentCan.BRAND_LOGO || currentCan.ImgCover || currentCan.cover;
-    }
-
-    if (wallpaperElem && wallpaperUrl && String(wallpaperUrl).trim() !== "") {
-      const fullImgUrl = getOptimizedImageUrl(wallpaperUrl, 1200);
-      wallpaperElem.style.backgroundImage = `url('${fullImgUrl}')`;
-      wallpaperElem.classList.add("active");
-    } else if (wallpaperElem) {
-      wallpaperElem.style.backgroundImage = "none";
-      wallpaperElem.classList.remove("active");
     }
   }
 
@@ -1861,32 +1812,7 @@
     }
 
     if (modalElem) {
-      const globalIndex = currentPage * cardsPerPage + activeLocalIndex;
-      const currentCan = currentFiltered[globalIndex];
-      let wallpaperUrl = "";
-
-      if (currentCan) {
-        const brandQuery = String(currentCan.brewery || currentCan.Cervejaria || "").toLowerCase().trim();
-        const canWithWallpaper = canCatalog.find(c => {
-          const b = String(c.brewery || c.Cervejaria || "").toLowerCase().trim();
-          const wp = c.brandWallpaper || c.wallpaper || c.BRANDWALLPAPER || c.WALLPAPER;
-          return b === brandQuery && wp && String(wp).trim() !== "";
-        });
-
-        if (canWithWallpaper) {
-          wallpaperUrl = canWithWallpaper.brandWallpaper || canWithWallpaper.wallpaper || canWithWallpaper.BRANDWALLPAPER || canWithWallpaper.WALLPAPER;
-        } else {
-          wallpaperUrl = currentCan.brandLogo || currentCan.BRAND_LOGO || currentCan.ImgCover || currentCan.cover;
-        }
-      }
-
-      if (wallpaperUrl && String(wallpaperUrl).trim() !== "") {
-        const fullImgUrl = getOptimizedImageUrl(wallpaperUrl, 1200);
-        modalElem.style.backgroundImage = `url('${fullImgUrl}')`;
-      } else {
-        modalElem.style.backgroundImage = "none";
-      }
-
+      modalElem.style.backgroundImage = "none";
       modalElem.classList.add("active");
     }
   }
