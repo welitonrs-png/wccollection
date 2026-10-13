@@ -462,49 +462,54 @@
       background: rgba(0, 0, 0, 0.18) !important;
     }
 
-    /* CARDS DE NAVEGAÇÃO DE MARCA (GRID "TODAS AS MARCAS") */
+    /* CARDS DE NAVEGAÇÃO DE MARCA HORIZONTAIS (5 POR LINHA) */
     .brand-grid-card {
-      width: 122px !important;
-      min-width: 122px !important;
-      height: 185px !important;
+      width: 172px !important;
+      min-width: 172px !important;
+      height: 110px !important;
       background: #ffffff !important;
-      border-radius: 10px !important;
+      border-radius: 12px !important;
       display: flex !important;
-      flex-direction: column !important;
       justify-content: center !important;
       align-items: center !important;
       padding: 12px !important;
       cursor: pointer !important;
-      border: 2px solid transparent !important;
+      border: 3px solid transparent !important;
       outline: none !important;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.3) !important;
-      transition: transform 0.15s ease, border-color 0.15s ease !important;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3) !important;
+      transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease !important;
+      box-sizing: border-box !important;
     }
 
     .brand-grid-card img {
       max-width: 100% !important;
-      max-height: 80% !important;
+      max-height: 100% !important;
       object-fit: contain !important;
     }
 
-    .brand-grid-card .brand-card-name {
-      font-size: 0.75rem !important;
-      font-weight: 800 !important;
-      color: #1a1f2c !important;
-      text-transform: uppercase !important;
-      text-align: center !important;
-      margin-top: 8px !important;
-      white-space: nowrap !important;
-      overflow: hidden !important;
-      text-overflow: ellipsis !important;
-      width: 100% !important;
+    .brand-grid-card.focused, .brand-grid-card:focus, .brand-grid-card:hover {
+      border-color: #f39c12 !important;
+      transform: scale(1.05) !important;
+      box-shadow: 0 0 22px rgba(243, 156, 18, 0.8) !important;
+      z-index: 10 !important;
     }
 
-    .brand-grid-card.focused, .brand-grid-card:focus, .brand-grid-card:hover {
-      border: 2px solid #f39c12 !important;
-      transform: scale(1.03) !important;
-      box-shadow: 0 0 20px rgba(243, 156, 18, 0.6) !important;
-      z-index: 10 !important;
+    /* MODO DE GRID DE MARCAS (5 CARDS HORIZONTAIS POR LINHA) */
+    .catalog-section.all-brands-mode {
+      height: 480px !important;
+      min-height: 480px !important;
+      margin-top: 10px !important;
+    }
+
+    .card-row.all-brands-grid {
+      display: grid !important;
+      grid-template-columns: repeat(5, 172px) !important;
+      grid-auto-rows: 110px !important;
+      gap: 16px 16px !important;
+      width: fit-content !important;
+      position: relative !important;
+      justify-content: center !important;
+      margin: 0 auto !important;
     }
 
     /* MODAL DE ZOOM E NAVEGAÇÃO COM WALLPAPER DA MARCA NO FUNDO */
@@ -572,8 +577,7 @@
       position: relative !important;
     }
 
-    .card-row.brand-mode-grid .card,
-    .card-row.brand-mode-grid .brand-grid-card {
+    .card-row.brand-mode-grid .card {
       width: 95px !important;
       min-width: 95px !important;
       height: 141px !important;
@@ -584,13 +588,11 @@
       height: 106px !important;
     }
 
-    .card-row.brand-mode-grid .card:nth-child(-n+7),
-    .card-row.brand-mode-grid .brand-grid-card:nth-child(-n+7) {
+    .card-row.brand-mode-grid .card:nth-child(-n+7) {
       grid-row: 1;
     }
 
-    .card-row.brand-mode-grid .card:nth-child(n+8),
-    .card-row.brand-mode-grid .brand-grid-card:nth-child(n+8) {
+    .card-row.brand-mode-grid .card:nth-child(n+8) {
       grid-row: auto;
     }
 
@@ -665,7 +667,9 @@
       .card-counter { font-size: 1.3rem; }
       .catalog-section { height: 300px; min-height: 300px; }
       .card-row { width: 1480px; gap: 20px; }
-      .card, .brand-grid-card { width: 194px !important; min-width: 194px !important; height: 285px !important; border-radius: 14px !important; }
+      .card { width: 194px !important; min-width: 194px !important; height: 285px !important; border-radius: 14px !important; }
+      .brand-grid-card { width: 260px !important; min-width: 260px !important; height: 150px !important; border-radius: 16px !important; }
+      .card-row.all-brands-grid { grid-template-columns: repeat(5, 260px) !important; grid-auto-rows: 150px !important; gap: 24px !important; }
       .card.card-aspect-sets { width: 350px !important; min-width: 350px !important; }
       .card-top-photo { height: 210px !important; padding: 6px !important; }
       .card-bottom-bar { height: 75px !important; padding: 8px 10px !important; }
@@ -673,9 +677,9 @@
       .card-bar-country { font-size: 0.9rem !important; gap: 6px !important; padding: 3px 8px !important; }
       .card-bar-flag { width: 20px !important; height: 12px !important; }
       .card-bar-vol { font-size: 0.85rem !important; padding: 3px 8px !important; }
-      .catalog-section.brand-mode { height: 620px !important; min-height: 620px !important; }
+      .catalog-section.brand-mode, .catalog-section.all-brands-mode { height: 620px !important; min-height: 620px !important; }
       .card-row.brand-mode-grid { grid-template-columns: repeat(9, 150px) !important; grid-template-rows: repeat(3, 220px) !important; gap: 12px !important; }
-      .card-row.brand-mode-grid .card, .card-row.brand-mode-grid .brand-grid-card { width: 150px !important; min-width: 150px !important; height: 220px !important; }
+      .card-row.brand-mode-grid .card { width: 150px !important; min-width: 150px !important; height: 220px !important; }
       .card-row.brand-mode-grid .card-top-photo { height: 165px !important; }
       .brand-overlay-logo { width: 312px !important; height: 220px !important; }
       .card-row.brand-mode-grid .card-bottom-bar { height: 55px !important; }
@@ -704,7 +708,9 @@
       .card-counter { font-size: 1.8rem; }
       .catalog-section { height: 420px; min-height: 420px; }
       .card-row { width: 2100px; gap: 28px; }
-      .card, .brand-grid-card { width: 275px !important; min-width: 275px !important; height: 400px !important; border-radius: 20px !important; }
+      .card { width: 275px !important; min-width: 275px !important; height: 400px !important; border-radius: 20px !important; }
+      .brand-grid-card { width: 380px !important; min-width: 380px !important; height: 220px !important; border-radius: 24px !important; }
+      .card-row.all-brands-grid { grid-template-columns: repeat(5, 380px) !important; grid-auto-rows: 220px !important; gap: 36px !important; }
       .card.card-aspect-sets { width: 500px !important; min-width: 500px !important; }
       .card-top-photo { height: 295px !important; padding: 10px !important; }
       .card-bottom-bar { height: 105px !important; padding: 12px 16px !important; }
@@ -712,9 +718,9 @@
       .card-bar-country { font-size: 1.2rem !important; gap: 8px !important; padding: 4px 12px !important; }
       .card-bar-flag { width: 28px !important; height: 18px !important; }
       .card-bar-vol { font-size: 1.1rem !important; padding: 4px 12px !important; }
-      .catalog-section.brand-mode { height: 900px !important; min-height: 900px !important; }
+      .catalog-section.brand-mode, .catalog-section.all-brands-mode { height: 900px !important; min-height: 900px !important; }
       .card-row.brand-mode-grid { grid-template-columns: repeat(9, 210px) !important; grid-template-rows: repeat(3, 310px) !important; gap: 18px !important; }
-      .card-row.brand-mode-grid .card, .card-row.brand-mode-grid .brand-grid-card { width: 210px !important; min-width: 210px !important; height: 310px !important; }
+      .card-row.brand-mode-grid .card { width: 210px !important; min-width: 210px !important; height: 310px !important; }
       .card-row.brand-mode-grid .card-top-photo { height: 230px !important; }
       .brand-overlay-logo { width: 438px !important; height: 310px !important; }
       .card-row.brand-mode-grid .card-bottom-bar { height: 80px !important; }
@@ -1293,7 +1299,7 @@
       e.stopPropagation();
       lastSelectedMenuId = 'menuBtnBrands';
       lastSelectedBrandElem = allBtn;
-      isAllBrandsGridMode = true; // Ativa exibição da grid com cards de marcas
+      isAllBrandsGridMode = true;
       renderBrandCardsGrid();
       focusCardSafely(0); 
     };
@@ -1333,6 +1339,11 @@
 
   function filterCatalog(query) {
     isAllBrandsGridMode = false;
+    const catalogSection = document.getElementById("catalogSection");
+    const cardRow = document.getElementById("cardRow");
+    if (catalogSection) catalogSection.classList.remove("all-brands-mode");
+    if (cardRow) cardRow.classList.remove("all-brands-grid");
+
     const val = query ? query.toLowerCase().trim() : "";
     const baseList = getBaseListForCurrentTab();
 
@@ -1359,14 +1370,22 @@
     }
   }
 
-  /* 🏢 RENDERIZA A GRID DE CARDS COM AS LOGOS DE "TODAS AS MARCAS" */
+  /* 🏢 RENDERIZA A GRID DE CARDS HORIZONTAIS (5 POR LINHA, SOMENTE LOGO) */
   function renderBrandCardsGrid() {
     clearAllCardFocus();
+    const catalogSection = document.getElementById("catalogSection");
     const row = document.getElementById("cardRow");
     if (!row) return;
     row.innerHTML = "";
 
-    setBrandModeLayout(true);
+    const mainArea = document.getElementById("mainArea");
+    if (mainArea) mainArea.classList.remove("brand-mode");
+    if (catalogSection) {
+      catalogSection.classList.remove("brand-mode");
+      catalogSection.classList.add("all-brands-mode");
+    }
+    row.classList.remove("brand-mode-grid");
+    row.classList.add("all-brands-grid");
 
     const baseList = getBaseListForCurrentTab();
     const uniqueBrands = [...new Set(baseList.map(c => c.brewery || c.Cervejaria).filter(Boolean))].sort();
@@ -1416,7 +1435,7 @@
 
         const key = e.key;
         const keyCode = e.keyCode;
-        const currentColumn = localIndex < 7 ? localIndex : (localIndex - 7) % 9;
+        const cols = 5;
 
         if (key === "Enter" || key === " " || keyCode === 13) {
           e.preventDefault();
@@ -1429,30 +1448,24 @@
           }
         } else if (key === "ArrowLeft" || keyCode === 37) {
           e.preventDefault();
-          if (localIndex === 0) {
+          if (localIndex % cols === 0) {
             clearAllCardFocus();
             openMenu();
-          } else {
+          } else if (localIndex > 0) {
             focusCardSafely(localIndex - 1);
           }
         } else if (key === "ArrowDown" || keyCode === 40) {
           e.preventDefault();
-          if (localIndex < 7) {
-            const target = localIndex + 7;
-            if (target < uniqueBrands.length) focusCardSafely(target);
-            else focusCardSafely(uniqueBrands.length - 1);
-          } else {
-            const nextIdx = localIndex + 9;
-            if (nextIdx < uniqueBrands.length) focusCardSafely(nextIdx);
-            else if (localIndex < uniqueBrands.length - 1) focusCardSafely(uniqueBrands.length - 1);
+          const nextIdx = localIndex + cols;
+          if (nextIdx < uniqueBrands.length) {
+            focusCardSafely(nextIdx);
+          } else if (localIndex < uniqueBrands.length - 1) {
+            focusCardSafely(uniqueBrands.length - 1);
           }
         } else if (key === "ArrowUp" || keyCode === 38) {
           e.preventDefault();
-          if (localIndex >= 7 && localIndex < 16) {
-            const target = Math.min(currentColumn, 6);
-            focusCardSafely(target);
-          } else if (localIndex >= 16) {
-            focusCardSafely(localIndex - 9);
+          if (localIndex >= cols) {
+            focusCardSafely(localIndex - cols);
           } else {
             const sortSelect = document.getElementById("sortSelect");
             if (sortSelect) {
@@ -1463,12 +1476,9 @@
         }
       };
 
-      const imgFormatted = logoUrl ? getOptimizedImageUrl(logoUrl, 300) : 'wccollection.png';
+      const imgFormatted = logoUrl ? getOptimizedImageUrl(logoUrl, 400) : 'wccollection.png';
 
-      card.innerHTML = `
-        <img src="${imgFormatted}" alt="${brandName}" loading="lazy" decoding="async">
-        <div class="brand-card-name">${formatCapitalizedText(brandName)}</div>
-      `;
+      card.innerHTML = `<img src="${imgFormatted}" alt="${brandName}" loading="lazy" decoding="async">`;
 
       row.appendChild(card);
     });
@@ -2099,3 +2109,5 @@
   </script>
 </body>
 </html>
+
+The brand cards are now horizontally oriented, contain only the brand logo, and display in a 5-column grid layout when clicking "TODAS AS MARCAS".
