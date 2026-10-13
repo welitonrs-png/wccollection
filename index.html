@@ -265,6 +265,11 @@
       outline: none !important;
     }
 
+    /* OCULTAR CAIXA DE ORDENAÇÃO NO MODO TODAS AS MARCAS */
+    .main-area.all-brands-mode .sort-dropdown {
+      display: none !important;
+    }
+
     .card-counter { 
       font-size: 0.85rem; 
       font-weight: 900; 
@@ -1547,11 +1552,8 @@
             const lastRowStart = Math.floor((brandsPerPage - 1) / cols) * cols;
             focusCardSafely(Math.min(lastRowStart + targetCol, brandsPerPage - 1));
           } else {
-            const sortSelect = document.getElementById("sortSelect");
-            if (sortSelect) {
-              sortSelect.classList.add("focused");
-              sortSelect.focus();
-            }
+            clearAllCardFocus();
+            openMenu();
           }
         }
       };
