@@ -498,6 +498,12 @@
       margin-top: 10px !important;
     }
 
+    /* OCULTAR PAINEL SUPERIOR (HERO) NO MODO TODAS AS MARCAS */
+    .main-area:has(.catalog-section.all-brands-mode) #heroPanel,
+    .catalog-section.all-brands-mode ~ #heroPanel {
+      display: none !important;
+    }
+
     .card-row.all-brands-grid {
       display: grid !important;
       grid-template-columns: repeat(5, 172px) !important;
@@ -551,7 +557,8 @@
     .exit-btn:focus, .exit-btn:hover { background: #ffffff; color: #1a1f2c; box-shadow: 0 0 15px rgba(255,255,255,0.3); outline: none; }
 
     /* MODO ESPECIAL DE MARCA / PESQUISA */
-    .main-area.brand-mode #heroPanel {
+    .main-area.brand-mode #heroPanel,
+    .main-area.all-brands-mode #heroPanel {
       display: none !important;
     }
 
@@ -561,7 +568,8 @@
       margin-top: 10px !important;
     }
     
-    .main-area.brand-mode .counter-bar {
+    .main-area.brand-mode .counter-bar,
+    .main-area.all-brands-mode .counter-bar {
       margin-top: 30px !important;
     }
 
@@ -881,7 +889,10 @@
       cardsPerRow = 9;
       cardsPerPage = 25;
     } else {
-      if (mainArea) mainArea.classList.remove("brand-mode");
+      if (mainArea) {
+        mainArea.classList.remove("brand-mode");
+        mainArea.classList.remove("all-brands-mode");
+      }
       if (catalogSection) catalogSection.classList.remove("brand-mode");
       if (cardRow) cardRow.classList.remove("brand-mode-grid");
       
@@ -1335,8 +1346,11 @@
 
   function filterCatalog(query) {
     isAllBrandsGridMode = false;
+    const mainArea = document.getElementById("mainArea");
     const catalogSection = document.getElementById("catalogSection");
     const cardRow = document.getElementById("cardRow");
+    
+    if (mainArea) mainArea.classList.remove("all-brands-mode");
     if (catalogSection) catalogSection.classList.remove("all-brands-mode");
     if (cardRow) cardRow.classList.remove("all-brands-grid");
 
@@ -1369,13 +1383,16 @@
   /* 🏢 RENDERIZA OS CARDS DE MARCAS (5 HORIZONTAIS POR LINHA, SOMENTE LOGO) */
   function renderBrandCardsGrid() {
     clearAllCardFocus();
+    const mainArea = document.getElementById("mainArea");
     const catalogSection = document.getElementById("catalogSection");
     const row = document.getElementById("cardRow");
     if (!row) return;
     row.innerHTML = "";
 
-    const mainArea = document.getElementById("mainArea");
-    if (mainArea) mainArea.classList.remove("brand-mode");
+    if (mainArea) {
+      mainArea.classList.remove("brand-mode");
+      mainArea.classList.add("all-brands-mode");
+    }
     if (catalogSection) {
       catalogSection.classList.remove("brand-mode");
       catalogSection.classList.add("all-brands-mode");
@@ -1415,7 +1432,6 @@
         document.querySelectorAll(".brand-grid-card").forEach(c => c.classList.remove("focused"));
         card.classList.add("focused");
         activeLocalIndex = localIndex;
-        updateBrandLogoHeader(brandName, matchCan);
       };
 
       card.onmouseenter = () => { card.focus(); };
