@@ -321,6 +321,7 @@
     }
 
     .card {
+      position: relative !important;
       width: 122px !important;
       min-width: 122px !important;
       height: 185px !important;
@@ -333,6 +334,24 @@
       cursor: pointer !important;
       flex-shrink: 0 !important;
       outline: none !important;
+    }
+
+    /* 🏷️ SELO OCOC NO CANTO SUPERIOR DIREITO */
+    .card-ococ-badge {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      background: #f39c12;
+      color: #1a1f2c;
+      font-size: 0.55rem;
+      font-weight: 900;
+      padding: 2px 5px;
+      border-radius: 4px;
+      letter-spacing: 0.5px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+      z-index: 15;
+      pointer-events: none;
+      line-height: 1;
     }
 
     .card.card-aspect-sets { 
@@ -745,6 +764,7 @@
       .catalog-section { height: 300px; min-height: 300px; }
       .card-row { width: 1480px; gap: 20px; }
       .card { width: 194px !important; min-width: 194px !important; height: 285px !important; border-radius: 14px !important; }
+      .card-ococ-badge { font-size: 0.75rem; padding: 3px 7px; top: 8px; right: 8px; }
       .brand-grid-card { width: 260px !important; min-width: 260px !important; height: 170px !important; border-radius: 16px !important; }
       .brand-grid-card-logo { height: 122px !important; }
       .brand-grid-card-info { height: 48px !important; padding: 0 10px !important; }
@@ -790,6 +810,7 @@
       .catalog-section { height: 420px; min-height: 420px; }
       .card-row { width: 2100px; gap: 28px; }
       .card { width: 275px !important; min-width: 275px !important; height: 400px !important; border-radius: 20px !important; }
+      .card-ococ-badge { font-size: 1rem; padding: 4px 10px; top: 12px; right: 12px; }
       .brand-grid-card { width: 380px !important; min-width: 380px !important; height: 240px !important; border-radius: 24px !important; }
       .brand-grid-card-logo { height: 172px !important; }
       .brand-grid-card-info { height: 68px !important; padding: 0 16px !important; }
@@ -1802,6 +1823,9 @@
       const volumeText = can.volume || can.Volume || "";
       const flagUrl = getFlagUrlByCountry(countryRaw);
 
+      // Checa se a lata é OCOC
+      const isOcocVal = can.isOcoc === true || String(can.isOcoc).toLowerCase() === "true";
+
       const card = document.createElement("div");
       card.className = `card ${currentTab === 'sets' ? 'card-aspect-sets' : ''}`;
       card.tabIndex = 0;
@@ -1937,6 +1961,7 @@
       };
 
       card.innerHTML = `
+        ${isOcocVal ? `<div class="card-ococ-badge">OCOC</div>` : ''}
         <div class="card-top-photo">
           <img src="${frontImg}" alt="${brandFormatted}" loading="lazy" decoding="async">
         </div>
