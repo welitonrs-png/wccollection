@@ -336,20 +336,20 @@
       outline: none !important;
     }
 
-    /* 🏷️ SELO OCOC COM A COR ESCURA IGUAL AO CARD NÃO SELECIONADO */
+    /* 🏷️ SELO OCOC REDUZIDO */
     .card-ococ-badge {
       position: absolute;
-      top: 5px;
-      right: 5px;
+      top: 4px;
+      right: 4px;
       background: #1a1f2c;
       color: #888888;
-      font-size: 0.55rem;
+      font-size: 0.45rem;
       font-weight: 800;
-      padding: 2px 5px;
-      border-radius: 4px;
+      padding: 1px 4px;
+      border-radius: 3px;
       border: 1px solid rgba(255, 255, 255, 0.12);
-      letter-spacing: 0.5px;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
+      letter-spacing: 0.4px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
       z-index: 15;
       pointer-events: none;
       line-height: 1;
@@ -765,7 +765,7 @@
       .catalog-section { height: 300px; min-height: 300px; }
       .card-row { width: 1480px; gap: 20px; }
       .card { width: 194px !important; min-width: 194px !important; height: 285px !important; border-radius: 14px !important; }
-      .card-ococ-badge { font-size: 0.75rem; padding: 3px 7px; top: 8px; right: 8px; }
+      .card-ococ-badge { font-size: 0.60rem; padding: 2px 5px; top: 6px; right: 6px; }
       .brand-grid-card { width: 260px !important; min-width: 260px !important; height: 170px !important; border-radius: 16px !important; }
       .brand-grid-card-logo { height: 122px !important; }
       .brand-grid-card-info { height: 48px !important; padding: 0 10px !important; }
@@ -811,7 +811,7 @@
       .catalog-section { height: 420px; min-height: 420px; }
       .card-row { width: 2100px; gap: 28px; }
       .card { width: 275px !important; min-width: 275px !important; height: 400px !important; border-radius: 20px !important; }
-      .card-ococ-badge { font-size: 1rem; padding: 4px 10px; top: 12px; right: 12px; }
+      .card-ococ-badge { font-size: 0.80rem; padding: 3px 7px; top: 8px; right: 8px; }
       .brand-grid-card { width: 380px !important; min-width: 380px !important; height: 240px !important; border-radius: 24px !important; }
       .brand-grid-card-logo { height: 172px !important; }
       .brand-grid-card-info { height: 68px !important; padding: 0 16px !important; }
@@ -956,6 +956,7 @@
   let lastSelectedMenuId = 'menuBtnHome'; 
   let lastSelectedBrandElem = null;
   let isAllBrandsGridMode = false;
+  let wasOpenedFromAllBrandsGrid = false; // 🔄 MEMÓRIA SE FOI ABERTO A PARTIR DE "TODAS AS MARCAS"
 
   let registeredBrands = [];
 
@@ -1159,6 +1160,7 @@
     currentTab = tabName;
     lastSelectedBrandElem = null;
     isAllBrandsGridMode = false;
+    wasOpenedFromAllBrandsGrid = false;
 
     setBrandModeLayout(false);
 
@@ -1329,6 +1331,7 @@
     lastSelectedMenuId = 'menuBtnSearch';
     lastSelectedBrandElem = null;
     isAllBrandsGridMode = false;
+    wasOpenedFromAllBrandsGrid = false;
     document.getElementById("brandInlineList").classList.remove("active");
     const container = document.getElementById("searchInlineContainer");
     container.classList.toggle("active");
@@ -1387,6 +1390,7 @@
     else if (key === 'LIMPAR') input.value = '';
     else input.value += key;
     isAllBrandsGridMode = false;
+    wasOpenedFromAllBrandsGrid = false;
     filterCatalog(input.value);
   }
 
@@ -1409,6 +1413,7 @@
       lastSelectedMenuId = 'menuBtnBrands';
       lastSelectedBrandElem = allBtn;
       isAllBrandsGridMode = true;
+      wasOpenedFromAllBrandsGrid = false;
       currentPage = 0;
       renderBrandCardsGrid();
       focusCardSafely(0); 
@@ -1432,6 +1437,7 @@
         lastSelectedMenuId = 'menuBtnBrands';
         lastSelectedBrandElem = btn;
         isAllBrandsGridMode = false;
+        wasOpenedFromAllBrandsGrid = false;
         filterCatalog(b); 
         focusCardSafely(0); 
       };
@@ -1485,6 +1491,9 @@
 
   /* 🏢 RENDERIZA OS CARDS DE MARCAS (OCULTA WALLPAPER APENAS NESTE MODO) */
   function renderBrandCardsGrid() {
+    isAllBrandsGridMode = true;
+    wasOpenedFromAllBrandsGrid = false;
+
     clearAllCardFocus();
     const mainArea = document.getElementById("mainArea");
     const catalogSection = document.getElementById("catalogSection");
@@ -1555,6 +1564,7 @@
 
       card.onclick = (e) => {
         e.stopPropagation();
+        wasOpenedFromAllBrandsGrid = true;
         filterCatalog(brandName);
         focusCardSafely(0);
       };
@@ -1568,6 +1578,7 @@
 
         if (key === "Enter" || key === " " || keyCode === 13) {
           e.preventDefault();
+          wasOpenedFromAllBrandsGrid = true;
           filterCatalog(brandName);
           focusCardSafely(0);
         } else if (key === "ArrowRight" || keyCode === 39) {
@@ -2265,6 +2276,10 @@
         if (isMenuOpen) {
           closeMenu();
           focusCardSafely(activeLocalIndex);
+        } else if (wasOpenedFromAllBrandsGrid) {
+          // 🔄 SE O USUÁRIO VEIO DE "TODAS AS MARCAS", VOLTA PARA O GRID DAS MARCAS
+          renderBrandCardsGrid();
+          focusCardSafely(0);
         } else {
           openExitModal();
         }
