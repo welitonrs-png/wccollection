@@ -336,7 +336,7 @@
       outline: none !important;
     }
 
-    /* 🏷️ SELO OCOC REDUZIDO */
+    /* SELO OCOC REDUZIDO */
     .card-ococ-badge {
       position: absolute;
       top: 4px;
@@ -492,7 +492,7 @@
       background: rgba(0, 0, 0, 0.18) !important;
     }
 
-    /* 🏷️ CARDS DE MARCAS (3 LINHAS VISÍVEIS) */
+    /* CARDS DE MARCAS (3 LINHAS VISÍVEIS) */
     .brand-grid-card {
       width: 172px !important;
       min-width: 172px !important;
@@ -968,15 +968,20 @@
 
   const vkKeys = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','1','2','3','4','5','6','7','8','9','0','ESPAÇO','DEL','LIMPAR'];
 
+  // 📺 INTEGRAÇÃO COM A HOME DA ANDROID TV
   function notificarHomeTV(can) {
     if (!can) return;
-    if (typeof PonteAndroid !== "undefined" && PonteAndroid.atualizarUltimaLata) {
+    if (typeof PonteAndroid !== "undefined") {
       const titulo = can.name || can.Nome || "Lata de Cerveja";
       const marca = can.brewery || can.Cervejaria || "WCCollection";
       const imagem = getOptimizedImageUrl(can.ImgCover || can.cover || can.ImgFront || can.brandLogo, 400);
-      const id = String(can.barcode || can.Barcode || can.id || "0");
+      const barcode = String(can.barcode || can.Barcode || can.id || "0");
 
-      PonteAndroid.atualizarUltimaLata(titulo, marca, imagem, id);
+      if (PonteAndroid.atualizarUltimaLata) {
+        PonteAndroid.atualizarUltimaLata(titulo, marca, imagem, barcode);
+      } else if (PonteAndroid.publicarCanalTv) {
+        PonteAndroid.publicarCanalTv(titulo, marca, imagem, barcode);
+      }
     }
   }
 
@@ -1489,7 +1494,7 @@
     }
   }
 
-  /* 🏢 RENDERIZA OS CARDS DE MARCAS (OCULTA WALLPAPER APENAS NESTE MODO) */
+  /* RENDERIZA OS CARDS DE MARCAS */
   function renderBrandCardsGrid() {
     isAllBrandsGridMode = true;
     wasOpenedFromAllBrandsGrid = false;
@@ -1522,11 +1527,10 @@
     const baseList = getBaseListForCurrentTab();
     const uniqueBrands = [...new Set(baseList.map(c => c.brewery || c.Cervejaria).filter(Boolean))].sort();
 
-    const brandsPerPage = 15; // 5 colunas x 3 linhas = 15 por página
+    const brandsPerPage = 15; 
     const startIndex = currentPage * brandsPerPage;
     const pageBrands = uniqueBrands.slice(startIndex, startIndex + brandsPerPage);
 
-    // 🎯 EXIBE APENAS O TOTAL DE MARCAS ENCONTRADAS
     const counterElem = document.getElementById("cardCounter");
     if (counterElem) {
       counterElem.innerText = `Total de marcas: ${uniqueBrands.length}`;
@@ -1706,7 +1710,7 @@
     updateBrandLogoHeader(can.brewery || can.Cervejaria, can);
   }
 
-  /* RESTAURAÇÃO DO WALLPAPER DA MARCA NO FUNDO DA TELA E NO LIGHTBOX */
+  /* WALLPAPER DA MARCA */
   function updateBrandLogoHeader(brandQuery, currentCan) {
     const logoContainer = document.getElementById("heroBrandLogo");
     const wallpaperElem = document.getElementById("heroBrandWallpaper");
@@ -1795,7 +1799,7 @@
       zoomGallery = rawPhotos;
 
       updateHeroPanel(currentCan, localIndex);
-      notificarHomeTV(currentCan);
+      notificarHomeTV(currentCan); // 📺 Notifica a Android TV ao alternar fofo no card
     } else {
       zoomGallery = [];
     }
@@ -1835,7 +1839,6 @@
       const volumeText = can.volume || can.Volume || "";
       const flagUrl = getFlagUrlByCountry(countryRaw);
 
-      // Checa se a lata é OCOC
       const isOcocVal = can.isOcoc === true || String(can.isOcoc).toLowerCase() === "true";
 
       const card = document.createElement("div");
@@ -1999,7 +2002,7 @@
     }
   }
 
-  /* 🔎 MODAL DE ZOOM COM SUPORTE AO WALLPAPER DE FUNDO NO LIGHTBOX */
+  /* MODAL DE ZOOM COM SUPORTE AO WALLPAPER DE FUNDO NO LIGHTBOX */
   function openZoomModal(index) {
     if (!zoomGallery || zoomGallery.length === 0) return;
     currentZoomIndex = index;
@@ -2036,6 +2039,7 @@
       }
 
       modalElem.classList.add("active");
+      notificarHomeTV(currentCan); // 📺 Notifica a TV ao abrir o zoom
     }
   }
 
@@ -2277,7 +2281,6 @@
           closeMenu();
           focusCardSafely(activeLocalIndex);
         } else if (wasOpenedFromAllBrandsGrid) {
-          // 🔄 SE O USUÁRIO VEIO DE "TODAS AS MARCAS", VOLTA PARA O GRID DAS MARCAS
           renderBrandCardsGrid();
           focusCardSafely(0);
         } else {
