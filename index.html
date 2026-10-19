@@ -2300,6 +2300,12 @@
     fetchCatalogFromSheet();
     setTimeout(hideLoadingScreen, 7000);
   };
+    // Exemplo: Função disparada ao selecionar uma lata no seu site
+function registrarLataAcessada(nomeLata, marca, urlImagem, urlDetalhes) {
+    if (window.AndroidTVBridge) {
+        window.AndroidTVBridge.onCanOpened(nomeLata, marca, urlImagem, urlDetalhes);
+    }
+}
   </script>
 </body>
 </html>
