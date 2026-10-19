@@ -2300,14 +2300,18 @@
     fetchCatalogFromSheet();
     setTimeout(hideLoadingScreen, 7000);
   };
-    // Exemplo: Função disparada ao selecionar uma lata no seu site
-function registrarLataAcessada(nomeLata, marca, urlImagem, urlDetalhes) {
+// Exemplo: Função ao abrir a lata / lightbox no seu site
+function aoAbrirLata(lata) {
+    // Pega a URL da primeira imagem do lightbox ou do card da lata
+    var fotoLata = lata.imagemLightbox || lata.imagemCard; 
+    var nomeLata = lata.nome;
+    var marcaLata = lata.marca;
+    var linkPagina = window.location.href;
+
+    // Dispara para a TV com os dados REAIS da lata clicada
     if (window.AndroidTVBridge) {
-        window.AndroidTVBridge.onCanOpened(nomeLata, marca, urlImagem, urlDetalhes);
+        window.AndroidTVBridge.onCanOpened(nomeLata, marcaLata, fotoLata, linkPagina);
     }
-}
-    if (window.AndroidTVBridge) {
-    window.AndroidTVBridge.onCanOpened("Faxe Premium", "Faxe", "https://seu-site.com/foto.webp", "https://wccollection.netlify.app");
 }
   </script>
 </body>
