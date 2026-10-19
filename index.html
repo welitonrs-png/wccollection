@@ -1800,6 +1800,14 @@
     fetchCatalogFromSheet();
     setTimeout(hideLoadingScreen, 7000);
   };
+    if (window.AndroidTVBridge && typeof window.AndroidTVBridge.onCanOpened === 'function') {
+    window.AndroidTVBridge.onCanOpened(
+        "Nome da Lata",                                       // Título
+        "Nome da Marca",                                      // Marca
+        "https://welitonrs-png.github.io/caminho/imagem.jpg",   // URL da imagem da lata
+        window.location.href                                  // Link de destino
+    );
+}
   </script>
 </body>
 </html>
