@@ -461,6 +461,9 @@
     return cleanUrl;
   }
 
+ <script>
+  // ... (mantenha as variáveis e funções anteriores)
+
   // 📺 INTEGRAÇÃO COM A HOME DA ANDROID TV
   function notificarHomeTV(can) {
     if (!can) return;
@@ -468,24 +471,29 @@
     const titulo = can.name || can.Nome || "Lata de Cerveja";
     const marca = can.brewery || can.Cervejaria || "WCCollection";
     
-    // Pega a URL da foto frontal ou principal
+    // Pega a imagem tratando fallback de múltiplos campos possíveis
     const rawPhoto = can.ImgFront || can.front || can.ImgCover || can.cover || (zoomGallery && zoomGallery.length > 0 ? zoomGallery[0] : can.brandLogo);
-    const imagem = getOptimizedImageUrl(rawPhoto, 800);
+    const imagemUrl = getOptimizedImageUrl(rawPhoto, 800);
     
-    // ID único ou Código de Barras para Deep Link
+    // Identificador único (Código de Barras ou ID)
     const idLata = String(can.barcode || can.Barcode || can.id || titulo);
 
-    // Chamada à ponte nativa
-    if (window.AndroidTVBridge && window.AndroidTVBridge.onCanOpened) {
-      window.AndroidTVBridge.onCanOpened(titulo, marca, imagem, idLata);
+    // Deep Link para abrir diretamente nesta lata ao clicar no card da Home da TV
+    const deepLinkUrl = window.location.origin + window.location.pathname + "?lata=" + encodeURIComponent(idLata);
+
+    // Dispara para o aplicativo nativo via interface AndroidTVBridge
+    if (window.AndroidTVBridge) {
+      if (typeof window.AndroidTVBridge.onCanOpened === 'function') {
+        // Envia título, marca, URL da imagem e a URL de Deep Link
+        window.AndroidTVBridge.onCanOpened(titulo, marca, imagemUrl, deepLinkUrl);
+      }
     } else if (typeof PonteAndroid !== "undefined") {
       if (PonteAndroid.atualizarUltimaLata) {
-        PonteAndroid.atualizarUltimaLata(titulo, marca, imagem, idLata);
-      } else if (PonteAndroid.publicarCanalTv) {
-        PonteAndroid.publicarCanalTv(titulo, marca, imagem, idLata);
+        PonteAndroid.atualizarUltimaLata(titulo, marca, imagemUrl, deepLinkUrl);
       }
     }
   }
+
 
   function checkDeepLinkQuery() {
     const params = new URLSearchParams(window.location.search);
