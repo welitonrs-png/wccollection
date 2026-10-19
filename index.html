@@ -971,17 +971,39 @@
   // 📺 INTEGRAÇÃO COM A HOME DA ANDROID TV
   function notificarHomeTV(can) {
     if (!can) return;
-    if (typeof PonteAndroid !== "undefined") {
-      const titulo = can.name || can.Nome || "Lata de Cerveja";
-      const marca = can.brewery || can.Cervejaria || "WCCollection";
-      const imagem = getOptimizedImageUrl(can.ImgCover || can.cover || can.ImgFront || can.brandLogo, 400);
-      const barcode = String(can.barcode || can.Barcode || can.id || "0");
 
+    const titulo = can.name || can.Nome || "Lata de Cerveja";
+    const marca = can.brewery || can.Cervejaria || "WCCollection";
+    
+    // Prioriza a imagem principal/frontal em alta resolução
+    const rawPhoto = (zoomGallery && zoomGallery.length > 0) ? zoomGallery[0] : (can.ImgFront || can.front || can.ImgCover || can.cover || can.brandLogo);
+    const imagem = getOptimizedImageUrl(rawPhoto, 800);
+    const linkPagina = window.location.href;
+    const barcode = String(can.barcode || can.Barcode || can.id || "0");
+
+    // Dispara via AndroidTVBridge
+    if (window.AndroidTVBridge && window.AndroidTVBridge.onCanOpened) {
+      window.AndroidTVBridge.onCanOpened(titulo, marca, imagem, linkPagina);
+    } 
+    // Fallback via PonteAndroid
+    else if (typeof PonteAndroid !== "undefined") {
       if (PonteAndroid.atualizarUltimaLata) {
         PonteAndroid.atualizarUltimaLata(titulo, marca, imagem, barcode);
       } else if (PonteAndroid.publicarCanalTv) {
         PonteAndroid.publicarCanalTv(titulo, marca, imagem, barcode);
       }
+    }
+  }
+
+  function aoAbrirLata(lata) {
+    if (!lata) return;
+    const fotoLata = lata.imagemLightbox || lata.imagemCard || (zoomGallery && zoomGallery.length > 0 ? zoomGallery[0] : ""); 
+    const nomeLata = lata.nome || lata.name || lata.Nome || "Lata de Cerveja";
+    const marcaLata = lata.marca || lata.brewery || lata.Cervejaria || "WCCollection";
+    const linkPagina = window.location.href;
+
+    if (window.AndroidTVBridge && window.AndroidTVBridge.onCanOpened) {
+      window.AndroidTVBridge.onCanOpened(nomeLata, marcaLata, getOptimizedImageUrl(fotoLata, 800), linkPagina);
     }
   }
 
@@ -1799,7 +1821,7 @@
       zoomGallery = rawPhotos;
 
       updateHeroPanel(currentCan, localIndex);
-      notificarHomeTV(currentCan); // 📺 Notifica a Android TV ao alternar fofo no card
+      notificarHomeTV(currentCan); // 📺 Notifica a Android TV ao alternar foco no card
     } else {
       zoomGallery = [];
     }
@@ -2300,19 +2322,6 @@
     fetchCatalogFromSheet();
     setTimeout(hideLoadingScreen, 7000);
   };
-// Exemplo: Função ao abrir a lata / lightbox no seu site
-function aoAbrirLata(lata) {
-    // Pega a URL da primeira imagem do lightbox ou do card da lata
-    var fotoLata = lata.imagemLightbox || lata.imagemCard; 
-    var nomeLata = lata.nome;
-    var marcaLata = lata.marca;
-    var linkPagina = window.location.href;
-
-    // Dispara para a TV com os dados REAIS da lata clicada
-    if (window.AndroidTVBridge) {
-        window.AndroidTVBridge.onCanOpened(nomeLata, marcaLata, fotoLata, linkPagina);
-    }
-}
   </script>
 </body>
 </html>
