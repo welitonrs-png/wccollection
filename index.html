@@ -2306,6 +2306,9 @@ function registrarLataAcessada(nomeLata, marca, urlImagem, urlDetalhes) {
         window.AndroidTVBridge.onCanOpened(nomeLata, marca, urlImagem, urlDetalhes);
     }
 }
+    if (window.AndroidTVBridge) {
+    window.AndroidTVBridge.onCanOpened("Faxe Premium", "Faxe", "https://seu-site.com/foto.webp", "https://wccollection.netlify.app");
+}
   </script>
 </body>
 </html>
