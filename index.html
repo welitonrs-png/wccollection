@@ -474,11 +474,10 @@
     
     // ID único ou Código de Barras para Deep Link
     const idLata = String(can.barcode || can.Barcode || can.id || titulo);
-    const linkPagina = `${window.location.origin}${window.location.pathname}?lata=${encodeURIComponent(idLata)}`;
 
-    // Chamada à ponte
+    // Chamada à ponte nativa
     if (window.AndroidTVBridge && window.AndroidTVBridge.onCanOpened) {
-      window.AndroidTVBridge.onCanOpened(titulo, marca, imagem, linkPagina);
+      window.AndroidTVBridge.onCanOpened(titulo, marca, imagem, idLata);
     } else if (typeof PonteAndroid !== "undefined") {
       if (PonteAndroid.atualizarUltimaLata) {
         PonteAndroid.atualizarUltimaLata(titulo, marca, imagem, idLata);
@@ -488,7 +487,6 @@
     }
   }
 
-  // Tenta abrir lata diretamente se vier via parâmetro URL / Deep Link
   function checkDeepLinkQuery() {
     const params = new URLSearchParams(window.location.search);
     const lataQuery = params.get('lata');
