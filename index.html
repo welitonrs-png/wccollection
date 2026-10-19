@@ -956,7 +956,7 @@
   let lastSelectedMenuId = 'menuBtnHome'; 
   let lastSelectedBrandElem = null;
   let isAllBrandsGridMode = false;
-  let wasOpenedFromAllBrandsGrid = false; // 🔄 MEMÓRIA SE FOI ABERTO A PARTIR DE "TODAS AS MARCAS"
+  let wasOpenedFromAllBrandsGrid = false;
 
   let registeredBrands = [];
 
@@ -968,15 +968,34 @@
 
   const vkKeys = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','1','2','3','4','5','6','7','8','9','0','ESPAÇO','DEL','LIMPAR'];
 
-  // 📺 INTEGRAÇÃO COM A HOME DA ANDROID TV
+  function fixDriveUrl(url) {
+    if (!url) return '';
+    const str = String(url).trim();
+    const match = str.match(/\/d\/([^\/\?]+)/);
+    if (match && match[1]) {
+      return `https://lh3.googleusercontent.com/d/${match[1]}`;
+    }
+    return str;
+  }
+
+  function getOptimizedImageUrl(url, size = 300) {
+    if (!url) return '';
+    const cleanUrl = fixDriveUrl(url);
+    if (cleanUrl.includes('googleusercontent.com')) {
+      return cleanUrl.split('=')[0] + `=s${size}`;
+    }
+    return cleanUrl;
+  }
+
+  // 📺 INTEGRAÇÃO CORRIGIDA COM A HOME DA ANDROID TV
   function notificarHomeTV(can) {
     if (!can) return;
 
     const titulo = can.name || can.Nome || "Lata de Cerveja";
     const marca = can.brewery || can.Cervejaria || "WCCollection";
     
-    // Prioriza a imagem principal/frontal em alta resolução
-    const rawPhoto = (zoomGallery && zoomGallery.length > 0) ? zoomGallery[0] : (can.ImgFront || can.front || can.ImgCover || can.cover || can.brandLogo);
+    // Busca a melhor foto válida da lata
+    const rawPhoto = can.ImgFront || can.front || can.ImgCover || can.cover || (zoomGallery && zoomGallery.length > 0 ? zoomGallery[0] : can.brandLogo);
     const imagem = getOptimizedImageUrl(rawPhoto, 800);
     const linkPagina = window.location.href;
     const barcode = String(can.barcode || can.Barcode || can.id || "0");
@@ -997,13 +1016,13 @@
 
   function aoAbrirLata(lata) {
     if (!lata) return;
-    const fotoLata = lata.imagemLightbox || lata.imagemCard || (zoomGallery && zoomGallery.length > 0 ? zoomGallery[0] : ""); 
+    const rawPhoto = lata.imagemLightbox || lata.imagemCard || lata.ImgFront || lata.front || (zoomGallery && zoomGallery.length > 0 ? zoomGallery[0] : ""); 
     const nomeLata = lata.nome || lata.name || lata.Nome || "Lata de Cerveja";
     const marcaLata = lata.marca || lata.brewery || lata.Cervejaria || "WCCollection";
     const linkPagina = window.location.href;
 
     if (window.AndroidTVBridge && window.AndroidTVBridge.onCanOpened) {
-      window.AndroidTVBridge.onCanOpened(nomeLata, marcaLata, getOptimizedImageUrl(fotoLata, 800), linkPagina);
+      window.AndroidTVBridge.onCanOpened(nomeLata, marcaLata, getOptimizedImageUrl(rawPhoto, 800), linkPagina);
     }
   }
 
@@ -1034,25 +1053,6 @@
         cardsPerPage = 7;
       }
     }
-  }
-
-  function fixDriveUrl(url) {
-    if (!url) return '';
-    const str = String(url).trim();
-    const match = str.match(/\/d\/([^\/\?]+)/);
-    if (match && match[1]) {
-      return `https://lh3.googleusercontent.com/d/${match[1]}`;
-    }
-    return str;
-  }
-
-  function getOptimizedImageUrl(url, size = 300) {
-    if (!url) return '';
-    const cleanUrl = fixDriveUrl(url);
-    if (cleanUrl.includes('googleusercontent.com')) {
-      return cleanUrl.split('=')[0] + `=s${size}-rw`;
-    }
-    return cleanUrl;
   }
 
   function formatCapitalizedText(str) {
