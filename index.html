@@ -1808,6 +1808,17 @@
         window.location.href                                  // Link de destino
     );
 }
+    function abrirLata(lata) {
+    // Verifica se o aplicativo Android (WebView) injetou a ponte corretamente
+    if (window.AndroidTVBridge && typeof window.AndroidTVBridge.onCanOpened === 'function') {
+        window.AndroidTVBridge.onCanOpened(
+            lata.titulo,                                   // Ex: "CARLSBERG UEFA EURO2020"
+            lata.marca,                                    // Ex: "CARLSBERG"
+            lata.imagemUrl,                                // Ex: "https://welitonrs-png.github.io/wccollection/images/lata1.png" (Link direto da imagem)
+            window.location.href                           // Link de destino
+        );
+    }
+}
   </script>
 </body>
 </html>
