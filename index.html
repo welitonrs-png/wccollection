@@ -1015,6 +1015,15 @@
   }
 
   function aoAbrirLata(lata) {
+    
+        if (window.AndroidTVBridge) { 
+        window.AndroidTVBridge.onLightboxAberto(
+            lata.titulo,        // Nome da lata
+            lata.descricao,     // Ex: "Brasil"
+            lata.imagens?.[0],  // Primeira imagem (com proteção se não existir)
+            lata.codigo         // Identificador único
+        ); 
+    }
     if (!lata) return;
     const rawPhoto = lata.imagemLightbox || lata.imagemCard || lata.ImgFront || lata.front || (zoomGallery && zoomGallery.length > 0 ? zoomGallery[0] : ""); 
     const nomeLata = lata.nome || lata.name || lata.Nome || "Lata de Cerveja";
