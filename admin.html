@@ -96,7 +96,7 @@
       border-radius: 12px;
       box-shadow: 0 8px 24px rgba(0,0,0,0.6);
       text-align: center;
-      max-width: 400px;
+      max-width: 380px;
       width: 90%;
       color: #ffffff;
       border: 1px solid #333d52;
@@ -109,13 +109,13 @@
     }
     .auth-card input {
       width: 100%;
-      padding: 10px;
-      margin: 10px 0;
+      padding: 12px;
+      margin: 15px 0;
       border-radius: 6px;
       border: 1px solid #333d52;
       background-color: #0f121a;
       color: #fff;
-      font-size: 0.95rem;
+      font-size: 1rem;
       box-sizing: border-box;
       outline: none;
       text-align: center;
@@ -126,7 +126,6 @@
     .auth-card button {
       width: 100%;
       padding: 12px;
-      margin-top: 10px;
       background-color: #f39c12;
       color: #1a1e29;
       border: none;
@@ -151,36 +150,26 @@
 </head>
 <body>
 
-  <!-- OVERLAY DE AUTENTICAÇÃO COM SENHA E TOKEN DO GITHUB -->
+  <!-- OVERLAY DE AUTENTICAÇÃO -->
   <div id="adminAuthOverlay">
     <div class="auth-card">
       <h2>ÁREA RESTRITA</h2>
-      <p style="font-size: 0.82rem; color: #a0aec0; margin-bottom: 5px;">Digite a senha e o Token do GitHub para upload na TV:</p>
-      
-      <input type="password" id="adminPassInput" placeholder="Senha de Administrador" autofocus />
-      <input type="password" id="githubTokenInput" placeholder="Token do GitHub (ghp_...)" />
-      
+      <p style="font-size: 0.85rem; color: #a0aec0;">Digite a senha de administrador para acessar o painel:</p>
+      <input type="password" id="adminPassInput" placeholder="Sua senha" autofocus />
       <button id="authBtn" onclick="validarSenhaAdmin()">ACESSAR PAINEL</button>
-      <div id="authErrorMsg" class="auth-error">Credenciais incorretas! Tente novamente.</div>
+      <div id="authErrorMsg" class="auth-error">Senha incorreta! Tente novamente.</div>
     </div>
   </div>
 
   <script>
     const API_URL = "https://script.google.com/macros/s/AKfycbwP4kTpSrGJllmlWjQp1YmD1Th5jiw1oUtX5cAJAZj9txy-eNi6_EYyLPG_Q0_coyT9/exec";
-    
-    const GITHUB_REPO = "welitonrs-png/wccollection";
-    const GITHUB_BRANCH = "main";
 
     function getAdminPass() {
       return sessionStorage.getItem("wccollection_admin_pass") || "";
     }
 
-    function getGithubToken() {
-      return sessionStorage.getItem("wccollection_gh_token") || "";
-    }
-
     function verificarSessaoAdmin() {
-      if (getAdminPass() && getGithubToken()) {
+      if (getAdminPass()) {
         const overlay = document.getElementById("adminAuthOverlay");
         if (overlay) overlay.style.display = "none";
       }
@@ -188,12 +177,11 @@
 
     async function validarSenhaAdmin() {
       const inputVal = document.getElementById("adminPassInput").value.trim();
-      const tokenVal = document.getElementById("githubTokenInput").value.trim();
       const errorMsg = document.getElementById("authErrorMsg");
       const authBtn = document.getElementById("authBtn");
 
-      if (!inputVal || !tokenVal) {
-        errorMsg.innerText = "Preencha a senha e o token do GitHub.";
+      if (!inputVal) {
+        errorMsg.innerText = "Por favor, digite a senha.";
         errorMsg.style.display = "block";
         return;
       }
@@ -211,7 +199,6 @@
 
         if (result.success) {
           sessionStorage.setItem("wccollection_admin_pass", inputVal);
-          sessionStorage.setItem("wccollection_gh_token", tokenVal);
           document.getElementById("adminAuthOverlay").style.display = "none";
           if (typeof loadCatalog === "function") loadCatalog();
         } else {
@@ -231,7 +218,7 @@
     }
 
     document.addEventListener("DOMContentLoaded", () => {
-      document.getElementById("githubTokenInput")?.addEventListener("keydown", function(e) {
+      document.getElementById("adminPassInput")?.addEventListener("keydown", function(e) {
         if (e.key === "Enter") {
           validarSenhaAdmin();
         }
@@ -367,7 +354,7 @@
               <label>2. FRENTE (PAINEL)</label>
               <img id="prevFront" class="photo-preview" src="">
               <input type="hidden" id="ImgFront" name="ImgFront">
-              <!-- CAMPO EXTRA PARA GUARDAR O LINK DA FOTO DA TV NA PASTA GITHUB TV_IMAGES -->
+              <!-- CAMPO EXTRA PARA GUARDAR O LINK DA FOTO DA TV NO GOOGLE DRIVE -->
               <input type="hidden" id="ImgTvJpg" name="ImgTvJpg">
               <input type="file" id="fileFront" accept="image/*" class="btn-file" onchange="uploadFrontImageForTvAndWeb(this)">
             </div>
@@ -686,7 +673,7 @@
     reader.readAsDataURL(file);
   }
 
-  // FUNÇÃO ESPECIAL PARA PROCESSAR A FRENTE: ENVIA WEBP E GERA/ENVIA O JPG 16:9 DIRETAMENTE PARA O GITHUB (tv_images)
+  // FUNÇÃO ESPECIAL PARA PROCESSAR A FRENTE: ENVIA WEBP E GERA/ENVIA O JPG 16:9 DIRETAMENTE PARA O GOOGLE DRIVE
   async function uploadFrontImageForTvAndWeb(fileInput) {
     const file = fileInput.files[0];
     if (!file) return;
@@ -704,7 +691,7 @@
       .replace(/[^a-z0-9]/g, "_")
       .replace(/_+/g, "_") + ".jpg";
 
-    showStatus("Processando e enviando para o GitHub (tv_images)...", false);
+    showStatus("Processando fotos e enviando para o Google Drive...", false);
 
     const reader = new FileReader();
     reader.onload = function(e) {
@@ -732,7 +719,7 @@
           console.error("Erro ao enviar WebP:", err);
         }
 
-        // 2. GERAR E ENVIAR O JPG 16:9 (1920x1080 com fundo branco) DIRETAMENTE PARA O GITHUB
+        // 2. GERAR E ENVIAR O JPG 16:9 (1920x1080 com fundo branco) DIRETAMENTE PARA O GOOGLE DRIVE
         const targetWidth = 1920;
         const targetHeight = 1080;
         const canvas = document.createElement('canvas');
@@ -764,49 +751,29 @@
         canvas.toBlob(async function(blobJpg) {
           const readerJpg = new FileReader();
           readerJpg.onload = async function(eJpg) {
-            const base64Jpg = eJpg.target.result.split(',')[1];
-            const githubPath = `tv_images/${nomeArquivoFormatado}`;
-            const githubApiUrl = `https://api.github.com/repos/${GITHUB_REPO}/contents/${githubPath}`;
-            const githubToken = getGithubToken();
-
             try {
-              let sha = null;
-              const checkRes = await fetch(githubApiUrl, {
-                headers: { "Authorization": `token ${githubToken}` }
-              });
-              if (checkRes.ok) {
-                const fileData = await checkRes.json();
-                sha = fileData.sha;
-              }
-
-              const payload = {
-                message: `Admin TV Upload: ${nomeArquivoFormatado}`,
-                content: base64Jpg,
-                branch: GITHUB_BRANCH
+              const payloadDrive = {
+                action: "upload_photo",
+                adminPass: getAdminPass(),
+                base64: eJpg.target.result,
+                fileName: nomeArquivoFormatado
               };
-              if (sha) payload.sha = sha;
 
-              const putRes = await fetch(githubApiUrl, {
-                method: "PUT",
-                headers: {
-                  "Authorization": `token ${githubToken}`,
-                  "Content-Type": "application/json"
-                },
-                body: JSON.stringify(payload)
+              const resDrive = await fetch(API_URL, {
+                method: "POST",
+                body: JSON.stringify(payloadDrive)
               });
+              const resultDrive = await resDrive.json();
 
-              if (putRes.ok) {
-                const finalPubUrl = `https://welitonrs-png.github.io/wccollection/tv_images/${nomeArquivoFormatado}`;
-                document.getElementById("ImgTvJpg").value = finalPubUrl;
-                showStatus("Fotos enviadas com sucesso para o site e GitHub (tv_images)!", false);
+              if (resultDrive.success && resultDrive.url) {
+                document.getElementById("ImgTvJpg").value = resultDrive.url;
+                showStatus("Fotos enviadas com sucesso para o site e Google Drive!", false);
               } else {
-                const errJson = await putRes.json();
-                console.error("Erro GitHub:", errJson);
-                showStatus("Erro ao enviar arquivo para o GitHub. Verifique o Token.", true);
+                showStatus("Erro ao enviar a versão da TV para o Google Drive.", true);
               }
             } catch (err) {
-              console.error(err);
-              showStatus("Erro de conexão ao enviar para o GitHub.", true);
+              console.error("Erro ao enviar JPG para o Drive:", err);
+              showStatus("Erro de conexão ao enviar para o Google Drive.", true);
             }
           };
           readerJpg.readAsDataURL(blobJpg);
@@ -849,7 +816,7 @@
       brandWallpaper: fixDriveUrl(document.getElementById("brandWallpaper").value),
       ImgCover: fixDriveUrl(coverValue),
       ImgFront: fixDriveUrl(frontValue),
-      ImgTvJpg: fixDriveUrl(document.getElementById("ImgTvJpg").value), // Link 16:9 do GitHub Pages
+      ImgTvJpg: fixDriveUrl(document.getElementById("ImgTvJpg").value), // Link 16:9 do Google Drive
       ImgLeft: fixDriveUrl(document.getElementById("ImgLeft").value),
       ImgBack: fixDriveUrl(document.getElementById("ImgBack").value),
       ImgRight: fixDriveUrl(document.getElementById("ImgRight").value),
