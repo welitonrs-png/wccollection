@@ -354,7 +354,9 @@
               <label>2. FRENTE (PAINEL)</label>
               <img id="prevFront" class="photo-preview" src="">
               <input type="hidden" id="ImgFront" name="ImgFront">
-              <input type="file" id="fileFront" accept="image/*" class="btn-file" onchange="uploadImage(this, 'ImgFront', 'prevFront')">
+              <!-- CAMPO EXTRA INVISÍVEL PARA GUARDAR O LINK DA FOTO DA TV EM 16:9 -->
+              <input type="hidden" id="ImgTvJpg" name="ImgTvJpg">
+              <input type="file" id="fileFront" accept="image/*" class="btn-file" onchange="uploadFrontImageForTvAndWeb(this)">
             </div>
 
             <div class="photo-box">
@@ -561,6 +563,8 @@
 
     setPhotoField("ImgCover", "prevCover", item.ImgCover);
     setPhotoField("ImgFront", "prevFront", item.ImgFront);
+    document.getElementById("ImgTvJpg").value = item.ImgTvJpg || "";
+
     setPhotoField("ImgLeft", "prevLeft", item.ImgLeft);
     setPhotoField("ImgBack", "prevBack", item.ImgBack);
     setPhotoField("ImgRight", "prevRight", item.ImgRight);
@@ -669,6 +673,103 @@
     reader.readAsDataURL(file);
   }
 
+  // FUNÇÃO ESPECIAL PARA PROCESSAR A FRENTE: ENVIA O WEBP NORMAL E GERA O JPG 16:9 PARA A PASTA EXTRA DA TV
+  async function uploadFrontImageForTvAndWeb(fileInput) {
+    const file = fileInput.files[0];
+    if (!file) return;
+
+    showStatus("Processando fotos (WebP e JPG 16:9)...", false);
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const img = new Image();
+      img.onload = async function() {
+        
+        // 1. UPLOAD NORMAL DA FOTO EM WEBP (Fluxo original)
+        const base64Original = e.target.result;
+        try {
+          const resWebp = await fetch(API_URL, {
+            method: "POST",
+            body: JSON.stringify({ 
+              action: "upload_photo", 
+              adminPass: getAdminPass(),
+              base64: base64Original, 
+              fileName: file.name 
+            })
+          });
+          const resultWebp = await resWebp.json();
+          if (resultWebp.success && resultWebp.url) {
+            document.getElementById("ImgFront").value = resultWebp.url;
+            updatePreview("ImgFront", "prevFront");
+          }
+        } catch (err) {
+          console.error("Erro ao enviar WebP:", err);
+        }
+
+        // 2. GERAR E ENVIAR A VERSÃO EXTRA EM JPG 16:9 (1920x1080 com fundo branco) PARA A PASTA DA TV
+        const targetWidth = 1920;
+        const targetHeight = 1080;
+        const canvas = document.createElement('canvas');
+        canvas.width = targetWidth;
+        canvas.height = targetHeight;
+        const ctx = canvas.getContext('2d');
+
+        // Fundo branco
+        ctx.fillStyle = "#FFFFFF";
+        ctx.fillRect(0, 0, targetWidth, targetHeight);
+
+        // Encaixar sem cortar (Contain)
+        const imgAspect = img.width / img.height;
+        const targetAspect = targetWidth / targetHeight;
+        let drawWidth, drawHeight, offsetX, offsetY;
+
+        if (imgAspect > targetAspect) {
+          drawWidth = targetWidth;
+          drawHeight = targetWidth / imgAspect;
+          offsetX = 0;
+          offsetY = (targetHeight - drawHeight) / 2;
+        } else {
+          drawHeight = targetHeight;
+          drawWidth = targetHeight * imgAspect;
+          offsetX = (targetWidth - drawWidth) / 2;
+          offsetY = 0;
+        }
+
+        ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
+
+        canvas.toBlob(async function(blobJpg) {
+          const readerJpg = new FileReader();
+          readerJpg.onload = async function(eJpg) {
+            try {
+              const resJpg = await fetch(API_URL, {
+                method: "POST",
+                body: JSON.stringify({ 
+                  action: "upload_photo", 
+                  adminPass: getAdminPass(),
+                  base64: eJpg.target.result, 
+                  fileName: "tv_" + file.name.replace(/\.[^/.]+$/, "") + ".jpg",
+                  subFolder: "tv_images" // Pasta extra criada no Google Drive / GitHub
+                })
+              });
+              const resultJpg = await resJpg.json();
+              if (resultJpg.success && resultJpg.url) {
+                document.getElementById("ImgTvJpg").value = resultJpg.url;
+                showStatus("Fotos (WebP e JPG 16:9) enviadas com sucesso!", false);
+              }
+            } catch (err) {
+              console.error("Erro ao enviar JPG da TV:", err);
+              showStatus("Erro ao enviar foto 16:9 para a TV.", true);
+            }
+          };
+          readerJpg.readAsDataURL(blobJpg);
+        }, 'image/jpeg', 0.90);
+
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
   async function handleFormSubmit(e) {
     e.preventDefault();
     const btnSave = document.getElementById("btnSave");
@@ -700,6 +801,7 @@
       brandWallpaper: fixDriveUrl(document.getElementById("brandWallpaper").value),
       ImgCover: fixDriveUrl(coverValue),
       ImgFront: fixDriveUrl(frontValue),
+      ImgTvJpg: fixDriveUrl(document.getElementById("ImgTvJpg").value), // Link da imagem 16:9 para a TV
       ImgLeft: fixDriveUrl(document.getElementById("ImgLeft").value),
       ImgBack: fixDriveUrl(document.getElementById("ImgBack").value),
       ImgRight: fixDriveUrl(document.getElementById("ImgRight").value),
@@ -765,6 +867,7 @@
     document.getElementById("brandDesc").value = "";
     document.getElementById("ImgCover").value = "";
     document.getElementById("ImgFront").value = "";
+    document.getElementById("ImgTvJpg").value = "";
     document.getElementById("ImgLeft").value = "";
     document.getElementById("ImgBack").value = "";
     document.getElementById("ImgRight").value = "";
