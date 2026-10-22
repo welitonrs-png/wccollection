@@ -640,13 +640,84 @@
     }
 
     /* MODAL DE SAÍDA */
-    .exit-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); z-index: 4000; display: none; justify-content: center; align-items: center; }
-    .exit-modal.active { display: flex; }
-    .exit-box { background: #161b26; border: 2px solid #333d52; padding: 30px 40px; border-radius: 12px; display: flex; flex-direction: column; align-items: center; gap: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
-    .exit-title { color: #f39c12; font-size: 1.3rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
-    .exit-buttons { display: flex; gap: 16px; }
-    .exit-btn { padding: 10px 24px; border-radius: 8px; font-weight: bold; font-size: 1rem; border: none; cursor: pointer; text-transform: uppercase; background: #2a3447; color: #a0aec0; transition: all 0.15s ease; }
-    .exit-btn:focus, .exit-btn:hover { background: #ffffff; color: #1a1f2c; box-shadow: 0 0 15px rgba(255,255,255,0.3); outline: none; }
+  .exit-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 99999;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.2s ease;
+}
+
+.exit-modal.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.exit-box {
+  background: #282A2D;
+  padding: 30px 40px;
+  border-radius: 12px;
+  border: 2px solid #444;
+  text-align: center;
+}
+
+.exit-title {
+  font-size: 20px;
+  color: #fff;
+  margin-bottom: 25px;
+  font-weight: bold;
+}
+
+.exit-buttons {
+  display: flex;
+  flex-direction: column; /* Um embaixo do outro */
+  gap: 15px;
+  justify-content: center;
+}
+
+.exit-buttons button {
+  padding: 15px 35px;
+  font-size: 18px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  /* Tira a borda padrão do navegador */
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Botão NÃO - normal */
+.exit-buttons button:first-child {
+  background: #444;
+  color: #fff;
+}
+/* Botão NÃO - SELECIONADO */
+.exit-buttons button:first-child:focus {
+  background: #666; /* Fica mais claro */
+  color: #fff;
+  transform: scale(1.05);
+}
+
+/* Botão SIM - normal */
+.exit-buttons button:last-child {
+  background: #c0392b;
+  color: #fff;
+}
+/* Botão SIM - SELECIONADO */
+.exit-buttons button:last-child:focus {
+  background: #e74c3c; /* Fica mais brilhante */
+  color: #fff;
+  transform: scale(1.05);
+}
 
     /* MODO ESPECIAL DE MARCA / PESQUISA */
     .main-area.brand-mode #heroPanel {
@@ -836,6 +907,38 @@
       .card-row.brand-mode-grid .card-bar-flag { width: 22px !important; height: 14px !important; }
       .card-row.brand-mode-grid .card-bar-vol { font-size: 1rem !important; }
     }
+    // Função que o Android chama
+function mostrarConfirmacaoSaida() {
+    // Exibe a sua caixa de pergunta que já existe
+    // Se já tem uma função, é só chamar ela aqui
+    const confirmou = confirm("TEM CERTEZA QUE QUER SAIR?");
+
+    // Envia a resposta de volta para o Android
+    if (window.AndroidTVBridge) {
+        AndroidTVBridge.confirmouSaida(confirmou);
+    }
+}
+
+// Se a sua caixa já é personalizada (com NÃO e SIM), ajuste assim:
+/*
+function mostrarConfirmacaoSaida() {
+    // Mostra sua div de confirmação que já existe
+    document.getElementById("caixaConfirmacaoSaida").style.display = "flex";
+}
+
+function aoClicarEmNao() {
+    document.getElementById("caixaConfirmacaoSaida").style.display = "none";
+    if (window.AndroidTVBridge) {
+        AndroidTVBridge.confirmouSaida(false);
+    }
+}
+
+function aoClicarEmSim() {
+    if (window.AndroidTVBridge) {
+        AndroidTVBridge.confirmouSaida(true);
+    }
+}
+*/
   </style>
 </head>
 <body>
@@ -934,8 +1037,8 @@
     <div class="exit-box">
       <div class="exit-title">TEM CERTEZA QUE QUER SAIR?</div>
       <div class="exit-buttons">
-        <button class="exit-btn" id="exitBtnNo" onclick="closeExitModal()">NÃO</button>
-        <button class="exit-btn" id="exitBtnYes" onclick="confirmExit()">SIM</button>
+        <button onclick="acaoSairNao()">NÃO</button>
+        <button onclick="acaoSairSim()">SIM</button>
       </div>
     </div>
   </div>
@@ -1015,15 +1118,6 @@
   }
 
   function aoAbrirLata(lata) {
-    
-        if (window.AndroidTVBridge) { 
-        window.AndroidTVBridge.onLightboxAberto(
-            lata.titulo,        // Nome da lata
-            lata.descricao,     // Ex: "Brasil"
-            lata.imagens?.[0],  // Primeira imagem (com proteção se não existir)
-            lata.codigo         // Identificador único
-        ); 
-    }
     if (!lata) return;
     const rawPhoto = lata.imagemLightbox || lata.imagemCard || lata.ImgFront || lata.front || (zoomGallery && zoomGallery.length > 0 ? zoomGallery[0] : ""); 
     const nomeLata = lata.nome || lata.name || lata.Nome || "Lata de Cerveja";
@@ -2307,17 +2401,18 @@
       }
     } else {
       if (isBackKey) {
-        e.preventDefault(); e.stopPropagation();
-        if (isMenuOpen) {
-          closeMenu();
-          focusCardSafely(activeLocalIndex);
-        } else if (wasOpenedFromAllBrandsGrid) {
-          renderBrandCardsGrid();
-          focusCardSafely(0);
-        } else {
-          openExitModal();
-        }
-      }
+  e.preventDefault();
+  e.stopPropagation();
+  if (isMenuOpen) {
+    closeMenu();
+    focusCardSafely(activeLocalIndex);
+  } else if (wasOpenedFromAllBrandsGrid) {
+    renderBrandCardsGrid();
+    focusCardSafely(0);
+  } else {
+    openExitModal(); // ✅ Abre a confirmação
+  }
+}
 
       const activeElem = document.activeElement;
       if (activeElem && (activeElem.classList.contains("cat-btn") || activeElem.classList.contains("brand-btn")) && (e.key === "ArrowRight" || e.keyCode === 39)) {
@@ -2331,6 +2426,121 @@
     fetchCatalogFromSheet();
     setTimeout(hideLoadingScreen, 7000);
   };
-  </script>
+
+// ========== SAÍDA DO APLICATIVO - AJUSTADO PARA CIMA/BAIXO ==========
+
+let modalAtivo = false;
+let indiceBotao = 0; // 0 = NÃO, 1 = SIM
+
+function mostrarConfirmacaoSaida() {
+  console.log("📤 Abrindo confirmação de saída");
+  openExitModal();
+}
+
+function openExitModal() {
+  const modal = document.getElementById("exitModal");
+  if (modal) {
+    modal.classList.add("active");
+    modalAtivo = true;
+    indiceBotao = 0; // Começa no NÃO
+    atualizarFocoBotao();
+  }
+}
+
+function atualizarFocoBotao() {
+  const botoes = document.querySelectorAll("#exitModal button");
+  botoes.forEach((btn, i) => {
+    if (i === indiceBotao) {
+      btn.focus();
+      console.log("🎯 Selecionado:", btn.textContent);
+    }
+  });
+}
+
+// CAPTURA DE TECLAS AJUSTADA
+document.addEventListener("keydown", function(e) {
+  if (!modalAtivo) return; // Só funciona se o modal estiver aberto
+
+  console.log("🔑 Tecla recebida:", e.key, "código:", e.keyCode);
+
+  // ✅ SETA PARA BAIXO → vai de NÃO para SIM
+  if (e.key === "ArrowDown" || e.keyCode === 40 || e.keyCode === 22) {
+    e.preventDefault();
+    e.stopPropagation();
+    indiceBotao = 1;
+    atualizarFocoBotao();
+  }
+
+  // ✅ SETA PARA CIMA → volta de SIM para NÃO
+  if (e.key === "ArrowUp" || e.keyCode === 38 || e.keyCode === 21) {
+    e.preventDefault();
+    e.stopPropagation();
+    indiceBotao = 0;
+    atualizarFocoBotao();
+  }
+
+  // Mantém os lados também como alternativa, se precisar
+  if (e.key === "ArrowRight" || e.keyCode === 39) {
+    e.preventDefault();
+    e.stopPropagation();
+    indiceBotao = 1;
+    atualizarFocoBotao();
+  }
+  if (e.key === "ArrowLeft" || e.keyCode === 37) {
+    e.preventDefault();
+    e.stopPropagation();
+    indiceBotao = 0;
+    atualizarFocoBotao();
+  }
+
+  // Enter → confirma
+  if (e.key === "Enter" || e.keyCode === 13 || e.keyCode === 66) {
+    e.preventDefault();
+    e.stopPropagation();
+    if (indiceBotao === 0) {
+      acaoSairNao();
+    } else {
+      acaoSairSim();
+    }
+  }
+
+  // Botão Voltar → cancela
+  if (e.key === "Escape" || e.keyCode === 4) {
+    e.preventDefault();
+    e.stopPropagation();
+    acaoSairNao();
+  }
+});
+
+function acaoSairNao() {
+  console.log("❌ Cancelou saída");
+  modalAtivo = false;
+  indiceBotao = 0;
+  const modal = document.getElementById("exitModal");
+  if (modal) modal.classList.remove("active");
+  if (typeof focusCardSafely !== "undefined") {
+    focusCardSafely(activeLocalIndex);
+  }
+}
+
+function acaoSairSim() {
+  console.log("✅ Confirmou saída");
+  modalAtivo = false;
+  indiceBotao = 0;
+  const modal = document.getElementById("exitModal");
+  if (modal) modal.classList.remove("active");
+
+  if (window.AndroidTVBridge && window.AndroidTVBridge.confirmouSaida) {
+    window.AndroidTVBridge.confirmouSaida(true);
+  }
+  else if (window.AndroidTVBridge && window.AndroidTVBridge.fecharApp) {
+    window.AndroidTVBridge.fecharApp();
+  }
+  else {
+    window.close();
+    history.back();
+  }
+}
+</script>
 </body>
 </html>
