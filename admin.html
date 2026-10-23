@@ -300,14 +300,14 @@
               <label>LOGO DA MARCA</label>
               <img id="prevLogo" class="photo-preview" src="">
               <input type="text" id="brandLogo" name="BRAND_LOGO" class="form-control" style="font-size: 0.75rem; padding: 4px;" placeholder="URL ou upload..." onchange="updatePreview('brandLogo', 'prevLogo')">
-              <input type="file" id="fileLogo" accept="image/*" class="btn-file" onchange="uploadImage(this, 'brandLogo', 'prevLogo')">
+              <input type="file" id="fileLogo" accept="image/*" class="btn-file" onchange="uploadImage(this, 'brandLogo', 'prevLogo', 'logo')">
             </div>
 
             <div class="photo-box">
               <label>WALLPAPER DA MARCA</label>
               <img id="prevWallpaper" class="photo-preview" src="">
               <input type="text" id="brandWallpaper" name="brandWallpaper" class="form-control" style="font-size: 0.75rem; padding: 4px;" placeholder="URL ou upload..." onchange="updatePreview('brandWallpaper', 'prevWallpaper')">
-              <input type="file" id="fileWallpaper" accept="image/*" class="btn-file" onchange="uploadImage(this, 'brandWallpaper', 'prevWallpaper')">
+              <input type="file" id="fileWallpaper" accept="image/*" class="btn-file" onchange="uploadImage(this, 'brandWallpaper', 'prevWallpaper', 'wallpaper')">
             </div>
           </div>
         </div>
@@ -347,7 +347,7 @@
               <label>1. CAPA MINI</label>
               <img id="prevCover" class="photo-preview" src="">
               <input type="hidden" id="ImgCover" name="ImgCover">
-              <input type="file" id="fileCover" accept="image/*" class="btn-file" onchange="uploadImage(this, 'ImgCover', 'prevCover')">
+              <input type="file" id="fileCover" accept="image/*" class="btn-file" onchange="uploadImage(this, 'ImgCover', 'prevCover', 'capa')">
             </div>
 
             <div class="photo-box">
@@ -363,35 +363,35 @@
               <label>3. LADO ESQUERDO</label>
               <img id="prevLeft" class="photo-preview" src="">
               <input type="hidden" id="ImgLeft" name="ImgLeft">
-              <input type="file" id="fileLeft" accept="image/*" class="btn-file" onchange="uploadImage(this, 'ImgLeft', 'prevLeft')">
+              <input type="file" id="fileLeft" accept="image/*" class="btn-file" onchange="uploadImage(this, 'ImgLeft', 'prevLeft', 'esquerdo')">
             </div>
 
             <div class="photo-box">
               <label>4. TRÁS / BACK</label>
               <img id="prevBack" class="photo-preview" src="">
               <input type="hidden" id="ImgBack" name="ImgBack">
-              <input type="file" id="fileBack" accept="image/*" class="btn-file" onchange="uploadImage(this, 'ImgBack', 'prevBack')">
+              <input type="file" id="fileBack" accept="image/*" class="btn-file" onchange="uploadImage(this, 'ImgBack', 'prevBack', 'tras')">
             </div>
 
             <div class="photo-box">
               <label>5. LADO DIREITO</label>
               <img id="prevRight" class="photo-preview" src="">
               <input type="hidden" id="ImgRight" name="ImgRight">
-              <input type="file" id="fileRight" accept="image/*" class="btn-file" onchange="uploadImage(this, 'ImgRight', 'prevRight')">
+              <input type="file" id="fileRight" accept="image/*" class="btn-file" onchange="uploadImage(this, 'ImgRight', 'prevRight', 'direito')">
             </div>
 
             <div class="photo-box">
               <label>6. TAMPA</label>
               <img id="prevTop" class="photo-preview" src="">
               <input type="hidden" id="ImgTop" name="ImgTop">
-              <input type="file" id="fileTop" accept="image/*" class="btn-file" onchange="uploadImage(this, 'ImgTop', 'prevTop')">
+              <input type="file" id="fileTop" accept="image/*" class="btn-file" onchange="uploadImage(this, 'ImgTop', 'prevTop', 'tampa')">
             </div>
 
             <div class="photo-box">
               <label>7. FUNDO</label>
               <img id="prevBottom" class="photo-preview" src="">
               <input type="hidden" id="ImgBottom" name="ImgBottom">
-              <input type="file" id="fileBottom" accept="image/*" class="btn-file" onchange="uploadImage(this, 'ImgBottom', 'prevBottom')">
+              <input type="file" id="fileBottom" accept="image/*" class="btn-file" onchange="uploadImage(this, 'ImgBottom', 'prevBottom', 'fundo')">
             </div>
           </div>
         </div>
@@ -563,7 +563,7 @@
 
     setPhotoField("ImgCover", "prevCover", item.ImgCover);
     setPhotoField("ImgFront", "prevFront", item.ImgFront);
-    document.getElementById("ImgTvJpg").value = item.ImgTvJpg || "";
+    document.getElementById("ImgTvJpg").value = item.ImgTvJpg || item.ImagemTV || "";
 
     setPhotoField("ImgLeft", "prevLeft", item.ImgLeft);
     setPhotoField("ImgBack", "prevBack", item.ImgBack);
@@ -636,11 +636,37 @@
     }
   }
 
-  function uploadImage(fileInput, hiddenId, prevId) {
+  // FUNÇÃO AUXILIAR PARA CRIAR O NOME PADRONIZADO DA LATA
+  function gerarNomeFormatadoArquivo(prefixo, extensao) {
+    let nomeLata = document.getElementById("Nome").value.trim();
+    if (!nomeLata) {
+      nomeLata = "lata_sem_nome";
+    }
+    const nomeLimpo = nomeLata
+      .toLowerCase()
+      .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z0-9]/g, "_")
+      .replace(/_+/g, "_");
+    
+    return `${prefixo}_${nomeLimpo}.${extensao}`;
+  }
+
+  // UPLOAD PADRÃO PARA AS FOTOS COM SUPORTE A PREFIXOS
+  function uploadImage(fileInput, hiddenId, prevId, prefixoDesejado) {
     const file = fileInput.files[0];
     if (!file) return;
 
-    showStatus("Enviando foto para o Google Drive...", false);
+    let nomeLata = document.getElementById("Nome").value.trim();
+    if (!nomeLata) {
+      showStatus("Por favor, preencha o Nome da Lata antes de enviar a foto.", true);
+      fileInput.value = "";
+      return;
+    }
+
+    const extensaoOriginal = file.name.split('.').pop() || 'webp';
+    const nomeArquivoPersonalizado = gerarNomeFormatadoArquivo(prefixoDesejado, extensaoOriginal);
+
+    showStatus(`Enviando ${prefixoDesejado} para o Google Drive...`, false);
 
     const reader = new FileReader();
     reader.onload = async (e) => {
@@ -650,7 +676,8 @@
           action: "upload_photo", 
           adminPass: getAdminPass(),
           base64: base64Data, 
-          fileName: file.name 
+          fileName: nomeArquivoPersonalizado,
+          brewery: document.getElementById("Cervejaria").value.trim()
         };
         const res = await fetch(API_URL, {
           method: "POST",
@@ -661,7 +688,7 @@
         if (result.success && result.url) {
           document.getElementById(hiddenId).value = result.url;
           updatePreview(hiddenId, prevId);
-          showStatus("Imagem enviada com sucesso!", false);
+          showStatus("Imagem enviada e renomeada com sucesso!", false);
         } else {
           showStatus(result.error || "Acesso negado: Senha incorreta.", true);
         }
@@ -673,7 +700,7 @@
     reader.readAsDataURL(file);
   }
 
-  // FUNÇÃO ESPECIAL PARA PROCESSAR A FRENTE: ENVIA WEBP E GERA/ENVIA O JPG 16:9 DIRETAMENTE PARA O GOOGLE DRIVE
+  // FUNÇÃO ESPECIAL PARA PROCESSAR A FRENTE E A TV (16:9) COM PREFIXOS
   async function uploadFrontImageForTvAndWeb(fileInput) {
     const file = fileInput.files[0];
     if (!file) return;
@@ -685,11 +712,8 @@
       return;
     }
 
-    const nomeArquivoFormatado = "tv_" + nomeLata
-      .toLowerCase()
-      .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
-      .replace(/[^a-z0-9]/g, "_")
-      .replace(/_+/g, "_") + ".jpg";
+    const nomeArquivoFrente = gerarNomeFormatadoArquivo("frente", "webp");
+    const nomeArquivoTv = gerarNomeFormatadoArquivo("tv", "jpg");
 
     showStatus("Processando fotos e enviando para o Google Drive...", false);
 
@@ -698,7 +722,7 @@
       const img = new Image();
       img.onload = async function() {
         
-        // 1. UPLOAD NORMAL DA FOTO EM WEBP (Google Drive / Apps Script)
+        // 1. UPLOAD DA FOTO DA FRENTE COM PREFIXO "frente_"
         const base64Original = e.target.result;
         try {
           const resWebp = await fetch(API_URL, {
@@ -707,7 +731,8 @@
               action: "upload_photo", 
               adminPass: getAdminPass(),
               base64: base64Original, 
-              fileName: file.name 
+              fileName: nomeArquivoFrente,
+              brewery: document.getElementById("Cervejaria").value.trim()
             })
           });
           const resultWebp = await resWebp.json();
@@ -716,10 +741,10 @@
             updatePreview("ImgFront", "prevFront");
           }
         } catch (err) {
-          console.error("Erro ao enviar WebP:", err);
+          console.error("Erro ao enviar frente:", err);
         }
 
-        // 2. GERAR E ENVIAR O JPG 16:9 (1920x1080 com fundo branco) DIRETAMENTE PARA O GOOGLE DRIVE
+        // 2. GERAR E ENVIAR O JPG 16:9 COM PREFIXO "tv_"
         const targetWidth = 1920;
         const targetHeight = 1080;
         const canvas = document.createElement('canvas');
@@ -756,7 +781,8 @@
                 action: "upload_photo",
                 adminPass: getAdminPass(),
                 base64: eJpg.target.result,
-                fileName: nomeArquivoFormatado
+                fileName: nomeArquivoTv,
+                brewery: document.getElementById("Cervejaria").value.trim()
               };
 
               const resDrive = await fetch(API_URL, {
@@ -767,7 +793,7 @@
 
               if (resultDrive.success && resultDrive.url) {
                 document.getElementById("ImgTvJpg").value = resultDrive.url;
-                showStatus("Fotos enviadas com sucesso para o site e Google Drive!", false);
+                showStatus("Frente e TV enviadas e padronizadas com sucesso!", false);
               } else {
                 showStatus("Erro ao enviar a versão da TV para o Google Drive.", true);
               }
@@ -816,7 +842,7 @@
       brandWallpaper: fixDriveUrl(document.getElementById("brandWallpaper").value),
       ImgCover: fixDriveUrl(coverValue),
       ImgFront: fixDriveUrl(frontValue),
-      ImgTvJpg: fixDriveUrl(document.getElementById("ImgTvJpg").value), // Link 16:9 do Google Drive
+      ImgTvJpg: fixDriveUrl(document.getElementById("ImgTvJpg").value), // Link 16:9 para a coluna V (ImagemTV)
       ImgLeft: fixDriveUrl(document.getElementById("ImgLeft").value),
       ImgBack: fixDriveUrl(document.getElementById("ImgBack").value),
       ImgRight: fixDriveUrl(document.getElementById("ImgRight").value),
