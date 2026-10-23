@@ -300,14 +300,14 @@
               <label>LOGO DA MARCA</label>
               <img id="prevLogo" class="photo-preview" src="">
               <input type="text" id="brandLogo" name="BRAND_LOGO" class="form-control" style="font-size: 0.75rem; padding: 4px;" placeholder="URL ou upload..." onchange="updatePreview('brandLogo', 'prevLogo')">
-              <input type="file" id="fileLogo" accept="image/*" class="btn-file" onchange="uploadImage(this, 'brandLogo', 'prevLogo', 'logo')">
+              <input type="file" id="fileLogo" accept="image/*" class="btn-file" onchange="uploadBrandImage(this, 'brandLogo', 'prevLogo', 'logo')">
             </div>
 
             <div class="photo-box">
               <label>WALLPAPER DA MARCA</label>
               <img id="prevWallpaper" class="photo-preview" src="">
               <input type="text" id="brandWallpaper" name="brandWallpaper" class="form-control" style="font-size: 0.75rem; padding: 4px;" placeholder="URL ou upload..." onchange="updatePreview('brandWallpaper', 'prevWallpaper')">
-              <input type="file" id="fileWallpaper" accept="image/*" class="btn-file" onchange="uploadImage(this, 'brandWallpaper', 'prevWallpaper', 'wallpaper')">
+              <input type="file" id="fileWallpaper" accept="image/*" class="btn-file" onchange="uploadBrandImage(this, 'brandWallpaper', 'prevWallpaper', 'wallpaper')">
             </div>
           </div>
         </div>
@@ -636,23 +636,81 @@
     }
   }
 
-  // FUNÇÃO AUXILIAR PARA CRIAR O NOME PADRONIZADO DA LATA COM PREFIXO
-  function gerarNomeFormatadoArquivo(prefixo, extensao) {
-    let nomeLata = document.getElementById("Nome").value.trim();
-    if (!nomeLata) {
-      nomeLata = "lata_sem_nome";
-    }
-    const nomeLimpo = nomeLata
+  // FUNÇÕES AUXILIARES PARA FORMATAR TEXTOS EM SLUG (MINÚSCULO, SEM ACENTO, _ NO LUGAR DE ESPAÇO)
+  function limparTextoParaArquivo(texto) {
+    if (!texto) return "sem_nome";
+    return String(texto)
       .toLowerCase()
       .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
       .replace(/[^a-z0-9]/g, "_")
       .replace(/_+/g, "_");
-    
-    return `${prefixo}_${nomeLimpo}.${extensao}`;
   }
 
-  // UPLOAD PADRÃO PARA AS FOTOS COM SUPORTE A PREFIXOS
-  function uploadImage(fileInput, hiddenId, prevId, prefixoDesejado) {
+  // NOME DA LATA PRIMEIRO: ex: guinness_draught_capa.webp
+  function gerarNomeArquivoLata(tipo, extensao) {
+    const nomeLata = document.getElementById("Nome").value.trim();
+    const nomeLimpo = limparTextoParaArquivo(nomeLata);
+    return `${nomeLimpo}_${tipo}.${extensao}`;
+  }
+
+  // NOME DA MARCA/CERVEJARIA PRIMEIRO: ex: faxe_logo.webp
+  function gerarNomeArquivoMarca(tipo, extensao) {
+    const nomeMarca = document.getElementById("Cervejaria").value.trim();
+    const marcaLimpa = limparTextoParaArquivo(nomeMarca);
+    return `${marcaLimpa}_${tipo}.${extensao}`;
+  }
+
+  // UPLOAD DAS FOTOS DA MARCA (LOGO E WALLPAPER)
+  function uploadBrandImage(fileInput, hiddenId, prevId, tipo) {
+    const file = fileInput.files[0];
+    if (!file) return;
+
+    let nomeMarca = document.getElementById("Cervejaria").value.trim();
+    if (!nomeMarca) {
+      showStatus("Por favor, preencha a Cervejaria / Marca antes de enviar as imagens da marca.", true);
+      fileInput.value = "";
+      return;
+    }
+
+    const extensaoOriginal = file.name.split('.').pop() || 'webp';
+    const nomeArquivoPersonalizado = gerarNomeArquivoMarca(tipo, extensaoOriginal);
+
+    showStatus(`Enviando ${tipo} da marca para o Google Drive...`, false);
+
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      const base64Data = e.target.result;
+      try {
+        const payload = { 
+          action: "upload_photo", 
+          adminPass: getAdminPass(),
+          base64: base64Data, 
+          fileName: nomeArquivoPersonalizado,
+          brewery: nomeMarca
+        };
+        const res = await fetch(API_URL, {
+          method: "POST",
+          body: JSON.stringify(payload)
+        });
+        const result = await res.json();
+
+        if (result.success && result.url) {
+          document.getElementById(hiddenId).value = result.url;
+          updatePreview(hiddenId, prevId);
+          showStatus("Imagem da marca enviada e renomeada com sucesso!", false);
+        } else {
+          showStatus(result.error || "Acesso negado: Senha incorreta.", true);
+        }
+      } catch (err) {
+        console.error(err);
+        showStatus("Erro ao conectar no upload da marca.", true);
+      }
+    };
+    reader.readAsDataURL(file);
+  }
+
+  // UPLOAD PADRÃO PARA AS FOTOS DA LATA
+  function uploadImage(fileInput, hiddenId, prevId, tipo) {
     const file = fileInput.files[0];
     if (!file) return;
 
@@ -664,9 +722,9 @@
     }
 
     const extensaoOriginal = file.name.split('.').pop() || 'webp';
-    const nomeArquivoPersonalizado = gerarNomeFormatadoArquivo(prefixoDesejado, extensaoOriginal);
+    const nomeArquivoPersonalizado = gerarNomeArquivoLata(tipo, extensaoOriginal);
 
-    showStatus(`Enviando ${prefixoDesejado} para o Google Drive...`, false);
+    showStatus(`Enviando ${tipo} para o Google Drive...`, false);
 
     const reader = new FileReader();
     reader.onload = async (e) => {
@@ -700,7 +758,7 @@
     reader.readAsDataURL(file);
   }
 
-  // FUNÇÃO ESPECIAL PARA PROCESSAR A FRENTE E A TV (16:9) COM PREFIXOS
+  // FUNÇÃO ESPECIAL PARA PROCESSAR A FRENTE E A TV (16:9)
   async function uploadFrontImageForTvAndWeb(fileInput) {
     const file = fileInput.files[0];
     if (!file) return;
@@ -712,8 +770,8 @@
       return;
     }
 
-    const nomeArquivoFrente = gerarNomeFormatadoArquivo("frente", "webp");
-    const nomeArquivoTv = gerarNomeFormatadoArquivo("tv", "jpg");
+    const nomeArquivoFrente = gerarNomeArquivoLata("frente", "webp");
+    const nomeArquivoTv = gerarNomeArquivoLata("tv", "jpg");
 
     showStatus("Processando fotos e enviando para o Google Drive...", false);
 
@@ -722,7 +780,7 @@
       const img = new Image();
       img.onload = async function() {
         
-        // 1. UPLOAD DA FOTO DA FRENTE COM PREFIXO "frente_"
+        // 1. UPLOAD DA FOTO DA FRENTE: nome_lata_frente.webp
         const base64Original = e.target.result;
         try {
           const resWebp = await fetch(API_URL, {
@@ -744,7 +802,7 @@
           console.error("Erro ao enviar frente:", err);
         }
 
-        // 2. GERAR E ENVIAR O JPG 16:9 COM PREFIXO "tv_"
+        // 2. GERAR E ENVIAR O JPG 16:9: nome_lata_tv.jpg
         const targetWidth = 1920;
         const targetHeight = 1080;
         const canvas = document.createElement('canvas');
