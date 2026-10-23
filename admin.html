@@ -646,21 +646,21 @@
       .replace(/_+/g, "_");
   }
 
-  // 1. FOTOS DA LATA: [nome_da_lata]_[tipo].webp (ex: faxe_premium_die_neue_grosse_capa.webp)
+  // 1. FOTOS DA LATA: [nome_da_lata]_[tipo].webp (Ex: faxe_premium_die_neue_grosse_capa.webp)
   function gerarNomeArquivoLata(tipo, extensao) {
     const nomeLata = document.getElementById("Nome").value.trim();
     const nomeLimpo = limparTextoParaArquivo(nomeLata);
     return `${nomeLimpo}_${tipo}.${extensao}`;
   }
 
-  // 2. LOGO E WALLPAPER: [nome_da_marca]_[tipo].webp (ex: faxe_logo.webp, faxe_wallpaper.webp)
+  // 2. LOGO E WALLPAPER: [nome_da_marca]_[tipo].webp (Ex: faxe_logo.webp, faxe_wallpaper.webp)
   function gerarNomeArquivoMarca(tipo, extensao) {
     const nomeMarca = document.getElementById("Cervejaria").value.trim();
     const marcaLimpa = limparTextoParaArquivo(nomeMarca);
     return `${marcaLimpa}_${tipo}.${extensao}`;
   }
 
-  // UPLOAD DAS FOTOS DA MARCA (LOGO E WALLPAPER) -> [marca]_[tipo]
+  // UPLOAD DAS FOTOS DA MARCA (LOGO E WALLPAPER) -> Usa SOMENTE a marca no início
   function uploadBrandImage(fileInput, hiddenId, prevId, tipo) {
     const file = fileInput.files[0];
     if (!file) return;
@@ -709,7 +709,7 @@
     reader.readAsDataURL(file);
   }
 
-  // UPLOAD PADRÃO PARA AS FOTOS DA LATA -> [nome_lata]_[tipo]
+  // UPLOAD PADRÃO PARA AS FOTOS DA LATA -> Usa o nome da lata no início
   function uploadImage(fileInput, hiddenId, prevId, tipo) {
     const file = fileInput.files[0];
     if (!file) return;
@@ -758,7 +758,7 @@
     reader.readAsDataURL(file);
   }
 
-  // FUNÇÃO ESPECIAL PARA PROCESSAR A FRENTE E A TV (16:9) -> [nome_lata]_[tipo]
+  // FUNÇÃO ESPECIAL PARA PROCESSAR A FRENTE E A TV (16:9) -> Usa o nome da lata no início
   async function uploadFrontImageForTvAndWeb(fileInput) {
     const file = fileInput.files[0];
     if (!file) return;
