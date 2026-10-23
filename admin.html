@@ -636,7 +636,6 @@
     }
   }
 
-  // FUNÇÕES AUXILIARES PARA FORMATAR TEXTOS EM SLUG (MINÚSCULO, SEM ACENTO, _ NO LUGAR DE ESPAÇO)
   function limparTextoParaArquivo(texto) {
     if (!texto) return "sem_nome";
     return String(texto)
@@ -646,21 +645,18 @@
       .replace(/_+/g, "_");
   }
 
-  // 1. FOTOS DA LATA: [nome_da_lata]_[tipo].webp (Ex: faxe_premium_die_neue_grosse_capa.webp)
   function gerarNomeArquivoLata(tipo, extensao) {
     const nomeLata = document.getElementById("Nome").value.trim();
     const nomeLimpo = limparTextoParaArquivo(nomeLata);
     return `${nomeLimpo}_${tipo}.${extensao}`;
   }
 
-  // 2. LOGO E WALLPAPER: [nome_da_marca]_[tipo].webp (Ex: faxe_logo.webp, faxe_wallpaper.webp)
   function gerarNomeArquivoMarca(tipo, extensao) {
     const nomeMarca = document.getElementById("Cervejaria").value.trim();
     const marcaLimpa = limparTextoParaArquivo(nomeMarca);
     return `${marcaLimpa}_${tipo}.${extensao}`;
   }
 
-  // UPLOAD DAS FOTOS DA MARCA (LOGO E WALLPAPER) -> Usa SOMENTE a marca no início
   function uploadBrandImage(fileInput, hiddenId, prevId, tipo) {
     const file = fileInput.files[0];
     if (!file) return;
@@ -709,7 +705,6 @@
     reader.readAsDataURL(file);
   }
 
-  // UPLOAD PADRÃO PARA AS FOTOS DA LATA -> Usa o nome da lata no início
   function uploadImage(fileInput, hiddenId, prevId, tipo) {
     const file = fileInput.files[0];
     if (!file) return;
@@ -758,12 +753,14 @@
     reader.readAsDataURL(file);
   }
 
-  // FUNÇÃO ESPECIAL PARA PROCESSAR A FRENTE E A TV (16:9) -> Usa o nome da lata no início
+  // FUNÇÃO ESPECIAL PARA PROCESSAR A FRENTE E A TV (16:9) COM TEXTOS NAS LATERAIS
   async function uploadFrontImageForTvAndWeb(fileInput) {
     const file = fileInput.files[0];
     if (!file) return;
 
     let nomeLata = document.getElementById("Nome").value.trim();
+    let nomeMarca = document.getElementById("Cervejaria").value.trim();
+
     if (!nomeLata) {
       showStatus("Por favor, preencha o Nome da Lata antes de enviar a foto da frente.", true);
       fileInput.value = "";
@@ -780,7 +777,7 @@
       const img = new Image();
       img.onload = async function() {
         
-        // 1. UPLOAD DA FOTO DA FRENTE: nome_lata_frente.webp
+        // 1. UPLOAD DA FOTO DA FRENTE NORMAL
         const base64Original = e.target.result;
         try {
           const resWebp = await fetch(API_URL, {
@@ -790,7 +787,7 @@
               adminPass: getAdminPass(),
               base64: base64Original, 
               fileName: nomeArquivoFrente,
-              brewery: document.getElementById("Cervejaria").value.trim()
+              brewery: nomeMarca
             })
           });
           const resultWebp = await resWebp.json();
@@ -802,7 +799,7 @@
           console.error("Erro ao enviar frente:", err);
         }
 
-        // 2. GERAR E ENVIAR O JPG 16:9: nome_lata_tv.jpg
+        // 2. GERAR O 16:9 (1920x1080) COM A LATA NO CENTRO E TEXTOS NAS LATERAIS
         const targetWidth = 1920;
         const targetHeight = 1080;
         const canvas = document.createElement('canvas');
@@ -810,27 +807,48 @@
         canvas.height = targetHeight;
         const ctx = canvas.getContext('2d');
 
+        // Fundo Branco
         ctx.fillStyle = "#FFFFFF";
         ctx.fillRect(0, 0, targetWidth, targetHeight);
 
+        // Desenhar a lata centralizada
         const imgAspect = img.width / img.height;
         const targetAspect = targetWidth / targetHeight;
         let drawWidth, drawHeight, offsetX, offsetY;
 
-        if (imgAspect > targetAspect) {
-          drawWidth = targetWidth;
-          drawHeight = targetWidth / imgAspect;
-          offsetX = 0;
-          offsetY = (targetHeight - drawHeight) / 2;
-        } else {
-          drawHeight = targetHeight;
-          drawWidth = targetHeight * imgAspect;
-          offsetX = (targetWidth - drawWidth) / 2;
-          offsetY = 0;
-        }
+        // Deixamos a altura da lata ocupando cerca de 80% da tela para sobrar espaço nas laterais
+        const allocatedHeight = targetHeight * 0.82;
+        drawHeight = allocatedHeight;
+        drawWidth = allocatedHeight * imgAspect;
+        offsetX = (targetWidth - drawWidth) / 2;
+        offsetY = (targetHeight - drawHeight) / 2;
 
         ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
 
+        // Configurações comuns de texto
+        ctx.fillStyle = "#111111";
+        ctx.textBaseline = "middle";
+        ctx.font = "bold 52px sans-serif";
+
+        // LADO ESQUERDO: Nome da lata (alinhado à direita da metade esquerda)
+        const leftX = offsetX / 2;
+        const centerY = targetHeight / 2;
+        
+        ctx.save();
+        ctx.textAlign = "center";
+        // Quebra simples ou texto direto do Nome da Lata
+        ctx.fillText(nomeLata, leftX, centerY, offsetX - 80);
+        ctx.restore();
+
+        // LADO DIREITO: Marca (alinhado na metade direita)
+        const rightX = offsetX + drawWidth + ((targetWidth - (offsetX + drawWidth)) / 2);
+        
+        ctx.save();
+        ctx.textAlign = "center";
+        ctx.fillText(nomeMarca, rightX, centerY, (targetWidth - (offsetX + drawWidth)) - 80);
+        ctx.restore();
+
+        // Converter para Blob JPG e enviar
         canvas.toBlob(async function(blobJpg) {
           const readerJpg = new FileReader();
           readerJpg.onload = async function(eJpg) {
@@ -840,7 +858,7 @@
                 adminPass: getAdminPass(),
                 base64: eJpg.target.result,
                 fileName: nomeArquivoTv,
-                brewery: document.getElementById("Cervejaria").value.trim()
+                brewery: nomeMarca
               };
 
               const resDrive = await fetch(API_URL, {
@@ -851,7 +869,7 @@
 
               if (resultDrive.success && resultDrive.url) {
                 document.getElementById("ImgTvJpg").value = resultDrive.url;
-                showStatus("Frente e TV enviadas e padronizadas com sucesso!", false);
+                showStatus("Frente e TV com textos geradas e enviadas com sucesso!", false);
               } else {
                 showStatus("Erro ao enviar a versão da TV para o Google Drive.", true);
               }
@@ -900,7 +918,7 @@
       brandWallpaper: fixDriveUrl(document.getElementById("brandWallpaper").value),
       ImgCover: fixDriveUrl(coverValue),
       ImgFront: fixDriveUrl(frontValue),
-      ImgTvJpg: fixDriveUrl(document.getElementById("ImgTvJpg").value), // Link 16:9 para a coluna V (ImagemTV)
+      ImgTvJpg: fixDriveUrl(document.getElementById("ImgTvJpg").value),
       ImgLeft: fixDriveUrl(document.getElementById("ImgLeft").value),
       ImgBack: fixDriveUrl(document.getElementById("ImgBack").value),
       ImgRight: fixDriveUrl(document.getElementById("ImgRight").value),
