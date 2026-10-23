@@ -753,13 +753,42 @@
     reader.readAsDataURL(file);
   }
 
-  // FUNÇÃO ESPECIAL PARA PROCESSAR A FRENTE E A TV (16:9) COM TEXTOS CLAROS NAS LATERAIS
+  // FUNÇÃO AUXILIAR PARA QUEBRAR TEXTO EM MÚLTIPLAS LINHAS AUTOMATICAMENTE NO CANVAS
+  function wrapText(context, text, x, y, maxWidth, lineHeight) {
+    const words = text.split(' ');
+    let line = '';
+    const lines = [];
+
+    for (let n = 0; n < words.length; n++) {
+      const testLine = line + words[n] + ' ';
+      const metrics = context.measureText(testLine);
+      const testWidth = metrics.width;
+      if (testWidth > maxWidth && n > 0) {
+        lines.push(line);
+        line = words[n] + ' ';
+      } else {
+        line = testLine;
+      }
+    }
+    lines.push(line);
+
+    // Calcular posição inicial Y para centralizar o bloco de texto verticalmente
+    const totalHeight = lines.length * lineHeight;
+    let startY = y - (totalHeight / 2) + (lineHeight / 2);
+
+    for (let k = 0; k < lines.length; k++) {
+      context.fillText(lines[k].trim(), x, startY);
+      startY += lineHeight;
+    }
+  }
+
+  // FUNÇÃO ESPECIAL PARA PROCESSAR A FRENTE E A TV (16:9) COM QUEBRA DE LINHA PROPORCIONAL
   async function uploadFrontImageForTvAndWeb(fileInput) {
     const file = fileInput.files[0];
     if (!file) return;
 
-    let nomeLata = document.getElementById("Nome").value.trim();
-    let nomeMarca = document.getElementById("Cervejaria").value.trim();
+    let nomeLata = document.getElementById("Nome").value.trim().toUpperCase();
+    let nomeMarca = document.getElementById("Cervejaria").value.trim().toUpperCase();
 
     if (!nomeLata) {
       showStatus("Por favor, preencha o Nome da Lata antes de enviar a foto da frente.", true);
@@ -799,7 +828,7 @@
           console.error("Erro ao enviar frente:", err);
         }
 
-        // 2. GERAR O 16:9 (1920x1080) COM A LATA NO CENTRO E TEXTOS NAS LATERAIS
+        // 2. GERAR O 16:9 (1920x1080) COM A LATA NO CENTRO E TEXTOS PROPORCIONAIS NAS LATERAIS
         const targetWidth = 1920;
         const targetHeight = 1080;
         const canvas = document.createElement('canvas');
@@ -811,7 +840,7 @@
         ctx.fillStyle = "#FFFFFF";
         ctx.fillRect(0, 0, targetWidth, targetHeight);
 
-        // Dimensões da lata centralizada
+        // Dimensões da lata centralizada (ocupando 80% da altura)
         const imgAspect = img.width / img.height;
         const allocatedHeight = targetHeight * 0.80;
         const drawHeight = allocatedHeight;
@@ -821,28 +850,23 @@
 
         ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
 
-        // Configuração de Estilo de Texto
-        ctx.fillStyle = "#111111";
-        ctx.textBaseline = "middle";
-        ctx.font = "bold 60px sans-serif";
-
-        // LADO ESQUERDO: Nome da lata (centralizado no espaço esquerdo)
-        const leftCenterX = offsetX / 2;
-        const centerY = targetHeight / 2;
-        
-        ctx.save();
+        // Configuração de Estilo de Fonte Limpa e Proporcional
+        ctx.fillStyle = "#000000";
+        ctx.font = "bold 58px sans-serif";
         ctx.textAlign = "center";
-        ctx.fillText(nomeLata, leftCenterX, centerY, offsetX - 100);
-        ctx.restore();
+        ctx.textBaseline = "middle";
 
-        // LADO DIREITO: Marca (centralizado no espaço direito)
+        const centerY = targetHeight / 2;
+
+        // LADO ESQUERDO: Nome da lata (centralizado no espaço esquerdo com quebra automática de até 3 linhas)
+        const leftAreaWidth = offsetX;
+        const leftCenterX = leftAreaWidth / 2;
+        wrapText(ctx, nomeLata, leftCenterX, centerY, leftAreaWidth - 120, 72);
+
+        // LADO DIREITO: Marca (centralizado no espaço direito com quebra automática)
         const rightAreaWidth = targetWidth - (offsetX + drawWidth);
         const rightCenterX = (offsetX + drawWidth) + (rightAreaWidth / 2);
-        
-        ctx.save();
-        ctx.textAlign = "center";
-        ctx.fillText(nomeMarca, rightCenterX, centerY, rightAreaWidth - 100);
-        ctx.restore();
+        wrapText(ctx, nomeMarca, rightCenterX, centerY, rightAreaWidth - 120, 72);
 
         // Converter para Blob JPG e enviar para o Google Drive
         canvas.toBlob(async function(blobJpg) {
@@ -865,7 +889,7 @@
 
               if (resultDrive.success && resultDrive.url) {
                 document.getElementById("ImgTvJpg").value = resultDrive.url;
-                showStatus("Frente e TV com textos geradas e enviadas com sucesso!", false);
+                showStatus("Frente e TV com textos proporcionais geradas com sucesso!", false);
               } else {
                 showStatus("Erro ao enviar a versão da TV para o Google Drive.", true);
               }
