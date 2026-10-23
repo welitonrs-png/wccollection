@@ -772,7 +772,6 @@
     }
     lines.push(line);
 
-    // Calcular posição inicial Y para centralizar o bloco de texto verticalmente
     const totalHeight = lines.length * lineHeight;
     let startY = y - (totalHeight / 2) + (lineHeight / 2);
 
@@ -782,7 +781,7 @@
     }
   }
 
-  // FUNÇÃO ESPECIAL PARA PROCESSAR A FRENTE E A TV (16:9) COM QUEBRA DE LINHA PROPORCIONAL
+  // FUNÇÃO ESPECIAL PARA PROCESSAR A FRENTE E A TV (16:9) COM POSICIONAMENTO PROPORCIONAL DE 1/3
   async function uploadFrontImageForTvAndWeb(fileInput) {
     const file = fileInput.files[0];
     if (!file) return;
@@ -828,7 +827,7 @@
           console.error("Erro ao enviar frente:", err);
         }
 
-        // 2. GERAR O 16:9 (1920x1080) COM A LATA NO CENTRO E TEXTOS PROPORCIONAIS NAS LATERAIS
+        // 2. GERAR O 16:9 (1920x1080) COM TEXTOS CENTRALIZADOS NAS FAIXAS DE 1/3 DA LATA
         const targetWidth = 1920;
         const targetHeight = 1080;
         const canvas = document.createElement('canvas');
@@ -850,7 +849,7 @@
 
         ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
 
-        // Configuração de Estilo de Fonte Limpa e Proporcional
+        // Configuração de Estilo de Fonte
         ctx.fillStyle = "#000000";
         ctx.font = "bold 58px sans-serif";
         ctx.textAlign = "center";
@@ -858,15 +857,18 @@
 
         const centerY = targetHeight / 2;
 
-        // LADO ESQUERDO: Nome da lata (centralizado no espaço esquerdo com quebra automática de até 3 linhas)
-        const leftAreaWidth = offsetX;
-        const leftCenterX = leftAreaWidth / 2;
-        wrapText(ctx, nomeLata, leftCenterX, centerY, leftAreaWidth - 120, 72);
+        // CÁLCULO BASEADO NO PEDIDO:
+        // Consideramos 1/3 da largura da lata e centralizamos no espaço entre a borda esquerda e esse terço da imagem.
+        const oneThirdWidth = drawWidth / 3;
+        const leftBoundary = offsetX + oneThirdWidth;
+        const leftCenterX = leftBoundary / 2;
+        wrapText(ctx, nomeLata, leftCenterX, centerY, leftBoundary - 80, 72);
 
-        // LADO DIREITO: Marca (centralizado no espaço direito com quebra automática)
-        const rightAreaWidth = targetWidth - (offsetX + drawWidth);
-        const rightCenterX = (offsetX + drawWidth) + (rightAreaWidth / 2);
-        wrapText(ctx, nomeMarca, rightCenterX, centerY, rightAreaWidth - 120, 72);
+        // LADO DIREITO: Centralizado entre o ponto 1/3 da direita da lata até a borda direita da tela.
+        const rightBoundaryStart = (offsetX + drawWidth) - oneThirdWidth;
+        const rightAreaWidth = targetWidth - rightBoundaryStart;
+        const rightCenterX = rightBoundaryStart + (rightAreaWidth / 2);
+        wrapText(ctx, nomeMarca, rightCenterX, centerY, rightAreaWidth - 80, 72);
 
         // Converter para Blob JPG e enviar para o Google Drive
         canvas.toBlob(async function(blobJpg) {
@@ -889,7 +891,7 @@
 
               if (resultDrive.success && resultDrive.url) {
                 document.getElementById("ImgTvJpg").value = resultDrive.url;
-                showStatus("Frente e TV com textos proporcionais geradas com sucesso!", false);
+                showStatus("Frente e TV com textos reposicionados com sucesso!", false);
               } else {
                 showStatus("Erro ao enviar a versão da TV para o Google Drive.", true);
               }
