@@ -753,7 +753,7 @@
     reader.readAsDataURL(file);
   }
 
-  // FUNÇÃO ESPECIAL PARA PROCESSAR A FRENTE E A TV (16:9) COM TEXTOS NAS LATERAIS
+  // FUNÇÃO ESPECIAL PARA PROCESSAR A FRENTE E A TV (16:9) COM TEXTOS CLAROS NAS LATERAIS
   async function uploadFrontImageForTvAndWeb(fileInput) {
     const file = fileInput.files[0];
     if (!file) return;
@@ -807,48 +807,44 @@
         canvas.height = targetHeight;
         const ctx = canvas.getContext('2d');
 
-        // Fundo Branco
+        // Fundo Branco Sólido
         ctx.fillStyle = "#FFFFFF";
         ctx.fillRect(0, 0, targetWidth, targetHeight);
 
-        // Desenhar a lata centralizada
+        // Dimensões da lata centralizada
         const imgAspect = img.width / img.height;
-        const targetAspect = targetWidth / targetHeight;
-        let drawWidth, drawHeight, offsetX, offsetY;
-
-        // Deixamos a altura da lata ocupando cerca de 80% da tela para sobrar espaço nas laterais
-        const allocatedHeight = targetHeight * 0.82;
-        drawHeight = allocatedHeight;
-        drawWidth = allocatedHeight * imgAspect;
-        offsetX = (targetWidth - drawWidth) / 2;
-        offsetY = (targetHeight - drawHeight) / 2;
+        const allocatedHeight = targetHeight * 0.80;
+        const drawHeight = allocatedHeight;
+        const drawWidth = allocatedHeight * imgAspect;
+        const offsetX = (targetWidth - drawWidth) / 2;
+        const offsetY = (targetHeight - drawHeight) / 2;
 
         ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
 
-        // Configurações comuns de texto
+        // Configuração de Estilo de Texto
         ctx.fillStyle = "#111111";
         ctx.textBaseline = "middle";
-        ctx.font = "bold 52px sans-serif";
+        ctx.font = "bold 60px sans-serif";
 
-        // LADO ESQUERDO: Nome da lata (alinhado à direita da metade esquerda)
-        const leftX = offsetX / 2;
+        // LADO ESQUERDO: Nome da lata (centralizado no espaço esquerdo)
+        const leftCenterX = offsetX / 2;
         const centerY = targetHeight / 2;
         
         ctx.save();
         ctx.textAlign = "center";
-        // Quebra simples ou texto direto do Nome da Lata
-        ctx.fillText(nomeLata, leftX, centerY, offsetX - 80);
+        ctx.fillText(nomeLata, leftCenterX, centerY, offsetX - 100);
         ctx.restore();
 
-        // LADO DIREITO: Marca (alinhado na metade direita)
-        const rightX = offsetX + drawWidth + ((targetWidth - (offsetX + drawWidth)) / 2);
+        // LADO DIREITO: Marca (centralizado no espaço direito)
+        const rightAreaWidth = targetWidth - (offsetX + drawWidth);
+        const rightCenterX = (offsetX + drawWidth) + (rightAreaWidth / 2);
         
         ctx.save();
         ctx.textAlign = "center";
-        ctx.fillText(nomeMarca, rightX, centerY, (targetWidth - (offsetX + drawWidth)) - 80);
+        ctx.fillText(nomeMarca, rightCenterX, centerY, rightAreaWidth - 100);
         ctx.restore();
 
-        // Converter para Blob JPG e enviar
+        // Converter para Blob JPG e enviar para o Google Drive
         canvas.toBlob(async function(blobJpg) {
           const readerJpg = new FileReader();
           readerJpg.onload = async function(eJpg) {
