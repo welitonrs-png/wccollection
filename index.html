@@ -158,10 +158,20 @@
       pointer-events: none;
     }
 
-    .hero-brand-logo-container img { 
+.hero-brand-logo-container img { 
       max-width: 100%; 
       max-height: 100%; 
       object-fit: contain; 
+      background: transparent !important;
+      mix-blend-mode: screen; /* Remove fundos pretos automaticamente deixando transparente */
+    }
+
+    .brand-overlay-logo img {
+      max-width: 80% !important;
+      max-height: 80% !important;
+      object-fit: contain !important;
+      background: transparent !important;
+      mix-blend-mode: screen;
     }
 
     .hero-left-photos { height: 100%; aspect-ratio: 1 / 1; display: grid; grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(2, 1fr); gap: 8px; z-index: 10; position: relative; }
