@@ -145,24 +145,53 @@
       overflow: hidden;
     }
 
-    .hero-brand-logo-container {
+  .hero-brand-logo-container {
       position: absolute; 
       top: 20px; 
       right: 20px; 
-      width: 180px; 
-      height: 80px;
+      width: 240px; /* Aumentado para dar mais respiro ao logo */
+      height: 90px;
       display: flex; 
       justify-content: flex-end; 
-      align-items: flex-start; 
+      align-items: center; 
       z-index: 20; 
       pointer-events: none;
+      background: transparent !important;
     }
 
     .hero-brand-logo-container img { 
       max-width: 100%; 
       max-height: 100%; 
-      object-fit: contain; 
-      background-color: transparent;
+      width: auto;
+      height: auto;
+      object-fit: contain !important; /* Garante que exibe a imagem inteira */
+      background: transparent !important; 
+    }
+
+    .brand-overlay-logo {
+      grid-column: 8 / span 2;
+      grid-row: 1;
+      width: 198px !important;
+      height: 141px !important;
+      background: transparent !important; 
+      border-radius: 7px !important;
+      display: flex !important;
+      justify-content: center !important;
+      align-items: center !important;
+      padding: 10px !important;
+      box-shadow: none !important; 
+      z-index: 5;
+      pointer-events: none;
+      box-sizing: border-box !important;
+    }
+
+    .brand-overlay-logo img {
+      max-width: 100% !important;
+      max-height: 100% !important;
+      width: auto;
+      height: auto;
+      object-fit: contain !important; /* Mantém a proporção real sem cortes */
+      background: transparent !important;
     }
 
     .hero-left-photos { height: 100%; aspect-ratio: 1 / 1; display: grid; grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(2, 1fr); gap: 8px; z-index: 10; position: relative; }
