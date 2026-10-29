@@ -43,8 +43,26 @@
       display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center;
     }
     .photo-box label { font-size: 0.7rem; color: #f39c12; font-weight: bold; }
-   .photo-preview { width: 100%; height: 70px; object-fit: contain; border-radius: 4px; background: transparent !important; }
-    .thumb-img { width: 35px; height: 35px; object-fit: contain; border-radius: 4px; background: transparent !important; padding: 2px; }
+    
+    /* CORREÇÃO CRUCIAL PARA PREVIEW TRANSPARENTE SEM FUNDO PRETO */
+    .photo-preview { 
+      width: 100%; 
+      height: 70px; 
+      object-fit: contain; 
+      border-radius: 4px; 
+      background: transparent !important; 
+      mix-blend-mode: screen; 
+    }
+    .thumb-img { 
+      width: 35px; 
+      height: 35px; 
+      object-fit: contain; 
+      border-radius: 4px; 
+      background: transparent !important; 
+      padding: 2px; 
+      mix-blend-mode: screen; 
+    }
+
     .btn-file { font-size: 0.72rem; padding: 4px 6px; background: #2a3447; color: #fff; border: none; border-radius: 4px; cursor: pointer; width: 100%; }
 
     /* BOTÕES */
@@ -64,7 +82,6 @@
     td { padding: 10px; border-bottom: 1px solid #2a3447; color: #cbd5e1; }
     tr:hover { background: rgba(243, 156, 18, 0.05); }
 
-    .thumb-img { width: 35px; height: 35px; object-fit: contain; border-radius: 4px; background: #ffffff; padding: 2px; }
     .color-badge { width: 24px; height: 24px; border-radius: 4px; border: 1px solid #fff; display: inline-block; vertical-align: middle; }
     .badge { padding: 2px 6px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; text-transform: uppercase; }
     .badge-true { background: rgba(46, 204, 113, 0.2); color: #2ecc71; border: 1px solid #2ecc71; }
@@ -444,7 +461,7 @@
     const str = String(url).trim();
     const match = str.match(/\/d\/([^\/\?]+)/);
     if (match && match[1]) {
-      return `https://lh3.googleusercontent.com/d/${match[1]}`;
+      return `https://lh3.googleusercontent.com/d/${match[1]}=s1000`;
     }
     return str;
   }
@@ -453,7 +470,8 @@
     if (!url) return '';
     const cleanUrl = fixDriveUrl(url);
     if (cleanUrl.includes('googleusercontent.com')) {
-      return cleanUrl.split('=')[0] + `=s${size}-rw`;
+      const baseUrl = cleanUrl.split('=')[0];
+      return `${baseUrl}=s${size}`;
     }
     return cleanUrl;
   }
@@ -658,7 +676,7 @@
     return `${marcaLimpa}_${tipo}.${extensao}`;
   }
 
-  // FUNÇÃO DE UPLOAD DE LOGO COM REMOÇÃO AUTOMÁTICA DE FUNDO PRETO
+  // UPLOAD DE LOGO PROCESSADO E SALVO COMO PNG PARA PRESERVAR TRANSPARÊNCIA PERFEITA
   function uploadBrandImage(fileInput, hiddenId, prevId, tipo) {
     const file = fileInput.files[0];
     if (!file) return;
@@ -670,8 +688,8 @@
       return;
     }
 
-    const nomeArquivoPersonalizado = gerarNomeArquivoMarca(tipo, 'webp');
-    showStatus(`Removendo fundo escuro e enviando ${tipo} da marca...`, false);
+    const nomeArquivoPersonalizado = gerarNomeArquivoMarca(tipo, 'png');
+    showStatus(`Processando e enviando ${tipo} da marca (PNG transparente)...`, false);
 
     const reader = new FileReader();
     reader.onload = function(e) {
@@ -682,28 +700,14 @@
         canvas.height = img.height;
         const ctx = canvas.getContext('2d');
 
+        // Limpa estritamente o canvas para evitar fundo preto automático
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.drawImage(img, 0, 0);
 
-        // Remove pixels pretos ou escuros do fundo transformando-os em transparentes
-        const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        const data = imgData.data;
-        
-        for (let i = 0; i < data.length; i += 4) {
-          const red = data[i];
-          const green = data[i + 1];
-          const blue = data[i + 2];
-          
-          if (red < 25 && green < 25 && blue < 25) {
-            data[i + 3] = 0; // Canal alfa zerado (transparência total)
-          }
-        }
-        
-        ctx.putImageData(imgData, 0, 0);
-
-        canvas.toBlob(async function(blobWebp) {
-          const readerWebp = new FileReader();
-          readerWebp.onload = async function(eWebp) {
-            const base64Data = eWebp.target.result;
+        canvas.toBlob(async function(blobPng) {
+          const readerPng = new FileReader();
+          readerPng.onload = async function(ePng) {
+            const base64Data = ePng.target.result;
             try {
               const payload = { 
                 action: "upload_photo", 
@@ -721,7 +725,7 @@
               if (result.success && result.url) {
                 document.getElementById(hiddenId).value = result.url;
                 updatePreview(hiddenId, prevId);
-                showStatus("Logo processado sem fundo preto com sucesso!", false);
+                showStatus("Logo com transparência PNG enviado com sucesso!", false);
               } else {
                 showStatus(result.error || "Acesso negado: Senha incorreta.", true);
               }
@@ -730,8 +734,8 @@
               showStatus("Erro ao conectar no upload da marca.", true);
             }
           };
-          readerWebp.readAsDataURL(blobWebp);
-        }, 'image/webp', 0.95);
+          readerPng.readAsDataURL(blobPng);
+        }, 'image/png');
       };
       img.src = e.target.result;
     };
