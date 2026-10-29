@@ -156,14 +156,31 @@
       align-items: flex-start; 
       z-index: 20; 
       pointer-events: none;
+      background: transparent !important; /* Garante que o container não tenha fundo */
     }
 
-.hero-brand-logo-container img { 
+    .hero-brand-logo-container img { 
       max-width: 100%; 
       max-height: 100%; 
       object-fit: contain; 
       background: transparent !important;
-      mix-blend-mode: screen; /* Remove fundos pretos automaticamente deixando transparente */
+    }
+
+    .brand-overlay-logo {
+      grid-column: 8 / span 2;
+      grid-row: 1;
+      width: 198px !important;
+      height: 141px !important;
+      background: transparent !important; /* Remove qualquer fundo branco/preto do box */
+      border-radius: 7px !important;
+      display: flex !important;
+      justify-content: center !important;
+      align-items: center !important;
+      padding: 16px !important;
+      box-shadow: none !important; /* Remove sombra que escurece o fundo */
+      z-index: 5;
+      pointer-events: none;
+      box-sizing: border-box !important;
     }
 
     .brand-overlay-logo img {
@@ -171,7 +188,6 @@
       max-height: 80% !important;
       object-fit: contain !important;
       background: transparent !important;
-      mix-blend-mode: screen;
     }
 
     .hero-left-photos { height: 100%; aspect-ratio: 1 / 1; display: grid; grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(2, 1fr); gap: 8px; z-index: 10; position: relative; }
