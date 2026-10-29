@@ -1072,12 +1072,13 @@ function aoClicarEmSim() {
 
   const vkKeys = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','1','2','3','4','5','6','7','8','9','0','ESPAÇO','DEL','LIMPAR'];
 
-  function fixDriveUrl(url) {
+function fixDriveUrl(url) {
     if (!url) return '';
     const str = String(url).trim();
     const match = str.match(/\/d\/([^\/\?]+)/);
     if (match && match[1]) {
-      return `https://lh3.googleusercontent.com/d/${match[1]}`;
+      // Adicionamos '=k' ou ajustamos para evitar que o Google injete fundo preto
+      return `https://lh3.googleusercontent.com/d/${match[1]}=s1000`;
     }
     return str;
   }
@@ -1086,11 +1087,12 @@ function aoClicarEmSim() {
     if (!url) return '';
     const cleanUrl = fixDriveUrl(url);
     if (cleanUrl.includes('googleusercontent.com')) {
-      return cleanUrl.split('=')[0] + `=s${size}`;
+      // Removemos qualquer parâmetro antigo e aplicamos o tamanho sem cor de fundo forçada
+      const baseUrl = cleanUrl.split('=')[0];
+      return `${baseUrl}=s${size}-c`; // ou apenas ${baseUrl}=s${size}
     }
     return cleanUrl;
   }
-
   // 📺 INTEGRAÇÃO CORRIGIDA COM A HOME DA ANDROID TV
   function notificarHomeTV(can) {
     if (!can) return;
