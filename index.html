@@ -1103,9 +1103,8 @@ function getOptimizedImageUrl(url, size = 800) {
     if (!url) return '';
     const cleanUrl = fixDriveUrl(url);
     if (cleanUrl.includes('googleusercontent.com')) {
-      // Usamos apenas o parâmetro de tamanho sem cortes, mantendo o arquivo limpo
-      const baseUrl = cleanUrl.split('=')[0];
-      return `${baseUrl}=s${size}-k`; 
+      // Retorna apenas a URL base limpa, sem o =s400 ou qualquer parâmetro que force conversão com fundo preto
+      return cleanUrl.split('=')[0];
     }
     return cleanUrl;
   }
