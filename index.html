@@ -1085,21 +1085,14 @@ function fixDriveUrl(url) {
     const str = String(url).trim();
     const match = str.match(/\/d\/([^\/\?]+)/);
     if (match && match[1]) {
-      // Adicionamos '=k' ou ajustamos para evitar que o Google injete fundo preto
-      return `https://lh3.googleusercontent.com/d/${match[1]}=s1000`;
+      // Usamos o link de exportação/visualização direta do Google Drive que preserva o canal alfa sem pintar de preto
+      return `https://drive.google.com/uc?export=view&id=${match[1]}`;
     }
     return str;
   }
-
-  function getOptimizedImageUrl(url, size = 600) {
+  function getOptimizedImageUrl(url, size = 300) {
     if (!url) return '';
-    const cleanUrl = fixDriveUrl(url);
-    if (cleanUrl.includes('googleusercontent.com')) {
-      // Removemos qualquer parâmetro antigo e aplicamos o tamanho sem cor de fundo forçada
-      const baseUrl = cleanUrl.split('=')[0];
-      return `${baseUrl}=s${size}-c`; // ou apenas ${baseUrl}=s${size}
-    }
-    return cleanUrl;
+    return fixDriveUrl(url);
   }
   // 📺 INTEGRAÇÃO CORRIGIDA COM A HOME DA ANDROID TV
   function notificarHomeTV(can) {
