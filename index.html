@@ -170,15 +170,28 @@
     }
 
     /* 2. Bloco de informações do Hero ajustado para o topo e com limite para não passar por baixo do logo */
-.hero-info-container {
+/* Força o bloco de texto para o topo absoluto do Hero */
+/* Força o container de informações e descrição para o topo absoluto do Hero */
+    .hero-info-container {
       position: absolute !important;
-      top: 20px !important;       /* Fixa estritamente no topo */
-      left: 40px !important;
-      right: 140px !important;    /* Mantém folga para o logo da marca */
-      bottom: auto !important;    /* Impede qualquer estiramento vertical */
-      transform: none !important; /* Remove qualquer centralização automática */
-      max-width: calc(100% - 180px) !important;
+      top: 15px !important;
+      left: 30px !important;
+      right: 150px !important;
+      bottom: auto !important;
+      transform: none !important;
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: flex-start !important;
+      justify-content: flex-start !important;
       z-index: 10;
+    }
+
+    /* Garante que o parágrafo da descrição flua a partir do topo */
+    #heroBrandDescription {
+      margin-top: 10px !important;
+      max-width: 100% !important;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
     }
     /* 3. Garante que os parágrafos da descrição quebrem a linha perfeitamente */
     .hero-description {
@@ -1873,20 +1886,32 @@ function getOptimizedImageUrl(url, size = 800) {
     if (heroDesc) heroDesc.innerText = brandDescVal || "";
 
     const photo1 = document.getElementById("heroPhoto1");
-    const photo2 = document.getElementById("heroPhoto2");
-    const photo3 = document.getElementById("heroPhoto3");
-    const photo4 = document.getElementById("heroPhoto4");
+  const photo2 = document.getElementById("heroPhoto2");
+  const photo3 = document.getElementById("heroPhoto3");
+  const photo4 = document.getElementById("heroPhoto4");
 
-    const img1 = can.ImgFront || can.front || can.ImgCover || "";
-    const img2 = can.ImgLeft || can.left || "";
-    const img3 = can.ImgBack || can.back || "";
-    const img4 = can.ImgRight || can.right || "";
+  const img1 = can.ImgFront || can.front || can.ImgCover || "";
+  const img2 = can.ImgLeft || can.left || "";
+  const img3 = can.ImgBack || can.back || "";
+  const img4 = can.ImgRight || can.right || "";
 
-    if (photo1) photo1.src = getOptimizedImageUrl(img1, 300);
-    if (photo2) photo2.src = getOptimizedImageUrl(img2, 300);
-    if (photo3) photo3.src = getOptimizedImageUrl(img3, 300);
-    if (photo4) photo4.src = getOptimizedImageUrl(img4, 300);
+  // Função auxiliar para injetar a imagem corretamente na div ou no elemento img
+  function setThumbnail(el, url) {
+    if (!el) return;
+    const optimizedUrl = getOptimizedImageUrl(url); // Usa a URL limpa que removemos o tamanho force
+    if (el.tagName === 'IMG') {
+      el.src = optimizedUrl;
+    } else {
+      // Se for uma div (os 4 quadrados brancos), criamos/atualizamos a tag img dentro dela
+      el.innerHTML = url ? `<img src="${optimizedUrl}" style="width:100%; height:100%; object-fit:contain; background:transparent;">` : '';
+    }
+  }
 
+  setThumbnail(photo1, img1);
+  setThumbnail(photo2, img2);
+  setThumbnail(photo3, img3);
+  setThumbnail(photo4, img4);
+    
     updateBrandLogoHeader(can.brewery || can.Cervejaria, can);
   }
 
