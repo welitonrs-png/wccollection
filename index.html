@@ -170,15 +170,16 @@
     }
 
     /* 2. Bloco de informações do Hero ajustado para o topo e com limite para não passar por baixo do logo */
-    .hero-info-container {
-      position: absolute;
-      top: 25px !important; /* Movido para o topo do hero */
-      left: 40px;
-      right: 160px !important; /* Limpa espaço à direita para o logo não invadir o texto */
-      max-width: calc(100% - 220px) !important; /* Força a quebra de linha antes de encostar no logo */
+.hero-info-container {
+      position: absolute !important;
+      top: 20px !important;       /* Fixa estritamente no topo */
+      left: 40px !important;
+      right: 140px !important;    /* Mantém folga para o logo da marca */
+      bottom: auto !important;    /* Impede qualquer estiramento vertical */
+      transform: none !important; /* Remove qualquer centralização automática */
+      max-width: calc(100% - 180px) !important;
       z-index: 10;
     }
-
     /* 3. Garante que os parágrafos da descrição quebrem a linha perfeitamente */
     .hero-description {
       max-width: 100% !important;
@@ -197,6 +198,18 @@
       filter: drop-shadow(0px 0px 0px transparent);
       /* O mix-blend-mode screen aplicado apenas na imagem anula fundos pretos perfeitamente sem distorcer o miolo colorido */
       mix-blend-mode: screen !important; 
+    }
+    /* Garante que os slots das 4 imagens da lata apareçam corretamente */
+    .hero-thumbnails-container, .side-images-grid, div[class*="thumb"] {
+      background: transparent !important;
+    }
+
+    .hero-thumbnails-container img, .side-images-grid img, div[class*="thumb"] img {
+      width: 100% !important;
+      height: 100% !important;
+      object-fit: contain !important;
+      background: transparent !important;
+      border-radius: 6px;
     }
 
 /* Bloco unificado e ajustado para proporção 1:1 sem cortes */
