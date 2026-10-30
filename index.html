@@ -6,7 +6,7 @@
   <title>WCCollection - Universal SPA</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; outline: none; }
-    
+
     body { background-color: #282A2D; color: #DDDDDD; height: 100vh; overflow: hidden; display: flex; user-select: none; touch-action: pan-y; }
 
     ::-webkit-scrollbar { display: none !important; width: 0 !important; height: 0 !important; }
@@ -62,7 +62,7 @@
       transition: left 0.25s cubic-bezier(0.1, 0.9, 0.2, 1); overflow-y: auto;
       box-shadow: 10px 0 30px rgba(0,0,0,0.6);
     }
-    
+
     .sidebar-drawer.open { left: 0; }
 
     .sidebar-logo { width: 100%; height: 50px; object-fit: contain; margin-bottom: 16px; text-align: center; }
@@ -82,8 +82,8 @@
     .inline-panel-container { display: none; flex-direction: column; gap: 4px; padding: 6px 0; }
     .inline-panel-container.active { display: flex; }
 
-    .brand-btn { 
-      font-size: 0.85rem; padding: 8px 12px; border-radius: 8px; background: transparent; color: #a0aec0; cursor: pointer; 
+    .brand-btn {
+      font-size: 0.85rem; padding: 8px 12px; border-radius: 8px; background: transparent; color: #a0aec0; cursor: pointer;
       border: none !important; text-align: left; font-weight: 600; text-transform: uppercase !important; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
     .brand-btn:focus, .brand-btn:hover { color: #ffffff !important; background: rgba(255,255,255,0.1) !important; }
@@ -96,15 +96,15 @@
 
     /* ÁREA PRINCIPAL */
     .main-area {
-      flex: 1; 
-      display: flex; 
-      flex-direction: column; 
-      height: 100vh; 
-      padding: 0 0 10px 0; 
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      padding: 0 0 10px 0;
       gap: 6px;
-      overflow: hidden; 
+      overflow: hidden;
       background: transparent !important;
-      min-width: 0; 
+      min-width: 0;
       position: relative;
       z-index: 2;
       transition: transform 0.25s cubic-bezier(0.1, 0.9, 0.2, 1);
@@ -132,63 +132,64 @@
     }
 
     /* ÁREA SUPERIOR */
-    .hero-panel { 
-      flex: 1; 
-      min-height: 0; 
-      background: transparent !important; 
+    .hero-panel {
+      flex: 1;
+      min-height: 0;
+      background: transparent !important;
       border-radius: 0;
-      display: flex; 
-      padding: 12px 16px; 
-      gap: 20px; 
-      align-items: center; 
+      display: flex;
+      padding: 12px 16px;
+      gap: 20px;
+      align-items: center;
       position: relative;
       overflow: hidden;
     }
 
-.hero-brand-logo-container {
-      position: absolute; 
-      top: 20px; 
-      right: 20px; 
-      width: 180px; 
-      height: 80px;
-      display: flex; 
-      justify-content: flex-end; 
-      align-items: flex-start; 
-      z-index: 20; 
+  .hero-brand-logo-container {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      width: 240px;
+      height: 160px; /* Mantém a proporção exata de 3:2 (240x160) correspondente a 600x400 */
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      z-index: 20;
       pointer-events: none;
       background: transparent !important;
     }
 
-    .hero-brand-logo-container img { 
-      max-width: 100%; 
-      max-height: 100%; 
-      object-fit: contain; 
-      background: transparent !important; 
+    .hero-brand-logo-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain !important; /* Força a caber inteira sem cortar */
+      background: transparent !important;
     }
 
     .brand-overlay-logo {
       grid-column: 8 / span 2;
       grid-row: 1;
-      width: 198px !important;
-      height: 141px !important;
-      background: transparent !important; 
+      width: 210px !important;
+      height: 140px !important; /* Mantém a proporção exata de 3:2 (210x140) */
+      background: transparent !important;
       border-radius: 7px !important;
       display: flex !important;
       justify-content: center !important;
       align-items: center !important;
-      padding: 16px !important;
-      box-shadow: none !important; 
+      padding: 0 !important;
+      box-shadow: none !important;
       z-index: 5;
       pointer-events: none;
       box-sizing: border-box !important;
     }
 
     .brand-overlay-logo img {
-      max-width: 80% !important;
-      max-height: 80% !important;
-      object-fit: contain !important;
+      width: 100% !important;
+      height: 100% !important;
+      object-fit: contain !important; /* Exibe a imagem de 600x400 de ponta a ponta */
       background: transparent !important;
     }
+
     .hero-left-photos { height: 100%; aspect-ratio: 1 / 1; display: grid; grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(2, 1fr); gap: 8px; z-index: 10; position: relative; }
     .hero-left-photos.aspect-sets { aspect-ratio: 4 / 3; }
 
@@ -196,29 +197,29 @@
     .hero-photo-card img { width: 100%; height: 100%; object-fit: contain; }
 
     /* CONTAINER DAS INFORMAÇÕES DO HERO */
-    .hero-right-info { 
-      flex: 1; 
-      height: 100%; 
-      display: flex; 
-      flex-direction: column; 
-      justify-content: flex-start; 
-      gap: 4px; 
-      color: #e2e8f0; 
-      padding-right: 180px; 
-      z-index: 10; 
-      position: relative; 
+    . 10;
+      position: hero-right-info {
+      flex: 1;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      gap: 4px;
+      color: #e2e8f0;
+      padding-right: 180px;
+      z-index:relative;
       box-sizing: border-box;
     }
 
-    .hero-title { 
+    .hero-title {
       font-family: 'Open Sans', sans-serif !important;
       font-style: italic;
-      font-size: clamp(2rem, 2.3vw, 2.5rem) !important; 
-      font-weight: 900 !important; 
-      line-height: 1.1; 
-      color: #bdbdbd; 
-      margin-bottom: 12px !important; 
-      letter-spacing: 0.5px; 
+      font-size: clamp(2rem, 2.3vw, 2.5rem) !important;
+      font-weight: 900 !important;
+      line-height: 1.1;
+      color: #bdbdbd;
+      margin-bottom: 12px !important;
+      letter-spacing: 0.5px;
       text-transform: uppercase;
     }
 
@@ -259,15 +260,15 @@
     }
 
     /* BARRA DE CONTADOR/ORDENAÇÃO */
-    .counter-bar { 
-      display: flex; 
-      justify-content: flex-end; 
-      align-items: center; 
-      padding: 2px 0; 
-      gap: 12px; 
-      height: 32px; 
+    .counter-bar {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      padding: 2px 0;
+      gap: 12px;
+      height: 32px;
       min-height: 32px;
-      width: 926px; 
+      width: 926px;
       max-width: 100%;
       margin: 0 auto;
       overflow: visible !important;
@@ -296,8 +297,8 @@
       font-weight: 600;
     }
 
-    .sort-dropdown:focus, 
-    .sort-dropdown.focused, 
+    .sort-dropdown:focus,
+    .sort-dropdown.focused,
     .sort-dropdown:hover {
       background: #ffffff !important;
       color: #1a1f2c !important;
@@ -311,12 +312,12 @@
       display: none !important;
     }
 
-    .card-counter { 
-      font-size: 0.85rem; 
-      font-weight: 900; 
-      color: #e2e8f0; 
-      background: transparent; 
-      padding: 0 4px; 
+    .card-counter {
+      font-size: 0.85rem;
+      font-weight: 900;
+      color: #e2e8f0;
+      background: transparent;
+      padding: 0 4px;
       letter-spacing: 1px;
       line-height: 1.2;
       display: inline-block;
@@ -324,25 +325,25 @@
     }
 
     /* SEÇÃO INFERIOR DO CATÁLOGO */
-    .catalog-section { 
-      height: 195px; 
-      min-height: 195px; 
-      width: 100%; 
-      overflow: visible; 
-      flex-shrink: 0; 
-      touch-action: none; 
+    .catalog-section {
+      height: 195px;
+      min-height: 195px;
+      width: 100%;
+      overflow: visible;
+      flex-shrink: 0;
+      touch-action: none;
       display: flex;
       justify-content: center;
     }
 
-    .card-row { 
-      display: flex; 
-      gap: 12px; 
-      width: 926px; 
+    .card-row {
+      display: flex;
+      gap: 12px;
+      width: 926px;
       max-width: 100%;
-      height: 100%; 
-      justify-content: flex-start !important; 
-      align-content: start; 
+      height: 100%;
+      justify-content: flex-start !important;
+      align-content: start;
     }
 
     .card {
@@ -380,9 +381,9 @@
       line-height: 1;
     }
 
-    .card.card-aspect-sets { 
-      width: 220px !important; 
-      min-width: 220px !important; 
+    .card.card-aspect-sets {
+      width: 220px !important;
+      min-width: 220px !important;
     }
 
     .card-top-photo {
@@ -426,7 +427,7 @@
       margin-top: 1px !important;
       padding-left: 2px !important;
     }
-        
+
     .card-bar-details {
       display: flex !important;
       justify-content: space-between !important;
@@ -482,14 +483,14 @@
 
     .card.focused, .card:focus {
       border: 2px solid transparent !important;
-      background-image: linear-gradient(#ffffff, #ffffff), 
+      background-image: linear-gradient(#ffffff, #ffffff),
                         linear-gradient(135deg, #ffe066, #f39c12, #ff5500) !important;
       background-origin: border-box !important;
       background-clip: content-box, border-box !important;
       z-index: 10 !important;
     }
 
-    .card.focused .card-bottom-bar, 
+    .card.focused .card-bottom-bar,
     .card:focus .card-bottom-bar,
     .card:hover .card-bottom-bar {
       background-color: #F19711 !important;
@@ -575,7 +576,7 @@
 
     .brand-grid-card.focused, .brand-grid-card:focus, .brand-grid-card:hover {
       border: 2px solid transparent !important;
-      background-image: linear-gradient(#ffffff, #ffffff), 
+      background-image: linear-gradient(#ffffff, #ffffff),
                         linear-gradient(135deg, #ffe066, #f39c12, #ff5500) !important;
       background-origin: border-box !important;
       background-clip: content-box, border-box !important;
@@ -620,22 +621,22 @@
     }
 
     /* MODAL DE ZOOM (LIGHTBOX COM WALLPAPER) */
-    .zoom-modal { 
-      position: fixed; 
-      top: 0; 
-      left: 0; 
-      width: 100vw; 
-      height: 100vh; 
-      background-color: rgba(10, 12, 16, 0.95); 
+    .zoom-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(10, 12, 16, 0.95);
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
-      z-index: 3000; 
-      display: none; 
-      justify-content: center; 
-      align-items: center; 
-      padding: 16px; 
-      overflow: hidden; 
+      z-index: 3000;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
+      overflow: hidden;
     }
 
     .zoom-modal::before {
@@ -651,16 +652,16 @@
 
     .zoom-modal.active { display: flex; }
 
-    .zoom-modal img { 
+    .zoom-modal img {
       position: relative;
       z-index: 2;
-      max-width: 85vw; 
-      max-height: 85vh; 
-      object-fit: contain; 
-      border-radius: 6px; 
-      cursor: pointer; 
-      transition: transform 0.15s ease-out; 
-      transform-origin: center center; 
+      max-width: 85vw;
+      max-height: 85vh;
+      object-fit: contain;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: transform 0.15s ease-out;
+      transform-origin: center center;
       filter: drop-shadow(0 10px 25px rgba(0, 0, 0, 0.8));
     }
 
@@ -755,7 +756,7 @@
       margin-top: 10px !important;
       padding-top: 6px !important;
     }
-    
+
     .main-area.brand-mode .counter-bar,
     .main-area.all-brands-mode .counter-bar {
       margin-top: 20px !important;
@@ -968,128 +969,128 @@ function aoClicarEmSim() {
 </head>
 <body>
 
-  <!-- TELA DE CARREGAMENTO (SPLASH SCREEN BRANCA) -->
-  <div class="loading-screen" id="loadingScreen">
-    <img src="splashtv.png" alt="Logo WCCollection" class="loading-logo">
-    <div class="loading-extra-content" id="loadingExtra">
-      <div class="spinner"></div>
-      <div class="loading-text" id="loadingText">CARREGANDO CATÁLOGO...</div>
-    </div>
+<!-- TELA DE CARREGAMENTO (SPLASH SCREEN BRANCA) -->
+<div class="loading-screen" id="loadingScreen">
+  <img src="splashtv.png" alt="Logo WCCollection" class="loading-logo">
+  <div class="loading-extra-content" id="loadingExtra">
+    <div class="spinner"></div>
+    <div class="loading-text" id="loadingText">CARREGANDO CATÁLOGO...</div>
   </div>
+</div>
 
-  <div class="app-container">
-    <div class="hero-brand-wallpaper" id="heroBrandWallpaper"></div>
-    <button class="mobile-menu-btn" onclick="toggleMenuMobile(event)">☰</button>
+<div class="app-container">
+  <div class="hero-brand-wallpaper" id="heroBrandWallpaper"></div>
+  <button class="mobile-menu-btn" onclick="toggleMenuMobile(event)">☰</button>
 
-    <nav class="sidebar-drawer" id="sidebarDrawer">
-      <img src="wccollection.png" alt="Logo" class="sidebar-logo">
-      <button class="cat-btn" id="menuBtnHome" onclick="switchTab('home')" tabindex="0">HOME / CATÁLOGO</button>
-      <button class="cat-btn" id="menuBtnByBrands" onclick="window.location.href='marcas.html'" tabindex="0" style="display: none;">CATÁLOGO DE MARCAS</button>
-      <button class="cat-btn" id="menuBtnSearch" onclick="toggleSearchInline()" tabindex="0">PESQUISAR</button>
-      <div class="inline-panel-container" id="searchInlineContainer">
-        <input type="text" id="menuSearchInput" class="menu-search-box" placeholder="DIGITE PARA BUSCAR..." readonly tabindex="-1">
-        <div class="vk-container" id="vkContainer"></div>
+  <nav class="sidebar-drawer" id="sidebarDrawer">
+    <img src="wccollection.png" alt="Logo" class="sidebar-logo">
+    <button class="cat-btn" id="menuBtnHome" onclick="switchTab('home')" tabindex="0">HOME / CATÁLOGO</button>
+    <button class="cat-btn" id="menuBtnByBrands" onclick="window.location.href='marcas.html'" tabindex="0" style="display: none;">CATÁLOGO DE MARCAS</button>
+    <button class="cat-btn" id="menuBtnSearch" onclick="toggleSearchInline()" tabindex="0">PESQUISAR</button>
+    <div class="inline-panel-container" id="searchInlineContainer">
+      <input type="text" id="menuSearchInput" class="menu-search-box" placeholder="DIGITE PARA BUSCAR..." readonly tabindex="-1">
+      <div class="vk-container" id="vkContainer"></div>
+    </div>
+
+    <button class="cat-btn" id="menuBtnBrands" onclick="toggleBrandInline()" tabindex="0">MARCAS</button>
+    <div class="inline-panel-container" id="brandInlineList"></div>
+
+    <button class="cat-btn" id="menuBtnOcoc" onclick="switchTab('ococ')" tabindex="0">OCOC (PAÍSES)</button>
+    <button class="cat-btn" id="menuBtnSets" onclick="switchTab('sets')" tabindex="0">SETS & PACKS</button>
+  </nav>
+
+  <main class="main-area" id="mainArea" onclick="handleMainAreaClick()">
+    <section class="hero-panel" id="heroPanel">
+      <div class="hero-brand-logo-container" id="heroBrandLogo"></div>
+
+      <div class="hero-left-photos" id="heroPhotos">
+        <div class="hero-photo-card"><img src="" alt="" id="heroPhoto1"></div>
+        <div class="hero-photo-card"><img src="" alt="" id="heroPhoto2"></div>
+        <div class="hero-photo-card"><img src="" alt="" id="heroPhoto3"></div>
+        <div class="hero-photo-card"><img src="" alt="" id="heroPhoto4"></div>
       </div>
 
-      <button class="cat-btn" id="menuBtnBrands" onclick="toggleBrandInline()" tabindex="0">MARCAS</button>
-      <div class="inline-panel-container" id="brandInlineList"></div>
+      <div class="hero-right-info">
+        <h1 class="hero-title" id="heroTitle">Selecione uma lata</h1>
 
-      <button class="cat-btn" id="menuBtnOcoc" onclick="switchTab('ococ')" tabindex="0">OCOC (PAÍSES)</button>
-      <button class="cat-btn" id="menuBtnSets" onclick="switchTab('sets')" tabindex="0">SETS & PACKS</button>
-    </nav>
-
-    <main class="main-area" id="mainArea" onclick="handleMainAreaClick()">
-      <section class="hero-panel" id="heroPanel">
-        <div class="hero-brand-logo-container" id="heroBrandLogo"></div>
-
-        <div class="hero-left-photos" id="heroPhotos">
-          <div class="hero-photo-card"><img src="" alt="" id="heroPhoto1"></div>
-          <div class="hero-photo-card"><img src="" alt="" id="heroPhoto2"></div>
-          <div class="hero-photo-card"><img src="" alt="" id="heroPhoto3"></div>
-          <div class="hero-photo-card"><img src="" alt="" id="heroPhoto4"></div>
+        <div class="hero-info-row">
+          <span class="info-label">Origem:</span>
+          <span class="info-value" id="heroCountry">-</span>
         </div>
 
-        <div class="hero-right-info">
-          <h1 class="hero-title" id="heroTitle">Selecione uma lata</h1>
-
-          <div class="hero-info-row">
-            <span class="info-label">Origem:</span>
-            <span class="info-value" id="heroCountry">-</span>
-          </div>
-
-          <div class="hero-info-row">
-            <span class="info-label">Volume:</span>
-            <span class="info-value" id="heroVolume">-</span>
-          </div>
-
-          <div class="hero-info-row">
-            <span class="info-label">Ano:</span>
-            <span class="info-value" id="heroYear">-</span>
-          </div>
-
-          <div class="hero-info-row">
-            <span class="info-label">Cód. Barras:</span>
-            <span class="info-value" id="heroBarcode">-</span>
-          </div>
-
-          <div class="hero-brand-desc" id="heroBrandDescription"></div>
+        <div class="hero-info-row">
+          <span class="info-label">Volume:</span>
+          <span class="info-value" id="heroVolume">-</span>
         </div>
-      </section>
 
-      <div class="counter-bar">
-        <select id="sortSelect" class="sort-dropdown" onchange="handleSortChange(this.value)" tabindex="0">
-          <option value="newest">Mais recentes</option>
-          <option value="oldest">Mais antigos</option>
-          <option value="az">Alfabética A-Z</option>
-          <option value="za">Alfabética Z-A</option>
-        </select>
-        <div class="card-counter" id="cardCounter">0/0</div>
+        <div class="hero-info-row">
+          <span class="info-label">Ano:</span>
+          <span class="info-value" id="heroYear">-</span>
+        </div>
+
+        <div class="hero-info-row">
+          <span class="info-label">Cód. Barras:</span>
+          <span class="info-value" id="heroBarcode">-</span>
+        </div>
+
+        <div class="hero-brand-desc" id="heroBrandDescription"></div>
       </div>
+    </section>
 
-      <section class="catalog-section" id="catalogSection">
-        <div class="card-row" id="cardRow"></div>
-      </section>
-    </main>
-  </div>
+    <div class="counter-bar">
+      <select id="sortSelect" class="sort-dropdown" onchange="handleSortChange(this.value)" tabindex="0">
+        <option value="newest">Mais recentes</option>
+        <option value="oldest">Mais antigos</option>
+        <option value="az">Alfabética A-Z</option>
+        <option value="za">Alfabética Z-A</option>
+      </select>
+      <div class="card-counter" id="cardCounter">0/0</div>
+    </div>
 
-  <!-- MODAL DE ZOOM -->
-  <div class="zoom-modal" id="zoomModal" onclick="closeZoomModal()">
-    <img id="zoomImage" src="" alt="Imagem ampliada" onclick="event.stopPropagation(); toggleZoomStep();">
-  </div>
+    <section class="catalog-section" id="catalogSection">
+      <div class="card-row" id="cardRow"></div>
+    </section>
+  </main>
+</div>
 
-  <!-- MODAL DE SAÍDA DO APLICATIVO -->
-  <div class="exit-modal" id="exitModal">
-    <div class="exit-box">
-      <div class="exit-title">TEM CERTEZA QUE QUER SAIR?</div>
-      <div class="exit-buttons">
-        <button onclick="acaoSairNao()">NÃO</button>
-        <button onclick="acaoSairSim()">SIM</button>
-      </div>
+<!-- MODAL DE ZOOM -->
+<div class="zoom-modal" id="zoomModal" onclick="closeZoomModal()">
+  <img id="zoomImage" src="" alt="Imagem ampliada" onclick="event.stopPropagation(); toggleZoomStep();">
+</div>
+
+<!-- MODAL DE SAÍDA DO APLICATIVO -->
+<div class="exit-modal" id="exitModal">
+  <div class="exit-box">
+    <div class="exit-title">TEM CERTEZA QUE QUER SAIR?</div>
+    <div class="exit-buttons">
+      <button onclick="acaoSairNao()">NÃO</button>
+      <button onclick="acaoSairSim()">SIM</button>
     </div>
   </div>
+</div>
 
-  <script>
+<script>
   const API_URL = "https://script.google.com/macros/s/AKfycbwP4kTpSrGJllmlWjQp1YmD1Th5jiw1oUtX5cAJAZj9txy-eNi6_EYyLPG_Q0_coyT9/exec";
   let canCatalog = [];
   let currentFiltered = [];
   let zoomGallery = [];
   let currentZoomIndex = 0;
   let currentSortMode = 'newest';
-  
+
   let currentTab = 'home';
   let cardsPerRow = 7;
   let cardsPerPage = 7;
   let currentPage = 0;
   let activeLocalIndex = 0;
-  let lastSelectedMenuId = 'menuBtnHome'; 
+  let lastSelectedMenuId = 'menuBtnHome';
   let lastSelectedBrandElem = null;
   let isAllBrandsGridMode = false;
   let wasOpenedFromAllBrandsGrid = false;
 
   let registeredBrands = [];
 
-  let zoomLevel = 1.0; 
-  let zoomState = 0;   
+  let zoomLevel = 1.0;
+  let zoomState = 0;
   let panX = 0;
   let panY = 0;
   const PAN_STEP = 60;
@@ -1107,22 +1108,23 @@ function fixDriveUrl(url) {
     return str;
   }
 
- function getOptimizedImageUrl(url, size = 300) {
+  function getOptimizedImageUrl(url, size = 300) {
     if (!url) return '';
     const cleanUrl = fixDriveUrl(url);
     if (cleanUrl.includes('googleusercontent.com')) {
-      return cleanUrl.split('=')[0] + `=s${size}`;
+      // Removemos qualquer parâmetro antigo e aplicamos o tamanho sem cor de fundo forçada
+      const baseUrl = cleanUrl.split('=')[0];
+      return `${baseUrl}=s${size}-c`; // ou apenas ${baseUrl}=s${size}
     }
     return cleanUrl;
   }
-
   // 📺 INTEGRAÇÃO CORRIGIDA COM A HOME DA ANDROID TV
   function notificarHomeTV(can) {
     if (!can) return;
 
     const titulo = can.name || can.Nome || "Lata de Cerveja";
     const marca = can.brewery || can.Cervejaria || "WCCollection";
-    
+
     // Busca a melhor foto válida da lata
     const rawPhoto = can.ImgFront || can.front || can.ImgCover || can.cover || (zoomGallery && zoomGallery.length > 0 ? zoomGallery[0] : can.brandLogo);
     const imagem = getOptimizedImageUrl(rawPhoto, 800);
@@ -1132,7 +1134,7 @@ function fixDriveUrl(url) {
     // Dispara via AndroidTVBridge
     if (window.AndroidTVBridge && window.AndroidTVBridge.onCanOpened) {
       window.AndroidTVBridge.onCanOpened(titulo, marca, imagem, linkPagina);
-    } 
+    }
     // Fallback via PonteAndroid
     else if (typeof PonteAndroid !== "undefined") {
       if (PonteAndroid.atualizarUltimaLata) {
@@ -1145,7 +1147,7 @@ function fixDriveUrl(url) {
 
   function aoAbrirLata(lata) {
     if (!lata) return;
-    const rawPhoto = lata.imagemLightbox || lata.imagemCard || lata.ImgFront || lata.front || (zoomGallery && zoomGallery.length > 0 ? zoomGallery[0] : ""); 
+    const rawPhoto = lata.imagemLightbox || lata.imagemCard || lata.ImgFront || lata.front || (zoomGallery && zoomGallery.length > 0 ? zoomGallery[0] : "");
     const nomeLata = lata.nome || lata.name || lata.Nome || "Lata de Cerveja";
     const marcaLata = lata.marca || lata.brewery || lata.Cervejaria || "WCCollection";
     const linkPagina = window.location.href;
@@ -1173,7 +1175,7 @@ function fixDriveUrl(url) {
       }
       if (catalogSection) catalogSection.classList.remove("brand-mode");
       if (cardRow) cardRow.classList.remove("brand-mode-grid");
-      
+
       if (currentTab === 'sets') {
         cardsPerRow = 4;
         cardsPerPage = 4;
@@ -1201,56 +1203,56 @@ function fixDriveUrl(url) {
       .trim()
       .normalize("NFD")
       .replace(/[\u0300-\u036f]/g, "");
-    
+
     const countryCodes = {
-      'brasil': 'br', 'brazil': 'br', 'argentina': 'ar', 'bolivia': 'bo', 'chile': 'cl', 
+      'brasil': 'br', 'brazil': 'br', 'argentina': 'ar', 'bolivia': 'bo', 'chile': 'cl',
       'colombia': 'co', 'equador': 'ec', 'ecuador': 'ec', 'guiana': 'gy', 'gyana': 'gy',
-      'guiana francesa': 'gf', 'paraguai': 'py', 'paraguay': 'py', 'peru': 'pe', 
+      'guiana francesa': 'gf', 'paraguai': 'py', 'paraguay': 'py', 'peru': 'pe',
       'suriname': 'sr', 'uruguai': 'uy', 'uruguay': 'uy', 'venezuela': 've',
-      'antigua e barbuda': 'ag', 'bahamas': 'bs', 'barbados': 'bb', 'belize': 'bz', 
-      'canada': 'ca', 'costa rica': 'cr', 'cuba': 'cu', 'dominica': 'dm', 'el salvador': 'sv', 
-      'estados unidos': 'us', 'eua': 'us', 'usa': 'us', 'granada': 'gd', 'guatemala': 'gt', 
-      'haiti': 'ht', 'honduras': 'hn', 'jamaica': 'jm', 'mexico': 'mx', 'nicaragua': 'ni', 
-      'panama': 'pa', 'porto rico': 'pr', 'republica dominicana': 'do', 
-      'sao cristovao e nevis': 'kn', 'sao vicente e granadinas': 'vc', 'santa lucia': 'lc', 
-      'trinidad e tobago': 'tt', 'albania': 'al', 'alemanha': 'de', 'germany': 'de', 'andorra': 'ad', 'armenia': 'am', 
-      'austria': 'at', 'azerbaijao': 'az', 'belgica': 'be', 'bielorrussia': 'by', 
-      'bosnia e herzegovina': 'ba', 'bulgaria': 'bg', 'chipre': 'cy', 'croacia': 'hr', 
-      'dinamarca': 'dk', 'eslovaquia': 'sk', 'eslovenia': 'si', 'espanha': 'es', 
-      'estonia': 'ee', 'finlandia': 'fi', 'franca': 'fr', 'france': 'fr', 'georgia': 'ge', 
-      'grecia': 'gr', 'holanda': 'nl', 'paises baixos': 'nl', 'netherlands': 'nl', 
-      'hungria': 'hu', 'irlanda': 'ie', 'islandia': 'is', 'italia': 'it', 'kosovo': 'xk', 
-      'letonia': 'lv', 'liechtenstein': 'li', 'lituania': 'lt', 'luxemburgo': 'lu', 
-      'macedonia do norte': 'mk', 'malta': 'mt', 'moldavia': 'md', 'monaco': 'mc', 
-      'montenegro': 'me', 'noruega': 'no', 'polonia': 'pl', 'portugal': 'pt', 
-      'reino unido': 'gb', 'uk': 'gb', 'inglaterra': 'gb', 'escocia': 'gb', 'paises de gales': 'gb', 
-      'republica tcheca': 'cz', 'tchequia': 'cz', 'romenia': 'ro', 'russia': 'ru', 
-      'san marino': 'sm', 'servia': 'rs', 'suecia': 'se', 'suica': 'ch', 'turquia': 'tr', 
-      'ucrania': 'ua', 'vaticano': 'va', 'afeganistao': 'af', 'arabia saudita': 'sa', 'bangladesh': 'bd', 'bahrein': 'bh', 
-      'brunei': 'bn', 'butao': 'bt', 'camboja': 'kh', 'catar': 'qa', 'qatar': 'qa', 
-      'cazaquistao': 'kz', 'china': 'cn', 'coreia do norte': 'kp', 'coreia do sul': 'kr', 
-      'emirados arabes unidos': 'ae', 'eau': 'ae', 'filipinas': 'ph', 'iemen': 'ye', 
-      'india': 'in', 'indonesia': 'id', 'iraque': 'iq', 'ira': 'ir', 'israel': 'il', 
-      'japao': 'jp', 'japan': 'jp', 'jordania': 'jo', 'kuwait': 'kw', 'laos': 'la', 
-      'libano': 'lb', 'malasia': 'my', 'maldivas': 'mv', 'mianmar': 'mm', 'mongolia': 'mn', 
-      'nepal': 'np', 'oman': 'om', 'paquistao': 'pk', 'quirguistao': 'kg', 'singapura': 'sg', 
-      'siria': 'sy', 'sri lanka': 'lk', 'tailandia': 'th', 'taiwan': 'tw', 'tajiquistao': 'tj', 
+      'antigua e barbuda': 'ag', 'bahamas': 'bs', 'barbados': 'bb', 'belize': 'bz',
+      'canada': 'ca', 'costa rica': 'cr', 'cuba': 'cu', 'dominica': 'dm', 'el salvador': 'sv',
+      'estados unidos': 'us', 'eua': 'us', 'usa': 'us', 'granada': 'gd', 'guatemala': 'gt',
+      'haiti': 'ht', 'honduras': 'hn', 'jamaica': 'jm', 'mexico': 'mx', 'nicaragua': 'ni',
+      'panama': 'pa', 'porto rico': 'pr', 'republica dominicana': 'do',
+      'sao cristovao e nevis': 'kn', 'sao vicente e granadinas': 'vc', 'santa lucia': 'lc',
+      'trinidad e tobago': 'tt', 'albania': 'al', 'alemanha': 'de', 'germany': 'de', 'andorra': 'ad', 'armenia': 'am',
+      'austria': 'at', 'azerbaijao': 'az', 'belgica': 'be', 'bielorrussia': 'by',
+      'bosnia e herzegovina': 'ba', 'bulgaria': 'bg', 'chipre': 'cy', 'croacia': 'hr',
+      'dinamarca': 'dk', 'eslovaquia': 'sk', 'eslovenia': 'si', 'espanha': 'es',
+      'estonia': 'ee', 'finlandia': 'fi', 'franca': 'fr', 'france': 'fr', 'georgia': 'ge',
+      'grecia': 'gr', 'holanda': 'nl', 'paises baixos': 'nl', 'netherlands': 'nl',
+      'hungria': 'hu', 'irlanda': 'ie', 'islandia': 'is', 'italia': 'it', 'kosovo': 'xk',
+      'letonia': 'lv', 'liechtenstein': 'li', 'lituania': 'lt', 'luxemburgo': 'lu',
+      'macedonia do norte': 'mk', 'malta': 'mt', 'moldavia': 'md', 'monaco': 'mc',
+      'montenegro': 'me', 'noruega': 'no', 'polonia': 'pl', 'portugal': 'pt',
+      'reino unido': 'gb', 'uk': 'gb', 'inglaterra': 'gb', 'escocia': 'gb', 'paises de gales': 'gb',
+      'republica tcheca': 'cz', 'tchequia': 'cz', 'romenia': 'ro', 'russia': 'ru',
+      'san marino': 'sm', 'servia': 'rs', 'suecia': 'se', 'suica': 'ch', 'turquia': 'tr',
+      'ucrania': 'ua', 'vaticano': 'va', 'afeganistao': 'af', 'arabia saudita': 'sa', 'bangladesh': 'bd', 'bahrein': 'bh',
+      'brunei': 'bn', 'butao': 'bt', 'camboja': 'kh', 'catar': 'qa', 'qatar': 'qa',
+      'cazaquistao': 'kz', 'china': 'cn', 'coreia do norte': 'kp', 'coreia do sul': 'kr',
+      'emirados arabes unidos': 'ae', 'eau': 'ae', 'filipinas': 'ph', 'iemen': 'ye',
+      'india': 'in', 'indonesia': 'id', 'iraque': 'iq', 'ira': 'ir', 'israel': 'il',
+      'japao': 'jp', 'japan': 'jp', 'jordania': 'jo', 'kuwait': 'kw', 'laos': 'la',
+      'libano': 'lb', 'malasia': 'my', 'maldivas': 'mv', 'mianmar': 'mm', 'mongolia': 'mn',
+      'nepal': 'np', 'oman': 'om', 'paquistao': 'pk', 'quirguistao': 'kg', 'singapura': 'sg',
+      'siria': 'sy', 'sri lanka': 'lk', 'tailandia': 'th', 'taiwan': 'tw', 'tajiquistao': 'tj',
       'timor leste': 'tl', 'turcomenistao': 'tm', 'uzbequistao': 'uz', 'vietna': 'vn',
-      'africa do sul': 'za', 'angola': 'ao', 'algeria': 'dz', 'benin': 'bj', 'botsuana': 'bw', 
-      'burkina faso': 'bf', 'burundi': 'bi', 'cabo verde': 'cv', 'camaroes': 'cm', 
-      'chade': 'td', 'comores': 'km', 'congo': 'cg', 'costa do marfim': 'ci', 'djibout': 'dj', 
-      'egito': 'eg', 'eritreia': 'er', 'esuatini': 'sz', 'suazilandia': 'sz', 'etiopia': 'et', 
-      'gabao': 'ga', 'gambia': 'gm', 'gana': 'gh', 'guine': 'gn', 'guine bissau': 'gw', 
-      'guine equatorial': 'gq', 'ilha mauricio': 'mu', 'lesoto': 'ls', 'liberia': 'lr', 
-      'libia': 'ly', 'madagascar': 'mg', 'malawi': 'mw', 'mali': 'ml', 'marrocos': 'ma', 
-      'mauritania': 'mr', 'mocambique': 'mz', 'namibia': 'na', 'niger': 'ne', 'nigeria': 'ng', 
-      'quenia': 'ke', 'republica centro africana': 'cf', 'republica democratica do congo': 'cd', 
-      'ruanda': 'rw', 'sao tome e principe': 'st', 'senegal': 'sn', 'serra leoa': 'sl', 
-      'seichelas': 'sc', 'somalia': 'so', 'sudao': 'sd', 'sudao do sul': 'ss', 
-      'tanzania': 'tz', 'togo': 'tg', 'tunisia': 'tn', 'uganda': 'ug', 'zambia': 'zm', 
-      'zimbabue': 'zw', 'australia': 'au', 'fiji': 'fj', 'ilhas marechal': 'mh', 'ilhas salomao': 'sb', 
-      'kiribati': 'ki', 'micronesia': 'fm', 'nauru': 'nr', 'nova zelandia': 'nz', 
-      'palau': 'pw', 'papua nova guine': 'pg', 'samoa': 'ws', 'tonga': 'to', 
+      'africa do sul': 'za', 'angola': 'ao', 'algeria': 'dz', 'benin': 'bj', 'botsuana': 'bw',
+      'burkina faso': 'bf', 'burundi': 'bi', 'cabo verde': 'cv', 'camaroes': 'cm',
+      'chade': 'td', 'comores': 'km', 'congo': 'cg', 'costa do marfim': 'ci', 'djibout': 'dj',
+      'egito': 'eg', 'eritreia': 'er', 'esuatini': 'sz', 'suazilandia': 'sz', 'etiopia': 'et',
+      'gabao': 'ga', 'gambia': 'gm', 'gana': 'gh', 'guine': 'gn', 'guine bissau': 'gw',
+      'guine equatorial': 'gq', 'ilha mauricio': 'mu', 'lesoto': 'ls', 'liberia': 'lr',
+      'libia': 'ly', 'madagascar': 'mg', 'malawi': 'mw', 'mali': 'ml', 'marrocos': 'ma',
+      'mauritania': 'mr', 'mocambique': 'mz', 'namibia': 'na', 'niger': 'ne', 'nigeria': 'ng',
+      'quenia': 'ke', 'republica centro africana': 'cf', 'republica democratica do congo': 'cd',
+      'ruanda': 'rw', 'sao tome e principe': 'st', 'senegal': 'sn', 'serra leoa': 'sl',
+      'seichelas': 'sc', 'somalia': 'so', 'sudao': 'sd', 'sudao do sul': 'ss',
+      'tanzania': 'tz', 'togo': 'tg', 'tunisia': 'tn', 'uganda': 'ug', 'zambia': 'zm',
+      'zimbabue': 'zw', 'australia': 'au', 'fiji': 'fj', 'ilhas marechal': 'mh', 'ilhas salomao': 'sb',
+      'kiribati': 'ki', 'micronesia': 'fm', 'nauru': 'nr', 'nova zelandia': 'nz',
+      'palau': 'pw', 'papua nova guine': 'pg', 'samoa': 'ws', 'tonga': 'to',
       'tuvalu': 'tv', 'vanuatu': 'vu', 'hong kong': 'hk'
     };
 
@@ -1328,10 +1330,10 @@ function fixDriveUrl(url) {
 
     const searchInput = document.getElementById("menuSearchInput");
     if (searchInput) searchInput.value = "";
-    
+
     const searchContainer = document.getElementById("searchInlineContainer");
     if (searchContainer) searchContainer.classList.remove("active");
-    
+
     const brandList = document.getElementById("brandInlineList");
     if (brandList) brandList.classList.remove("active");
 
@@ -1372,8 +1374,8 @@ function fixDriveUrl(url) {
 
         const uniqueKey = `${brandVal}_${countryVal}`;
 
-        if ((!isSetVal || String(isSetVal).toLowerCase() === "false") && 
-            (isOcocVal === true || String(isOcocVal).toLowerCase() === "true") && 
+        if ((!isSetVal || String(isSetVal).toLowerCase() === "false") &&
+            (isOcocVal === true || String(isOcocVal).toLowerCase() === "true") &&
             brandVal && countryVal && !ococMap.has(uniqueKey)) {
           ococMap.set(uniqueKey, can);
         }
@@ -1421,7 +1423,7 @@ function fixDriveUrl(url) {
 
   function focusCardSafely(targetIndex) {
     closeMenu();
-    
+
     setTimeout(() => {
       const cards = document.querySelectorAll(".card, .brand-grid-card");
       if (cards.length > 0) {
@@ -1430,7 +1432,7 @@ function fixDriveUrl(url) {
 
         activeLocalIndex = finalIdx;
         const targetCard = cards[finalIdx];
-        
+
         if (targetCard) {
           targetCard.classList.add("focused");
           targetCard.focus({ preventScroll: true });
@@ -1443,7 +1445,7 @@ function fixDriveUrl(url) {
   function openMenu() {
     document.getElementById("sidebarDrawer").classList.add("open");
     document.getElementById("mainArea").classList.add("pushed");
-    
+
     if (lastSelectedMenuId === 'menuBtnBrands') {
       const brandContainer = document.getElementById("brandInlineList");
       brandContainer.classList.add("active");
@@ -1502,7 +1504,7 @@ function fixDriveUrl(url) {
     const container = document.getElementById("brandInlineList");
     document.getElementById("searchInlineContainer").classList.remove("active");
     container.classList.toggle("active");
-    
+
     if(container.classList.contains("active")) {
       const firstBrand = container.querySelector(".brand-btn");
       if(firstBrand) firstBrand.focus();
@@ -1516,9 +1518,9 @@ function fixDriveUrl(url) {
     vkKeys.forEach((k, index) => {
       const btn = document.createElement("button");
       btn.className = `vk-key ${ (k === 'ESPAÇO' || k === 'DEL' || k === 'LIMPAR') ? 'vk-key-wide' : '' }`;
-      btn.tabIndex = 0; 
+      btn.tabIndex = 0;
       btn.innerText = k;
-      
+
       btn.onclick = (e) => {
         e.stopPropagation();
         handleVkPress(k);
@@ -1556,15 +1558,15 @@ function fixDriveUrl(url) {
     brandContainer.innerHTML = "";
     const baseList = getBaseListForCurrentTab();
     const brands = [...new Set(baseList.map(c => c.brewery || c.Cervejaria).filter(Boolean))].sort();
-    
+
     let defaultText = "TODAS AS MARCAS";
     if (currentTab === 'ococ') defaultText = "TODOS OS PAÍSES";
     if (currentTab === 'sets') defaultText = "TODOS OS SETS";
 
     const allBtn = document.createElement("button");
     allBtn.className = "brand-btn"; allBtn.tabIndex = 0; allBtn.innerText = defaultText;
-    
-    allBtn.onclick = (e) => { 
+
+    allBtn.onclick = (e) => {
       e.stopPropagation();
       lastSelectedMenuId = 'menuBtnBrands';
       lastSelectedBrandElem = allBtn;
@@ -1572,7 +1574,7 @@ function fixDriveUrl(url) {
       wasOpenedFromAllBrandsGrid = false;
       currentPage = 0;
       renderBrandCardsGrid();
-      focusCardSafely(0); 
+      focusCardSafely(0);
     };
 
     allBtn.onkeydown = (e) => {
@@ -1587,15 +1589,15 @@ function fixDriveUrl(url) {
     brands.forEach(b => {
       const btn = document.createElement("button");
       btn.className = "brand-btn"; btn.tabIndex = 0; btn.innerText = String(b).toUpperCase();
-      
-      btn.onclick = (e) => { 
+
+      btn.onclick = (e) => {
         e.stopPropagation();
         lastSelectedMenuId = 'menuBtnBrands';
         lastSelectedBrandElem = btn;
         isAllBrandsGridMode = false;
         wasOpenedFromAllBrandsGrid = false;
-        filterCatalog(b); 
-        focusCardSafely(0); 
+        filterCatalog(b);
+        focusCardSafely(0);
       };
 
       btn.onkeydown = (e) => {
@@ -1614,7 +1616,7 @@ function fixDriveUrl(url) {
     const mainArea = document.getElementById("mainArea");
     const catalogSection = document.getElementById("catalogSection");
     const cardRow = document.getElementById("cardRow");
-    
+
     if (mainArea) mainArea.classList.remove("all-brands-mode");
     if (catalogSection) catalogSection.classList.remove("all-brands-mode");
     if (cardRow) cardRow.classList.remove("all-brands-grid");
@@ -1630,9 +1632,9 @@ function fixDriveUrl(url) {
       const country = String(can.country || can.Pais || "").toLowerCase();
       const barcode = String(can.barcode || can.Barcode || "").toLowerCase();
 
-      return name.includes(val) || 
-             brewery.includes(val) || 
-             country.includes(val) || 
+      return name.includes(val) ||
+             brewery.includes(val) ||
+             country.includes(val) ||
              barcode.includes(val);
     });
 
@@ -1678,7 +1680,7 @@ function fixDriveUrl(url) {
     const baseList = getBaseListForCurrentTab();
     const uniqueBrands = [...new Set(baseList.map(c => c.brewery || c.Cervejaria).filter(Boolean))].sort();
 
-    const brandsPerPage = 15; 
+    const brandsPerPage = 15;
     const startIndex = currentPage * brandsPerPage;
     const pageBrands = uniqueBrands.slice(startIndex, startIndex + brandsPerPage);
 
@@ -1934,7 +1936,7 @@ function fixDriveUrl(url) {
     const total = currentFiltered.length;
     const globalIndex = currentPage * cardsPerPage + localIndex;
     const currentNum = total > 0 ? (globalIndex + 1) : 0;
-    
+
     const counterElem = document.getElementById("cardCounter");
     if (counterElem) {
       counterElem.innerText = `${currentNum}/${total}`;
@@ -2019,7 +2021,7 @@ function fixDriveUrl(url) {
         const key = e.key;
         const keyCode = e.keyCode;
 
-        const currentColumn = isSearchingOrBrand 
+        const currentColumn = isSearchingOrBrand
           ? (localIndex < 7 ? localIndex : (localIndex - 7) % 9)
           : localIndex % cardsPerRow;
 
@@ -2051,7 +2053,7 @@ function fixDriveUrl(url) {
           }
         } else if (key === "ArrowDown" || keyCode === 40) {
           e.preventDefault();
-          
+
           if (isSearchingOrBrand) {
             if (localIndex < 7) {
               const target = localIndex + 7;
