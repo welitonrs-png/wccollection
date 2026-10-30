@@ -173,14 +173,16 @@
 /* Força o bloco de texto para o topo absoluto do Hero */
 /* Força o container de informações e descrição para o topo absoluto do Hero */
  /* Sobe o bloco inteiro de informações para colar no topo absoluto */
+   /* Força absoluta para colar no topo e ignorar qualquer centralização do container pai */
     .hero-info-container {
       position: absolute !important;
-      top: 10px !important;       /* Joga o bloco bem para cima (ajuste para 5px ou 0px se quiser colar mais) */
-      left: 320px !important;     /* Mantém a distância correta em relação às 4 fotos da esquerda */
-      right: 160px !important;    /* Mantém a margem para o logo do canto superior */
+      top: 15px !important;       /* Cola bem no topo da seção do hero */
+      left: 320px !important;     /* Mantém a distância correta após as 4 fotos da lata */
+      right: 160px !important;    /* Mantém o limite para não encostar na logo do canto */
       bottom: auto !important;
+      align-self: flex-start !important;
+      margin: 0 !important;
       transform: none !important;
-      margin-top: 0 !important;
       z-index: 10;
     }
 
