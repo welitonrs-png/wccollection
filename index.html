@@ -1111,7 +1111,9 @@ function fixDriveUrl(url) {
     if (!url) return '';
     const cleanUrl = fixDriveUrl(url);
     if (cleanUrl.includes('googleusercontent.com')) {
-      return cleanUrl.split('=')[0] + `=s${size}`;
+      const baseUrl = cleanUrl.split('=')[0];
+      // O '=s' define o tamanho e o '=k' força o formato original sem preencher fundo de preto
+      return `${baseUrl}=s${size}-k`;
     }
     return cleanUrl;
   }
