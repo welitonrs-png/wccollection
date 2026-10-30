@@ -165,6 +165,15 @@
       object-fit: contain !important; /* Força a caber inteira sem cortar */
       background: transparent !important;
     }
+    /* Torna qualquer tom escuro/preto do fundo da imagem 100% transparente na tela */
+    .hero-brand-logo-container img, 
+    .brand-overlay-logo img,
+    .hero-photo-card img {
+      background: transparent !important;
+      filter: drop-shadow(0px 0px 0px transparent);
+      /* O mix-blend-mode screen aplicado apenas na imagem anula fundos pretos perfeitamente sem distorcer o miolo colorido */
+      mix-blend-mode: screen !important; 
+    }
 
 /* Bloco unificado e ajustado para proporção 1:1 sem cortes */
     .brand-overlay-logo {
