@@ -172,17 +172,15 @@
     /* 2. Bloco de informações do Hero ajustado para o topo e com limite para não passar por baixo do logo */
 /* Força o bloco de texto para o topo absoluto do Hero */
 /* Força o container de informações e descrição para o topo absoluto do Hero */
+ /* Sobe o bloco inteiro de informações para colar no topo absoluto */
     .hero-info-container {
       position: absolute !important;
-      top: 15px !important;
-      left: 30px !important;
-      right: 150px !important;
+      top: 10px !important;       /* Joga o bloco bem para cima (ajuste para 5px ou 0px se quiser colar mais) */
+      left: 320px !important;     /* Mantém a distância correta em relação às 4 fotos da esquerda */
+      right: 160px !important;    /* Mantém a margem para o logo do canto superior */
       bottom: auto !important;
       transform: none !important;
-      display: flex !important;
-      flex-direction: column !important;
-      align-items: flex-start !important;
-      justify-content: flex-start !important;
+      margin-top: 0 !important;
       z-index: 10;
     }
 
