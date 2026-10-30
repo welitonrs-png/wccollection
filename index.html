@@ -145,25 +145,49 @@
       overflow: hidden;
     }
 
-  .hero-brand-logo-container {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      width: 240px;
-      height: 160px; /* Mantém a proporção exata de 3:2 (240x160) correspondente a 600x400 */
-      display: flex;
-      justify-content: flex-end;
-      align-items: center;
-      z-index: 20;
+ /* 1. Logo do canto superior direito reduzido pela metade */
+    .hero-brand-logo-container {
+      position: absolute; 
+      top: 20px; 
+      right: 20px; 
+      width: 120px !important; /* Reduzido pela metade */
+      height: 60px !important;  /* Reduzido pela metade */
+      display: flex; 
+      justify-content: flex-end; 
+      align-items: center; 
+      z-index: 20; 
       pointer-events: none;
       background: transparent !important;
     }
 
-    .hero-brand-logo-container img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain !important; /* Força a caber inteira sem cortar */
-      background: transparent !important;
+    .hero-brand-logo-container img { 
+      max-width: 100% !important; 
+      max-height: 100% !important; 
+      width: auto !important;
+      height: auto !important;
+      object-fit: contain !important; 
+      background: transparent !important; 
+    }
+
+    /* 2. Bloco de informações do Hero ajustado para o topo e com limite para não passar por baixo do logo */
+    .hero-info-container {
+      position: absolute;
+      top: 25px !important; /* Movido para o topo do hero */
+      left: 40px;
+      right: 160px !important; /* Limpa espaço à direita para o logo não invadir o texto */
+      max-width: calc(100% - 220px) !important; /* Força a quebra de linha antes de encostar no logo */
+      z-index: 10;
+    }
+
+    /* 3. Garante que os parágrafos da descrição quebrem a linha perfeitamente */
+    .hero-description {
+      max-width: 100% !important;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      display: -webkit-box;
+      -webkit-line-clamp: 4; /* Limita a quantidade de linhas para não descer demais se o texto for longo */
+      -webkit-box-orient: vertical;
+      overflow: hidden;
     }
     /* Torna qualquer tom escuro/preto do fundo da imagem 100% transparente na tela */
     .hero-brand-logo-container img, 
