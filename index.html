@@ -1099,13 +1099,13 @@ function fixDriveUrl(url) {
     return str;
   }
 
-function getOptimizedImageUrl(url, size = 600) {
+function getOptimizedImageUrl(url, size = 800) {
     if (!url) return '';
     const cleanUrl = fixDriveUrl(url);
     if (cleanUrl.includes('googleusercontent.com')) {
+      // Usamos apenas o parâmetro de tamanho sem cortes, mantendo o arquivo limpo
       const baseUrl = cleanUrl.split('=')[0];
-      // Adicionamos '-rw' ou '-k' para forçar o Google Drive a manter a transparência alpha sem o fundo preto
-      return `${baseUrl}=s${size}-rw`;
+      return `${baseUrl}=s${size}-k`; 
     }
     return cleanUrl;
   }
