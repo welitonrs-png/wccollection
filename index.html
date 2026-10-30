@@ -256,9 +256,25 @@
     .hero-left-photos { height: 100%; aspect-ratio: 1 / 1; display: grid; grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(2, 1fr); gap: 8px; z-index: 10; position: relative; }
     .hero-left-photos.aspect-sets { aspect-ratio: 4 / 3; }
 
-    .hero-photo-card { background: #ffffff; border-radius: 8px; padding: 4px; display: flex; justify-content: center; align-items: center; width: 100%; height: 100%; overflow: hidden; cursor: pointer; }
-    .hero-photo-card img { width: 100%; height: 100%; object-fit: contain; }
+.hero-photo-card { 
+      background: transparent !important; /* Mantém transparente para não tampar a lata */
+      border-radius: 8px; 
+      padding: 4px; 
+      display: flex; 
+      justify-content: center; 
+      align-items: center; 
+      width: 100%; 
+      height: 100%; 
+      overflow: hidden; 
+      cursor: pointer; 
+    }
 
+    .hero-photo-card img { 
+      width: 100%; 
+      height: 100%; 
+      object-fit: contain; 
+      background: transparent !important; 
+    }
     /* CONTAINER DAS INFORMAÇÕES DO HERO */
     . 10;
       position: hero-right-info {
