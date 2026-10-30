@@ -1090,13 +1090,13 @@ function fixDriveUrl(url) {
     return str;
   }
 
-  function getOptimizedImageUrl(url, size = 600) {
+function getOptimizedImageUrl(url, size = 600) {
     if (!url) return '';
     const cleanUrl = fixDriveUrl(url);
     if (cleanUrl.includes('googleusercontent.com')) {
       const baseUrl = cleanUrl.split('=')[0];
-      // Usamos apenas o tamanho s600 sem a letra 'c' de crop (corte) e sem o 'k' que quebrou
-      return `${baseUrl}=s${size}`;
+      // Adicionamos '-rw' ou '-k' para forçar o Google Drive a manter a transparência alpha sem o fundo preto
+      return `${baseUrl}=s${size}-rw`;
     }
     return cleanUrl;
   }
