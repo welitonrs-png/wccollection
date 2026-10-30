@@ -256,8 +256,9 @@
     .hero-left-photos { height: 100%; aspect-ratio: 1 / 1; display: grid; grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(2, 1fr); gap: 8px; z-index: 10; position: relative; }
     .hero-left-photos.aspect-sets { aspect-ratio: 4 / 3; }
 
-.hero-photo-card { 
-      background: transparent !important; /* Mantém transparente para não tampar a lata */
+/* Mantém o fundo branco intencional nas fotos das latas */
+    .hero-photo-card { 
+      background: #ffffff !important; 
       border-radius: 8px; 
       padding: 4px; 
       display: flex; 
@@ -1901,7 +1902,7 @@ function getOptimizedImageUrl(url, size = 800) {
     if (heroBarcode) heroBarcode.innerText = barcodeVal;
     if (heroDesc) heroDesc.innerText = brandDescVal || "";
 
-    const photo1 = document.getElementById("heroPhoto1");
+const photo1 = document.getElementById("heroPhoto1");
   const photo2 = document.getElementById("heroPhoto2");
   const photo3 = document.getElementById("heroPhoto3");
   const photo4 = document.getElementById("heroPhoto4");
@@ -1911,15 +1912,13 @@ function getOptimizedImageUrl(url, size = 800) {
   const img3 = can.ImgBack || can.back || "";
   const img4 = can.ImgRight || can.right || "";
 
-  // Função auxiliar para injetar a imagem corretamente na div ou no elemento img
   function setThumbnail(el, url) {
     if (!el) return;
-    const optimizedUrl = getOptimizedImageUrl(url); // Usa a URL limpa que removemos o tamanho force
+    const optimizedUrl = getOptimizedImageUrl(url);
     if (el.tagName === 'IMG') {
       el.src = optimizedUrl;
     } else {
-      // Se for uma div (os 4 quadrados brancos), criamos/atualizamos a tag img dentro dela
-      el.innerHTML = url ? `<img src="${optimizedUrl}" style="width:100%; height:100%; object-fit:contain; background:transparent;">` : '';
+      el.innerHTML = url ? `<img src="${optimizedUrl}" style="width:100%; height:100%; object-fit:contain;">` : '';
     }
   }
 
