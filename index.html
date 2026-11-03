@@ -145,13 +145,13 @@
       overflow: hidden;
     }
 
- /* 1. Logo do canto superior direito reduzido pela metade */
+    /* Logo do canto superior direito reduzido pela metade */
     .hero-brand-logo-container {
       position: absolute; 
       top: 20px; 
       right: 20px; 
-      width: 150px !important; /* Reduzido pela metade */
-      height: 100px !important;  /* Reduzido pela metade */
+      width: 150px !important; 
+      height: 100px !important;  
       display: flex; 
       justify-content: flex-end; 
       align-items: center; 
@@ -169,16 +169,12 @@
       background: transparent !important; 
     }
 
-    /* 2. Bloco de informações do Hero ajustado para o topo e com limite para não passar por baixo do logo */
-/* Força o bloco de texto para o topo absoluto do Hero */
-/* Força o container de informações e descrição para o topo absoluto do Hero */
- /* Sobe o bloco inteiro de informações para colar no topo absoluto */
-   /* Força absoluta para colar no topo e ignorar qualquer centralização do container pai */
+    /* Bloco de informações do Hero ajustado para o topo */
     .hero-info-container {
       position: absolute !important;
-      top: 15px !important;       /* Cola bem no topo da seção do hero */
-      left: 320px !important;     /* Mantém a distância correta após as 4 fotos da lata */
-      right: 160px !important;    /* Mantém o limite para não encostar na logo do canto */
+      top: 15px !important;       
+      left: 320px !important;     
+      right: 160px !important;    
       bottom: auto !important;
       align-self: flex-start !important;
       margin: 0 !important;
@@ -186,33 +182,31 @@
       z-index: 10;
     }
 
-    /* Garante que o parágrafo da descrição flua a partir do topo */
     #heroBrandDescription {
       margin-top: 10px !important;
       max-width: 100% !important;
       word-wrap: break-word;
       overflow-wrap: break-word;
     }
-    /* 3. Garante que os parágrafos da descrição quebrem a linha perfeitamente */
+
     .hero-description {
       max-width: 100% !important;
       word-wrap: break-word;
       overflow-wrap: break-word;
       display: -webkit-box;
-      -webkit-line-clamp: 4; /* Limita a quantidade de linhas para não descer demais se o texto for longo */
+      -webkit-line-clamp: 4; 
       -webkit-box-orient: vertical;
       overflow: hidden;
     }
-    /* Torna qualquer tom escuro/preto do fundo da imagem 100% transparente na tela */
+
     .hero-brand-logo-container img, 
     .brand-overlay-logo img,
     .hero-photo-card img {
       background: transparent !important;
       filter: drop-shadow(0px 0px 0px transparent);
-      /* O mix-blend-mode screen aplicado apenas na imagem anula fundos pretos perfeitamente sem distorcer o miolo colorido */
       mix-blend-mode: screen !important; 
     }
-    /* Garante que os slots das 4 imagens da lata apareçam corretamente */
+
     .hero-thumbnails-container, .side-images-grid, div[class*="thumb"] {
       background: transparent !important;
     }
@@ -225,12 +219,11 @@
       border-radius: 6px;
     }
 
-/* Bloco unificado e ajustado para proporção 1:1 sem cortes */
     .brand-overlay-logo {
       grid-column: 8 / span 2;
       grid-row: 1;
       width: 140px !important;
-      height: 140px !important; /* Altura e largura iguais para formar um quadrado perfeito 1:1 */
+      height: 140px !important; 
       background: transparent !important; 
       border-radius: 7px !important;
       display: flex !important;
@@ -241,7 +234,7 @@
       z-index: 5;
       pointer-events: none;
       box-sizing: border-box !important;
-      margin: auto; /* Centraliza perfeitamente na célula do grid */
+      margin: auto; 
     }
 
     .brand-overlay-logo img {
@@ -249,15 +242,13 @@
       max-height: 100% !important;
       width: auto !important;
       height: auto !important;
-      object-fit: contain !important; /* Mostra a imagem 1:1 inteira, sem cortar as pontas */
+      object-fit: contain !important; 
       background: transparent !important;
     }
 
     .hero-left-photos { height: 100%; aspect-ratio: 1 / 1; display: grid; grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(2, 1fr); gap: 8px; z-index: 10; position: relative; }
     .hero-left-photos.aspect-sets { aspect-ratio: 4 / 3; }
 
-/* Mantém o fundo branco intencional nas fotos das latas */
-/* Mantém o fundo branco intencional nas fotos das latas */
     .hero-photo-card { 
       background: transparent !important; 
       border-radius: 8px; 
@@ -278,18 +269,18 @@
       border-radius: 8px !important;
       background: transparent !important; 
     }
-    /* CONTAINER DAS INFORMAÇÕES DO HERO */
-    . 10;
-      position: hero-right-info {
+
+    .hero-right-info {
       flex: 1;
       height: 100%;
       display: flex;
       flex-direction: column;
       justify-content: flex-start;
+      align-items: flex-start !important;
       gap: 4px;
       color: #e2e8f0;
       padding-right: 180px;
-      z-index:relative;
+      z-index: 10;
       box-sizing: border-box;
     }
 
@@ -343,7 +334,7 @@
       -webkit-box-orient: vertical;
       overflow: hidden;
       text-transform: none;
-      padding-top: 7px
+      padding-top: 7px;
     }
 
     /* BARRA DE CONTADOR/ORDENAÇÃO */
@@ -394,7 +385,6 @@
       outline: none !important;
     }
 
-    /* OCULTAR CAIXA DE ORDENAÇÃO NO MODO TODAS AS MARCAS */
     .main-area.all-brands-mode .sort-dropdown {
       display: none !important;
     }
@@ -449,7 +439,6 @@
       outline: none !important;
     }
 
-    /* SELO OCOC REDUZIDO */
     .card-ococ-badge {
       position: absolute;
       top: 4px;
@@ -583,7 +572,6 @@
       background-color: #F19711 !important;
     }
 
-    /* CONTRASTE NO CARD SELECIONADO */
     .card.focused .card-bar-title,
     .card:focus .card-bar-title,
     .card:hover .card-bar-title,
@@ -594,14 +582,6 @@
     .card:focus .card-bar-vol,
     .card:hover .card-bar-vol {
       color: #ffffff !important;
-    }
-
-    .card.focused .card-bar-country,
-    .card:focus .card-bar-country,
-    .card:hover .card-bar-country,
-    .card.focused .card-bar-vol,
-    .card:focus .card-bar-vol,
-    .card:hover .card-bar-vol {
     }
 
     /* CARDS DE MARCAS (3 LINHAS VISÍVEIS) */
@@ -681,7 +661,6 @@
       color: #ffffff !important;
     }
 
-    /* MODO DE GRID DE MARCAS (EXATAMENTE 3 LINHAS) */
     .catalog-section.all-brands-mode {
       height: 400px !important;
       min-height: 400px !important;
@@ -742,7 +721,7 @@
       position: relative;
       z-index: 2;
       max-width: 85vw;
-      max-height: 85vh;
+      max-height: 75vh;
       object-fit: contain;
       border-radius: 6px;
       cursor: pointer;
@@ -751,87 +730,122 @@
       filter: drop-shadow(0 10px 25px rgba(0, 0, 0, 0.8));
     }
 
+    /* BANNER ROTATIVO NO RODAPÉ DO LIGHTBOX */
+    .lightbox-footer-ticker {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 45px;
+      background: rgba(15, 20, 30, 0.92);
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      z-index: 10;
+    }
+
+    .ticker-track {
+      display: flex;
+      white-space: nowrap;
+      animation: tickerAnimation 25s linear infinite;
+    }
+
+    .ticker-item {
+      display: inline-block;
+      padding: 0 40px;
+      color: #e2e8f0;
+      font-size: 1rem;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .ticker-item span {
+      color: #f39c12;
+      margin-right: 6px;
+      font-weight: 800;
+    }
+
+    @keyframes tickerAnimation {
+      0% { transform: translate3d(0, 0, 0); }
+      100% { transform: translate3d(-50%, 0, 0); }
+    }
+
     /* MODAL DE SAÍDA */
-  .exit-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.85);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 99999;
-  opacity: 0;
-  visibility: hidden;
-  transition: all 0.2s ease;
-}
+    .exit-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.85);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 99999;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.2s ease;
+    }
 
-.exit-modal.active {
-  opacity: 1;
-  visibility: visible;
-}
+    .exit-modal.active {
+      opacity: 1;
+      visibility: visible;
+    }
 
-.exit-box {
-  background: #282A2D;
-  padding: 30px 40px;
-  border-radius: 12px;
-  border: 2px solid #444;
-  text-align: center;
-}
+    .exit-box {
+      background: #282A2D;
+      padding: 30px 40px;
+      border-radius: 12px;
+      border: 2px solid #444;
+      text-align: center;
+    }
 
-.exit-title {
-  font-size: 20px;
-  color: #fff;
-  margin-bottom: 25px;
-  font-weight: bold;
-}
+    .exit-title {
+      font-size: 20px;
+      color: #fff;
+      margin-bottom: 25px;
+      font-weight: bold;
+    }
 
-.exit-buttons {
-  display: flex;
-  flex-direction: column; /* Um embaixo do outro */
-  gap: 15px;
-  justify-content: center;
-}
+    .exit-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      justify-content: center;
+    }
 
-.exit-buttons button {
-  padding: 15px 35px;
-  font-size: 18px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.15s ease;
-  /* Tira a borda padrão do navegador */
-  outline: none !important;
-  box-shadow: none !important;
-}
+    .exit-buttons button {
+      padding: 15px 35px;
+      font-size: 18px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      outline: none !important;
+      box-shadow: none !important;
+    }
 
-/* Botão NÃO - normal */
-.exit-buttons button:first-child {
-  background: #444;
-  color: #fff;
-}
-/* Botão NÃO - SELECIONADO */
-.exit-buttons button:first-child:focus {
-  background: #f39c12; /* Fica mais claro */
-  color: #fff;
-  transform: scale(1.05);
-}
+    .exit-buttons button:first-child {
+      background: #444;
+      color: #fff;
+    }
+    .exit-buttons button:first-child:focus {
+      background: #f39c12; 
+      color: #fff;
+      transform: scale(1.05);
+    }
 
-/* Botão SIM - normal */
-.exit-buttons button:last-child {
-  background: #444;
-  color: #fff;
-}
-/* Botão SIM - SELECIONADO */
-.exit-buttons button:last-child:focus {
-  background: #f39c12; /* Fica mais brilhante */
-  color: #fff;
-  transform: scale(1.05);
-}
+    .exit-buttons button:last-child {
+      background: #444;
+      color: #fff;
+    }
+    .exit-buttons button:last-child:focus {
+      background: #f39c12; 
+      color: #fff;
+      transform: scale(1.05);
+    }
 
-    /* MODO ESPECIAL DE MARCA / PESQUISA */
     .main-area.brand-mode #heroPanel {
       display: none !important;
     }
@@ -875,8 +889,6 @@
     .card-row.brand-mode-grid .card:nth-child(n+8) {
       grid-row: auto;
     }
-
-  
 
     .card-row.brand-mode-grid .card-bottom-bar {
       height: 35px !important;
@@ -998,38 +1010,6 @@
       .card-row.brand-mode-grid .card-bar-flag { width: 22px !important; height: 14px !important; }
       .card-row.brand-mode-grid .card-bar-vol { font-size: 1rem !important; }
     }
-    // Função que o Android chama
-function mostrarConfirmacaoSaida() {
-    // Exibe a sua caixa de pergunta que já existe
-    // Se já tem uma função, é só chamar ela aqui
-    const confirmou = confirm("TEM CERTEZA QUE QUER SAIR?");
-
-    // Envia a resposta de volta para o Android
-    if (window.AndroidTVBridge) {
-        AndroidTVBridge.confirmouSaida(confirmou);
-    }
-}
-
-// Se a sua caixa já é personalizada (com NÃO e SIM), ajuste assim:
-/*
-function mostrarConfirmacaoSaida() {
-    // Mostra sua div de confirmação que já existe
-    document.getElementById("caixaConfirmacaoSaida").style.display = "flex";
-}
-
-function aoClicarEmNao() {
-    document.getElementById("caixaConfirmacaoSaida").style.display = "none";
-    if (window.AndroidTVBridge) {
-        AndroidTVBridge.confirmouSaida(false);
-    }
-}
-
-function aoClicarEmSim() {
-    if (window.AndroidTVBridge) {
-        AndroidTVBridge.confirmouSaida(true);
-    }
-}
-*/
   </style>
 </head>
 <body>
@@ -1118,9 +1098,13 @@ function aoClicarEmSim() {
   </main>
 </div>
 
-<!-- MODAL DE ZOOM -->
+<!-- MODAL DE ZOOM COM BANNER ROTATIVO NO RODAPÉ -->
 <div class="zoom-modal" id="zoomModal" onclick="closeZoomModal()">
   <img id="zoomImage" src="" alt="Imagem ampliada" onclick="event.stopPropagation(); toggleZoomStep();">
+  
+  <div id="lightboxFooterTicker" class="lightbox-footer-ticker">
+    <div class="ticker-track" id="tickerTrack"></div>
+  </div>
 </div>
 
 <!-- MODAL DE SAÍDA DO APLICATIVO -->
@@ -1128,8 +1112,8 @@ function aoClicarEmSim() {
   <div class="exit-box">
     <div class="exit-title">TEM CERTEZA QUE QUER SAIR?</div>
     <div class="exit-buttons">
-      <button onclick="acaoSairNao()">NÃO</button>
-      <button onclick="acaoSairSim()">SIM</button>
+      <button id="exitBtnNo" onclick="acaoSairNao()">NÃO</button>
+      <button id="exitBtnYes" onclick="acaoSairSim()">SIM</button>
     </div>
   </div>
 </div>
@@ -1162,7 +1146,7 @@ function aoClicarEmSim() {
 
   const vkKeys = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','1','2','3','4','5','6','7','8','9','0','ESPAÇO','DEL','LIMPAR'];
 
-function fixDriveUrl(url) {
+  function fixDriveUrl(url) {
     if (!url) return '';
     const str = String(url).trim();
     const match = str.match(/\/d\/([^\/\?]+)/);
@@ -1172,51 +1156,34 @@ function fixDriveUrl(url) {
     return str;
   }
 
-function getOptimizedImageUrl(url, size = 800) {
+  function getOptimizedImageUrl(url, size = 800) {
     if (!url) return '';
     const cleanUrl = fixDriveUrl(url);
     if (cleanUrl.includes('googleusercontent.com')) {
-      // Retorna apenas a URL base limpa, sem o =s400 ou qualquer parâmetro que force conversão com fundo preto
       return cleanUrl.split('=')[0];
     }
     return cleanUrl;
   }
-  // 📺 INTEGRAÇÃO CORRIGIDA COM A HOME DA ANDROID TV
+
   function notificarHomeTV(can) {
     if (!can) return;
 
     const titulo = can.name || can.Nome || "Lata de Cerveja";
     const marca = can.brewery || can.Cervejaria || "WCCollection";
 
-    // Busca a melhor foto válida da lata
     const rawPhoto = can.ImgFront || can.front || can.ImgCover || can.cover || (zoomGallery && zoomGallery.length > 0 ? zoomGallery[0] : can.brandLogo);
     const imagem = getOptimizedImageUrl(rawPhoto, 800);
     const linkPagina = window.location.href;
     const barcode = String(can.barcode || can.Barcode || can.id || "0");
 
-    // Dispara via AndroidTVBridge
     if (window.AndroidTVBridge && window.AndroidTVBridge.onCanOpened) {
       window.AndroidTVBridge.onCanOpened(titulo, marca, imagem, linkPagina);
-    }
-    // Fallback via PonteAndroid
-    else if (typeof PonteAndroid !== "undefined") {
+    } else if (typeof PonteAndroid !== "undefined") {
       if (PonteAndroid.atualizarUltimaLata) {
         PonteAndroid.atualizarUltimaLata(titulo, marca, imagem, barcode);
       } else if (PonteAndroid.publicarCanalTv) {
         PonteAndroid.publicarCanalTv(titulo, marca, imagem, barcode);
       }
-    }
-  }
-
-  function aoAbrirLata(lata) {
-    if (!lata) return;
-    const rawPhoto = lata.imagemLightbox || lata.imagemCard || lata.ImgFront || lata.front || (zoomGallery && zoomGallery.length > 0 ? zoomGallery[0] : "");
-    const nomeLata = lata.nome || lata.name || lata.Nome || "Lata de Cerveja";
-    const marcaLata = lata.marca || lata.brewery || lata.Cervejaria || "WCCollection";
-    const linkPagina = window.location.href;
-
-    if (window.AndroidTVBridge && window.AndroidTVBridge.onCanOpened) {
-      window.AndroidTVBridge.onCanOpened(nomeLata, marcaLata, getOptimizedImageUrl(rawPhoto, 800), linkPagina);
     }
   }
 
@@ -1269,54 +1236,20 @@ function getOptimizedImageUrl(url, size = 800) {
 
     const countryCodes = {
       'brasil': 'br', 'brazil': 'br', 'argentina': 'ar', 'bolivia': 'bo', 'chile': 'cl',
-      'colombia': 'co', 'equador': 'ec', 'ecuador': 'ec', 'guiana': 'gy', 'gyana': 'gy',
-      'guiana francesa': 'gf', 'paraguai': 'py', 'paraguay': 'py', 'peru': 'pe',
-      'suriname': 'sr', 'uruguai': 'uy', 'uruguay': 'uy', 'venezuela': 've',
-      'antigua e barbuda': 'ag', 'bahamas': 'bs', 'barbados': 'bb', 'belize': 'bz',
-      'canada': 'ca', 'costa rica': 'cr', 'cuba': 'cu', 'dominica': 'dm', 'el salvador': 'sv',
-      'estados unidos': 'us', 'eua': 'us', 'usa': 'us', 'granada': 'gd', 'guatemala': 'gt',
-      'haiti': 'ht', 'honduras': 'hn', 'jamaica': 'jm', 'mexico': 'mx', 'nicaragua': 'ni',
-      'panama': 'pa', 'porto rico': 'pr', 'republica dominicana': 'do',
-      'sao cristovao e nevis': 'kn', 'sao vicente e granadinas': 'vc', 'santa lucia': 'lc',
-      'trinidad e tobago': 'tt', 'albania': 'al', 'alemanha': 'de', 'germany': 'de', 'andorra': 'ad', 'armenia': 'am',
-      'austria': 'at', 'azerbaijao': 'az', 'belgica': 'be', 'bielorrussia': 'by',
-      'bosnia e herzegovina': 'ba', 'bulgaria': 'bg', 'chipre': 'cy', 'croacia': 'hr',
-      'dinamarca': 'dk', 'eslovaquia': 'sk', 'eslovenia': 'si', 'espanha': 'es',
-      'estonia': 'ee', 'finlandia': 'fi', 'franca': 'fr', 'france': 'fr', 'georgia': 'ge',
-      'grecia': 'gr', 'holanda': 'nl', 'paises baixos': 'nl', 'netherlands': 'nl',
-      'hungria': 'hu', 'irlanda': 'ie', 'islandia': 'is', 'italia': 'it', 'kosovo': 'xk',
-      'letonia': 'lv', 'liechtenstein': 'li', 'lituania': 'lt', 'luxemburgo': 'lu',
-      'macedonia do norte': 'mk', 'malta': 'mt', 'moldavia': 'md', 'monaco': 'mc',
-      'montenegro': 'me', 'noruega': 'no', 'polonia': 'pl', 'portugal': 'pt',
-      'reino unido': 'gb', 'uk': 'gb', 'inglaterra': 'gb', 'escocia': 'gb', 'paises de gales': 'gb',
-      'republica tcheca': 'cz', 'tchequia': 'cz', 'romenia': 'ro', 'russia': 'ru',
-      'san marino': 'sm', 'servia': 'rs', 'suecia': 'se', 'suica': 'ch', 'turquia': 'tr',
-      'ucrania': 'ua', 'vaticano': 'va', 'afeganistao': 'af', 'arabia saudita': 'sa', 'bangladesh': 'bd', 'bahrein': 'bh',
-      'brunei': 'bn', 'butao': 'bt', 'camboja': 'kh', 'catar': 'qa', 'qatar': 'qa',
-      'cazaquistao': 'kz', 'china': 'cn', 'coreia do norte': 'kp', 'coreia do sul': 'kr',
-      'emirados arabes unidos': 'ae', 'eau': 'ae', 'filipinas': 'ph', 'iemen': 'ye',
-      'india': 'in', 'indonesia': 'id', 'iraque': 'iq', 'ira': 'ir', 'israel': 'il',
-      'japao': 'jp', 'japan': 'jp', 'jordania': 'jo', 'kuwait': 'kw', 'laos': 'la',
-      'libano': 'lb', 'malasia': 'my', 'maldivas': 'mv', 'mianmar': 'mm', 'mongolia': 'mn',
-      'nepal': 'np', 'oman': 'om', 'paquistao': 'pk', 'quirguistao': 'kg', 'singapura': 'sg',
-      'siria': 'sy', 'sri lanka': 'lk', 'tailandia': 'th', 'taiwan': 'tw', 'tajiquistao': 'tj',
-      'timor leste': 'tl', 'turcomenistao': 'tm', 'uzbequistao': 'uz', 'vietna': 'vn',
-      'africa do sul': 'za', 'angola': 'ao', 'algeria': 'dz', 'benin': 'bj', 'botsuana': 'bw',
-      'burkina faso': 'bf', 'burundi': 'bi', 'cabo verde': 'cv', 'camaroes': 'cm',
-      'chade': 'td', 'comores': 'km', 'congo': 'cg', 'costa do marfim': 'ci', 'djibout': 'dj',
-      'egito': 'eg', 'eritreia': 'er', 'esuatini': 'sz', 'suazilandia': 'sz', 'etiopia': 'et',
-      'gabao': 'ga', 'gambia': 'gm', 'gana': 'gh', 'guine': 'gn', 'guine bissau': 'gw',
-      'guine equatorial': 'gq', 'ilha mauricio': 'mu', 'lesoto': 'ls', 'liberia': 'lr',
-      'libia': 'ly', 'madagascar': 'mg', 'malawi': 'mw', 'mali': 'ml', 'marrocos': 'ma',
-      'mauritania': 'mr', 'mocambique': 'mz', 'namibia': 'na', 'niger': 'ne', 'nigeria': 'ng',
-      'quenia': 'ke', 'republica centro africana': 'cf', 'republica democratica do congo': 'cd',
-      'ruanda': 'rw', 'sao tome e principe': 'st', 'senegal': 'sn', 'serra leoa': 'sl',
-      'seichelas': 'sc', 'somalia': 'so', 'sudao': 'sd', 'sudao do sul': 'ss',
-      'tanzania': 'tz', 'togo': 'tg', 'tunisia': 'tn', 'uganda': 'ug', 'zambia': 'zm',
-      'zimbabue': 'zw', 'australia': 'au', 'fiji': 'fj', 'ilhas marechal': 'mh', 'ilhas salomao': 'sb',
-      'kiribati': 'ki', 'micronesia': 'fm', 'nauru': 'nr', 'nova zelandia': 'nz',
-      'palau': 'pw', 'papua nova guine': 'pg', 'samoa': 'ws', 'tonga': 'to',
-      'tuvalu': 'tv', 'vanuatu': 'vu', 'hong kong': 'hk'
+      'colombia': 'co', 'equador': 'ec', 'ecuador': 'ec', 'guiana': 'gy', 'paraguai': 'py',
+      'paraguay': 'py', 'peru': 'pe', 'suriname': 'sr', 'uruguai': 'uy', 'uruguay': 'uy',
+      'venezuela': 've', 'canada': 'ca', 'costa rica': 'cr', 'cuba': 'cu', 'el salvador': 'sv',
+      'estados unidos': 'us', 'eua': 'us', 'usa': 'us', 'guatemala': 'gt', 'honduras': 'hn',
+      'jamaica': 'jm', 'mexico': 'mx', 'nicaragua': 'ni', 'panama': 'pa', 'republica dominicana': 'do',
+      'alemanha': 'de', 'germany': 'de', 'austria': 'at', 'belgica': 'be', 'bulgaria': 'bg',
+      'dinamarca': 'dk', 'eslovaquia': 'sk', 'eslovenia': 'si', 'espanha': 'es', 'estonia': 'ee',
+      'finlandia': 'fi', 'franca': 'fr', 'france': 'fr', 'grecia': 'gr', 'holanda': 'nl',
+      'paises baixos': 'nl', 'netherlands': 'nl', 'hungria': 'hu', 'irlanda': 'ie', 'italia': 'it',
+      'noruega': 'no', 'polonia': 'pl', 'portugal': 'pt', 'reino unido': 'gb', 'uk': 'gb',
+      'republica tcheca': 'cz', 'romenia': 'ro', 'russia': 'ru', 'servia': 'rs', 'suecia': 'se',
+      'suica': 'ch', 'turquia': 'tr', 'ucrania': 'ua', 'china': 'cn', 'coreia do sul': 'kr',
+      'japao': 'jp', 'japan': 'jp', 'taiwan': 'tw', 'india': 'in', 'australia': 'au',
+      'nova zelandia': 'nz', 'africa do sul': 'za'
     };
 
     const code = countryCodes[name];
@@ -1710,7 +1643,6 @@ function getOptimizedImageUrl(url, size = 800) {
     }
   }
 
-  /* RENDERIZA OS CARDS DE MARCAS */
   function renderBrandCardsGrid() {
     isAllBrandsGridMode = true;
     wasOpenedFromAllBrandsGrid = false;
@@ -1908,35 +1840,34 @@ function getOptimizedImageUrl(url, size = 800) {
     if (heroBarcode) heroBarcode.innerText = barcodeVal;
     if (heroDesc) heroDesc.innerText = brandDescVal || "";
 
-const photo1 = document.getElementById("heroPhoto1");
-  const photo2 = document.getElementById("heroPhoto2");
-  const photo3 = document.getElementById("heroPhoto3");
-  const photo4 = document.getElementById("heroPhoto4");
+    const photo1 = document.getElementById("heroPhoto1");
+    const photo2 = document.getElementById("heroPhoto2");
+    const photo3 = document.getElementById("heroPhoto3");
+    const photo4 = document.getElementById("heroPhoto4");
 
-  const img1 = can.ImgFront || can.front || can.ImgCover || "";
-  const img2 = can.ImgLeft || can.left || "";
-  const img3 = can.ImgBack || can.back || "";
-  const img4 = can.ImgRight || can.right || "";
+    const img1 = can.ImgFront || can.front || can.ImgCover || "";
+    const img2 = can.ImgLeft || can.left || "";
+    const img3 = can.ImgBack || can.back || "";
+    const img4 = can.ImgRight || can.right || "";
 
-  function setThumbnail(el, url) {
-    if (!el) return;
-    const optimizedUrl = getOptimizedImageUrl(url);
-    if (el.tagName === 'IMG') {
-      el.src = optimizedUrl;
-    } else {
-      el.innerHTML = url ? `<img src="${optimizedUrl}" style="width:100%; height:100%; object-fit:contain;">` : '';
+    function setThumbnail(el, url) {
+      if (!el) return;
+      const optimizedUrl = getOptimizedImageUrl(url);
+      if (el.tagName === 'IMG') {
+        el.src = optimizedUrl;
+      } else {
+        el.innerHTML = url ? `<img src="${optimizedUrl}" style="width:100%; height:100%; object-fit:contain;">` : '';
+      }
     }
-  }
 
-  setThumbnail(photo1, img1);
-  setThumbnail(photo2, img2);
-  setThumbnail(photo3, img3);
-  setThumbnail(photo4, img4);
+    setThumbnail(photo1, img1);
+    setThumbnail(photo2, img2);
+    setThumbnail(photo3, img3);
+    setThumbnail(photo4, img4);
     
     updateBrandLogoHeader(can.brewery || can.Cervejaria, can);
   }
 
-  /* WALLPAPER DA MARCA */
   function updateBrandLogoHeader(brandQuery, currentCan) {
     const logoContainer = document.getElementById("heroBrandLogo");
     const wallpaperElem = document.getElementById("heroBrandWallpaper");
@@ -2025,7 +1956,7 @@ const photo1 = document.getElementById("heroPhoto1");
       zoomGallery = rawPhotos;
 
       updateHeroPanel(currentCan, localIndex);
-      notificarHomeTV(currentCan); // 📺 Notifica a Android TV ao alternar foco no card
+      notificarHomeTV(currentCan);
     } else {
       zoomGallery = [];
     }
@@ -2228,7 +2159,7 @@ const photo1 = document.getElementById("heroPhoto1");
     }
   }
 
-  /* MODAL DE ZOOM COM SUPORTE AO WALLPAPER DE FUNDO NO LIGHTBOX */
+  /* MODAL DE ZOOM COM BANNER ROTATIVO */
   function openZoomModal(index) {
     if (!zoomGallery || zoomGallery.length === 0) return;
     currentZoomIndex = index;
@@ -2236,15 +2167,38 @@ const photo1 = document.getElementById("heroPhoto1");
 
     const modalElem = document.getElementById("zoomModal");
     const imgElem = document.getElementById("zoomImage");
+    const tickerTrack = document.getElementById("tickerTrack");
 
     if (imgElem) {
       imgElem.src = getOptimizedImageUrl(zoomGallery[currentZoomIndex], 1200);
     }
 
-    if (modalElem) {
-      const globalIndex = currentPage * cardsPerPage + activeLocalIndex;
-      const currentCan = currentFiltered[globalIndex];
+    const globalIndex = currentPage * cardsPerPage + activeLocalIndex;
+    const currentCan = currentFiltered[globalIndex];
 
+    if (currentCan && tickerTrack) {
+      const name = currentCan.name || currentCan.Nome || "Lata";
+      const brand = currentCan.brandDesc || currentCan.brewery || currentCan.Cervejaria || "Marca";
+      const country = currentCan.country || currentCan.Pais || "-";
+      const volume = currentCan.volume || currentCan.Volume || "-";
+      const barcode = currentCan.barcode || currentCan.Barcode || "-";
+
+      const tickerContent = `
+        <div class="ticker-item"><span>Lata:</span> ${name}</div>
+        <div class="ticker-item"><span>Marca:</span> ${brand}</div>
+        <div class="ticker-item"><span>País:</span> ${country}</div>
+        <div class="ticker-item"><span>Volume:</span> ${volume}</div>
+        <div class="ticker-item"><span>Cód. Barras:</span> ${barcode}</div>
+        <div class="ticker-item"><span>Lata:</span> ${name}</div>
+        <div class="ticker-item"><span>Marca:</span> ${brand}</div>
+        <div class="ticker-item"><span>País:</span> ${country}</div>
+        <div class="ticker-item"><span>Volume:</span> ${volume}</div>
+        <div class="ticker-item"><span>Cód. Barras:</span> ${barcode}</div>
+      `;
+      tickerTrack.innerHTML = tickerContent;
+    }
+
+    if (modalElem) {
       let wallpaperUrl = currentCan ? (currentCan.wallpaper || currentCan.WALLPAPER || currentCan.brandWallpaper || currentCan.brandLogo || currentCan.BRAND_LOGO) : null;
 
       if (!wallpaperUrl && currentCan && (currentCan.brewery || currentCan.Cervejaria)) {
@@ -2265,7 +2219,7 @@ const photo1 = document.getElementById("heroPhoto1");
       }
 
       modalElem.classList.add("active");
-      notificarHomeTV(currentCan); // 📺 Notifica a TV ao abrir o zoom
+      notificarHomeTV(currentCan);
     }
   }
 
@@ -2310,6 +2264,8 @@ const photo1 = document.getElementById("heroPhoto1");
 
   function closeZoomModal() {
     resetZoomTransform();
+    const tickerTrack = document.getElementById("tickerTrack");
+    if (tickerTrack) tickerTrack.innerHTML = "";
     document.getElementById("zoomModal").classList.remove("active");
     focusCardSafely(activeLocalIndex);
   }
@@ -2323,18 +2279,6 @@ const photo1 = document.getElementById("heroPhoto1");
   function closeExitModal() {
     document.getElementById("exitModal").classList.remove("active");
     focusCardSafely(activeLocalIndex);
-  }
-
-  function confirmExit() {
-    if (typeof PonteAndroid !== "undefined" && PonteAndroid.fecharApp) {
-      PonteAndroid.fecharApp();
-    } else if (window.navigator && window.navigator.app && window.navigator.app.exitApp) {
-      window.navigator.app.exitApp();
-    } else if (window.device && window.device.exitApp) {
-      window.device.exitApp();
-    } else {
-      window.close();
-    }
   }
 
   let touchStartX = 0;
@@ -2502,18 +2446,18 @@ const photo1 = document.getElementById("heroPhoto1");
       }
     } else {
       if (isBackKey) {
-  e.preventDefault();
-  e.stopPropagation();
-  if (isMenuOpen) {
-    closeMenu();
-    focusCardSafely(activeLocalIndex);
-  } else if (wasOpenedFromAllBrandsGrid) {
-    renderBrandCardsGrid();
-    focusCardSafely(0);
-  } else {
-    openExitModal(); // ✅ Abre a confirmação
-  }
-}
+        e.preventDefault();
+        e.stopPropagation();
+        if (isMenuOpen) {
+          closeMenu();
+          focusCardSafely(activeLocalIndex);
+        } else if (wasOpenedFromAllBrandsGrid) {
+          renderBrandCardsGrid();
+          focusCardSafely(0);
+        } else {
+          openExitModal();
+        }
+      }
 
       const activeElem = document.activeElement;
       if (activeElem && (activeElem.classList.contains("cat-btn") || activeElem.classList.contains("brand-btn")) && (e.key === "ArrowRight" || e.keyCode === 39)) {
@@ -2528,120 +2472,106 @@ const photo1 = document.getElementById("heroPhoto1");
     setTimeout(hideLoadingScreen, 7000);
   };
 
-// ========== SAÍDA DO APLICATIVO - AJUSTADO PARA CIMA/BAIXO ==========
+  let modalAtivo = false;
+  let indiceBotao = 0;
 
-let modalAtivo = false;
-let indiceBotao = 0; // 0 = NÃO, 1 = SIM
-
-function mostrarConfirmacaoSaida() {
-  console.log("📤 Abrindo confirmação de saída");
-  openExitModal();
-}
-
-function openExitModal() {
-  const modal = document.getElementById("exitModal");
-  if (modal) {
-    modal.classList.add("active");
-    modalAtivo = true;
-    indiceBotao = 0; // Começa no NÃO
-    atualizarFocoBotao();
+  function mostrarConfirmacaoSaida() {
+    openExitModal();
   }
-}
 
-function atualizarFocoBotao() {
-  const botoes = document.querySelectorAll("#exitModal button");
-  botoes.forEach((btn, i) => {
-    if (i === indiceBotao) {
-      btn.focus();
-      console.log("🎯 Selecionado:", btn.textContent);
+  function openExitModal() {
+    const modal = document.getElementById("exitModal");
+    if (modal) {
+      modal.classList.add("active");
+      modalAtivo = true;
+      indiceBotao = 0;
+      atualizarFocoBotao();
+    }
+  }
+
+  function atualizarFocoBotao() {
+    const botoes = document.querySelectorAll("#exitModal button");
+    botoes.forEach((btn, i) => {
+      if (i === indiceBotao) {
+        btn.focus();
+      }
+    });
+  }
+
+  document.addEventListener("keydown", function(e) {
+    if (!modalAtivo) return;
+
+    if (e.key === "ArrowDown" || e.keyCode === 40 || e.keyCode === 22) {
+      e.preventDefault();
+      e.stopPropagation();
+      indiceBotao = 1;
+      atualizarFocoBotao();
+    }
+
+    if (e.key === "ArrowUp" || e.keyCode === 38 || e.keyCode === 21) {
+      e.preventDefault();
+      e.stopPropagation();
+      indiceBotao = 0;
+      atualizarFocoBotao();
+    }
+
+    if (e.key === "ArrowRight" || e.keyCode === 39) {
+      e.preventDefault();
+      e.stopPropagation();
+      indiceBotao = 1;
+      atualizarFocoBotao();
+    }
+    if (e.key === "ArrowLeft" || e.keyCode === 37) {
+      e.preventDefault();
+      e.stopPropagation();
+      indiceBotao = 0;
+      atualizarFocoBotao();
+    }
+
+    if (e.key === "Enter" || e.keyCode === 13 || e.keyCode === 66) {
+      e.preventDefault();
+      e.stopPropagation();
+      if (indiceBotao === 0) {
+        acaoSairNao();
+      } else {
+        acaoSairSim();
+      }
+    }
+
+    if (e.key === "Escape" || e.keyCode === 4) {
+      e.preventDefault();
+      e.stopPropagation();
+      acaoSairNao();
     }
   });
-}
 
-// CAPTURA DE TECLAS AJUSTADA
-document.addEventListener("keydown", function(e) {
-  if (!modalAtivo) return; // Só funciona se o modal estiver aberto
-
-  console.log("🔑 Tecla recebida:", e.key, "código:", e.keyCode);
-
-  // ✅ SETA PARA BAIXO → vai de NÃO para SIM
-  if (e.key === "ArrowDown" || e.keyCode === 40 || e.keyCode === 22) {
-    e.preventDefault();
-    e.stopPropagation();
-    indiceBotao = 1;
-    atualizarFocoBotao();
-  }
-
-  // ✅ SETA PARA CIMA → volta de SIM para NÃO
-  if (e.key === "ArrowUp" || e.keyCode === 38 || e.keyCode === 21) {
-    e.preventDefault();
-    e.stopPropagation();
+  function acaoSairNao() {
+    modalAtivo = false;
     indiceBotao = 0;
-    atualizarFocoBotao();
-  }
-
-  // Mantém os lados também como alternativa, se precisar
-  if (e.key === "ArrowRight" || e.keyCode === 39) {
-    e.preventDefault();
-    e.stopPropagation();
-    indiceBotao = 1;
-    atualizarFocoBotao();
-  }
-  if (e.key === "ArrowLeft" || e.keyCode === 37) {
-    e.preventDefault();
-    e.stopPropagation();
-    indiceBotao = 0;
-    atualizarFocoBotao();
-  }
-
-  // Enter → confirma
-  if (e.key === "Enter" || e.keyCode === 13 || e.keyCode === 66) {
-    e.preventDefault();
-    e.stopPropagation();
-    if (indiceBotao === 0) {
-      acaoSairNao();
-    } else {
-      acaoSairSim();
+    const modal = document.getElementById("exitModal");
+    if (modal) modal.classList.remove("active");
+    if (typeof focusCardSafely !== "undefined") {
+      focusCardSafely(activeLocalIndex);
     }
   }
 
-  // Botão Voltar → cancela
-  if (e.key === "Escape" || e.keyCode === 4) {
-    e.preventDefault();
-    e.stopPropagation();
-    acaoSairNao();
-  }
-});
+  function acaoSairSim() {
+    modalAtivo = false;
+    indiceBotao = 0;
+    const modal = document.getElementById("exitModal");
+    if (modal) modal.classList.remove("active");
 
-function acaoSairNao() {
-  console.log("❌ Cancelou saída");
-  modalAtivo = false;
-  indiceBotao = 0;
-  const modal = document.getElementById("exitModal");
-  if (modal) modal.classList.remove("active");
-  if (typeof focusCardSafely !== "undefined") {
-    focusCardSafely(activeLocalIndex);
+    if (window.AndroidTVBridge && window.AndroidTVBridge.confirmouSaida) {
+      window.AndroidTVBridge.confirmouSaida(true);
+    }
+    else if (window.AndroidTVBridge && window.AndroidTVBridge.fecharApp) {
+      window.AndroidTVBridge.fecharApp();
+    }
+    else {
+      window.close();
+      history.back();
+    }
   }
-}
-
-function acaoSairSim() {
-  console.log("✅ Confirmou saída");
-  modalAtivo = false;
-  indiceBotao = 0;
-  const modal = document.getElementById("exitModal");
-  if (modal) modal.classList.remove("active");
-
-  if (window.AndroidTVBridge && window.AndroidTVBridge.confirmouSaida) {
-    window.AndroidTVBridge.confirmouSaida(true);
-  }
-  else if (window.AndroidTVBridge && window.AndroidTVBridge.fecharApp) {
-    window.AndroidTVBridge.fecharApp();
-  }
-  else {
-    window.close();
-    history.back();
-  }
-}
 </script>
 </body>
 </html>
