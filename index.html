@@ -145,7 +145,7 @@
       overflow: hidden;
     }
 
-    /* Logo do canto superior direito reduzido pela metade */
+    /* Logo do canto superior direito */
     .hero-brand-logo-container {
       position: absolute; 
       top: 20px; 
@@ -169,7 +169,7 @@
       background: transparent !important; 
     }
 
-    /* Bloco de informações do Hero ajustado para o topo */
+    /* Bloco de informações do Hero fixo no topo */
     .hero-info-container {
       position: absolute !important;
       top: 15px !important;       
@@ -180,23 +180,6 @@
       margin: 0 !important;
       transform: none !important;
       z-index: 10;
-    }
-
-    #heroBrandDescription {
-      margin-top: 10px !important;
-      max-width: 100% !important;
-      word-wrap: break-word;
-      overflow-wrap: break-word;
-    }
-
-    .hero-description {
-      max-width: 100% !important;
-      word-wrap: break-word;
-      overflow-wrap: break-word;
-      display: -webkit-box;
-      -webkit-line-clamp: 4; 
-      -webkit-box-orient: vertical;
-      overflow: hidden;
     }
 
     .hero-brand-logo-container img, 
@@ -277,7 +260,7 @@
       flex-direction: column;
       justify-content: flex-start;
       align-items: flex-start !important;
-      gap: 4px;
+      gap: 6px;
       color: #e2e8f0;
       padding-right: 180px;
       z-index: 10;
@@ -304,7 +287,7 @@
       flex-direction: row;
       align-items: baseline;
       gap: 8px;
-      line-height: 1.1;
+      line-height: 1.2;
     }
 
     .info-label {
@@ -320,21 +303,6 @@
       font-style: italic;
       color: #cbd5e1;
       text-transform: uppercase;
-    }
-
-    .hero-brand-desc {
-      margin-top: 10px;
-      font-size: 0.9rem;
-      line-height: 1.3;
-      color: #cbd5e1;
-      font-style: normal;
-      max-width: 600px;
-      display: -webkit-box;
-      -webkit-line-clamp: 6;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-      text-transform: none;
-      padding-top: 7px;
     }
 
     /* BARRA DE CONTADOR/ORDENAÇÃO */
@@ -932,7 +900,6 @@
       .hero-title { font-size: 3.5rem !important; margin-bottom: 20px !important; }
       .info-label { font-size: 1.1rem; }
       .info-value { font-size: 1.4rem; }
-      .hero-brand-desc { font-size: 1.2rem; line-height: 1.5; max-width: 900px; }
       .counter-bar { width: 1480px; height: 48px; min-height: 48px; gap: 16px; }
       .sort-dropdown { font-size: 1.3rem; padding: 8px 20px; }
       .card-counter { font-size: 1.3rem; }
@@ -978,7 +945,6 @@
       .hero-title { font-size: 5rem !important; margin-bottom: 30px !important; }
       .info-label { font-size: 1.6rem; }
       .info-value { font-size: 2rem; }
-      .hero-brand-desc { font-size: 1.7rem; line-height: 1.6; max-width: 1300px; }
       .counter-bar { width: 2100px; height: 68px; min-height: 68px; gap: 24px; }
       .sort-dropdown { font-size: 1.8rem; padding: 10px 28px; }
       .card-counter { font-size: 1.8rem; }
@@ -1077,8 +1043,6 @@
           <span class="info-label">Cód. Barras:</span>
           <span class="info-value" id="heroBarcode">-</span>
         </div>
-
-        <div class="hero-brand-desc" id="heroBrandDescription"></div>
       </div>
     </section>
 
@@ -1813,32 +1777,17 @@
     const yearVal = can.year || can.Ano || "-";
     const barcodeVal = can.barcode || can.Barcode || "-";
 
-    let brandDescVal = can.brandDesc || can.descricao || can.DESCRICAO || "";
-    if (!brandDescVal && (can.brewery || can.Cervejaria)) {
-      const brandKey = String(can.brewery || can.Cervejaria).toLowerCase().trim();
-      const parentCan = canCatalog.find(c => {
-        const b = String(c.brewery || c.Cervejaria || "").toLowerCase().trim();
-        const desc = c.brandDesc || c.descricao || c.DESCRICAO;
-        return b === brandKey && desc && String(desc).trim() !== "";
-      });
-      if (parentCan) {
-        brandDescVal = parentCan.brandDesc || parentCan.descricao || parentCan.DESCRICAO;
-      }
-    }
-
     const heroTitle = document.getElementById("heroTitle");
     const heroCountry = document.getElementById("heroCountry");
     const heroVolume = document.getElementById("heroVolume");
     const heroYear = document.getElementById("heroYear");
     const heroBarcode = document.getElementById("heroBarcode");
-    const heroDesc = document.getElementById("heroBrandDescription");
 
     if (heroTitle) heroTitle.innerText = formatCapitalizedText(titleVal);
     if (heroCountry) heroCountry.innerText = formatCapitalizedText(countryVal);
     if (heroVolume) heroVolume.innerText = formatCapitalizedText(volumeVal);
     if (heroYear) heroYear.innerText = yearVal;
     if (heroBarcode) heroBarcode.innerText = barcodeVal;
-    if (heroDesc) heroDesc.innerText = brandDescVal || "";
 
     const photo1 = document.getElementById("heroPhoto1");
     const photo2 = document.getElementById("heroPhoto2");
@@ -2178,19 +2127,19 @@
 
     if (currentCan && tickerTrack) {
       const name = currentCan.name || currentCan.Nome || "Lata";
-      const brand = currentCan.brandDesc || currentCan.brewery || currentCan.Cervejaria || "Marca";
+      const brand = currentCan.brewery || currentCan.Cervejaria || "Marca";
       const country = currentCan.country || currentCan.Pais || "-";
       const volume = currentCan.volume || currentCan.Volume || "-";
       const barcode = currentCan.barcode || currentCan.Barcode || "-";
 
       const tickerContent = `
         <div class="ticker-item"><span>Lata:</span> ${name}</div>
-        <div class="ticker-item"><span>Marca:</span> ${brand}</div>
+        <div class="ticker-item"><span>Cervejaria:</span> ${brand}</div>
         <div class="ticker-item"><span>País:</span> ${country}</div>
         <div class="ticker-item"><span>Volume:</span> ${volume}</div>
         <div class="ticker-item"><span>Cód. Barras:</span> ${barcode}</div>
         <div class="ticker-item"><span>Lata:</span> ${name}</div>
-        <div class="ticker-item"><span>Marca:</span> ${brand}</div>
+        <div class="ticker-item"><span>Cervejaria:</span> ${brand}</div>
         <div class="ticker-item"><span>País:</span> ${country}</div>
         <div class="ticker-item"><span>Volume:</span> ${volume}</div>
         <div class="ticker-item"><span>Cód. Barras:</span> ${barcode}</div>
