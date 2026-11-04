@@ -617,18 +617,18 @@
       color: #ffffff !important;
     }
 
-    /* ESTILOS ESPECÍFICOS PARA MODO DE PESQUISA CATEGORIZADA (UMA LINHA PARA CADA TIPO) */
+    /* ESTILOS ESPECÍFICOS PARA MODO DE PESQUISA CATEGORIZADA (UMA LINHA PARA CADA TIPO EMPILHADA) */
     .catalog-section.search-categorized-mode {
-      height: 540px !important;
-      min-height: 540px !important;
+      height: 580px !important;
+      min-height: 580px !important;
       margin-top: 0px !important;
       overflow-y: auto !important;
       display: flex !important;
-      flex-direction: column !important; /* EMPILHA OS BLOCOS NA VERTICAL */
+      flex-direction: column !important;
       align-items: center !important;
       justify-content: flex-start !important;
       padding-top: 10px !important;
-      gap: 20px !important;
+      gap: 16px !important;
     }
 
     .main-area.search-categorized-mode #heroPanel {
@@ -641,7 +641,7 @@
       margin: 0 auto;
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 4px;
       flex-shrink: 0;
     }
 
@@ -656,12 +656,12 @@
 
     .search-category-row {
       display: flex;
-      flex-direction: row !important; /* OS CARDS CORREM APENAS PARA A LATERAL (HORIZONTAL) */
-      flex-wrap: nowrap !important; /* NUNCA QUEBRA LINHA PARA BAIXO */
+      flex-direction: row !important;
+      flex-wrap: nowrap !important;
       gap: 12px;
-      overflow-x: auto !important; /* ROLAGEM HORIZONTAL SUAVE */
+      overflow-x: auto !important;
       width: 100%;
-      padding-bottom: 6px;
+      padding-bottom: 4px;
       align-items: flex-start;
     }
 
@@ -1659,7 +1659,7 @@
     cardRow.innerHTML = "";
     cardRow.className = "card-row";
 
-    // Filtrar latas
+    // 1. Filtrar latas
     const matchedCans = canCatalog.filter(can => {
       const name = String(can.name || can.Nome || "").toLowerCase();
       const brewery = String(can.brewery || can.Cervejaria || "").toLowerCase();
@@ -1669,7 +1669,7 @@
       return !isSet && (name.includes(val) || brewery.includes(val) || country.includes(val) || barcode.includes(val));
     });
 
-    // Filtrar marcas únicas correspondentes
+    // 2. Filtrar marcas únicas correspondentes
     const matchedBrandsSet = new Set();
     canCatalog.forEach(can => {
       const brewery = String(can.brewery || can.Cervejaria || "").trim();
@@ -1679,7 +1679,7 @@
     });
     const matchedBrands = Array.from(matchedBrandsSet).sort();
 
-    // Filtrar sets correspondentes
+    // 3. Filtrar sets correspondentes
     const matchedSets = canCatalog.filter(can => {
       const isSet = can.isSet === true || String(can.isSet).toLowerCase() === "true";
       const name = String(can.name || can.Nome || "").toLowerCase();
@@ -1693,7 +1693,7 @@
 
     let globalCardIndex = 0;
 
-    // 1. Bloco de Latas (Linha Horizontal)
+    // BLOCO 1 (TOPO): LATAS
     if (matchedCans.length > 0) {
       const block = document.createElement("div");
       block.className = "search-category-block";
@@ -1758,7 +1758,7 @@
       cardRow.appendChild(block);
     }
 
-    // 2. Bloco de Marcas (Linha Horizontal)
+    // BLOCO 2 (MEIO): MARCAS
     if (matchedBrands.length > 0) {
       const block = document.createElement("div");
       block.className = "search-category-block";
@@ -1818,7 +1818,7 @@
       cardRow.appendChild(block);
     }
 
-    // 3. Bloco de Sets (Linha Horizontal)
+    // BLOCO 3 (BAIXO): SETS
     if (matchedSets.length > 0) {
       const block = document.createElement("div");
       block.className = "search-category-block";
