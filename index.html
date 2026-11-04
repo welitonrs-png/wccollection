@@ -539,7 +539,7 @@
       color: #ffffff !important;
     }
 
-    /* CARDS DE MARCAS (3 LINHAS VISÍVEIS) */
+    /* CARDS DE MARCAS */
     .brand-grid-card {
       width: 172px !important;
       min-width: 172px !important;
@@ -617,17 +617,18 @@
       color: #ffffff !important;
     }
 
-    /* ESTILOS ESPECÍFICOS PARA MODO DE PESQUISA CATEGORIZADA (EM LINHAS HORIZONTAIS EMPILHADAS VERTICALMENTE) */
+    /* ESTILOS ESPECÍFICOS PARA MODO DE PESQUISA CATEGORIZADA (UMA LINHA PARA CADA TIPO) */
     .catalog-section.search-categorized-mode {
-      height: 520px !important;
-      min-height: 520px !important;
+      height: 540px !important;
+      min-height: 540px !important;
       margin-top: 0px !important;
       overflow-y: auto !important;
       display: flex !important;
-      flex-direction: column !important; /* EMPILHA AS CATEGORIAS UMA ABAIXO DA OUTRA NA VERTICAL */
+      flex-direction: column !important; /* EMPILHA OS BLOCOS NA VERTICAL */
       align-items: center !important;
       justify-content: flex-start !important;
       padding-top: 10px !important;
+      gap: 20px !important;
     }
 
     .main-area.search-categorized-mode #heroPanel {
@@ -637,7 +638,7 @@
     .search-category-block {
       width: 926px;
       max-width: 100%;
-      margin: 0 auto 16px auto;
+      margin: 0 auto;
       display: flex;
       flex-direction: column;
       gap: 6px;
@@ -655,12 +656,13 @@
 
     .search-category-row {
       display: flex;
-      flex-direction: row !important; /* FORÇA OS CARDS A CORREREM PARA A LATERAL (HORIZONTAL) */
-      flex-wrap: nowrap !important; /* IMPEDE QUE QUEBREM DE LINHA */
+      flex-direction: row !important; /* OS CARDS CORREM APENAS PARA A LATERAL (HORIZONTAL) */
+      flex-wrap: nowrap !important; /* NUNCA QUEBRA LINHA PARA BAIXO */
       gap: 12px;
-      overflow-x: auto !important; /* ATIVA A ROLAGEM HORIZONTAL SUAVE */
+      overflow-x: auto !important; /* ROLAGEM HORIZONTAL SUAVE */
       width: 100%;
       padding-bottom: 6px;
+      align-items: flex-start;
     }
 
     /* MODAL DE ZOOM (LIGHTBOX COM WALLPAPER) */
@@ -1691,7 +1693,7 @@
 
     let globalCardIndex = 0;
 
-    // 1. Bloco de Latas
+    // 1. Bloco de Latas (Linha Horizontal)
     if (matchedCans.length > 0) {
       const block = document.createElement("div");
       block.className = "search-category-block";
@@ -1756,7 +1758,7 @@
       cardRow.appendChild(block);
     }
 
-    // 2. Bloco de Marcas
+    // 2. Bloco de Marcas (Linha Horizontal)
     if (matchedBrands.length > 0) {
       const block = document.createElement("div");
       block.className = "search-category-block";
@@ -1816,7 +1818,7 @@
       cardRow.appendChild(block);
     }
 
-    // 3. Bloco de Sets
+    // 3. Bloco de Sets (Linha Horizontal)
     if (matchedSets.length > 0) {
       const block = document.createElement("div");
       block.className = "search-category-block";
