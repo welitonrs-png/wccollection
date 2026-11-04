@@ -169,19 +169,6 @@
       background: transparent !important; 
     }
 
-    /* Bloco de informações do Hero fixo no topo */
-    .hero-info-container {
-      position: absolute !important;
-      top: 15px !important;       
-      left: 320px !important;     
-      right: 160px !important;    
-      bottom: auto !important;
-      align-self: flex-start !important;
-      margin: 0 !important;
-      transform: none !important;
-      z-index: 10;
-    }
-
     .hero-brand-logo-container img, 
     .brand-overlay-logo img,
     .hero-photo-card img {
@@ -629,28 +616,43 @@
       color: #ffffff !important;
     }
 
-    .catalog-section.all-brands-mode {
-      height: 400px !important;
-      min-height: 400px !important;
+    /* ESTILOS ESPECÍFICOS PARA MODO DE PESQUISA CATEGORIZADA (EM LINHAS) */
+    .catalog-section.search-categorized-mode {
+      height: 480px !important;
+      min-height: 480px !important;
       margin-top: 0px !important;
-      padding-top: 12px !important;
-      overflow: visible !important;
+      overflow-y: auto !important;
+      display: block !important;
     }
 
-    .main-area.all-brands-mode #heroPanel {
+    .main-area.search-categorized-mode #heroPanel {
       display: none !important;
     }
 
-    .card-row.all-brands-grid {
-      display: grid !important;
-      grid-template-columns: repeat(5, 172px) !important;
-      grid-template-rows: repeat(3, 115px) !important;
-      gap: 14px 16px !important;
-      width: fit-content !important;
-      position: relative !important;
-      justify-content: center !important;
-      margin: 0 auto !important;
-      padding-top: 6px !important;
+    .search-category-block {
+      width: 926px;
+      max-width: 100%;
+      margin: 0 auto 16px auto;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .search-category-title {
+      font-size: 0.85rem;
+      font-weight: 900;
+      color: #f39c12;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding-left: 2px;
+    }
+
+    .search-category-row {
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      width: 100%;
     }
 
     /* MODAL DE ZOOM (LIGHTBOX COM WALLPAPER) */
@@ -705,7 +707,8 @@
       left: 0;
       width: 100%;
       height: 45px;
-     
+      background: rgba(15, 20, 30, 0.92);
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
       overflow: hidden;
       display: flex;
       align-items: center;
@@ -1098,6 +1101,7 @@
   let lastSelectedBrandElem = null;
   let isAllBrandsGridMode = false;
   let wasOpenedFromAllBrandsGrid = false;
+  let isSearchCategorizedMode = false;
 
   let registeredBrands = [];
 
@@ -1165,8 +1169,12 @@
       if (mainArea) {
         mainArea.classList.remove("brand-mode");
         mainArea.classList.remove("all-brands-mode");
+        mainArea.classList.remove("search-categorized-mode");
       }
-      if (catalogSection) catalogSection.classList.remove("brand-mode");
+      if (catalogSection) {
+        catalogSection.classList.remove("brand-mode");
+        catalogSection.classList.remove("search-categorized-mode");
+      }
       if (cardRow) cardRow.classList.remove("brand-mode-grid");
 
       if (currentTab === 'sets') {
@@ -1277,6 +1285,7 @@
     currentTab = tabName;
     lastSelectedBrandElem = null;
     isAllBrandsGridMode = false;
+    isSearchCategorizedMode = false;
     wasOpenedFromAllBrandsGrid = false;
 
     setBrandModeLayout(false);
@@ -1448,6 +1457,7 @@
     lastSelectedMenuId = 'menuBtnSearch';
     lastSelectedBrandElem = null;
     isAllBrandsGridMode = false;
+    isSearchCategorizedMode = false;
     wasOpenedFromAllBrandsGrid = false;
     document.getElementById("brandInlineList").classList.remove("active");
     const container = document.getElementById("searchInlineContainer");
@@ -1530,6 +1540,7 @@
       lastSelectedMenuId = 'menuBtnBrands';
       lastSelectedBrandElem = allBtn;
       isAllBrandsGridMode = true;
+      isSearchCategorizedMode = false;
       wasOpenedFromAllBrandsGrid = false;
       currentPage = 0;
       renderBrandCardsGrid();
@@ -1554,6 +1565,7 @@
         lastSelectedMenuId = 'menuBtnBrands';
         lastSelectedBrandElem = btn;
         isAllBrandsGridMode = false;
+        isSearchCategorizedMode = false;
         wasOpenedFromAllBrandsGrid = false;
         filterCatalog(b);
         focusCardSafely(0);
@@ -1576,11 +1588,27 @@
     const catalogSection = document.getElementById("catalogSection");
     const cardRow = document.getElementById("cardRow");
 
-    if (mainArea) mainArea.classList.remove("all-brands-mode");
-    if (catalogSection) catalogSection.classList.remove("all-brands-mode");
-    if (cardRow) cardRow.classList.remove("all-brands-grid");
-
     const val = query ? query.toLowerCase().trim() : "";
+    const isSearchActive = (lastSelectedMenuId === 'menuBtnSearch' && val !== "");
+
+    if (isSearchActive) {
+      isSearchCategorizedMode = true;
+      if (mainArea) {
+        mainArea.classList.remove("all-brands-mode");
+        mainArea.classList.add("search-categorized-mode");
+      }
+      if (catalogSection) {
+        catalogSection.classList.remove("all-brands-mode");
+        catalogSection.classList.add("search-categorized-mode");
+      }
+      renderSearchCategorizedResults(val);
+      return;
+    } else {
+      isSearchCategorizedMode = false;
+      if (mainArea) mainArea.classList.remove("search-categorized-mode");
+      if (catalogSection) catalogSection.classList.remove("search-categorized-mode");
+    }
+
     const baseList = getBaseListForCurrentTab();
 
     currentFiltered = baseList.filter(can => {
@@ -1606,8 +1634,252 @@
     }
   }
 
+  function renderSearchCategorizedResults(val) {
+    const catalogSection = document.getElementById("catalogSection");
+    const cardRow = document.getElementById("cardRow");
+    const wallpaperElem = document.getElementById("heroBrandWallpaper");
+    const counterElem = document.getElementById("cardCounter");
+
+    if (wallpaperElem) {
+      wallpaperElem.style.backgroundImage = "none";
+      wallpaperElem.classList.remove("active");
+    }
+
+    if (!catalogSection || !cardRow) return;
+    cardRow.innerHTML = "";
+    cardRow.className = "card-row";
+
+    // Filtrar latas
+    const matchedCans = canCatalog.filter(can => {
+      const name = String(can.name || can.Nome || "").toLowerCase();
+      const brewery = String(can.brewery || can.Cervejaria || "").toLowerCase();
+      const country = String(can.country || can.Pais || "").toLowerCase();
+      const barcode = String(can.barcode || can.Barcode || "").toLowerCase();
+      const isSet = can.isSet === true || String(can.isSet).toLowerCase() === "true";
+      return !isSet && (name.includes(val) || brewery.includes(val) || country.includes(val) || barcode.includes(val));
+    });
+
+    // Filtrar marcas únicas correspondentes
+    const matchedBrandsSet = new Set();
+    canCatalog.forEach(can => {
+      const brewery = String(can.brewery || can.Cervejaria || "").trim();
+      if (brewery && brewery.toLowerCase().includes(val)) {
+        matchedBrandsSet.add(brewery);
+      }
+    });
+    const matchedBrands = Array.from(matchedBrandsSet).sort();
+
+    // Filtrar sets correspondentes
+    const matchedSets = canCatalog.filter(can => {
+      const isSet = can.isSet === true || String(can.isSet).toLowerCase() === "true";
+      const name = String(can.name || can.Nome || "").toLowerCase();
+      const brewery = String(can.brewery || can.Cervejaria || "").toLowerCase();
+      return isSet && (name.includes(val) || brewery.includes(val));
+    });
+
+    if (counterElem) {
+      counterElem.innerText = `Busca: ${matchedCans.length} latas, ${matchedBrands.length} marcas, ${matchedSets.length} sets`;
+    }
+
+    let globalCardIndex = 0;
+
+    // 1. Bloco de Latas
+    if (matchedCans.length > 0) {
+      const block = document.createElement("div");
+      block.className = "search-category-block";
+      block.innerHTML = `<div class="search-category-title">Latas Encontradas (${matchedCans.length})</div>`;
+      
+      const row = document.createElement("div");
+      row.className = "search-category-row";
+
+      matchedCans.forEach((can) => {
+        const localIdx = globalCardIndex++;
+        const rawImg = can.ImgCover || can.cover || can.ImgFront || can.front || can.brandLogo;
+        const frontImg = getOptimizedImageUrl(rawImg, 400);
+        const brandRaw = can.brewery || can.Cervejaria || can.name || "Cerveja";
+        const brandFormatted = formatCapitalizedText(brandRaw);
+        const countryRaw = can.country || can.Pais || "";
+        const countryFormatted = formatCapitalizedText(countryRaw);
+        const volumeText = can.volume || can.Volume || "";
+        const flagUrl = getFlagUrlByCountry(countryRaw);
+        const isOcocVal = can.isOcoc === true || String(can.isOcoc).toLowerCase() === "true";
+
+        const card = document.createElement("div");
+        card.className = "card";
+        card.tabIndex = 0;
+        card.dataset.localIndex = localIdx;
+
+        card.onfocus = () => {
+          if (document.getElementById("zoomModal").classList.contains("active") || document.getElementById("exitModal").classList.contains("active")) return;
+          clearAllCardFocus();
+          card.classList.add("focused");
+          activeLocalIndex = localIdx;
+          currentFiltered = matchedCans;
+          updateHeroPanel(can, 0);
+        };
+        card.onmouseenter = () => card.focus();
+        card.onclick = (e) => {
+          e.stopPropagation();
+          currentFiltered = matchedCans;
+          // Ajustar globalIndex para a abertura do zoom
+          currentPage = 0;
+          activeLocalIndex = matchedCans.indexOf(can);
+          openZoomModal(0);
+        };
+
+        card.innerHTML = `
+          ${isOcocVal ? `<div class="card-ococ-badge">OCOC</div>` : ''}
+          <div class="card-top-photo">
+            <img src="${frontImg}" alt="${brandFormatted}" loading="lazy" decoding="async">
+          </div>
+          <div class="card-bottom-bar">
+            <div class="card-bar-title">${brandFormatted}</div>
+            <div class="card-bar-details">
+              <div class="card-bar-country">
+                ${flagUrl ? `<img src="${flagUrl}" class="card-bar-flag" alt="${countryFormatted}" loading="lazy">` : ''}
+                <span>${countryFormatted}</span>
+              </div>
+              ${volumeText ? `<div class="card-bar-vol">${volumeText}</div>` : ''}
+            </div>
+          </div>
+        `;
+        row.appendChild(card);
+      });
+      block.appendChild(row);
+      cardRow.appendChild(block);
+    }
+
+    // 2. Bloco de Marcas
+    if (matchedBrands.length > 0) {
+      const block = document.createElement("div");
+      block.className = "search-category-block";
+      block.innerHTML = `<div class="search-category-title">Marcas Encontradas (${matchedBrands.length})</div>`;
+      
+      const row = document.createElement("div");
+      row.className = "search-category-row";
+
+      matchedBrands.forEach((brandName) => {
+        const localIdx = globalCardIndex++;
+        const queryLower = String(brandName).toLowerCase().trim();
+        let logoUrl = "";
+        const matchCan = canCatalog.find(c => {
+          const b = String(c.brewery || c.Cervejaria || "").toLowerCase().trim();
+          return b === queryLower && (c.brandLogo || c.BRAND_LOGO);
+        });
+        if (matchCan) {
+          logoUrl = matchCan.brandLogo || matchCan.BRAND_LOGO;
+        } else {
+          const canCover = canCatalog.find(c => String(c.brewery || c.Cervejaria || "").toLowerCase().trim() === queryLower);
+          if (canCover) logoUrl = canCover.ImgCover || canCover.cover || canCover.ImgFront;
+        }
+
+        const card = document.createElement("div");
+        card.className = "brand-grid-card";
+        card.tabIndex = 0;
+        card.dataset.localIndex = localIdx;
+
+        card.onfocus = () => {
+          if (document.getElementById("zoomModal").classList.contains("active") || document.getElementById("exitModal").classList.contains("active")) return;
+          clearAllCardFocus();
+          card.classList.add("focused");
+          activeLocalIndex = localIdx;
+        };
+        card.onmouseenter = () => card.focus();
+        card.onclick = (e) => {
+          e.stopPropagation();
+          isSearchCategorizedMode = false;
+          filterCatalog(brandName);
+          focusCardSafely(0);
+        };
+
+        const imgFormatted = logoUrl ? getOptimizedImageUrl(logoUrl, 400) : 'wccollection.png';
+        const brandFormatted = formatCapitalizedText(brandName);
+
+        card.innerHTML = `
+          <div class="brand-grid-card-logo">
+            <img src="${imgFormatted}" alt="${brandName}" loading="lazy" decoding="async">
+          </div>
+          <div class="brand-grid-card-info">
+            <div class="brand-grid-card-title">${brandFormatted}</div>
+          </div>
+        `;
+        row.appendChild(card);
+      });
+      block.appendChild(row);
+      cardRow.appendChild(block);
+    }
+
+    // 3. Bloco de Sets
+    if (matchedSets.length > 0) {
+      const block = document.createElement("div");
+      block.className = "search-category-block";
+      block.innerHTML = `<div class="search-category-title">Sets & Packs Encontrados (${matchedSets.length})</div>`;
+      
+      const row = document.createElement("div");
+      row.className = "search-category-row";
+
+      matchedSets.forEach((can) => {
+        const localIdx = globalCardIndex++;
+        const rawImg = can.ImgCover || can.cover || can.ImgFront || can.front || can.brandLogo;
+        const frontImg = getOptimizedImageUrl(rawImg, 400);
+        const brandRaw = can.brewery || can.Cervejaria || can.name || "Set";
+        const brandFormatted = formatCapitalizedText(brandRaw);
+        const countryRaw = can.country || can.Pais || "";
+        const countryFormatted = formatCapitalizedText(countryRaw);
+        const volumeText = can.volume || can.Volume || "";
+        const flagUrl = getFlagUrlByCountry(countryRaw);
+
+        const card = document.createElement("div");
+        card.className = "card card-aspect-sets";
+        card.tabIndex = 0;
+        card.dataset.localIndex = localIdx;
+
+        card.onfocus = () => {
+          if (document.getElementById("zoomModal").classList.contains("active") || document.getElementById("exitModal").classList.contains("active")) return;
+          clearAllCardFocus();
+          card.classList.add("focused");
+          activeLocalIndex = localIdx;
+          currentFiltered = matchedSets;
+          updateHeroPanel(can, 0);
+        };
+        card.onmouseenter = () => card.focus();
+        card.onclick = (e) => {
+          e.stopPropagation();
+          currentFiltered = matchedSets;
+          currentPage = 0;
+          activeLocalIndex = matchedSets.indexOf(can);
+          openZoomModal(0);
+        };
+
+        card.innerHTML = `
+          <div class="card-top-photo">
+            <img src="${frontImg}" alt="${brandFormatted}" loading="lazy" decoding="async">
+          </div>
+          <div class="card-bottom-bar">
+            <div class="card-bar-title">${brandFormatted}</div>
+            <div class="card-bar-details">
+              <div class="card-bar-country">
+                ${flagUrl ? `<img src="${flagUrl}" class="card-bar-flag" alt="${countryFormatted}" loading="lazy">` : ''}
+                <span>${countryFormatted}</span>
+              </div>
+              ${volumeText ? `<div class="card-bar-vol">${volumeText}</div>` : ''}
+            </div>
+          </div>
+        `;
+        row.appendChild(card);
+      });
+      block.appendChild(row);
+      cardRow.appendChild(block);
+    }
+
+    if (matchedCans.length === 0 && matchedBrands.length === 0 && matchedSets.length === 0) {
+      cardRow.innerHTML = `<div style="padding: 20px; text-align: center; color: #888; width: 100%;">Nenhum resultado encontrado para "${val}"</div>`;
+    }
+  }
+
   function renderBrandCardsGrid() {
     isAllBrandsGridMode = true;
+    isSearchCategorizedMode = false;
     wasOpenedFromAllBrandsGrid = false;
 
     clearAllCardFocus();
@@ -1626,10 +1898,12 @@
 
     if (mainArea) {
       mainArea.classList.remove("brand-mode");
+      mainArea.classList.remove("search-categorized-mode");
       mainArea.classList.add("all-brands-mode");
     }
     if (catalogSection) {
       catalogSection.classList.remove("brand-mode");
+      catalogSection.classList.remove("search-categorized-mode");
       catalogSection.classList.add("all-brands-mode");
     }
     row.classList.remove("brand-mode-grid");
@@ -1911,10 +2185,7 @@
   }
 
   function renderApp() {
-    if (isAllBrandsGridMode) {
-      renderBrandCardsGrid();
-      return;
-    }
+    if (isAllBrandsGridMode || isSearchCategorizedMode) return;
 
     clearAllCardFocus();
     const row = document.getElementById("cardRow");
