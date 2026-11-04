@@ -145,7 +145,6 @@
       overflow: hidden;
     }
 
-    /* Logo do canto superior direito */
     .hero-brand-logo-container {
       position: absolute; 
       top: 20px; 
@@ -617,7 +616,7 @@
       color: #ffffff !important;
     }
 
-    /* ESTILOS ESPECÍFICOS PARA MODO DE PESQUISA CATEGORIZADA (LINHAS EMPILHADAS COM ROLAGEM LATERAL) */
+    /* ESTILOS ESPECÍFICOS PARA MODO DE PESQUISA CATEGORIZADA (VERTICAL COM LINHAS HORIZONTAIS ROLÁVEIS) */
     .catalog-section.search-categorized-mode {
       height: 560px !important;
       min-height: 560px !important;
@@ -628,17 +627,24 @@
       align-items: center !important;
       justify-content: flex-start !important;
       padding-top: 10px !important;
-      gap: 16px !important;
+      gap: 20px !important;
     }
 
     .main-area.search-categorized-mode #heroPanel {
       display: none !important;
     }
 
-    .search-category-block {
+    .search-categorized-wrapper {
       width: 926px;
       max-width: 100%;
       margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .search-category-block {
+      width: 100%;
       display: flex;
       flex-direction: column;
       gap: 6px;
@@ -1693,6 +1699,10 @@
 
     let globalCardIndex = 0;
 
+    // Criar wrapper interno para organizar os blocos em coluna dentro da linha principal
+    const wrapper = document.createElement("div");
+    wrapper.className = "search-categorized-wrapper";
+
     // BLOCO 1 (TOPO): LATAS
     if (matchedCans.length > 0) {
       const block = document.createElement("div");
@@ -1755,7 +1765,7 @@
         row.appendChild(card);
       });
       block.appendChild(row);
-      cardRow.appendChild(block);
+      wrapper.appendChild(block);
     }
 
     // BLOCO 2 (MEIO): MARCAS
@@ -1815,7 +1825,7 @@
         row.appendChild(card);
       });
       block.appendChild(row);
-      cardRow.appendChild(block);
+      wrapper.appendChild(block);
     }
 
     // BLOCO 3 (BAIXO): SETS
@@ -1878,11 +1888,13 @@
         row.appendChild(card);
       });
       block.appendChild(row);
-      cardRow.appendChild(block);
+      wrapper.appendChild(block);
     }
 
     if (matchedCans.length === 0 && matchedBrands.length === 0 && matchedSets.length === 0) {
       cardRow.innerHTML = `<div style="padding: 20px; text-align: center; color: #888; width: 100%;">Nenhum resultado encontrado para "${val}"</div>`;
+    } else {
+      cardRow.appendChild(wrapper);
     }
   }
 
