@@ -616,13 +616,15 @@
       color: #ffffff !important;
     }
 
-    /* ESTILOS ESPECÍFICOS PARA MODO DE PESQUISA CATEGORIZADA (EM LINHAS) */
+    /* ESTILOS ESPECÍFICOS PARA MODO DE PESQUISA CATEGORIZADA (EM LINHAS EMPILHADAS) */
     .catalog-section.search-categorized-mode {
       height: 480px !important;
       min-height: 480px !important;
       margin-top: 0px !important;
       overflow-y: auto !important;
-      display: block !important;
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
     }
 
     .main-area.search-categorized-mode #heroPanel {
@@ -649,9 +651,8 @@
 
     .search-category-row {
       display: flex;
+      flex-wrap: wrap; /* ALTERADO PARA EMPILHAR OS ITENS UM ABAIXO DO OUTRO */
       gap: 12px;
-      overflow-x: auto;
-      padding-bottom: 4px;
       width: 100%;
     }
 
@@ -1721,7 +1722,6 @@
         card.onclick = (e) => {
           e.stopPropagation();
           currentFiltered = matchedCans;
-          // Ajustar globalIndex para a abertura do zoom
           currentPage = 0;
           activeLocalIndex = matchedCans.indexOf(can);
           openZoomModal(0);
