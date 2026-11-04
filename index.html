@@ -412,8 +412,13 @@
     }
 
     .card.card-aspect-sets {
-      width: 220px !important;
-      min-width: 220px !important;
+      width: 172px !important;
+      min-width: 172px !important;
+      height: 185px !important;
+    }
+
+    .card.card-aspect-sets .card-top-photo {
+      height: 137px !important;
     }
 
     .card-top-photo {
@@ -616,18 +621,18 @@
       color: #ffffff !important;
     }
 
-    /* ESTILOS ESPECÍFICOS PARA MODO DE PESQUISA CATEGORIZADA (VERTICAL COM LINHAS HORIZONTAIS ROLÁVEIS) */
+    /* ESTILOS ESPECÍFICOS PARA MODO DE PESQUISA CATEGORIZADA (VERTICAL COMPACTO SEM ROLAGEM INTERNA) */
     .catalog-section.search-categorized-mode {
-      height: 560px !important;
-      min-height: 560px !important;
+      height: 100% !important;
+      min-height: unset !important;
       margin-top: 0px !important;
-      overflow-y: auto !important;
+      overflow-y: hidden !important;
       display: flex !important;
       flex-direction: column !important;
       align-items: center !important;
       justify-content: flex-start !important;
-      padding-top: 10px !important;
-      gap: 20px !important;
+      padding-top: 2px !important;
+      gap: 6px !important;
     }
 
     .main-area.search-categorized-mode #heroPanel {
@@ -640,35 +645,87 @@
       margin: 0 auto;
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 6px;
     }
 
     .search-category-block {
       width: 100%;
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 3px;
       flex-shrink: 0;
     }
 
     .search-category-title {
-      font-size: 0.85rem;
+      font-size: 0.72rem;
       font-weight: 900;
       color: #e2e8f0;
       text-transform: uppercase;
-      letter-spacing: 1px;
+      letter-spacing: 0.5px;
       padding-left: 2px;
+      line-height: 1;
     }
 
     .search-category-row {
       display: flex;
       flex-direction: row !important;
       flex-wrap: nowrap !important;
-      gap: 12px;
+      gap: 5px;
       overflow-x: auto !important;
       width: 100%;
-      padding-bottom: 6px;
+      padding-bottom: 2px;
       align-items: flex-start;
+    }
+
+    /* LINHA DE LATAS COM 10 CARDS VISÍVEIS (LARGURA AJUSTADA PARA CABER EXATAMENTE SEM CORTAR) */
+    .catalog-section.search-categorized-mode .search-category-block:nth-child(1) .card {
+      width: 80px !important;
+      min-width: 80px !important;
+      height: 125px !important;
+    }
+    .catalog-section.search-categorized-mode .search-category-block:nth-child(1) .card .card-top-photo {
+      height: 90px !important;
+    }
+    .catalog-section.search-categorized-mode .search-category-block:nth-child(1) .card .card-bottom-bar {
+      height: 35px !important;
+      padding: 2px 3px !important;
+    }
+    .catalog-section.search-categorized-mode .search-category-block:nth-child(1) .card .card-bar-title {
+      font-size: 0.50rem !important;
+    }
+    .catalog-section.search-categorized-mode .search-category-block:nth-child(1) .card .card-bar-country {
+      font-size: 0.44rem !important;
+    }
+    .catalog-section.search-categorized-mode .search-category-block:nth-child(1) .card .card-bar-vol {
+      font-size: 0.40rem !important;
+    }
+
+    /* LINHA DE MARCAS COM 7 CARDS MAIORES PROPORCIONAIS OCUPANDO A MESMA LARGURA HORIZONTAL */
+    .catalog-section.search-categorized-mode .brand-grid-card {
+      width: 124px !important;
+      min-width: 124px !important;
+      height: 125px !important;
+    }
+    .catalog-section.search-categorized-mode .brand-grid-card .brand-grid-card-logo {
+      height: 90px !important;
+      padding: 6px !important;
+    }
+    .catalog-section.search-categorized-mode .brand-grid-card .brand-grid-card-info {
+      height: 35px !important;
+      padding: 0 6px !important;
+    }
+    .catalog-section.search-categorized-mode .brand-grid-card .brand-grid-card-title {
+      font-size: 0.62rem !important;
+    }
+
+    /* LINHA DE SETS COM 7 CARDS MAIORES PROPORCIONAIS OCUPANDO A MESMA LARGURA HORIZONTAL */
+    .catalog-section.search-categorized-mode .card.card-aspect-sets {
+      width: 124px !important;
+      min-width: 124px !important;
+      height: 125px !important;
+    }
+    .catalog-section.search-categorized-mode .card.card-aspect-sets .card-top-photo {
+      height: 90px !important;
     }
 
     /* MODAL DE ZOOM (LIGHTBOX COM WALLPAPER) */
@@ -924,6 +981,8 @@
       .catalog-section { height: 300px; min-height: 300px; }
       .card-row { width: 1480px; gap: 20px; }
       .card { width: 194px !important; min-width: 194px !important; height: 285px !important; border-radius: 14px !important; }
+      .card.card-aspect-sets { width: 260px !important; min-width: 260px !important; height: 285px !important; }
+      .card.card-aspect-sets .card-top-photo { height: 210px !important; }
       .card-ococ-badge { font-size: 0.60rem; padding: 2px 5px; top: 6px; right: 6px; }
       .brand-grid-card { width: 260px !important; min-width: 260px !important; height: 170px !important; border-radius: 16px !important; }
       .brand-grid-card-logo { height: 122px !important; }
@@ -931,7 +990,6 @@
       .brand-grid-card-title { font-size: 1.05rem !important; }
       .catalog-section.all-brands-mode { height: 580px !important; min-height: 580px !important; padding-top: 16px !important; }
       .card-row.all-brands-grid { grid-template-columns: repeat(5, 260px) !important; grid-template-rows: repeat(3, 170px) !important; gap: 24px !important; padding-top: 8px !important; }
-      .card.card-aspect-sets { width: 350px !important; min-width: 350px !important; }
       .card-top-photo { height: 210px !important; padding: 6px !important; }
       .card-bottom-bar { height: 75px !important; padding: 8px 10px !important; }
       .card-bar-title { font-size: 1.1rem !important; margin-top: 2px !important; }
@@ -969,6 +1027,8 @@
       .catalog-section { height: 420px; min-height: 420px; }
       .card-row { width: 2100px; gap: 28px; }
       .card { width: 275px !important; min-width: 275px !important; height: 400px !important; border-radius: 20px !important; }
+      .card.card-aspect-sets { width: 380px !important; min-width: 380px !important; height: 400px !important; }
+      .card.card-aspect-sets .card-top-photo { height: 295px !important; }
       .card-ococ-badge { font-size: 0.80rem; padding: 3px 7px; top: 8px; right: 8px; }
       .brand-grid-card { width: 380px !important; min-width: 380px !important; height: 240px !important; border-radius: 24px !important; }
       .brand-grid-card-logo { height: 172px !important; }
@@ -976,7 +1036,6 @@
       .brand-grid-card-title { font-size: 1.4rem !important; }
       .catalog-section.all-brands-mode { height: 820px !important; min-height: 820px !important; padding-top: 24px !important; }
       .card-row.all-brands-grid { grid-template-columns: repeat(5, 380px) !important; grid-template-rows: repeat(3, 240px) !important; gap: 36px !important; padding-top: 12px !important; }
-      .card.card-aspect-sets { width: 500px !important; min-width: 500px !important; }
       .card-top-photo { height: 295px !important; padding: 10px !important; }
       .card-bottom-bar { height: 105px !important; padding: 12px 16px !important; }
       .card-bar-title { font-size: 1.5rem !important; }
@@ -1699,11 +1758,69 @@
 
     let globalCardIndex = 0;
 
-    // Criar wrapper interno para organizar os blocos em coluna dentro da linha principal
     const wrapper = document.createElement("div");
     wrapper.className = "search-categorized-wrapper";
 
-    // BLOCO 1 (TOPO): LATAS
+    // Navegação de foco corrigida para 10 colunas em cima e 7 embaixo
+    function setupCardKeydown(card, localIdx, listSource, blockIndex, isSetCard = false) {
+      card.onkeydown = (e) => {
+        if (document.getElementById("zoomModal").classList.contains("active") || document.getElementById("exitModal").classList.contains("active")) return;
+        const key = e.key;
+        const keyCode = e.keyCode;
+        const currentCols = (blockIndex === 0) ? 10 : 7;
+
+        if (key === "Enter" || key === " " || keyCode === 13) {
+          e.preventDefault();
+          if (isSetCard || listSource === matchedCans) {
+            currentFiltered = listSource;
+            currentPage = 0;
+            activeLocalIndex = listSource.indexOf(card.__canData);
+            openZoomModal(0);
+          } else {
+            isSearchCategorizedMode = false;
+            filterCatalog(card.__brandNameData);
+            focusCardSafely(0);
+          }
+        } else if (key === "ArrowRight" || keyCode === 39) {
+          e.preventDefault();
+          if (localIdx < listSource.length - 1) {
+            const nextCard = card.parentNode.children[localIdx + 1];
+            if (nextCard) nextCard.focus();
+          }
+        } else if (key === "ArrowLeft" || keyCode === 37) {
+          e.preventDefault();
+          if (localIdx > 0) {
+            const prevCard = card.parentNode.children[localIdx - 1];
+            if (prevCard) prevCard.focus();
+          } else {
+            clearAllCardFocus();
+            openMenu();
+          }
+        } else if (key === "ArrowUp" || keyCode === 38) {
+          e.preventDefault();
+          const blocks = wrapper.querySelectorAll(".search-category-block");
+          if (blockIndex > 0) {
+            const prevRow = blocks[blockIndex - 1].querySelector(".search-category-row");
+            const children = prevRow.children;
+            const currentColumn = localIdx % currentCols;
+            const targetChild = children[Math.min(currentColumn, children.length - 1)];
+            if (targetChild) targetChild.focus();
+          }
+        } else if (key === "ArrowDown" || keyCode === 40) {
+          e.preventDefault();
+          const blocks = wrapper.querySelectorAll(".search-category-block");
+          if (blockIndex < blocks.length - 1) {
+            const nextRow = blocks[blockIndex + 1].querySelector(".search-category-row");
+            const children = nextRow.children;
+            const currentColumn = localIdx % currentCols;
+            const targetChild = children[Math.min(currentColumn, children.length - 1)];
+            if (targetChild) targetChild.focus();
+          }
+        }
+      };
+    }
+
+    // BLOCO 0 (TOPO): LATAS (10 cards visíveis sem corte)
     if (matchedCans.length > 0) {
       const block = document.createElement("div");
       block.className = "search-category-block";
@@ -1712,7 +1829,7 @@
       const row = document.createElement("div");
       row.className = "search-category-row";
 
-      matchedCans.forEach((can) => {
+      matchedCans.forEach((can, idx) => {
         const localIdx = globalCardIndex++;
         const rawImg = can.ImgCover || can.cover || can.ImgFront || can.front || can.brandLogo;
         const frontImg = getOptimizedImageUrl(rawImg, 400);
@@ -1728,6 +1845,7 @@
         card.className = "card";
         card.tabIndex = 0;
         card.dataset.localIndex = localIdx;
+        card.__canData = can;
 
         card.onfocus = () => {
           if (document.getElementById("zoomModal").classList.contains("active") || document.getElementById("exitModal").classList.contains("active")) return;
@@ -1745,6 +1863,8 @@
           activeLocalIndex = matchedCans.indexOf(can);
           openZoomModal(0);
         };
+
+        setupCardKeydown(card, idx, matchedCans, 0, false);
 
         card.innerHTML = `
           ${isOcocVal ? `<div class="card-ococ-badge">OCOC</div>` : ''}
@@ -1768,7 +1888,7 @@
       wrapper.appendChild(block);
     }
 
-    // BLOCO 2 (MEIO): MARCAS
+    // BLOCO 1 (MEIO): MARCAS (7 cards visíveis)
     if (matchedBrands.length > 0) {
       const block = document.createElement("div");
       block.className = "search-category-block";
@@ -1777,7 +1897,7 @@
       const row = document.createElement("div");
       row.className = "search-category-row";
 
-      matchedBrands.forEach((brandName) => {
+      matchedBrands.forEach((brandName, idx) => {
         const localIdx = globalCardIndex++;
         const queryLower = String(brandName).toLowerCase().trim();
         let logoUrl = "";
@@ -1796,6 +1916,7 @@
         card.className = "brand-grid-card";
         card.tabIndex = 0;
         card.dataset.localIndex = localIdx;
+        card.__brandNameData = brandName;
 
         card.onfocus = () => {
           if (document.getElementById("zoomModal").classList.contains("active") || document.getElementById("exitModal").classList.contains("active")) return;
@@ -1810,6 +1931,9 @@
           filterCatalog(brandName);
           focusCardSafely(0);
         };
+
+        const blockIdx = matchedCans.length > 0 ? 1 : 0;
+        setupCardKeydown(card, idx, matchedBrands, blockIdx, false);
 
         const imgFormatted = logoUrl ? getOptimizedImageUrl(logoUrl, 400) : 'wccollection.png';
         const brandFormatted = formatCapitalizedText(brandName);
@@ -1828,7 +1952,7 @@
       wrapper.appendChild(block);
     }
 
-    // BLOCO 3 (BAIXO): SETS
+    // BLOCO 2 (BAIXO): SETS (7 cards visíveis)
     if (matchedSets.length > 0) {
       const block = document.createElement("div");
       block.className = "search-category-block";
@@ -1837,7 +1961,7 @@
       const row = document.createElement("div");
       row.className = "search-category-row";
 
-      matchedSets.forEach((can) => {
+      matchedSets.forEach((can, idx) => {
         const localIdx = globalCardIndex++;
         const rawImg = can.ImgCover || can.cover || can.ImgFront || can.front || can.brandLogo;
         const frontImg = getOptimizedImageUrl(rawImg, 400);
@@ -1852,6 +1976,7 @@
         card.className = "card card-aspect-sets";
         card.tabIndex = 0;
         card.dataset.localIndex = localIdx;
+        card.__canData = can;
 
         card.onfocus = () => {
           if (document.getElementById("zoomModal").classList.contains("active") || document.getElementById("exitModal").classList.contains("active")) return;
@@ -1869,6 +1994,11 @@
           activeLocalIndex = matchedSets.indexOf(can);
           openZoomModal(0);
         };
+
+        let blockIdx = 2;
+        if (matchedCans.length === 0 && matchedBrands.length === 0) blockIdx = 0;
+        else if (matchedCans.length === 0 || matchedBrands.length === 0) blockIdx = 1;
+        setupCardKeydown(card, idx, matchedSets, blockIdx, true);
 
         card.innerHTML = `
           <div class="card-top-photo">
