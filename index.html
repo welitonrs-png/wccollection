@@ -554,6 +554,7 @@
       outline: none !important;
       box-shadow: 0 4px 10px rgba(0,0,0,0.3) !important;
       box-sizing: border-box !important;
+      flex-shrink: 0 !important;
     }
 
     .brand-grid-card-logo {
@@ -616,15 +617,17 @@
       color: #ffffff !important;
     }
 
-    /* ESTILOS ESPECÍFICOS PARA MODO DE PESQUISA CATEGORIZADA (EM LINHAS EMPILHADAS) */
+    /* ESTILOS ESPECÍFICOS PARA MODO DE PESQUISA CATEGORIZADA (EM LINHAS HORIZONTAIS EMPILHADAS) */
     .catalog-section.search-categorized-mode {
-      height: 480px !important;
-      min-height: 480px !important;
+      height: 520px !important;
+      min-height: 520px !important;
       margin-top: 0px !important;
       overflow-y: auto !important;
       display: flex !important;
       flex-direction: column !important;
       align-items: center !important;
+      justify-content: flex-start !important;
+      padding-top: 10px !important;
     }
 
     .main-area.search-categorized-mode #heroPanel {
@@ -638,6 +641,7 @@
       display: flex;
       flex-direction: column;
       gap: 8px;
+      flex-shrink: 0;
     }
 
     .search-category-title {
@@ -651,9 +655,12 @@
 
     .search-category-row {
       display: flex;
-      flex-wrap: wrap; /* ALTERADO PARA EMPILHAR OS ITENS UM ABAIXO DO OUTRO */
+      flex-direction: row !important; /* GARANTE QUE OS CARDS FIQUEM EM LINHA HORIZONTAL */
+      flex-wrap: nowrap !important; /* EVITA QUEBRAR DE LINHA PARA BAIXO */
       gap: 12px;
+      overflow-x: auto !important; /* ROLAGEM HORIZONTAL SUAVE */
       width: 100%;
+      padding-bottom: 6px;
     }
 
     /* MODAL DE ZOOM (LIGHTBOX COM WALLPAPER) */
