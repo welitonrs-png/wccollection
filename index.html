@@ -145,6 +145,10 @@
       overflow: hidden;
     }
 
+    .main-area.all-brands-mode #heroPanel {
+      display: none !important;
+    }
+
     .hero-brand-logo-container {
       position: absolute; 
       top: 20px; 
@@ -2040,7 +2044,6 @@
       cardRow.innerHTML = `<div style="padding: 20px; text-align: center; color: #888; width: 100%;">Nenhum resultado encontrado para "${val}"</div>`;
     } else {
       cardRow.appendChild(wrapper);
-      // REQUISITO 1: Foco iniciar sempre na primeira lata "latas encontradas" se houver latas
       if (matchedCans.length > 0) {
         setTimeout(() => {
           const firstCanCard = wrapper.querySelector(".search-category-block .card");
