@@ -543,11 +543,27 @@
       color: #ffffff !important;
     }
 
-    /* CARDS DE MARCAS */
+    /* CARDS DE MARCAS (LAYOUT ORIGINAL RESTAURADO: 5 colunas x 3 linhas) */
+    .catalog-section.all-brands-mode {
+      height: 480px !important;
+      min-height: 480px !important;
+      padding-top: 10px !important;
+    }
+
+    .card-row.all-brands-grid {
+      display: grid !important;
+      grid-template-columns: repeat(5, 172px) !important;
+      grid-template-rows: repeat(3, 135px) !important;
+      gap: 12px 14px !important;
+      width: fit-content !important;
+      justify-content: center !important;
+      margin: 0 auto !important;
+    }
+
     .brand-grid-card {
       width: 172px !important;
       min-width: 172px !important;
-      height: 115px !important;
+      height: 135px !important;
       background: #ffffff !important;
       border-radius: 10px !important;
       display: flex !important;
@@ -563,7 +579,7 @@
 
     .brand-grid-card-logo {
       width: 100% !important;
-      height: 82px !important;
+      height: 98px !important;
       background: #ffffff !important;
       display: flex !important;
       justify-content: center !important;
@@ -579,7 +595,7 @@
 
     .brand-grid-card-info {
       width: 100% !important;
-      height: 33px !important;
+      height: 37px !important;
       background: #1a1f2c !important;
       padding: 0 6px !important;
       display: flex !important;
@@ -699,7 +715,7 @@
     .catalog-section.search-categorized-mode .search-category-block:nth-child(1) .card .card-bar-vol {
       font-size: 0.40rem !important;
     }
- 
+
     /* LINHA DE MARCAS COM 7 CARDS MAIORES PROPORCIONAIS OCUPANDO A MESMA LARGURA HORIZONTAL */
     .catalog-section.search-categorized-mode .brand-grid-card {
       width: 150px !important;
@@ -1761,7 +1777,6 @@
     const wrapper = document.createElement("div");
     wrapper.className = "search-categorized-wrapper";
 
-    // Navegação de foco corrigida para 10 colunas em cima e 7 embaixo
     function setupCardKeydown(card, localIdx, listSource, blockIndex, isSetCard = false) {
       card.onkeydown = (e) => {
         if (document.getElementById("zoomModal").classList.contains("active") || document.getElementById("exitModal").classList.contains("active")) return;
@@ -1820,7 +1835,7 @@
       };
     }
 
-    // BLOCO 0 (TOPO): LATAS (10 cards visíveis sem corte)
+    // BLOCO 0 (TOPO): LATAS
     if (matchedCans.length > 0) {
       const block = document.createElement("div");
       block.className = "search-category-block";
@@ -1888,7 +1903,7 @@
       wrapper.appendChild(block);
     }
 
-    // BLOCO 1 (MEIO): MARCAS (7 cards visíveis)
+    // BLOCO 1 (MEIO): MARCAS
     if (matchedBrands.length > 0) {
       const block = document.createElement("div");
       block.className = "search-category-block";
@@ -1952,7 +1967,7 @@
       wrapper.appendChild(block);
     }
 
-    // BLOCO 2 (BAIXO): SETS (7 cards visíveis)
+    // BLOCO 2 (BAIXO): SETS
     if (matchedSets.length > 0) {
       const block = document.createElement("div");
       block.className = "search-category-block";
@@ -2069,7 +2084,7 @@
 
     const counterElem = document.getElementById("cardCounter");
     if (counterElem) {
-      counterElem.innerText = `Total de marcas: ${uniqueBrands.length}`;
+      counterElem.innerText = `TOTAL DE MARCAS: ${uniqueBrands.length}`;
     }
 
     pageBrands.forEach((brandName, localIndex) => {
