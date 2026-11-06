@@ -5,6 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>WCCollection - Universal SPA</title>
   <style>
+    /* VARIÁVEIS DE ESQUEMA DE CORES */
+    :root {
+      --focus-gradient-1: #ffe066;
+      --focus-gradient-2: #f39c12;
+      --focus-gradient-3: #ff5500;
+      --card-focus-bg: #F19711;
+      --brand-focus-bg: #F19711;
+      --badge-bg: #1a1f2c;
+      --badge-color: #888888;
+    }
+
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; outline: none; }
 
     body { background-color: #282A2D; color: #DDDDDD; height: 100vh; overflow: hidden; display: flex; user-select: none; touch-action: pan-y; }
@@ -45,7 +56,7 @@
     /* BOTÃO HAMBÚRGUER (EXCLUSIVO PARA CELULAR) */
     .mobile-menu-btn {
       display: none; position: fixed; top: 12px; left: 12px; z-index: 2000;
-      background: rgba(26, 32, 46, 0.9); color: #f39c12; border: 1px solid #f39c12;
+      background: rgba(26, 32, 46, 0.9); color: var(--focus-gradient-2); border: 1px solid var(--focus-gradient-2);
       font-size: 1.5rem; padding: 6px 12px; border-radius: 8px; cursor: pointer;
     }
 
@@ -401,8 +412,8 @@
       position: absolute;
       top: 4px;
       right: 4px;
-      background: #1a1f2c;
-      color: #888888;
+      background: var(--badge-bg);
+      color: var(--badge-color);
       font-size: 0.45rem;
       font-weight: 800;
       padding: 1px 4px;
@@ -523,7 +534,7 @@
     .card.focused, .card:focus {
       border: 2px solid transparent !important;
       background-image: linear-gradient(#ffffff, #ffffff),
-                        linear-gradient(135deg, #ffe066, #f39c12, #ff5500) !important;
+                        linear-gradient(135deg, var(--focus-gradient-1), var(--focus-gradient-2), var(--focus-gradient-3)) !important;
       background-origin: border-box !important;
       background-clip: content-box, border-box !important;
       z-index: 10 !important;
@@ -532,7 +543,7 @@
     .card.focused .card-bottom-bar,
     .card:focus .card-bottom-bar,
     .card:hover .card-bottom-bar {
-      background-color: #F19711 !important;
+      background-color: var(--card-focus-bg) !important;
     }
 
     .card.focused .card-bar-title,
@@ -623,7 +634,7 @@
     .brand-grid-card.focused, .brand-grid-card:focus, .brand-grid-card:hover {
       border: 2px solid transparent !important;
       background-image: linear-gradient(#ffffff, #ffffff),
-                        linear-gradient(135deg, #ffe066, #f39c12, #ff5500) !important;
+                        linear-gradient(135deg, var(--focus-gradient-1), var(--focus-gradient-2), var(--focus-gradient-3)) !important;
       background-origin: border-box !important;
       background-clip: content-box, border-box !important;
       z-index: 10 !important;
@@ -632,7 +643,7 @@
     .brand-grid-card.focused .brand-grid-card-info,
     .brand-grid-card:focus .brand-grid-card-info,
     .brand-grid-card:hover .brand-grid-card-info {
-      background: #F19711 !important;
+      background: var(--brand-focus-bg) !important;
     }
 
     .brand-grid-card.focused .brand-grid-card-title,
@@ -824,7 +835,7 @@
     }
 
     .ticker-item span {
-      color: #f39c12;
+      color: var(--focus-gradient-2);
       margin-right: 6px;
       font-weight: 800;
     }
@@ -894,7 +905,7 @@
       color: #fff;
     }
     .exit-buttons button:first-child:focus {
-      background: #f39c12; 
+      background: var(--focus-gradient-2); 
       color: #fff;
       transform: scale(1.05);
     }
@@ -904,7 +915,7 @@
       color: #fff;
     }
     .exit-buttons button:last-child:focus {
-      background: #f39c12; 
+      background: var(--focus-gradient-2); 
       color: #fff;
       transform: scale(1.05);
     }
@@ -1105,6 +1116,16 @@
 
     <button class="cat-btn" id="menuBtnOcoc" onclick="switchTab('ococ')" tabindex="0">OCOC (PAÍSES)</button>
     <button class="cat-btn" id="menuBtnSets" onclick="switchTab('sets')" tabindex="0">SETS & PACKS</button>
+
+    <!-- NOVO BOTÃO DE ESQUEMA DE CORES -->
+    <button class="cat-btn" id="menuBtnTheme" onclick="toggleThemeInline()" tabindex="0" style="color: var(--focus-gradient-2);">ESQUEMA DE CORES</button>
+    <div class="inline-panel-container" id="themeInlineList">
+      <button class="brand-btn" onclick="setThemeScheme('orange')" tabindex="0">🍊 LARANJA PADRÃO</button>
+      <button class="brand-btn" onclick="setThemeScheme('green')" tabindex="0">🟢 VERDE ESMERALDA</button>
+      <button class="brand-btn" onclick="setThemeScheme('blue')" tabindex="0">🔵 AZUL METÁLICO</button>
+      <button class="brand-btn" onclick="setThemeScheme('red')" tabindex="0">🔴 VERMELHO RUBI</button>
+      <button class="brand-btn" onclick="setThemeScheme('purple')" tabindex="0">🟣 ROXO NEON</button>
+    </div>
   </nav>
 
   <main class="main-area" id="mainArea" onclick="handleMainAreaClick()">
@@ -1207,6 +1228,47 @@
   const PAN_STEP = 60;
 
   const vkKeys = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','1','2','3','4','5','6','7','8','9','0','ESPAÇO','DEL','LIMPAR'];
+
+  // SISTEMA DE ESQUEMAS DE CORES
+  const colorThemes = {
+    orange: { g1: '#ffe066', g2: '#f39c12', g3: '#ff5500', bg: '#F19711' },
+    green:  { g1: '#a8ff78', g2: '#2ecc71', g3: '#00b09b', bg: '#27ae60' },
+    blue:   { g1: '#85d8ce', g2: '#3498db', g3: '#1b82e6', bg: '#2980b9' },
+    red:    { g1: '#ff9999', g2: '#e74c3c', g3: '#c0392b', bg: '#c0392b' },
+    purple: { g1: '#e8cbff', g2: '#9b59b6', g3: '#8e44ad', bg: '#8e44ad' }
+  };
+
+  function setThemeScheme(themeKey) {
+    const theme = colorThemes[themeKey] || colorThemes.orange;
+    const root = document.documentElement;
+    root.style.setProperty('--focus-gradient-1', theme.g1);
+    root.style.setProperty('--focus-gradient-2', theme.g2);
+    root.style.setProperty('--focus-gradient-3', theme.g3);
+    root.style.setProperty('--card-focus-bg', theme.bg);
+    root.style.setProperty('--brand-focus-bg', theme.bg);
+    localStorage.setItem('wccollection_theme', themeKey);
+    closeMenu();
+    focusCardSafely(activeLocalIndex);
+  }
+
+  function loadSavedTheme() {
+    const saved = localStorage.getItem('wccollection_theme');
+    if (saved && colorThemes[saved]) {
+      setThemeScheme(saved);
+    }
+  }
+
+  function toggleThemeInline() {
+    lastSelectedMenuId = 'menuBtnTheme';
+    document.getElementById("searchInlineContainer").classList.remove("active");
+    document.getElementById("brandInlineList").classList.remove("active");
+    const container = document.getElementById("themeInlineList");
+    container.classList.toggle("active");
+    if (container.classList.contains("active")) {
+      const firstBtn = container.querySelector(".brand-btn");
+      if (firstBtn) firstBtn.focus();
+    }
+  }
 
   function fixDriveUrl(url) {
     if (!url) return '';
@@ -1400,6 +1462,9 @@
     const brandList = document.getElementById("brandInlineList");
     if (brandList) brandList.classList.remove("active");
 
+    const themeList = document.getElementById("themeInlineList");
+    if (themeList) themeList.classList.remove("active");
+
     processTabChange();
     focusCardSafely(0);
   }
@@ -1523,6 +1588,14 @@
           return;
         }
       }
+    } else if (lastSelectedMenuId === 'menuBtnTheme') {
+      const themeContainer = document.getElementById("themeInlineList");
+      themeContainer.classList.add("active");
+      const firstTheme = themeContainer.querySelector(".brand-btn");
+      if (firstTheme) {
+        firstTheme.focus();
+        return;
+      }
     }
 
     const targetElem = document.getElementById(lastSelectedMenuId);
@@ -1555,6 +1628,7 @@
     isSearchCategorizedMode = false;
     wasOpenedFromAllBrandsGrid = false;
     document.getElementById("brandInlineList").classList.remove("active");
+    document.getElementById("themeInlineList").classList.remove("active");
     const container = document.getElementById("searchInlineContainer");
     container.classList.toggle("active");
     if(container.classList.contains("active")) {
@@ -1567,6 +1641,7 @@
     lastSelectedMenuId = 'menuBtnBrands';
     const container = document.getElementById("brandInlineList");
     document.getElementById("searchInlineContainer").classList.remove("active");
+    document.getElementById("themeInlineList").classList.remove("active");
     container.classList.toggle("active");
 
     if(container.classList.contains("active")) {
@@ -2875,6 +2950,7 @@
   }, true);
 
   window.onload = () => {
+    loadSavedTheme();
     fetchCatalogFromSheet();
     setTimeout(hideLoadingScreen, 7000);
   };
