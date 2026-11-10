@@ -14,6 +14,7 @@
       --brand-focus-bg: #F19711;
       --badge-bg: #1a1f2c;
       --badge-color: #888888;
+      --map-highlight-color: #0b6730; /* Cor dinâmica do país em destaque no mapa */
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; outline: none; }
@@ -140,6 +141,20 @@
 
     .hero-brand-wallpaper.active {
       opacity: 0.18;
+    }
+
+    /* MAPA SVG AUTOMÁTICO NO FUNDO (OCOC) */
+    .ococ-map-wallpaper {
+      position: absolute; top: 0; left: 0; width: 100vw; height: 100vh;
+      display: none; justify-content: center; align-items: center; z-index: 1; pointer-events: none; opacity: 0.22;
+    }
+    .ococ-map-wallpaper.active { display: flex; }
+    .ococ-map-wallpaper svg { width: 50vh; height: 85vh; max-width: 80vw; }
+    .ococ-map-wallpaper svg path, .ococ-map-wallpaper svg polygon {
+      fill: #3e4c59; stroke: #8892b0; stroke-width: 1.5px; transition: fill 0.3s ease;
+    }
+    .ococ-map-wallpaper svg .highlight-country {
+      fill: var(--map-highlight-color) !important;
     }
 
     /* ÁREA SUPERIOR */
@@ -708,12 +723,11 @@
       align-items: flex-start;
     }
 
-    /* LINHA DE LATAS COM 10 CARDS VISÍVEIS (LARGURA AJUSTADA PARA CABER EXATAMENTE SEM CORTAR) */
     .catalog-section.search-categorized-mode .search-category-block:nth-child(1) .card {
       width: 88px !important;
       min-width: 88px !important;
       height: 125px !important;
-      border-radius: 6px !important; /* <--- Borda reduzida na busca */
+      border-radius: 6px !important;
     }
     .catalog-section.search-categorized-mode .search-category-block:nth-child(1) .card .card-top-photo {
       height: 90px !important;
@@ -732,12 +746,11 @@
       font-size: 0.40rem !important;
     }
 
-    /* LINHA DE MARCAS COM 7 CARDS MAIORES PROPORCIONAIS OCUPANDO A MESMA LARGURA HORIZONTAL */
     .catalog-section.search-categorized-mode .brand-grid-card {
       width: 150px !important;
       min-width: 150px !important;
       height: 125px !important;
-      border-radius: 6px !important; /* <--- Borda reduzida na busca */
+      border-radius: 6px !important;
     }
     .catalog-section.search-categorized-mode .brand-grid-card .brand-grid-card-logo {
       height: 90px !important;
@@ -751,12 +764,11 @@
       font-size: 0.62rem !important;
     }
 
-    /* LINHA DE SETS COM 7 CARDS MAIORES PROPORCIONAIS OCUPANDO A MESMA LARGURA HORIZONTAL */
     .catalog-section.search-categorized-mode .card.card-aspect-sets {
       width: 150px !important;
       min-width: 150px !important;
       height: 125px !important;
-      border-radius: 6px !important; /* <--- Borda reduzida na busca */
+      border-radius: 6px !important;
     }
     .catalog-section.search-categorized-mode .card.card-aspect-sets .card-top-photo {
       height: 90px !important;
@@ -1102,6 +1114,19 @@
 
 <div class="app-container">
   <div class="hero-brand-wallpaper" id="heroBrandWallpaper"></div>
+  
+  <!-- MAPA SVG AUTOMÁTICO DINÂMICO NO FUNDO (OCOC) -->
+  <div class="ococ-map-wallpaper" id="ococMapWallpaper">
+    <svg viewBox="0 0 500 700" id="svgContinentMap">
+      <path id="brasil" d="M220,120 L350,140 L420,250 L400,400 L300,480 L230,420 L200,300 Z" />
+      <path id="argentina" d="M230,440 L280,490 L260,650 L200,660 L190,520 Z" />
+      <path id="chile" d="M185,320 L195,500 L185,650 L175,650 L170,450 Z" />
+      <path id="colombia" d="M160,80 L230,90 L220,150 L150,130 Z" />
+      <path id="peru" d="M155,160 L210,170 L200,310 L150,280 Z" />
+      <path id="venezuela" d="M200,40 L300,50 L280,100 L180,90 Z" />
+    </svg>
+  </div>
+
   <button class="mobile-menu-btn" onclick="toggleMenuMobile(event)">☰</button>
 
   <nav class="sidebar-drawer" id="sidebarDrawer">
@@ -1117,7 +1142,10 @@
     <button class="cat-btn" id="menuBtnBrands" onclick="toggleBrandInline()" tabindex="0">MARCAS</button>
     <div class="inline-panel-container" id="brandInlineList"></div>
 
-    <button class="cat-btn" id="menuBtnOcoc" onclick="switchTab('ococ')" tabindex="0">OCOC (PAÍSES)</button>
+    <!-- OCOC COM SUBMENU DE CONTINENTES/PAÍSES -->
+    <button class="cat-btn" id="menuBtnOcoc" onclick="toggleOcocInline()" tabindex="0">OCOC (CONTINENTES)</button>
+    <div class="inline-panel-container" id="ococInlineList"></div>
+
     <button class="cat-btn" id="menuBtnSets" onclick="switchTab('sets')" tabindex="0">SETS & PACKS</button>
 
     <!-- BOTÃO DE ESQUEMA DE CORES -->
@@ -1212,6 +1240,7 @@
   let currentSortMode = 'newest';
 
   let currentTab = 'home';
+  let activeOcocContinent = null;
   let cardsPerRow = 7;
   let cardsPerPage = 7;
   let currentPage = 0;
@@ -1232,10 +1261,9 @@
 
   const vkKeys = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','1','2','3','4','5','6','7','8','9','0','ESPAÇO','DEL','LIMPAR'];
 
-  /* ESQUEMAS DE CORES ATUALIZADOS (Verde Escuro Brilhante refinado) */
   const colorThemes = {
     orange: { g1: '#ffe066', g2: '#f39c12', g3: '#ff5500', bg: '#F19711' },
-    green:  { g1: '#76ff03', g2: '#00c853', g3: '#1b5e20', bg: '#0b6730' }, // Verde esmeralda escuro e brilhante
+    green:  { g1: '#76ff03', g2: '#00c853', g3: '#1b5e20', bg: '#0b6730' },
     blue:   { g1: '#85d8ce', g2: '#3498db', g3: '#1b82e6', bg: '#2980b9' },
     red:    { g1: '#ff9999', g2: '#e74c3c', g3: '#c0392b', bg: '#c0392b' },
     purple: { g1: '#e8cbff', g2: '#9b59b6', g3: '#8e44ad', bg: '#8e44ad' }
@@ -1249,6 +1277,7 @@
     root.style.setProperty('--focus-gradient-3', theme.g3);
     root.style.setProperty('--card-focus-bg', theme.bg);
     root.style.setProperty('--brand-focus-bg', theme.bg);
+    root.style.setProperty('--map-highlight-color', theme.bg); // Sincroniza cor do mapa com o tema
     localStorage.setItem('wccollection_theme', themeKey);
     closeMenu();
     focusCardSafely(activeLocalIndex);
@@ -1265,7 +1294,21 @@
     lastSelectedMenuId = 'menuBtnTheme';
     document.getElementById("searchInlineContainer").classList.remove("active");
     document.getElementById("brandInlineList").classList.remove("active");
+    document.getElementById("ococInlineList").classList.remove("active");
     const container = document.getElementById("themeInlineList");
+    container.classList.toggle("active");
+    if (container.classList.contains("active")) {
+      const firstBtn = container.querySelector(".brand-btn");
+      if (firstBtn) firstBtn.focus();
+    }
+  }
+
+  function toggleOcocInline() {
+    lastSelectedMenuId = 'menuBtnOcoc';
+    document.getElementById("searchInlineContainer").classList.remove("active");
+    document.getElementById("brandInlineList").classList.remove("active");
+    document.getElementById("themeInlineList").classList.remove("active");
+    const container = document.getElementById("ococInlineList");
     container.classList.toggle("active");
     if (container.classList.contains("active")) {
       const firstBtn = container.querySelector(".brand-btn");
@@ -1443,6 +1486,7 @@
 
   function switchTab(tabName) {
     currentTab = tabName;
+    activeOcocContinent = null;
     lastSelectedBrandElem = null;
     isAllBrandsGridMode = false;
     isSearchCategorizedMode = false;
@@ -1452,8 +1496,10 @@
 
     if (tabName === 'sets') {
       lastSelectedMenuId = 'menuBtnSets';
+    } else if (tabName === 'ococ') {
+      lastSelectedMenuId = 'menuBtnOcoc';
     } else {
-      lastSelectedMenuId = tabName === 'ococ' ? 'menuBtnOcoc' : 'menuBtnHome';
+      lastSelectedMenuId = 'menuBtnHome';
     }
 
     const searchInput = document.getElementById("menuSearchInput");
@@ -1464,6 +1510,9 @@
 
     const brandList = document.getElementById("brandInlineList");
     if (brandList) brandList.classList.remove("active");
+
+    const ococList = document.getElementById("ococInlineList");
+    if (ococList) ococList.classList.remove("active");
 
     const themeList = document.getElementById("themeInlineList");
     if (themeList) themeList.classList.remove("active");
@@ -1482,6 +1531,7 @@
 
   function processTabChange() {
     buildBrandList();
+    buildOcocContinentList();
     buildVirtualKeyboard();
     const searchInput = document.getElementById("menuSearchInput");
     const currentSearchVal = searchInput ? searchInput.value : "";
@@ -1492,7 +1542,7 @@
     let list = [];
     if (currentTab === 'home') {
       list = canCatalog.filter(can => {
-        const val = can.isSet !== undefined ? can.isSet : can.isSet;
+        const val = can.isSet;
         return !val || String(val).toLowerCase() === "false";
       });
     } else if (currentTab === 'ococ') {
@@ -1502,12 +1552,13 @@
         const countryVal = String(can.country || can.Pais || "").toLowerCase().trim();
         const isOcocVal = can.isOcoc;
         const isSetVal = can.isSet;
+        const matchesContinent = activeOcocContinent ? String(can.continent || can.Continente || "").toLowerCase().trim() === activeOcocContinent.toLowerCase().trim() : true;
 
         const uniqueKey = `${brandVal}_${countryVal}`;
 
         if ((!isSetVal || String(isSetVal).toLowerCase() === "false") &&
             (isOcocVal === true || String(isOcocVal).toLowerCase() === "true") &&
-            brandVal && countryVal && !ococMap.has(uniqueKey)) {
+            brandVal && countryVal && matchesContinent && !ococMap.has(uniqueKey)) {
           ococMap.set(uniqueKey, can);
         }
       });
@@ -1591,6 +1642,14 @@
           return;
         }
       }
+    } else if (lastSelectedMenuId === 'menuBtnOcoc') {
+      const ococContainer = document.getElementById("ococInlineList");
+      ococContainer.classList.add("active");
+      const firstOcoc = ococContainer.querySelector(".brand-btn");
+      if (firstOcoc) {
+        firstOcoc.focus();
+        return;
+      }
     } else if (lastSelectedMenuId === 'menuBtnTheme') {
       const themeContainer = document.getElementById("themeInlineList");
       themeContainer.classList.add("active");
@@ -1631,6 +1690,7 @@
     isSearchCategorizedMode = false;
     wasOpenedFromAllBrandsGrid = false;
     document.getElementById("brandInlineList").classList.remove("active");
+    document.getElementById("ococInlineList").classList.remove("active");
     document.getElementById("themeInlineList").classList.remove("active");
     const container = document.getElementById("searchInlineContainer");
     container.classList.toggle("active");
@@ -1644,6 +1704,7 @@
     lastSelectedMenuId = 'menuBtnBrands';
     const container = document.getElementById("brandInlineList");
     document.getElementById("searchInlineContainer").classList.remove("active");
+    document.getElementById("ococInlineList").classList.remove("active");
     document.getElementById("themeInlineList").classList.remove("active");
     container.classList.toggle("active");
 
@@ -1701,12 +1762,8 @@
     const baseList = getBaseListForCurrentTab();
     const brands = [...new Set(baseList.map(c => c.brewery || c.Cervejaria).filter(Boolean))].sort();
 
-    let defaultText = "TODAS AS MARCAS";
-    if (currentTab === 'ococ') defaultText = "TODOS OS PAÍSES";
-    if (currentTab === 'sets') defaultText = "TODOS OS SETS";
-
     const allBtn = document.createElement("button");
-    allBtn.className = "brand-btn"; allBtn.tabIndex = 0; allBtn.innerText = defaultText;
+    allBtn.className = "brand-btn"; allBtn.tabIndex = 0; allBtn.innerText = "TODAS AS MARCAS";
 
     allBtn.onclick = (e) => {
       e.stopPropagation();
@@ -1755,11 +1812,49 @@
     });
   }
 
+  function buildOcocContinentList() {
+    const container = document.getElementById("ococInlineList");
+    if (!container) return;
+    container.innerHTML = "";
+
+    const ococCans = canCatalog.filter(c => c.isOcoc === true || String(c.isOcoc).toLowerCase() === "true");
+    const continents = [...new Set(ococCans.map(c => c.continent || c.Continente).filter(Boolean))].sort();
+
+    const allBtn = document.createElement("button");
+    allBtn.className = "brand-btn"; allBtn.tabIndex = 0; allBtn.innerText = "TODOS OS CONTINENTES";
+    allBtn.onclick = (e) => {
+      e.stopPropagation();
+      currentTab = 'ococ';
+      activeOcocContinent = null;
+      lastSelectedMenuId = 'menuBtnOcoc';
+      isAllBrandsGridMode = false;
+      isSearchCategorizedMode = false;
+      filterCatalog("");
+      focusCardSafely(0);
+    };
+    container.appendChild(allBtn);
+
+    continents.forEach(cont => {
+      const btn = document.createElement("button");
+      btn.className = "brand-btn"; btn.tabIndex = 0; btn.innerText = String(cont).toUpperCase();
+      btn.onclick = (e) => {
+        e.stopPropagation();
+        currentTab = 'ococ';
+        activeOcocContinent = cont;
+        lastSelectedMenuId = 'menuBtnOcoc';
+        isAllBrandsGridMode = false;
+        isSearchCategorizedMode = false;
+        filterCatalog("");
+        focusCardSafely(0);
+      };
+      container.appendChild(btn);
+    });
+  }
+
   function filterCatalog(query) {
     isAllBrandsGridMode = false;
     const mainArea = document.getElementById("mainArea");
     const catalogSection = document.getElementById("catalogSection");
-    const cardRow = document.getElementById("cardRow");
 
     const val = query ? query.toLowerCase().trim() : "";
     const isSearchActive = (lastSelectedMenuId === 'menuBtnSearch' && val !== "");
@@ -1811,18 +1906,19 @@
     const catalogSection = document.getElementById("catalogSection");
     const cardRow = document.getElementById("cardRow");
     const wallpaperElem = document.getElementById("heroBrandWallpaper");
+    const mapWallpaper = document.getElementById("ococMapWallpaper");
     const counterElem = document.getElementById("cardCounter");
 
     if (wallpaperElem) {
       wallpaperElem.style.backgroundImage = "none";
       wallpaperElem.classList.remove("active");
     }
+    if (mapWallpaper) mapWallpaper.classList.remove("active");
 
     if (!catalogSection || !cardRow) return;
     cardRow.innerHTML = "";
     cardRow.className = "card-row";
 
-    // 1. Filtrar latas
     const matchedCans = canCatalog.filter(can => {
       const name = String(can.name || can.Nome || "").toLowerCase();
       const brewery = String(can.brewery || can.Cervejaria || "").toLowerCase();
@@ -1832,7 +1928,6 @@
       return !isSet && (name.includes(val) || brewery.includes(val) || country.includes(val) || barcode.includes(val));
     });
 
-    // 2. Filtrar marcas únicas correspondentes
     const matchedBrandsSet = new Set();
     canCatalog.forEach(can => {
       const brewery = String(can.brewery || can.Cervejaria || "").trim();
@@ -1842,7 +1937,6 @@
     });
     const matchedBrands = Array.from(matchedBrandsSet).sort();
 
-    // 3. Filtrar sets correspondentes
     const matchedSets = canCatalog.filter(can => {
       const isSet = can.isSet === true || String(can.isSet).toLowerCase() === "true";
       const name = String(can.name || can.Nome || "").toLowerCase();
@@ -1855,7 +1949,6 @@
     }
 
     let globalCardIndex = 0;
-
     const wrapper = document.createElement("div");
     wrapper.className = "search-categorized-wrapper";
 
@@ -1917,7 +2010,6 @@
       };
     }
 
-    // BLOCO 0 (TOPO): LATAS
     if (matchedCans.length > 0) {
       const block = document.createElement("div");
       block.className = "search-category-block";
@@ -1985,7 +2077,6 @@
       wrapper.appendChild(block);
     }
 
-    // BLOCO 1 (MEIO): MARCAS
     if (matchedBrands.length > 0) {
       const block = document.createElement("div");
       block.className = "search-category-block";
@@ -2049,7 +2140,6 @@
       wrapper.appendChild(block);
     }
 
-    // BLOCO 2 (BAIXO): SETS
     if (matchedSets.length > 0) {
       const block = document.createElement("div");
       block.className = "search-category-block";
@@ -2143,11 +2233,13 @@
     const catalogSection = document.getElementById("catalogSection");
     const row = document.getElementById("cardRow");
     const wallpaperElem = document.getElementById("heroBrandWallpaper");
+    const mapWallpaper = document.getElementById("ococMapWallpaper");
 
     if (wallpaperElem) {
       wallpaperElem.style.backgroundImage = "none";
       wallpaperElem.classList.remove("active");
     }
+    if (mapWallpaper) mapWallpaper.classList.remove("active");
 
     if (!row) return;
     row.innerHTML = "";
@@ -2349,6 +2441,7 @@
   function updateBrandLogoHeader(brandQuery, currentCan) {
     const logoContainer = document.getElementById("heroBrandLogo");
     const wallpaperElem = document.getElementById("heroBrandWallpaper");
+    const mapWallpaper = document.getElementById("ococMapWallpaper");
     const gridOverlayLogo = document.querySelector(".brand-overlay-logo");
 
     if (isAllBrandsGridMode) {
@@ -2356,58 +2449,41 @@
         wallpaperElem.style.backgroundImage = "none";
         wallpaperElem.classList.remove("active");
       }
-      return;
-    }
-
-    if (!brandQuery || String(brandQuery).trim() === "") {
-      if (logoContainer) logoContainer.innerHTML = "";
-      if (gridOverlayLogo) gridOverlayLogo.innerHTML = "";
-      if (wallpaperElem) {
-        wallpaperElem.style.backgroundImage = "none";
-        wallpaperElem.classList.remove("active");
-      }
+      if (mapWallpaper) mapWallpaper.classList.remove("active");
       return;
     }
 
     let logoUrl = currentCan ? (currentCan.brandLogo || currentCan.BRAND_LOGO) : null;
-    let wallpaperUrl = currentCan ? (currentCan.wallpaper || currentCan.WALLPAPER || currentCan.brandWallpaper) : null;
+    if (logoContainer) logoContainer.innerHTML = logoUrl ? `<img src="${getOptimizedImageUrl(logoUrl, 400)}" alt="LOGO">` : "";
+    if (gridOverlayLogo) gridOverlayLogo.innerHTML = logoUrl ? `<img src="${getOptimizedImageUrl(logoUrl, 400)}" alt="Logo">` : "";
 
-    if (!logoUrl || !wallpaperUrl) {
-      const queryLower = String(brandQuery).toLowerCase().trim();
-      const matchCan = canCatalog.find(c => {
-        const b = String(c.brewery || c.Cervejaria || "").toLowerCase().trim();
-        return (b === queryLower || b.includes(queryLower)) && (c.brandLogo || c.BRAND_LOGO || c.wallpaper || c.WALLPAPER);
-      });
-      if (matchCan) {
-        if (!logoUrl) logoUrl = matchCan.brandLogo || matchCan.BRAND_LOGO;
-        if (!wallpaperUrl) wallpaperUrl = matchCan.wallpaper || matchCan.WALLPAPER || matchCan.brandWallpaper;
+    if (currentTab === 'ococ') {
+      if (wallpaperElem) { wallpaperElem.style.backgroundImage = "none"; wallpaperElem.classList.remove("active"); }
+      if (mapWallpaper) mapWallpaper.classList.add("active");
+
+      const countryName = String(currentCan.country || currentCan.Pais || "").toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, '-');
+      
+      const allPaths = document.querySelectorAll("#svgContinentMap path, #svgContinentMap polygon");
+      allPaths.forEach(p => p.classList.remove("highlight-country"));
+
+      if (countryName) {
+        const targetPath = document.getElementById(countryName);
+        if (targetPath) {
+          targetPath.classList.add("highlight-country");
+        }
       }
-    }
-
-    if (logoContainer) {
-      if (logoUrl && String(logoUrl).trim() !== "") {
-        logoContainer.innerHTML = `<img src="${getOptimizedImageUrl(logoUrl, 400)}" alt="LOGO DA MARCA">`;
-      } else {
-        logoContainer.innerHTML = "";
-      }
-    }
-
-    if (gridOverlayLogo) {
-      if (logoUrl && String(logoUrl).trim() !== "") {
-        gridOverlayLogo.innerHTML = `<img src="${getOptimizedImageUrl(logoUrl, 400)}" alt="Logo">`;
-      } else {
-        gridOverlayLogo.innerHTML = "";
-      }
-    }
-
-    if (wallpaperElem) {
-      const bgImg = wallpaperUrl || logoUrl || (currentCan ? (currentCan.ImgFront || currentCan.front || currentCan.ImgCover) : null);
-      if (bgImg && String(bgImg).trim() !== "") {
-        wallpaperElem.style.backgroundImage = `url('${getOptimizedImageUrl(bgImg, 1200)}')`;
-        wallpaperElem.classList.add("active");
-      } else {
-        wallpaperElem.style.backgroundImage = "none";
-        wallpaperElem.classList.remove("active");
+    } else {
+      if (mapWallpaper) mapWallpaper.classList.remove("active");
+      const wallpaperUrl = currentCan ? (currentCan.wallpaper || currentCan.WALLPAPER || currentCan.brandWallpaper) : null;
+      if (wallpaperElem) {
+        const bgImg = wallpaperUrl || logoUrl || (currentCan ? (currentCan.ImgFront || currentCan.front) : null);
+        if (bgImg && String(bgImg).trim() !== "") {
+          wallpaperElem.style.backgroundImage = `url('${getOptimizedImageUrl(bgImg, 1200)}')`;
+          wallpaperElem.classList.add("active");
+        } else {
+          wallpaperElem.style.backgroundImage = "none";
+          wallpaperElem.classList.remove("active");
+        }
       }
     }
   }
@@ -2634,7 +2710,6 @@
     }
   }
 
-  /* MODAL DE ZOOM COM BANNER ROTATIVO */
   function openZoomModal(localIndex, sourceList = currentFiltered) {
     activeLocalIndex = localIndex;
     const globalIndex = (isSearchCategorizedMode) ? localIndex : (currentPage * cardsPerPage + activeLocalIndex);
