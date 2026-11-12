@@ -149,7 +149,7 @@
           background: transparent !important;
           border-radius: 0;
           display: flex;
-          padding: 12px 16px;
+          padding: 8px 16px;
           gap: 20px;
           align-items: flex-start;
           position: relative;
@@ -189,18 +189,6 @@
           background: transparent !important;
           filter: drop-shadow(0px 0px 0px transparent);
           mix-blend-mode: screen !important;
-        }
-
-        .hero-thumbnails-container, .side-images-grid, div[class*="thumb"] {
-          background: transparent !important;
-        }
-
-        .hero-thumbnails-container img, .side-images-grid img, div[class*="thumb"] img {
-          width: 100% !important;
-          height: 100% !important;
-          object-fit: contain !important;
-          background: transparent !important;
-          border-radius: 6px;
         }
 
         .brand-overlay-logo {
@@ -304,6 +292,56 @@
           font-style: italic;
           color: #cbd5e1;
           text-transform: uppercase;
+        }
+
+        /* PAINEL DE BANDEIRAS OCOC NO HERO (CORRIGIDO PARA NÃO DISTORCER) */
+        .hero-ococ-flags-grid {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(46px, 1fr));
+          grid-auto-rows: 32px;
+          gap: 4px;
+          align-content: center;
+          justify-items: center;
+          overflow: hidden;
+          z-index: 5;
+          pointer-events: none;
+          opacity: 0.9;
+          padding: 8px 12px;
+        }
+
+        .hero-ococ-flag-item {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: rgba(0,0,0,0.3);
+          border-radius: 3px;
+          overflow: hidden;
+          width: 100%;
+          height: 100%;
+          padding: 2px;
+        }
+
+        .hero-ococ-flag-item img {
+          width: 100%;
+          height: 100%;
+          object-fit: contain;
+          border-radius: 2px;
+        }
+
+        .hero-ococ-flag-item.collected {
+          opacity: 1.0;
+          filter: drop-shadow(0 0 3px rgba(255,255,255,0.5));
+          border: 1px solid rgba(255,255,255,0.4);
+        }
+
+        .hero-ococ-flag-item.uncollected {
+          opacity: 0.15;
+          filter: grayscale(90%);
         }
 
         /* BARRA DE CONTADOR/ORDENAÇÃO */
@@ -558,7 +596,7 @@
           color: #ffffff !important;
         }
 
-        /* CARDS DE MARCAS (LAYOUT ORIGINAL RESTAURADO: 5 colunas x 3 linhas) */
+        /* CARDS DE MARCAS */
         .catalog-section.all-brands-mode {
           height: 480px !important;
           min-height: 480px !important;
@@ -652,7 +690,7 @@
           color: #ffffff !important;
         }
 
-        /* ESTILOS ESPECÍFICOS PARA MODO DE PESQUISA CATEGORIZADA (VERTICAL COMPACTO SEM ROLAGEM INTERNA) */
+        /* PESQUISA CATEGORIZADA */
         .catalog-section.search-categorized-mode {
           height: 100% !important;
           min-height: unset !important;
@@ -708,12 +746,11 @@
           align-items: flex-start;
         }
 
-        /* LINHA DE LATAS COM 10 CARDS VISÍVEIS (LARGURA AJUSTADA PARA CABER EXATAMENTE SEM CORTAR) */
         .catalog-section.search-categorized-mode .search-category-block:nth-child(1) .card {
           width: 88px !important;
           min-width: 88px !important;
           height: 125px !important;
-          border-radius: 6px !important; /* <--- Borda reduzida na busca */
+          border-radius: 6px !important;
         }
         .catalog-section.search-categorized-mode .search-category-block:nth-child(1) .card .card-top-photo {
           height: 90px !important;
@@ -732,12 +769,11 @@
           font-size: 0.40rem !important;
         }
 
-        /* LINHA DE MARCAS COM 7 CARDS MAIORES PROPORCIONAIS OCUPANDO A MESMA LARGURA HORIZONTAL */
         .catalog-section.search-categorized-mode .brand-grid-card {
           width: 150px !important;
           min-width: 150px !important;
           height: 125px !important;
-          border-radius: 6px !important; /* <--- Borda reduzida na busca */
+          border-radius: 6px !important;
         }
         .catalog-section.search-categorized-mode .brand-grid-card .brand-grid-card-logo {
           height: 90px !important;
@@ -751,18 +787,17 @@
           font-size: 0.62rem !important;
         }
 
-        /* LINHA DE SETS COM 7 CARDS MAIORES PROPORCIONAIS OCUPANDO A MESMA LARGURA HORIZONTAL */
         .catalog-section.search-categorized-mode .card.card-aspect-sets {
           width: 150px !important;
           min-width: 150px !important;
           height: 125px !important;
-          border-radius: 6px !important; /* <--- Borda reduzida na busca */
+          border-radius: 6px !important;
         }
         .catalog-section.search-categorized-mode .card.card-aspect-sets .card-top-photo {
           height: 90px !important;
         }
 
-        /* MODAL DE ZOOM (LIGHTBOX COM WALLPAPER) */
+        /* MODAL DE ZOOM */
         .zoom-modal {
           position: fixed;
           top: 0;
@@ -807,7 +842,6 @@
           filter: drop-shadow(0 10px 25px rgba(0, 0, 0, 0.8));
         }
 
-        /* BANNER ROTATIVO NO RODAPÉ DO LIGHTBOX */
         .lightbox-footer-ticker {
           position: absolute;
           bottom: 0;
@@ -815,7 +849,6 @@
           width: 100%;
           height: 45px;
           background: transparent !important;
-
           overflow: hidden;
           display: flex;
           align-items: center;
@@ -903,25 +936,11 @@
           box-shadow: none !important;
         }
 
-        .exit-buttons button:first-child {
-          background: #444;
-          color: #fff;
-        }
-        .exit-buttons button:first-child:focus {
-          background: var(--focus-gradient-2);
-          color: #fff;
-          transform: scale(1.05);
-        }
+        .exit-buttons button:first-child { background: #444; color: #fff; }
+        .exit-buttons button:first-child:focus { background: var(--focus-gradient-2); color: #fff; transform: scale(1.05); }
 
-        .exit-buttons button:last-child {
-          background: #444;
-          color: #fff;
-        }
-        .exit-buttons button:last-child:focus {
-          background: var(--focus-gradient-2);
-          color: #fff;
-          transform: scale(1.05);
-        }
+        .exit-buttons button:last-child { background: #444; color: #fff; }
+        .exit-buttons button:last-child:focus { background: var(--focus-gradient-2); color: #fff; transform: scale(1.05); }
 
         .main-area.brand-mode #heroPanel {
           display: none !important;
@@ -959,13 +978,8 @@
           height: 106px !important;
         }
 
-        .card-row.brand-mode-grid .card:nth-child(-n+7) {
-          grid-row: 1;
-        }
-
-        .card-row.brand-mode-grid .card:nth-child(n+8) {
-          grid-row: auto;
-        }
+        .card-row.brand-mode-grid .card:nth-child(-n+7) { grid-row: 1; }
+        .card-row.brand-mode-grid .card:nth-child(n+8) { grid-row: auto; }
 
         .card-row.brand-mode-grid .card-bottom-bar {
           height: 35px !important;
@@ -1120,7 +1134,6 @@
         <button class="cat-btn" id="menuBtnOcoc" onclick="switchTab('ococ')" tabindex="0">OCOC (PAÍSES)</button>
         <button class="cat-btn" id="menuBtnSets" onclick="switchTab('sets')" tabindex="0">SETS & PACKS</button>
 
-        <!-- BOTÃO DE ESQUEMA DE CORES -->
         <button class="cat-btn" id="menuBtnTheme" onclick="toggleThemeInline()" tabindex="0" style="color: var(--focus-gradient-2);">ESQUEMA DE CORES</button>
         <div class="inline-panel-container" id="themeInlineList">
             <button class="brand-btn" onclick="setThemeScheme('orange')" tabindex="0">🟠 LARANJA PADRÃO</button>
@@ -1134,6 +1147,9 @@
     <main class="main-area" id="mainArea" onclick="handleMainAreaClick()">
         <section class="hero-panel" id="heroPanel">
             <div class="hero-brand-logo-container" id="heroBrandLogo"></div>
+
+            <!-- GRADE DE TODAS AS BANDEIRAS PARA O MODO OCOC -->
+            <div class="hero-ococ-flags-grid" id="heroOcocFlagsGrid"></div>
 
             <div class="hero-left-photos" id="heroPhotos">
                 <div class="hero-photo-card"><img src="" alt="" id="heroPhoto1"></div>
@@ -1183,7 +1199,7 @@
     </main>
 </div>
 
-<!-- MODAL DE ZOOM COM BANNER ROTATIVO NO RODAPÉ -->
+<!-- MODAL DE ZOOM -->
 <div class="zoom-modal" id="zoomModal" onclick="closeZoomModal()">
     <img id="zoomImage" src="" alt="Imagem ampliada" onclick="event.stopPropagation(); toggleZoomStep();">
 
@@ -1192,7 +1208,7 @@
     </div>
 </div>
 
-<!-- MODAL DE SAÍDA DO APLICATIVO -->
+<!-- MODAL DE SAÍDA -->
 <div class="exit-modal" id="exitModal">
     <div class="exit-box">
         <div class="exit-title">TEM CERTEZA QUE QUER SAIR?</div>
@@ -1232,10 +1248,9 @@
 
     const vkKeys = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','1','2','3','4','5','6','7','8','9','0','ESPAÇO','DEL','LIMPAR'];
 
-    /* ESQUEMAS DE CORES ATUALIZADOS (Verde Escuro Brilhante refinado) */
     const colorThemes = {
       orange: { g1: '#ffe066', g2: '#f39c12', g3: '#ff5500', bg: '#F19711' },
-      green:  { g1: '#76ff03', g2: '#00c853', g3: '#1b5e20', bg: '#0b6730' }, // Verde esmeralda escuro e brilhante
+      green:  { g1: '#76ff03', g2: '#00c853', g3: '#1b5e20', bg: '#0b6730' },
       blue:   { g1: '#85d8ce', g2: '#3498db', g3: '#1b82e6', bg: '#2980b9' },
       red:    { g1: '#ff9999', g2: '#e74c3c', g3: '#c0392b', bg: '#c0392b' },
       purple: { g1: '#e8cbff', g2: '#9b59b6', g3: '#8e44ad', bg: '#8e44ad' }
@@ -1294,10 +1309,8 @@
 
     function notificarHomeTV(can) {
       if (!can) return;
-
       const titulo = can.name || can.Nome || "Lata de Cerveja";
       const marca = can.brewery || can.Cervejaria || "WCCollection";
-
       const rawPhoto = can.ImgFront || can.front || can.ImgCover || can.cover || (zoomGallery && zoomGallery.length > 0 ? zoomGallery[0] : can.brandLogo);
       const imagem = getOptimizedImageUrl(rawPhoto, 800);
       const linkPagina = window.location.href;
@@ -1357,6 +1370,59 @@
         .join(' ');
     }
 
+    const countryCodesMap = {
+      'brasil': 'br', 'argentina': 'ar', 'bolivia': 'bo', 'chile': 'cl',
+      'colombia': 'co', 'equador': 'ec', 'guiana': 'gy',
+      'guiana francesa': 'gf', 'paraguai': 'py', 'peru': 'pe',
+      'suriname': 'sr', 'uruguai': 'uy', 'venezuela': 've',
+      'antigua e barbuda': 'ag', 'bahamas': 'bs', 'barbados': 'bb', 'belize': 'bz',
+      'canada': 'ca', 'costa rica': 'cr', 'cuba': 'cu', 'dominica': 'dm', 'el salvador': 'sv',
+      'estados unidos': 'us', 'granada': 'gd', 'guatemala': 'gt',
+      'haiti': 'ht', 'honduras': 'hn', 'jamaica': 'jm', 'mexico': 'mx', 'nicaragua': 'ni',
+      'panama': 'pa', 'porto rico': 'pr', 'republica dominicana': 'do',
+      'sao cristovao e nevis': 'kn', 'sao vicente e granadinas': 'vc', 'santa lucia': 'lc',
+      'trinidad e tobago': 'tt', 'albania': 'al', 'alemanha': 'de', 'andorra': 'ad', 'armenia': 'am',
+      'austria': 'at', 'azerbaijao': 'az', 'belgica': 'be', 'bielorrussia': 'by',
+      'bosnia e herzegovina': 'ba', 'bulgaria': 'bg', 'chipre': 'cy', 'croacia': 'hr',
+      'dinamarca': 'dk', 'eslovaquia': 'sk', 'eslovenia': 'si', 'espanha': 'es',
+      'estonia': 'ee', 'finlandia': 'fi', 'franca': 'fr', 'georgia': 'ge',
+      'grecia': 'gr', 'holanda': 'nl',
+      'hungria': 'hu', 'irlanda': 'ie', 'islandia': 'is', 'italia': 'it', 'kosovo': 'xk',
+      'letonia': 'lv', 'liechtenstein': 'li', 'lituania': 'lt', 'luxemburgo': 'lu',
+      'macedonia do norte': 'mk', 'malta': 'mt', 'moldavia': 'md', 'monaco': 'mc',
+      'montenegro': 'me', 'noruega': 'no', 'polonia': 'pl', 'portugal': 'pt',
+      'reino unido': 'gb', 'escocia': 'gb', 'paises de gales': 'gb',
+      'republica tcheca': 'cz', 'tchequia': 'cz', 'romenia': 'ro', 'russia': 'ru',
+      'san marino': 'sm', 'servia': 'rs', 'suecia': 'se', 'suica': 'ch', 'turquia': 'tr',
+      'ucrania': 'ua', 'vaticano': 'va', 'afeganistao': 'af', 'arabia saudita': 'sa', 'bangladesh': 'bd', 'bahrein': 'bh',
+      'brunei': 'bn', 'butao': 'bt', 'camboja': 'kh', 'catar': 'qa', 'qatar': 'qa',
+      'cazaquistao': 'kz', 'china': 'cn', 'coreia do norte': 'kp', 'coreia do sul': 'kr',
+      'emirados arabes unidos': 'ae', 'filipinas': 'ph', 'iemen': 'ye',
+      'india': 'in', 'indonesia': 'id', 'iraque': 'iq', 'ira': 'ir', 'israel': 'il',
+      'japao': 'jp', 'jordania': 'jo', 'kuwait': 'kw', 'laos': 'la',
+      'libano': 'lb', 'malasia': 'my', 'maldivas': 'mv', 'mianmar': 'mm', 'mongolia': 'mn',
+      'nepal': 'np', 'oman': 'om', 'paquistao': 'pk', 'quirguistao': 'kg', 'singapura': 'sg',
+      'siria': 'sy', 'sri lanka': 'lk', 'tailandia': 'th', 'taiwan': 'tw', 'tajiquistao': 'tj',
+      'timor leste': 'tl', 'turcomenistao': 'tm', 'uzbequistao': 'uz', 'vietna': 'vn',
+      'africa do sul': 'za', 'angola': 'ao', 'algeria': 'dz', 'benin': 'bj', 'botsuana': 'bw',
+      'burkina faso': 'bf', 'burundi': 'bi', 'cabo verde': 'cv', 'camaroes': 'cm',
+      'chade': 'td', 'comores': 'km', 'congo': 'cg', 'costa do marfim': 'ci', 'djibout': 'dj',
+      'egito': 'eg', 'eritreia': 'er', 'esuatini': 'sz', 'suazilandia': 'sz', 'etiopia': 'et',
+      'gabao': 'ga', 'gambia': 'gm', 'gana': 'gh', 'guine': 'gn', 'guine bissau': 'gw',
+      'guine equatorial': 'gq', 'ilha mauricio': 'mu', 'lesoto': 'ls', 'liberia': 'lr',
+      'libia': 'ly', 'madagascar': 'mg', 'malawi': 'mw', 'mali': 'ml', 'marrocos': 'ma',
+      'mauritania': 'mr', 'mocambique': 'mz', 'namibia': 'na', 'niger': 'ne', 'nigeria': 'ng',
+      'quenia': 'ke', 'republica centro africana': 'cf', 'republica democratica do congo': 'cd',
+      'ruanda': 'rw', 'sao tome e principe': 'st', 'senegal': 'sn', 'serra leoa': 'sl',
+      'seichelas': 'sc', 'somalia': 'so', 'sudao': 'sd', 'sudao do sul': 'ss',
+      'tanzania': 'tz', 'togo': 'tg', 'tunisia': 'tn', 'uganda': 'ug', 'zambia': 'zm',
+      'zimbabue': 'zw', 'australia': 'au', 'fiji': 'fj', 'ilhas marechal': 'mh', 'ilhas salomao': 'sb',
+      'kiribati': 'ki', 'micronesia': 'fm', 'nauru': 'nr', 'nova zelandia': 'nz',
+      'palau': 'pw', 'papua nova guine': 'pg', 'samoa': 'ws', 'tonga': 'to',
+      'tuvalu': 'tv', 'vanuatu': 'vu', 'hong kong': 'hk'
+    };
+
+
     function getFlagUrlByCountry(countryName) {
       if (!countryName) return '';
       const name = String(countryName)
@@ -1365,25 +1431,7 @@
         .normalize("NFD")
         .replace(/[\u0300-\u036f]/g, "");
 
-      const countryCodes = {
-        'brasil': 'br', 'brazil': 'br', 'argentina': 'ar', 'bolivia': 'bo', 'chile': 'cl',
-        'colombia': 'co', 'equador': 'ec', 'ecuador': 'ec', 'guiana': 'gy', 'paraguai': 'py',
-        'paraguay': 'py', 'peru': 'pe', 'suriname': 'sr', 'uruguai': 'uy', 'uruguay': 'uy',
-        'venezuela': 've', 'canada': 'ca', 'costa rica': 'cr', 'cuba': 'cu', 'el salvador': 'sv',
-        'estados unidos': 'us', 'eua': 'us', 'usa': 'us', 'guatemala': 'gt', 'honduras': 'hn',
-        'jamaica': 'jm', 'mexico': 'mx', 'nicaragua': 'ni', 'panama': 'pa', 'republica dominicana': 'do',
-        'alemanha': 'de', 'germany': 'de', 'austria': 'at', 'belgica': 'be', 'bulgaria': 'bg',
-        'dinamarca': 'dk', 'eslovaquia': 'sk', 'eslovenia': 'si', 'espanha': 'es', 'estonia': 'ee',
-        'finlandia': 'fi', 'franca': 'fr', 'france': 'fr', 'grecia': 'gr', 'holanda': 'nl',
-        'paises baixos': 'nl', 'netherlands': 'nl', 'hungria': 'hu', 'irlanda': 'ie', 'italia': 'it',
-        'noruega': 'no', 'polonia': 'pl', 'portugal': 'pt', 'reino unido': 'gb', 'uk': 'gb',
-        'republica tcheca': 'cz', 'romenia': 'ro', 'russia': 'ru', 'servia': 'rs', 'suecia': 'se',
-        'suica': 'ch', 'turquia': 'tr', 'ucrania': 'ua', 'china': 'cn', 'coreia do sul': 'kr',
-        'japao': 'jp', 'japan': 'jp', 'taiwan': 'tw', 'india': 'in', 'australia': 'au',
-        'nova zelandia': 'nz', 'africa do sul': 'za'
-      };
-
-      const code = countryCodes[name];
+      const code = countryCodesMap[name];
       if (code) return `https://flagcdn.com/w40/${code}.png`;
       return '';
     }
@@ -1822,7 +1870,6 @@
       cardRow.innerHTML = "";
       cardRow.className = "card-row";
 
-      // 1. Filtrar latas
       const matchedCans = canCatalog.filter(can => {
         const name = String(can.name || can.Nome || "").toLowerCase();
         const brewery = String(can.brewery || can.Cervejaria || "").toLowerCase();
@@ -1832,7 +1879,6 @@
         return !isSet && (name.includes(val) || brewery.includes(val) || country.includes(val) || barcode.includes(val));
       });
 
-      // 2. Filtrar marcas únicas correspondentes
       const matchedBrandsSet = new Set();
       canCatalog.forEach(can => {
         const brewery = String(can.brewery || can.Cervejaria || "").trim();
@@ -1842,7 +1888,6 @@
       });
       const matchedBrands = Array.from(matchedBrandsSet).sort();
 
-      // 3. Filtrar sets correspondentes
       const matchedSets = canCatalog.filter(can => {
         const isSet = can.isSet === true || String(can.isSet).toLowerCase() === "true";
         const name = String(can.name || can.Nome || "").toLowerCase();
@@ -1917,7 +1962,6 @@
         };
       }
 
-      // BLOCO 0 (TOPO): LATAS
       if (matchedCans.length > 0) {
         const block = document.createElement("div");
         block.className = "search-category-block";
@@ -1985,7 +2029,6 @@
         wrapper.appendChild(block);
       }
 
-      // BLOCO 1 (MEIO): MARCAS
       if (matchedBrands.length > 0) {
         const block = document.createElement("div");
         block.className = "search-category-block";
@@ -2049,7 +2092,6 @@
         wrapper.appendChild(block);
       }
 
-      // BLOCO 2 (BAIXO): SETS
       if (matchedSets.length > 0) {
         const block = document.createElement("div");
         block.className = "search-category-block";
@@ -2294,6 +2336,23 @@
     }
 
     function updateHeroPanel(can, localIndex = 0) {
+      const heroPhotos = document.getElementById("heroPhotos");
+      const heroRightInfo = document.querySelector(".hero-right-info");
+      const flagsGrid = document.getElementById("heroOcocFlagsGrid");
+
+      if (currentTab === 'ococ') {
+        if (heroPhotos) heroPhotos.style.display = 'none';
+        if (heroRightInfo) heroRightInfo.style.display = 'none';
+        if (flagsGrid) {
+          flagsGrid.style.display = 'grid';
+          renderOcocFlagsGridBackground();
+        }
+      } else {
+        if (heroPhotos) heroPhotos.style.display = 'grid';
+        if (heroRightInfo) heroRightInfo.style.display = 'flex';
+        if (flagsGrid) flagsGrid.style.display = 'none';
+      }
+
       if (!can) return;
 
       let fallbackTitle = "Selecione uma lata";
@@ -2346,10 +2405,49 @@
       updateBrandLogoHeader(can.brewery || can.Cervejaria, can);
     }
 
+    function renderOcocFlagsGridBackground() {
+      const grid = document.getElementById("heroOcocFlagsGrid");
+      if (!grid) return;
+      if (grid.innerHTML.trim() !== "") return; // Renderiza apenas uma vez
+
+      const collectedCountriesSet = new Set();
+      canCatalog.forEach(c => {
+        const isOcoc = c.isOcoc === true || String(c.isOcoc).toLowerCase() === "true";
+        const country = String(c.country || c.Pais || "").toLowerCase().trim();
+        if (isOcoc && country) {
+          collectedCountriesSet.add(country);
+        }
+      });
+
+      const allCountries = Object.keys(countryCodesMap);
+
+      let html = "";
+      allCountries.forEach(countryName => {
+        const code = countryCodesMap[countryName];
+        const flagUrl = `https://flagcdn.com/w40/${code}.png`;
+        const isCollected = collectedCountriesSet.has(countryName);
+        const cssClass = isCollected ? "hero-ococ-flag-item collected" : "hero-ococ-flag-item uncollected";
+
+        html += `<div class="${cssClass}" title="${formatCapitalizedText(countryName)}"><img src="${flagUrl}" loading="lazy" alt="${countryName}"></div>`;
+      });
+
+      grid.innerHTML = html;
+    }
+
     function updateBrandLogoHeader(brandQuery, currentCan) {
       const logoContainer = document.getElementById("heroBrandLogo");
       const wallpaperElem = document.getElementById("heroBrandWallpaper");
       const gridOverlayLogo = document.querySelector(".brand-overlay-logo");
+
+      if (currentTab === 'ococ') {
+        if (logoContainer) logoContainer.innerHTML = "";
+        if (gridOverlayLogo) gridOverlayLogo.innerHTML = "";
+        if (wallpaperElem) {
+          wallpaperElem.style.backgroundImage = "none";
+          wallpaperElem.classList.remove("active");
+        }
+        return;
+      }
 
       if (isAllBrandsGridMode) {
         if (wallpaperElem) {
@@ -2634,7 +2732,6 @@
       }
     }
 
-    /* MODAL DE ZOOM COM BANNER ROTATIVO */
     function openZoomModal(localIndex, sourceList = currentFiltered) {
       activeLocalIndex = localIndex;
       const globalIndex = (isSearchCategorizedMode) ? localIndex : (currentPage * cardsPerPage + activeLocalIndex);
@@ -3005,7 +3102,6 @@
         e.preventDefault();
         e.stopPropagation();
         indiceBotao = 1;
-        atualizarFocoGradeBotao();
       }
       if (e.key === "ArrowLeft" || e.keyCode === 37) {
         e.preventDefault();
