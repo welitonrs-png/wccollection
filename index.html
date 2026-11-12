@@ -325,6 +325,13 @@
           height: 100%;
           padding: 2px;
         }
+        .hero-ococ-flag-item.highlighted {
+          border: 2px solid var(--focus-gradient-2) !important;
+          filter: drop-shadow(0 0 6px var(--focus-gradient-2)) !important;
+          transform: scale(1.15);
+          z-index: 10;
+          transition: all 0.15s ease;
+        }
 
         .hero-ococ-flag-item img {
           width: 100%;
@@ -2387,6 +2394,18 @@
       const img3 = can.ImgBack || can.back || "";
       const img4 = can.ImgRight || can.right || "";
 
+        // Destaca a bandeira correspondente no modo OCOC
+      if (currentTab === 'ococ' && can) {
+        const countryKey = String(can.country || can.Pais || "").toLowerCase().trim();
+        document.querySelectorAll(".hero-ococ-flag-item").forEach(item => {
+          if (item.getAttribute("data-country") === countryKey) {
+            item.classList.add("highlighted");
+          } else {
+            item.classList.remove("highlighted");
+          }
+        });
+      }
+
       function setThumbnail(el, url) {
         if (!el) return;
         const optimizedUrl = getOptimizedImageUrl(url);
@@ -2423,12 +2442,13 @@
 
       let html = "";
       allCountries.forEach(countryName => {
-        const code = countryCodesMap[countryName];
+const code = countryCodesMap[countryName];
         const flagUrl = `https://flagcdn.com/w40/${code}.png`;
         const isCollected = collectedCountriesSet.has(countryName);
         const cssClass = isCollected ? "hero-ococ-flag-item collected" : "hero-ococ-flag-item uncollected";
+        const normalizedKey = countryName.toLowerCase().trim();
 
-        html += `<div class="${cssClass}" title="${formatCapitalizedText(countryName)}"><img src="${flagUrl}" loading="lazy" alt="${countryName}"></div>`;
+        html += `<div class="${cssClass}" data-country="${normalizedKey}" title="${formatCapitalizedText(countryName)}"><img src="${flagUrl}" loading="lazy" alt="${countryName}"></div>`;
       });
 
       grid.innerHTML = html;
