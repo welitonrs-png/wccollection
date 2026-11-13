@@ -294,7 +294,7 @@
           text-transform: uppercase;
         }
 
-        /* PAINEL DE BANDEIRAS OCOC NO HERO (CORRIGIDO PARA NÃO DISTORCER) */
+        /* PAINEL DE BANDEIRAS OCOC NO HERO */
         .hero-ococ-flags-grid {
           position: absolute;
           top: 0;
@@ -302,8 +302,8 @@
           width: 100%;
           height: 100%;
           display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(32px, 1fr));
-          grid-auto-rows: 28px;
+          grid-template-columns: repeat(auto-fill, minmax(46px, 1fr));
+          grid-auto-rows: 32px;
           gap: 4px;
           align-content: center;
           justify-items: center;
@@ -316,6 +316,7 @@
 
         .hero-ococ-flag-item {
           display: flex;
+          flex-direction: column;
           align-items: center;
           justify-content: center;
           background: rgba(0,0,0,0.3);
@@ -324,32 +325,40 @@
           width: 100%;
           height: 100%;
           padding: 2px;
-          border: none !important; /* Garante que fica sem borda por padrão */
+          border: none !important;
         }
+
+        .hero-ococ-flag-item img {
+          width: 100%;
+          height: 70%;
+          object-fit: contain;
+          border-radius: 2px;
+        }
+
+        .hero-ococ-flag-text {
+          font-size: 0.42rem;
+          font-weight: bold;
+          color: #cccccc;
+          text-transform: uppercase;
+          line-height: 1;
+          margin-top: 1px;
+        }
+
+        .hero-ococ-flag-item.collected {
+          opacity: 1.0;
+        }
+
+        .hero-ococ-flag-item.uncollected {
+          opacity: 0.15;
+          filter: grayscale(90%);
+        }
+
         .hero-ococ-flag-item.highlighted {
           border: 2px solid var(--focus-gradient-2) !important;
           filter: drop-shadow(0 0 6px var(--focus-gradient-2)) !important;
           transform: scale(1.15);
           z-index: 10;
           transition: all 0.15s ease;
-        }
-
-        .hero-ococ-flag-item img {
-          width: 100%;
-          height: 100%;
-          object-fit: contain;
-          border-radius: 2px;
-        }
-
-        .hero-ococ-flag-item.collected {
-          opacity: 1.0;
-          filter: drop-shadow(0 0 3px rgba(255,255,255,0.5));
-          border: 1px solid rgba(255,255,255,0.4);
-        }
-
-        .hero-ococ-flag-item.uncollected {
-          opacity: 0.15;
-          filter: grayscale(90%);
         }
 
         /* BARRA DE CONTADOR/ORDENAÇÃO */
@@ -448,7 +457,7 @@
           overflow: hidden !important;
           display: flex !important;
           flex-direction: column !important;
-          border: 2px solid transparent !important;
+          border: none !important;
           cursor: pointer !important;
           flex-shrink: 0 !important;
           outline: none !important;
@@ -1379,57 +1388,22 @@
     }
 
     const countryCodesMap = {
-      'brasil': 'br', 'argentina': 'ar', 'bolivia': 'bo', 'chile': 'cl',
-      'colombia': 'co', 'equador': 'ec', 'guiana': 'gy',
-      'guiana francesa': 'gf', 'paraguai': 'py', 'peru': 'pe',
-      'suriname': 'sr', 'uruguai': 'uy', 'venezuela': 've',
-      'antigua e barbuda': 'ag', 'bahamas': 'bs', 'barbados': 'bb', 'belize': 'bz',
-      'canada': 'ca', 'costa rica': 'cr', 'cuba': 'cu', 'dominica': 'dm', 'el salvador': 'sv',
-      'estados unidos': 'us', 'granada': 'gd', 'guatemala': 'gt',
-      'haiti': 'ht', 'honduras': 'hn', 'jamaica': 'jm', 'mexico': 'mx', 'nicaragua': 'ni',
-      'panama': 'pa', 'porto rico': 'pr', 'republica dominicana': 'do',
-      'sao cristovao e nevis': 'kn', 'sao vicente e granadinas': 'vc', 'santa lucia': 'lc',
-      'trinidad e tobago': 'tt', 'albania': 'al', 'alemanha': 'de', 'andorra': 'ad', 'armenia': 'am',
-      'austria': 'at', 'azerbaijao': 'az', 'belgica': 'be', 'bielorrussia': 'by',
-      'bosnia e herzegovina': 'ba', 'bulgaria': 'bg', 'chipre': 'cy', 'croacia': 'hr',
-      'dinamarca': 'dk', 'eslovaquia': 'sk', 'eslovenia': 'si', 'espanha': 'es',
-      'estonia': 'ee', 'finlandia': 'fi', 'franca': 'fr', 'georgia': 'ge',
-      'grecia': 'gr', 'holanda': 'nl',
-      'hungria': 'hu', 'irlanda': 'ie', 'islandia': 'is', 'italia': 'it', 'kosovo': 'xk',
-      'letonia': 'lv', 'liechtenstein': 'li', 'lituania': 'lt', 'luxemburgo': 'lu',
-      'macedonia do norte': 'mk', 'malta': 'mt', 'moldavia': 'md', 'monaco': 'mc',
-      'montenegro': 'me', 'noruega': 'no', 'polonia': 'pl', 'portugal': 'pt',
-      'reino unido': 'gb', 'escocia': 'gb-sct', 'paises de gales': 'gb-wls', 'inglaterra':'gb-eng',
-      'republica tcheca': 'cz', 'tchequia': 'cz', 'romenia': 'ro', 'russia': 'ru',
-      'san marino': 'sm', 'servia': 'rs', 'suecia': 'se', 'suica': 'ch', 'turquia': 'tr',
-      'ucrania': 'ua', 'vaticano': 'va', 'afeganistao': 'af', 'arabia saudita': 'sa', 'bangladesh': 'bd', 'bahrein': 'bh',
-      'brunei': 'bn', 'butao': 'bt', 'camboja': 'kh', 'catar': 'qa', 'qatar': 'qa',
-      'cazaquistao': 'kz', 'china': 'cn', 'coreia do norte': 'kp', 'coreia do sul': 'kr',
-      'emirados arabes unidos': 'ae', 'filipinas': 'ph', 'iemen': 'ye',
-      'india': 'in', 'indonesia': 'id', 'iraque': 'iq', 'ira': 'ir', 'israel': 'il',
-      'japao': 'jp', 'jordania': 'jo', 'kuwait': 'kw', 'laos': 'la',
-      'libano': 'lb', 'malasia': 'my', 'maldivas': 'mv', 'mianmar': 'mm', 'mongolia': 'mn',
-      'nepal': 'np', 'oman': 'om', 'paquistao': 'pk', 'quirguistao': 'kg', 'singapura': 'sg',
-      'siria': 'sy', 'sri lanka': 'lk', 'tailandia': 'th', 'taiwan': 'tw', 'tajiquistao': 'tj',
-      'timor leste': 'tl', 'turcomenistao': 'tm', 'uzbequistao': 'uz', 'vietna': 'vn',
-      'africa do sul': 'za', 'angola': 'ao', 'algeria': 'dz', 'benin': 'bj', 'botsuana': 'bw',
-      'burkina faso': 'bf', 'burundi': 'bi', 'cabo verde': 'cv', 'camaroes': 'cm',
-      'chade': 'td', 'comores': 'km', 'congo': 'cg', 'costa do marfim': 'ci', 'djibout': 'dj',
-      'egito': 'eg', 'eritreia': 'er', 'esuatini': 'sz', 'suazilandia': 'sz', 'etiopia': 'et',
-      'gabao': 'ga', 'gambia': 'gm', 'gana': 'gh', 'guine': 'gn', 'guine bissau': 'gw',
-      'guine equatorial': 'gq', 'ilha mauricio': 'mu', 'lesoto': 'ls', 'liberia': 'lr',
-      'libia': 'ly', 'madagascar': 'mg', 'malawi': 'mw', 'mali': 'ml', 'marrocos': 'ma',
-      'mauritania': 'mr', 'mocambique': 'mz', 'namibia': 'na', 'niger': 'ne', 'nigeria': 'ng',
-      'quenia': 'ke', 'republica centro africana': 'cf', 'republica democratica do congo': 'cd',
-      'ruanda': 'rw', 'sao tome e principe': 'st', 'senegal': 'sn', 'serra leoa': 'sl',
-      'seichelas': 'sc', 'somalia': 'so', 'sudao': 'sd', 'sudao do sul': 'ss',
-      'tanzania': 'tz', 'togo': 'tg', 'tunisia': 'tn', 'uganda': 'ug', 'zambia': 'zm',
-      'zimbabue': 'zw', 'australia': 'au', 'fiji': 'fj', 'ilhas marechal': 'mh', 'ilhas salomao': 'sb',
-      'kiribati': 'ki', 'micronesia': 'fm', 'nauru': 'nr', 'nova zelandia': 'nz',
-      'palau': 'pw', 'papua nova guine': 'pg', 'samoa': 'ws', 'tonga': 'to',
-      'tuvalu': 'tv', 'vanuatu': 'vu', 'hong kong': 'hk'
+      'brasil': 'br', 'brazil': 'br', 'argentina': 'ar', 'bolivia': 'bo', 'chile': 'cl',
+      'colombia': 'co', 'equador': 'ec', 'ecuador': 'ec', 'guiana': 'gy', 'paraguai': 'py',
+      'paraguay': 'py', 'peru': 'pe', 'suriname': 'sr', 'uruguai': 'uy', 'uruguay': 'uy',
+      'venezuela': 've', 'canada': 'ca', 'costa rica': 'cr', 'cuba': 'cu', 'el salvador': 'sv',
+      'estados unidos': 'us', 'eua': 'us', 'usa': 'us', 'guatemala': 'gt', 'honduras': 'hn',
+      'jamaica': 'jm', 'mexico': 'mx', 'nicaragua': 'ni', 'panama': 'pa', 'republica dominicana': 'do',
+      'alemanha': 'de', 'germany': 'de', 'austria': 'at', 'belgica': 'be', 'bulgaria': 'bg',
+      'dinamarca': 'dk', 'eslovaquia': 'sk', 'eslovenia': 'si', 'espanha': 'es', 'estonia': 'ee',
+      'finlandia': 'fi', 'franca': 'fr', 'france': 'fr', 'grecia': 'gr', 'holanda': 'nl',
+      'paises baixos': 'nl', 'netherlands': 'nl', 'hungria': 'hu', 'irlanda': 'ie', 'italia': 'it',
+      'noruega': 'no', 'polonia': 'pl', 'portugal': 'pt', 'reino unido': 'gb', 'uk': 'gb',
+      'republica tcheca': 'cz', 'romenia': 'ro', 'russia': 'ru', 'servia': 'rs', 'suecia': 'se',
+      'suica': 'ch', 'turquia': 'tr', 'ucrania': 'ua', 'china': 'cn', 'coreia do sul': 'kr',
+      'japao': 'jp', 'japan': 'jp', 'taiwan': 'tw', 'india': 'in', 'australia': 'au',
+      'nova zelandia': 'nz', 'africa do sul': 'za'
     };
-
 
     function getFlagUrlByCountry(countryName) {
       if (!countryName) return '';
@@ -2395,18 +2369,6 @@
       const img3 = can.ImgBack || can.back || "";
       const img4 = can.ImgRight || can.right || "";
 
-        // Destaca a bandeira correspondente no modo OCOC
-      if (currentTab === 'ococ' && can) {
-        const countryKey = String(can.country || can.Pais || "").toLowerCase().trim();
-        document.querySelectorAll(".hero-ococ-flag-item").forEach(item => {
-          if (item.getAttribute("data-country") === countryKey) {
-            item.classList.add("highlighted");
-          } else {
-            item.classList.remove("highlighted");
-          }
-        });
-      }
-
       function setThumbnail(el, url) {
         if (!el) return;
         const optimizedUrl = getOptimizedImageUrl(url);
@@ -2423,6 +2385,18 @@
       setThumbnail(photo4, img4);
 
       updateBrandLogoHeader(can.brewery || can.Cervejaria, can);
+
+      // Destaca a bandeira correspondente no modo OCOC
+      if (currentTab === 'ococ' && can) {
+        const countryKey = String(can.country || can.Pais || "").toLowerCase().trim();
+        document.querySelectorAll(".hero-ococ-flag-item").forEach(item => {
+          if (item.getAttribute("data-country") === countryKey) {
+            item.classList.add("highlighted");
+          } else {
+            item.classList.remove("highlighted");
+          }
+        });
+      }
     }
 
     function renderOcocFlagsGridBackground() {
@@ -2443,13 +2417,19 @@
 
       let html = "";
       allCountries.forEach(countryName => {
-const code = countryCodesMap[countryName];
+        const code = countryCodesMap[countryName];
         const flagUrl = `https://flagcdn.com/w40/${code}.png`;
         const isCollected = collectedCountriesSet.has(countryName);
         const cssClass = isCollected ? "hero-ococ-flag-item collected" : "hero-ococ-flag-item uncollected";
         const normalizedKey = countryName.toLowerCase().trim();
+        
+        // Pega as 3 primeiras letras do nome do país em maiúsculo
+        const letters3 = countryName.substring(0, 3).toUpperCase();
 
-        html += `<div class="${cssClass}" data-country="${normalizedKey}" title="${formatCapitalizedText(countryName)}"><img src="${flagUrl}" loading="lazy" alt="${countryName}"></div>`;
+        html += `<div class="${cssClass}" data-country="${normalizedKey}" title="${formatCapitalizedText(countryName)}">
+                   <img src="${flagUrl}" loading="lazy" alt="${countryName}">
+                   <span class="hero-ococ-flag-text">${letters3}</span>
+                 </div>`;
       });
 
       grid.innerHTML = html;
