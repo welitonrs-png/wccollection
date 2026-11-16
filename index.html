@@ -595,7 +595,7 @@
         .card.focused .card-bottom-bar,
         .card:focus .card-bottom-bar,
         .card:hover .card-bottom-bar {
-          background-color: var(--card-focus-bg) !important;
+          background: var(--card-focus-bg) !important;
         }
 
         .card.focused .card-bar-title,
@@ -1267,7 +1267,7 @@
       green:  { g1: '#76ff03', g2: '#00c853', g3: '#1b5e20', bg: '#0b6730' },
       blue:   { g1: '#85d8ce', g2: '#3498db', g3: '#1b82e6', bg: '#2980b9' },
       red:    { g1: '#ff9999', g2: '#e74c3c', g3: '#c0392b', bg: '#c0392b' },
-      google: { g1: '#4285F4', g2: '#EA4335', g3: '#34A853', bg: '#FBBC05' }
+      google: { g1: '#4285F4', g2: '#34A853', g3: '#FBBC05', bg: 'linear-gradient(180deg,rgba(251, 188, 5, 1) 50%, rgba(234, 67, 53, 1) 50%)' }
     };
 
     function setThemeScheme(themeKey) {
@@ -2419,7 +2419,7 @@
         const isCollected = collectedCountriesSet.has(countryName);
         const cssClass = isCollected ? "hero-ococ-flag-item collected" : "hero-ococ-flag-item uncollected";
         const normalizedKey = countryName.toLowerCase().trim();
-        
+
         // Pega as 3 primeiras letras do nome do país em maiúsculo
         const letters3 = countryName.substring(0, 3).toUpperCase();
 
